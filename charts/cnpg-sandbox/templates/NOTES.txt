@@ -1,0 +1,40 @@
+
+Now, you can deploy a cluster or run a benchmark by using `cnp-bench`.
+
+To deploy an example cluster run:
+
+kubectl apply -f - <<EOF
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  instances: 3
+
+  storage:
+    size: 1Gi
+
+  monitoring:
+    enablePodMonitor: true
+{{- if not (index .Values "cloudnative-pg" "enabled") }}
+    customQueriesConfigMap:
+      - name: default-monitoring-queries
+        key: custom-queries
+{{- end }}
+EOF
+
+Instead, to run a benchmark, you can use `cnp-bench` (https://github.com/EnterpriseDB/cnp-bench).
+
+To access the dedicated Grafana dashboard ("CloudNativePG"), run the following command:
+
+kubectl port-forward svc/{{.Release.Name}}-grafana 3000:80
+
+Then visit the following URL:
+
+http://localhost:3000
+
+You can log in using the following credentials:
+
+username: "admin"
+password: "{{ index .Values "kube-prometheus-stack" "grafana" "adminPassword" }}"
