@@ -1,0 +1,22 @@
+name: release-publish
+
+on:
+  push:
+    tags:
+      - *-v*
+
+jobs:
+  release:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Publish Helm charts
+        uses: stefanprodan/helm-gh-pages@v1.5.0
+        with:
+          helm_version: 3.4.0
+          token: "${{ secrets.REPO_GHA_PAT }}"
+
