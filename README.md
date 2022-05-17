@@ -13,7 +13,7 @@ helm repo add cnpg https://cloudnative-pg.github.io/charts
 helm upgrade --install cnpg \
   --namespace cnpg-system \
   --create-namespace \
-  cnpg/cnpg
+  cnpg/cloudnative-pg
 ```
 
 ## Deployment using local chart
@@ -24,7 +24,7 @@ To deploy the operator from sources you can run the following command:
 helm upgrade --install cnpg \
   --namespace cnpg-system \
   --create-namespace \
-  charts/cnpg
+  charts/cloudnative-pg
 ```
 
 # Sandbox for CloudNativePG
