@@ -38,7 +38,7 @@ appVersion: "1.16.0"
 dependencies:
   - name: cloudnative-pg
     version: "0.13.0"
-    repository: file://../cloudnative-pg
+    repository: https://cloudnative-pg.github.io/charts
     condition: cloudnative-pg.enabled
   - name: kube-prometheus-stack
     version: "32.2.1"
