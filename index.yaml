@@ -24,9 +24,9 @@ entries:
     version: 0.13.1
   - apiVersion: v2
     appVersion: 1.15.0
-    created: "2022-05-17T15:53:58.471790161Z"
+    created: "2022-05-28T06:28:15.928373887Z"
     description: CloudNativePG Helm Chart
-    digest: 272cf9706b1eb6f68933b5aacb4fe8d1dbd5a0afb1f864e79e5754da492220a4
+    digest: 62ec84a399a613465867b19fe93dedd6bb6f474a500904b06825b325bf1e8659
     home: https://cloudnative-pg.io
     icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
     keywords:
@@ -46,18 +46,18 @@ entries:
   cnpg-sandbox:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-05-28T06:26:52.594956275Z"
+    created: "2022-05-28T06:28:15.954885852Z"
     dependencies:
     - condition: cloudnative-pg.enabled
       name: cloudnative-pg
-      repository: https://cloudnative-pg.github.io/charts
+      repository: file://../cloudnative-pg
       version: 0.13.0
     - condition: kube-prometheus-stack.enabled
       name: kube-prometheus-stack
       repository: https://prometheus-community.github.io/helm-charts
       version: 32.2.1
     description: A sandbox for CloudNativePG
-    digest: 909cbb7ebae880760459c7d47b1cbd44abdd36f62e65ad974c56b90d5e495cb5
+    digest: 4e6063b4d9ba85bb3f722a6658da9014a7119d52ae3fee73d89b84e8bd8dae4b
     home: https://cloudnative-pg.io
     keywords:
     - postgresql
@@ -74,4 +74,4 @@ entries:
     urls:
     - https://cloudnative-pg.github.io/charts/cnpg-sandbox-0.4.0.tgz
     version: 0.4.0
-generated: "2022-05-28T06:26:52.559229209Z"
+generated: "2022-05-28T06:28:15.922871511Z"
