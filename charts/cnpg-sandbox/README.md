@@ -20,7 +20,7 @@ A sandbox for CloudNativePG
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../cloudnative-pg | cloudnative-pg | 0.13.0 |
+| https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.13.0 |
 | https://prometheus-community.github.io/helm-charts | kube-prometheus-stack | 32.2.1 |
 
 ## Values
