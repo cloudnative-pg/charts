@@ -93,6 +93,8 @@ spec:
         volumeMounts:
         - mountPath: /controller
           name: scratch-data
+        - mountPath: /run/secrets/cnpg.io/webhook
+          name: webhook-certificates
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       serviceAccountName: {{ include "cloudnative-pg.serviceAccountName" . }}
@@ -112,4 +114,10 @@ spec:
       volumes:
       - emptyDir: {}
         name: scratch-data
+      - name: webhook-certificates
+        secret:
+          defaultMode: 420
+          optional: true
+          secretName: cnpg-webhook-cert
+
 
