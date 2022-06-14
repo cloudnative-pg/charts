@@ -33,7 +33,7 @@ groups:
       description: Standby is lagging behind by over 300 seconds (5 minutes)
       summary: The standby is lagging behind the primary
     expr: |-
-      cnpg_pg_database_xid_age > 150000000
+      cnpg_pg_replication_lag > 300
     for: 1m
     labels:
       severity: warning
