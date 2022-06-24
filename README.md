@@ -1,10 +1,9 @@
 # CloudNativePG Helm Chart
 
 Helm chart to install the
-[CloudNativePG operator](https://cloudnative-pg.io),
-designed by EnterpriseDB to manage PostgreSQL workloads on any
-supported Kubernetes cluster running in private, public, or hybrid cloud
-environments.
+[CloudNativePG operator](https://cloudnative-pg.io),originally created and sponsored by 
+[EDB](https://www.enterprisedb.com/) to manage PostgreSQL workloads on any supported Kubernetes cluster
+running in private, public, or hybrid cloud environments.
 
 ## Deployment using the latest release
 
@@ -34,10 +33,9 @@ sets up the following components inside a Kubernetes cluster:
 
 - [Prometheus](https://prometheus.io/)
 - [Grafana](https://github.com/grafana/grafana)
-- [CloudNativePG (CNPG)](https://cloudnative-pg.io) a Kubernetes operator for [PostgreSQL](https://www.postgresql.org/) and
-  [EDB Postgres Advanced](https://www.enterprisedb.com/products/edb-postgres-advanced-server-secure-ha-oracle-compatible), with:
+- [CloudNativePG (CNPG)](https://cloudnative-pg.io) a Kubernetes operator for [PostgreSQL](https://www.postgresql.org/), with:
     - a selection of PostgreSQL metrics for the native Prometheus exporter in CNPG (see the [`metrics.yaml`](charts/cnpg-sandbox/templates/metrics.yaml) template file)
-    - a [custom Grafana dashboard](charts/cnpg-sandbox/dashboard.json) developed by EDB for CloudNativePG
+    - a [custom Grafana dashboard](charts/cnpg-sandbox/dashboard.json) for CloudNativePG
 
 **IMPORTANT:** `cnpg-sandbox` must be run in a staging or pre-production
 environment. Do not use `cnpg-sandbox` in a production environment, as we
