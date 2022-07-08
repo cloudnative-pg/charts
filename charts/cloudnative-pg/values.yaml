@@ -208,6 +208,7 @@ monitoringQueriesConfigMap:
             description: "Time at which postgres started (based on epoch)"
 
     pg_replication:
+      primary: true
       query: "SELECT CASE WHEN NOT pg_catalog.pg_is_in_recovery()
               THEN 0
               ELSE GREATEST (0,

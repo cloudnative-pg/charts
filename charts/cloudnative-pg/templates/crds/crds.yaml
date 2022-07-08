@@ -80,6 +80,10 @@ spec:
                     - key
                     - name
                     type: object
+                  inheritFromAzureAD:
+                    description: Use the Azure AD based authentication without providing
+                      explicitly the keys.
+                    type: boolean
                   storageAccount:
                     description: The storage account where to upload data
                     properties:
@@ -230,6 +234,20 @@ spec:
                     description: Use the role based authentication without providing
                       explicitly the keys.
                     type: boolean
+                  region:
+                    description: The reference to the secret containing the region
+                      name
+                    properties:
+                      key:
+                        description: The key to select
+                        type: string
+                      name:
+                        description: Name of the referent.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
                   secretAccessKey:
                     description: The reference to the secret access key
                     properties:
@@ -1046,6 +1064,10 @@ spec:
                             - key
                             - name
                             type: object
+                          inheritFromAzureAD:
+                            description: Use the Azure AD based authentication without
+                              providing explicitly the keys.
+                            type: boolean
                           storageAccount:
                             description: The storage account where to upload data
                             properties:
@@ -1202,6 +1224,20 @@ spec:
                             description: Use the role based authentication without
                               providing explicitly the keys.
                             type: boolean
+                          region:
+                            description: The reference to the secret containing the
+                              region name
+                            properties:
+                              key:
+                                description: The key to select
+                                type: string
+                              name:
+                                description: Name of the referent.
+                                type: string
+                            required:
+                            - key
+                            - name
+                            type: object
                           secretAccessKey:
                             description: The reference to the secret access key
                             properties:
@@ -1303,6 +1339,51 @@ spec:
                         description: The value to be passed as option `--encoding`
                           for initdb (default:`UTF8`)
                         type: string
+                      import:
+                        description: Bootstraps the new cluster by importing data
+                          from an existing PostgreSQL instance using logical backup
+                          (`pg_dump` and `pg_restore`)
+                        properties:
+                          databases:
+                            description: The databases to import
+                            items:
+                              type: string
+                            type: array
+                          postImportApplicationSQL:
+                            description: List of SQL queries to be executed as a superuser
+                              in the application database right after is imported
+                              - to be used with extreme care (by default empty). Only
+                              available in microservice type.
+                            items:
+                              type: string
+                            type: array
+                          roles:
+                            description: The roles to import
+                            items:
+                              type: string
+                            type: array
+                          source:
+                            description: The source of the import
+                            properties:
+                              externalCluster:
+                                description: The name of the externalCluster used
+                                  for import
+                                type: string
+                            required:
+                            - externalCluster
+                            type: object
+                          type:
+                            description: The import type. Can be `microservice` or
+                              `monolith`.
+                            enum:
+                            - microservice
+                            - monolith
+                            type: string
+                        required:
+                        - databases
+                        - source
+                        - type
+                        type: object
                       localeCType:
                         description: The value to be passed as option `--lc-ctype`
                           for initdb (default:`C`)
@@ -1369,6 +1450,26 @@ spec:
                     description: Bootstrap the cluster taking a physical backup of
                       another compatible PostgreSQL instance
                     properties:
+                      database:
+                        description: 'Name of the database used by the application.
+                          Default: `app`.'
+                        type: string
+                      owner:
+                        description: Name of the owner of the database in the instance
+                          to be used by applications. Defaults to the value of the
+                          `database` key.
+                        type: string
+                      secret:
+                        description: Name of the secret containing the initial credentials
+                          for the owner of the user database. If empty a new secret
+                          will be created from scratch
+                        properties:
+                          name:
+                            description: Name of the referent.
+                            type: string
+                        required:
+                        - name
+                        type: object
                       source:
                         description: The name of the server of which we need to take
                           a physical backup
@@ -1404,6 +1505,15 @@ spec:
                         required:
                         - name
                         type: object
+                      database:
+                        description: 'Name of the database used by the application.
+                          Default: `app`.'
+                        type: string
+                      owner:
+                        description: Name of the owner of the database in the instance
+                          to be used by applications. Defaults to the value of the
+                          `database` key.
+                        type: string
                       recoveryTarget:
                         description: 'By default, the recovery process applies all
                           the available WAL files in the archive (full recovery).
@@ -1413,6 +1523,13 @@ spec:
                           (i.e., timestamp, transaction Id, LSN, ...). More info:
                           https://www.postgresql.org/docs/current/runtime-config-wal.html#RUNTIME-CONFIG-WAL-RECOVERY-TARGET'
                         properties:
+                          backupID:
+                            description: The ID of the backup from which to start
+                              the recovery process. If empty (default) the operator
+                              will automatically detect the backup based on targetTime
+                              or targetLSN if specified. Otherwise use the latest
+                              available backup in chronological order.
+                            type: string
                           exclusive:
                             description: Set the target to be exclusive (defaults
                               to true)
@@ -1433,12 +1550,23 @@ spec:
                               integer)
                             type: string
                           targetTime:
-                            description: The target time, in any unambiguous representation
-                              allowed by PostgreSQL
+                            description: The target time as a timestamp in the RFC3339
+                              standard
                             type: string
                           targetXID:
                             description: The target transaction ID
                             type: string
+                        type: object
+                      secret:
+                        description: Name of the secret containing the initial credentials
+                          for the owner of the user database. If empty a new secret
+                          will be created from scratch
+                        properties:
+                          name:
+                            description: Name of the referent.
+                            type: string
+                        required:
+                        - name
                         type: object
                       source:
                         description: The external cluster whose backup we will restore.
@@ -1531,6 +1659,10 @@ spec:
                               - key
                               - name
                               type: object
+                            inheritFromAzureAD:
+                              description: Use the Azure AD based authentication without
+                                providing explicitly the keys.
+                              type: boolean
                             storageAccount:
                               description: The storage account where to upload data
                               properties:
@@ -1687,6 +1819,20 @@ spec:
                               description: Use the role based authentication without
                                 providing explicitly the keys.
                               type: boolean
+                            region:
+                              description: The reference to the secret containing
+                                the region name
+                              properties:
+                                key:
+                                  description: The key to select
+                                  type: string
+                                name:
+                                  description: Name of the referent.
+                                  type: string
+                              required:
+                              - key
+                              - name
+                              type: object
                             secretAccessKey:
                               description: The reference to the secret access key
                               properties:
@@ -2088,6 +2234,23 @@ spec:
                     items:
                       type: string
                     type: array
+                  syncReplicaElectionConstraint:
+                    description: Requirements to be met by sync replicas. This will
+                      affect how the "synchronous_standby_names" parameter will be
+                      set up.
+                    properties:
+                      enabled:
+                        description: This flag enabled the constraints for sync replicas
+                        type: boolean
+                      nodeLabelsAntiAffinity:
+                        description: A list of node labels values to extract and compare
+                          to evaluate if the pods reside in the same topology or not
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - enabled
+                    type: object
                 type: object
               primaryUpdateMethod:
                 default: switchover
@@ -2442,27 +2605,71 @@ spec:
               conditions:
                 description: Conditions for cluster object
                 items:
-                  description: ClusterCondition describes the state of a cluster object
-                    at a certain point
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource. --- This struct is intended for direct
+                    use as an array at the field path .status.conditions.  For example,
+                    type FooStatus struct{     // Represents the observations of a
+                    foo's current state.     // Known .status.conditions.type are:
+                    \"Available\", \"Progressing\", and \"Degraded\"     // +patchMergeKey=type
+                    \    // +patchStrategy=merge     // +listType=map     // +listMapKey=type
+                    \    Conditions []metav1.Condition `json:\"conditions,omitempty\"
+                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`
+                    \n     // other fields }"
                   properties:
                     lastTransitionTime:
-                      description: Last time the condition transitioned from one status
-                        to another.
+                      description: lastTransitionTime is the last time the condition
+                        transitioned from one status to another. This should be when
+                        the underlying condition changed.  If that is not known, then
+                        using the time when the API field changed is acceptable.
                       format: date-time
                       type: string
                     message:
-                      description: A human readable message indicating details about
-                        the transition.
+                      description: message is a human readable message indicating
+                        details about the transition. This may be an empty string.
+                      maxLength: 32768
                       type: string
+                    observedGeneration:
+                      description: observedGeneration represents the .metadata.generation
+                        that the condition was set based upon. For instance, if .metadata.generation
+                        is currently 12, but the .status.conditions[x].observedGeneration
+                        is 9, the condition is out of date with respect to the current
+                        state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
                     reason:
-                      description: The reason for the condition's last transition.
+                      description: reason contains a programmatic identifier indicating
+                        the reason for the condition's last transition. Producers
+                        of specific condition types may define expected values and
+                        meanings for this field, and whether the values are considered
+                        a guaranteed API. The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
                       type: string
                     status:
-                      description: Status of the condition, one of True, False, Unknown.
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
                       type: string
                     type:
-                      description: Type of the condition.
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        --- Many .condition.type values are consistent across resources
+                        like Available, but because arbitrary conditions can be useful
+                        (see .node.status.conditions), the ability to deconflict is
+                        important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
                       type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
                   type: object
                 type: array
               configMapResourceVersion:
@@ -2612,6 +2819,24 @@ spec:
                 description: The timestamp when the last request for a new primary
                   has occurred
                 type: string
+              topology:
+                description: Instances topology.
+                properties:
+                  instances:
+                    additionalProperties:
+                      additionalProperties:
+                        type: string
+                      description: PodTopologyLabels represent the topology of a Pod.
+                        map[labelName]labelValue
+                      type: object
+                    description: Instances contains the pod topology of the instances
+                    type: object
+                  successfullyExtracted:
+                    description: SuccessfullyExtracted indicates if the topology data
+                      was extract. It is useful to enact fallback behaviors in synchronous
+                      replica election in case of failures
+                    type: boolean
+                type: object
               writeService:
                 description: Current write pod
                 type: string
