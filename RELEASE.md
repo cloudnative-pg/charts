@@ -21,7 +21,7 @@ In order to release `vX.Y.Z` of the `cloudnative-pg` chart, follow these steps:
        cloudnative-pg repo using kustomize
        [remoteBuild](https://github.com/kubernetes-sigs/kustomize/blob/master/examples/remoteBuild.md)
        running: `kustomize build
-       https://github.com/cloudnative-pg/cloudnative-pg//config/helm/\?ref=v1.15.1`,
+       https://github.com/cloudnative-pg/cloudnative-pg/tree/release-1.16/config/helm/\?ref=v1.16.0`,
        take care to set the correct version as ref (v1.15.1 in the example command).
     1. all the needed files in the
        [templates](./charts/cloudnative-pg/templates) directory, you can diff
