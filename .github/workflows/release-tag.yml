@@ -30,7 +30,7 @@ jobs:
         if: github.event.pull_request.merged == true && startsWith(${{ github.head_ref }}, "release/")
         uses: christophebedard/tag-version-commit@v1.6.2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.REPO_GHA_PAT }}
           version_regex: '^Release ([a-z-]+-v[0-9]+\.[0-9]+\.[0-9]+)'
           dry_run: false
       -
