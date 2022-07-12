@@ -3,9 +3,9 @@ entries:
   cloudnative-pg:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-07-11T11:25:28.695812034Z"
+    created: "2022-07-12T16:58:42.678868272Z"
     description: CloudNativePG Helm Chart
-    digest: 522c77679c607ce483bf8efba32db6cb86834b2a6c11a9f0cf448cd2fad1ec53
+    digest: 047177f0deca652e0f794855bf2c7b3260a6761cf6688b5fac895cf3793714d7
     home: https://cloudnative-pg.io
     icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
     keywords:
@@ -67,6 +67,36 @@ entries:
   cnpg-sandbox:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-07-12T16:58:42.714652181Z"
+    dependencies:
+    - condition: cloudnative-pg.enabled
+      name: cloudnative-pg
+      repository: https://cloudnative-pg.github.io/charts
+      version: 0.14.0
+    - condition: kube-prometheus-stack.enabled
+      name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 32.2.1
+    description: A sandbox for CloudNativePG
+    digest: f5c31ccd1add97198473e2eb2aa5713504628ca186fbf8b22a1dc1cf17f0fdae
+    home: https://cloudnative-pg.io
+    keywords:
+    - postgresql
+    - postgres
+    - database
+    - monitoring
+    maintainers:
+    - email: p.scorsolini@gmail.com
+      name: phisco
+    name: cnpg-sandbox
+    sources:
+    - https://github.com/cloudnative-pg/cnpg-sandbox
+    type: application
+    urls:
+    - https://cloudnative-pg.github.io/charts/cnpg-sandbox-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-07-11T11:25:28.726104292Z"
     dependencies:
     - condition: cloudnative-pg.enabled
@@ -125,4 +155,4 @@ entries:
     urls:
     - https://cloudnative-pg.github.io/charts/cnpg-sandbox-0.4.0.tgz
     version: 0.4.0
-generated: "2022-07-11T11:25:28.690007304Z"
+generated: "2022-07-12T16:58:42.673546881Z"
