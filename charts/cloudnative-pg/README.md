@@ -27,6 +27,7 @@ CloudNativePG Helm Chart
 | config.data | object | `{}` |  |
 | config.name | string | `"cnpg-controller-manager-config"` |  |
 | config.secret | bool | `false` | Specifies whether it should be stored in a secret, instead of a configmap |
+| crds.create | bool | `true` |  |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"ghcr.io/cloudnative-pg/cloudnative-pg"` |  |
