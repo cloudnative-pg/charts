@@ -29,6 +29,9 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+crds:
+  create: true
+
 webhook:
   port: 9443
   mutating:
