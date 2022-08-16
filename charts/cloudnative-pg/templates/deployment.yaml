@@ -45,7 +45,7 @@ spec:
       containers:
       - args:
         - controller
-        - --enable-leader-election
+        - --leader-elect
         {{- with .Values.config.name }}
         - --config-map-name={{ . }}
         - --secret-name={{ . }}
@@ -90,6 +90,11 @@ spec:
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
+          runAsUser: 10001
+          runAsGroup: 10001
+          capabilities:
+            drop:
+              - "ALL"
         volumeMounts:
         - mountPath: /controller
           name: scratch-data
