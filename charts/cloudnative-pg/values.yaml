@@ -75,7 +75,9 @@ commonAnnotations: {}
 
 # -- Security Context for the whole pod
 podSecurityContext:
-  runAsUser: 1001
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
   # fsGroup: 2000
 
 service:
