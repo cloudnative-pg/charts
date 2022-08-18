@@ -1,6 +1,6 @@
 # cloudnative-pg
 
-![Version: 0.14.0](https://img.shields.io/badge/Version-0.14.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.14.3](https://img.shields.io/badge/Version-0.14.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.1](https://img.shields.io/badge/AppVersion-1.16.1-informational?style=flat-square)
 
 CloudNativePG Helm Chart
 
@@ -38,7 +38,7 @@ CloudNativePG Helm Chart
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` | Nodeselector for the operator to be installed |
 | podAnnotations | object | `{}` | Annotations to be added to the pod |
-| podSecurityContext | object | `{"runAsUser":1001}` | Security Context for the whole pod |
+| podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security Context for the whole pod |
 | rbac.create | bool | `true` | Specifies whether ClusterRole and ClusterRoleBinding should be created |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |

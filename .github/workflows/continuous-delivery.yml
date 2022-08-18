@@ -2,6 +2,8 @@ name: continuous-delivery
 
 on:
   pull_request:
+    branches-ignore:
+      - 'gh-pages'
 
 jobs:
   install_deploy:
