@@ -79,8 +79,16 @@
         "podSecurityContext": {
             "type": "object",
             "properties": {
-                "runAsUser": {
-                    "type": "integer"
+                "runAsNonRoot": {
+                    "type": "boolean"
+                },
+                "seccompProfile": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         },
