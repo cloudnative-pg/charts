@@ -1,9 +1,9 @@
 dependencies:
 - name: cloudnative-pg
   repository: https://cloudnative-pg.github.io/charts
-  version: 0.14.0
+  version: 0.14.3
 - name: kube-prometheus-stack
   repository: https://prometheus-community.github.io/helm-charts
   version: 32.2.1
-digest: sha256:6576e14b703c3a656dbf0debee90e644261ae9a400dfb2b29c4ad0c87beb1737
-generated: "2022-07-12T10:29:26.286039619-04:00"
+digest: sha256:3eb0f2493ffbffad4dd7e06777cfef20f850008b40f113ae252e3f07d2f74883
+generated: "2022-08-22T15:09:05.199498+08:00"
