@@ -1,9 +1,11 @@
 # CloudNativePG Helm Chart
 
 Helm chart to install the
-[CloudNativePG operator](https://cloudnative-pg.io),originally created and sponsored by 
+[CloudNativePG operator](https://cloudnative-pg.io), originally created and sponsored by
 [EDB](https://www.enterprisedb.com/) to manage PostgreSQL workloads on any supported Kubernetes cluster
 running in private, public, or hybrid cloud environments.
+
+**NOTE**: supports only the latest point release of the CloudNativePG operator.
 
 ## Deployment using the latest release
 
@@ -42,6 +44,8 @@ environment. Do not use `cnpg-sandbox` in a production environment, as we
 expect that Prometheus and Grafana are already part of that infrastructure:
 there you can install CloudNativePG, the suggested metrics and the
 provided Grafana dashboard.
+
+**NOTE**: supports only the latest point release of the CloudNativePG operator.
 
 ![Example of dashboard](dashboard.png)
 
@@ -86,7 +90,7 @@ From the Grafana interface, you can find the dashboard by selecting: `Dashboards
 
 ## Benchmarking
 
-You can use `cnpg-sandbox` in conjuction with
+You can use `cnpg-sandbox` in conjunction with
 [`cnp-bench`](https://github.com/EnterpriseDB/cnp-bench) to benchmark your
 PostgreSQL environment and observe its behaviour in real-time.
 
