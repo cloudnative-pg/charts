@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-cnp:
+cnpg:
   # -- Whether the benchmark should be run against an existing cluster
   # or a new one has to be created
   existingCluster: false
@@ -81,7 +81,7 @@ pgbench:
   # -- Scale factor used to initialize pgbench (if initialize is set to true).
   scaleFactor: 1
   # -- The amount of seconds the pgbench will run for.
-  time: 60
+  time: 30
   # -- The number of clients used by pgbench.
   clients: 1
   # -- The number of jobs used by pgbench.

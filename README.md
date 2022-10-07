@@ -84,11 +84,128 @@ make sandbox-uninstall
 
 From the Grafana interface, you can find the dashboard by selecting: `Dashboards` > `Manage` > `CloudNativePg`.
 
-## Benchmarking
+## Benchmarking the database with `pgbench`
 
-You can use `cnpg-sandbox` in conjuction with
-[`cnp-bench`](https://github.com/EnterpriseDB/cnp-bench) to benchmark your
-PostgreSQL environment and observe its behaviour in real-time.
+[pgbench](https://www.postgresql.org/docs/current/pgbench.html) is the default
+benchmarking application for PostgreSQL. The chart for `pgbench` is contained
+in the `cnpg-pgbench` directory.
+
+## Deployment
+
+Deployment using the latest release:
+
+```console
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm repo update
+helm upgrade --install cnpg-pgbench \
+  --namespace cnpg-pgbench-ns \
+  --create-namespace \
+  charts/cnpg-pgbench
+```
+
+Then simply follow the instructions that will appear on the terminal once the
+installation is completed.
+
+#### Deployment from local source
+
+To deploy the operator from sources you can run the following command:
+
+```console
+helm upgrade --install cnpg-pgbench \
+  --namespace cnpg-pgbench-ns \
+  --create-namespace \
+  charts/cnpg-pgbench
+```
+
+
+You can run a `pgbench` benchmark on:
+
+- a disposable PostgreSQL cluster created by the CNP operator specifically for
+  the benchmark
+- an existing PostgreSQL cluster, by providing connection information (host,
+  port, database name, and user)
+
+The `cnp.existingCluster` option is the one that controls the above behavior.
+
+While running a job on a cluster that lives for the sole duration of the test
+is useful, we recommend that you first create your PostgreSQL cluster, possibly
+with `cnpg-sandbox` installed, and then run `pgbench` on that cluster as explained
+in the "Running `pgbench` on an existing Postgres cluster" section below.
+
+### Running `pgbench` on a disposable CNP cluster
+
+When `cnp.existingCluster` is set to `false` (default), the chart will:
+
+1. Create a CNP cluster based on the user-defined values;
+1. Execute a user-defined `pgbench` job on it.
+
+You can gather the results after the job is completed running:
+
+``` sh
+kubectl logs -n cnpg-pgbench-ns job/cnpg-pgbench
+```
+
+You can use the `kubectl wait` command to wait until the job is complete:
+
+``` sh
+kubectl wait --for=condition=complete -n cnpg-pgbench-ns job/cnpg-pgbench
+```
+
+It is suggested to label nodes and use node selectors to avoid pgbench and
+PostgreSQL pods running on the same node. By default, the chart expects
+the nodes on which pgbench can run to be labelled with `workload: pgbench`
+and the node for CNP instances to be labelled with `workload: postgres`.
+
+``` sh
+kubectl label node/NODE_NAME workload:pgbench
+kubectl label node/OTHER_NODE_NAME workload:postgres
+```
+
+#### Adding a connection pooler
+
+CNP has native support for the PgBouncer pooler. You can create a database
+access layer with PgBouncer by managing the `cnp.pooler` section of the values
+file. By default, PgBouncer will be placed on those nodes with the `workload:
+pooler` label.
+
+Look at the `cnpg-pgbench/values.yaml` for an example, as well as the CNP
+documentation for more information on the PgBouncer implementation.
+
+### Running `pgbench` on an existing Postgres cluster
+
+Suppose you already have your PostgreSQL database setup (not necessarily with CNP).
+You can use `cnpg-pgbench` to run a `pgbench` test.
+
+
+``` yaml
+cnp:
+  existingCluster: true
+  # Name of the host (or service in K8s) or IP address where Postgres is running
+  existingHost: mydb
+  # You need to point `existingCredentials` to a Kubernetes `basic-auth`secret
+  # containing username and password to connect to the database
+  existingCredentials: mydb-app
+  # Name of the database on which to run pgbench
+  existingDatabase: pgbench
+
+pgbench:
+  # Node where to run pgbench
+  nodeSelector:
+    workload: pgbench
+  initialize: true
+  scaleFactor: 1
+  time: 60
+  clients: 1
+  jobs: 1
+  skipVacuum: false
+  reportLatencies: false
+```
+
+The `cnp` section above, points to the existing database.
+
+The `pgbench` section contains the parameters you can use to run the `pgbench` job.
+For example, you can create a job that initializes only the `pgbench` database
+for a given scale with different settings of clients, time and jobs.
 
 ## Contributing
 
@@ -105,3 +222,4 @@ the "Disclaimer of Warranty" and "Limitation of Liability" items.
 
 `cnpg-sandbox` is distributed under Apache License 2.0.
 `cnpg` is distributed under Apache License 2.0.
+`cnpg-pgbench` is distributed under Apache License 2.0.
