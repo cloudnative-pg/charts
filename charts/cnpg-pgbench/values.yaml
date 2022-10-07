@@ -1,0 +1,99 @@
+#
+# Copyright The CloudNativePG Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+cnp:
+  # -- Whether the benchmark should be run against an existing cluster
+  # or a new one has to be created
+  existingCluster: false
+  # -- The name of a Secret of type basic-auth containing the existing cluster credentials
+  existingCredentials: ""
+  # -- The address of the existing cluster (default: empty)
+  existingHost: ""
+  # -- The name of the existing database (default: empty)
+  existingPort: ""
+  # -- The port where PostgreSQL is listening on the specified host (default: 5432)
+  existingDatabase: ""
+  # -- The amount of PostgreSQL instances in the CNP Cluster.
+  instances: 1
+  # -- The PostgreSQL image used by CNP and PgBench.
+  image: ghcr.io/cloudnative-pg/postgresql:14.5
+  storage:
+    # -- The storage class used to create PVCs for CNP instances.
+    storageClass: ""
+    # -- The size of the PVCs used by CNP instances.
+    size: 1Gi
+  # -- Dictionary of key-value pairs used to define the nodes
+  # where the cluster instances can run; used to avoid pgbench and PostgreSQL
+  # running on the same node.
+  nodeSelector:
+    workload: postgres
+  # -- Configures custom queries for monitoring.
+  # The arrays accept a Dictionary made by name: string (resource name), key: string (resource data field containing the queries).
+  # Documentation on the accepted values: https://docs.enterprisedb.io/cloud-native-postgresql/latest/monitoring/
+  monitoring:
+    customQueriesConfigMap: []
+    customQueriesSecret: []
+  # -- Dictionary of key-value pairs representing
+  # PostgreSQL configuration.
+  postgreSQLParameters:
+    shared_buffers: '512MB'
+    maintenance_work_mem: '128MB'
+    log_checkpoints: "on"
+    log_lock_waits: "on"
+    log_min_duration_statement: '1000'
+    log_statement: 'ddl'
+    log_temp_files: '1024'
+    log_autovacuum_min_duration: '1s'
+
+  # Configuration of the pooler
+  pooler:
+    # -- The number of pooler replicas that receive the connections.
+    # If >0 the benchmarks are run with connection pooling
+    instances: 0
+    nodeSelector:
+      workload: pooler
+    pgbouncer:
+      # -- The pool mode, accepted values: session, transaction
+      poolMode: session
+      # -- PgBouncer configuration.
+      parameters: {}
+
+pgbench:
+  # -- Dictionary of key-value pairs used to define the nodes
+  # where the pgbench pod can run; used to avoid pgbench and PostgreSQL
+  # running on the same node.
+  nodeSelector:
+    workload: pgbench
+  # -- Invoke the initialization mode (TPC-B-like test scenario)
+  initialize: true
+  # -- Scale factor used to initialize pgbench (if initialize is set to true).
+  scaleFactor: 1
+  # -- The amount of seconds the pgbench will run for.
+  time: 60
+  # -- The number of clients used by pgbench.
+  clients: 1
+  # -- The number of jobs used by pgbench.
+  jobs: 1
+  # -- If >0, run an initContainer that runs pgbench for the
+  # defined amount of time (using the -T option) with the same clients and jobs
+  # that will be used for the main pgbench run; can be useful with storage classes
+  # that allow I/O bursts where could affect the actual benchmark result.
+  warmTime: 0
+  # -- Perform no vacuuming before running the test.
+  skipVacuum: false
+  # -- Report the average per-statement latency (execution time from the
+  # perspective of the client) of each command after the benchmark finishes.
+  # See below for details
+  reportLatencies: false
