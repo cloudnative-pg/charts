@@ -139,12 +139,6 @@ When `cnp.existingCluster` is set to `false` (default), the chart will:
 1. Create a CNP cluster based on the user-defined values;
 1. Execute a user-defined `pgbench` job on it.
 
-You can gather the results after the job is completed running:
-
-``` sh
-kubectl logs -n cnpg-pgbench-ns job/cnpg-pgbench
-```
-
 You can use the `kubectl wait` command to wait until the job is complete:
 
 ``` sh
@@ -159,6 +153,28 @@ and the node for CNP instances to be labelled with `workload: postgres`.
 ``` sh
 kubectl label node/NODE_NAME workload:pgbench
 kubectl label node/OTHER_NODE_NAME workload:postgres
+```
+
+You can gather the results after the job is completed running:
+
+``` sh
+kubectl logs -n cnpg-pgbench-ns job/cnpg-pgbench
+```
+
+Below is an example of pgbench output:
+
+```console
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 1
+query mode: simple
+number of clients: 1
+number of threads: 1
+duration: 30 s
+number of transactions actually processed: 16964
+latency average = 1.768 ms
+initial connection time = 9.924 ms
+tps = 565.639903 (without initial connection time)
 ```
 
 #### Adding a connection pooler
@@ -194,7 +210,7 @@ pgbench:
     workload: pgbench
   initialize: true
   scaleFactor: 1
-  time: 60
+  time: 30
   clients: 1
   jobs: 1
   skipVacuum: false

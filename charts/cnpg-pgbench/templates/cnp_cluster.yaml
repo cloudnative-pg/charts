@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-{{ if not .Values.cnp.existingCluster }}
+{{ if not .Values.cnpg.existingCluster }}
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -22,19 +22,19 @@ metadata:
   labels:
     {{- include "cnpg-pgbench.labels" . | nindent 4 }}
 spec:
-  instances: {{ .Values.cnp.instances }}
+  instances: {{ .Values.cnpg.instances }}
 
-  {{ if  or .Values.cnp.monitoring.customQueriesConfigMap .Values.cnp.monitoring.customQueriesSecret }}
+  {{ if  or .Values.cnpg.monitoring.customQueriesConfigMap .Values.cnpg.monitoring.customQueriesSecret }}
 
   monitoring:
     customQueriesConfigMap:
-    {{- range  .Values.cnp.monitoring.customQueriesConfigMap  }}
+    {{- range  .Values.cnpg.monitoring.customQueriesConfigMap  }}
        - key: {{ .key }}
          name: {{ .name }}
     {{- end }}
 
     customQueriesSecret:
-    {{- range  .Values.cnp.monitoring.customQueriesSecret  }}
+    {{- range  .Values.cnpg.monitoring.customQueriesSecret  }}
       - key: {{ .key }}
         name: {{ .name }}
     {{- end }}
@@ -42,18 +42,18 @@ spec:
   {{ end }}
 
   postgresql:
-    {{- with .Values.cnp.postgreSQLParameters }}
+    {{- with .Values.cnpg.postgreSQLParameters }}
     parameters:
       {{- toYaml . | nindent 6 }}
     {{- end }}
   affinity:
-    {{- with .Values.cnp.nodeSelector }}
+    {{- with .Values.cnpg.nodeSelector }}
     nodeSelector:
       {{- toYaml . | nindent 6 }}
     {{- end }}
   storage:
-    {{- with .Values.cnp.storage.storageClass }}
+    {{- with .Values.cnpg.storage.storageClass }}
     storageClass: {{ . }}
     {{- end }}
-    size: {{ .Values.cnp.storage.size }}
+    size: {{ .Values.cnpg.storage.size }}
 {{- end }}

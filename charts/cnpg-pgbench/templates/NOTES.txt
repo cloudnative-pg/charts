@@ -1,7 +1,7 @@
-{{ if .Values.cnp.nodeSelector -}}
+{{ if .Values.cnpg.nodeSelector -}}
 Make sure at least a node has the following labels to be able to schedule the
 {{ include "cnpg-pgbench.fullname" . }} CNP cluster:
-{{- toYaml .Values.cnp.nodeSelector | nindent 2}}
+{{- toYaml .Values.cnpg.nodeSelector | nindent 2}}
 {{- end }}
 
 {{ if .Values.pgbench.nodeSelector -}}
@@ -10,11 +10,11 @@ Make sure at least a node has the following labels to be able to schedule the
 {{- toYaml .Values.pgbench.nodeSelector | nindent 2}}
 {{- end }}
 
-{{ if .Values.cnp.pooler.instances -}}
+{{ if .Values.cnpg.pooler.instances -}}
 The benchmark is being run with connection pooling.
 Make sure at least a node has the following labels to be able to schedule the
 pooler-{{ include "cnpg-pgbench.fullname" . }} pooler:
-{{- toYaml .Values.cnp.pooler.nodeSelector | nindent 2}}
+{{- toYaml .Values.cnpg.pooler.nodeSelector | nindent 2}}
 {{ end }}
 
 After the {{ include "cnpg-pgbench.fullname" . }} job completes run

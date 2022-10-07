@@ -45,7 +45,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Service that we should connect to
 */}}
 {{- define "cnpg-pgbench.service" -}}
-{{- if .Values.cnp.pooler.instances -}}
+{{- if .Values.cnpg.pooler.instances -}}
 pooler-{{ include "cnpg-pgbench.fullname" . }}
 {{- else -}}
 {{ include "cnpg-pgbench.fullname" . }}-rw
@@ -53,7 +53,7 @@ pooler-{{ include "cnpg-pgbench.fullname" . }}
 {{- end}}
 
 {{- define "cnpg-pgbench.credentials" -}}
-{{- if not .Values.cnp.existingCluster }}
+{{- if not .Values.cnpg.existingCluster }}
 - name: PGHOST
   value: {{ include "cnpg-pgbench.service" . }}
 - name: PGUSER
@@ -68,20 +68,20 @@ pooler-{{ include "cnpg-pgbench.fullname" . }}
       key: password
 {{- else -}}
 - name: PGHOST
-  value: {{ .Values.cnp.existingHost }}
+  value: {{ .Values.cnpg.existingHost }}
 - name: PGDATABASE
-  value: {{ .Values.cnp.existingDatabase }}
+  value: {{ .Values.cnpg.existingDatabase }}
 - name: PGPORT
-  value: {{ .Values.cnp.existingPort }}
+  value: {{ .Values.cnpg.existingPort }}
 - name: PGUSER
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.cnp.existingCredentials }}
+      name: {{ .Values.cnpg.existingCredentials }}
       key: username
 - name: PGPASSWORD
   valueFrom:
     secretKeyRef:
-      name: {{ .Values.cnp.existingCredentials }}
+      name: {{ .Values.cnpg.existingCredentials }}
       key: password
 {{- end -}}
 {{- end }}

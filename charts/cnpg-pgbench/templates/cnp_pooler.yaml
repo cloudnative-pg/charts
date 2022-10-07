@@ -1,4 +1,4 @@
-{{ if and .Values.cnp.pooler.instances (not .Values.cnp.existingCluster) }}
+{{ if and .Values.cnpg.pooler.instances (not .Values.cnpg.existingCluster) }}
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
@@ -8,18 +8,18 @@ metadata:
 spec:
   cluster:
     name: {{ include "cnpg-pgbench.fullname" . }}
-  instances: {{ .Values.cnp.pooler.instances }}
+  instances: {{ .Values.cnpg.pooler.instances }}
   type: rw
   pgbouncer:
-    poolMode: {{ .Values.cnp.pooler.pgbouncer.poolMode}}
-    {{- with .Values.cnp.pooler.pgbouncer.parameters }}
+    poolMode: {{ .Values.cnpg.pooler.pgbouncer.poolMode}}
+    {{- with .Values.cnpg.pooler.pgbouncer.parameters }}
     parameters:
       {{- toYaml . | nindent 6 }}
     {{ end }}
   template:
     spec:
       containers: []
-      {{- with .Values.cnp.pooler.nodeSelector }}
+      {{- with .Values.cnpg.pooler.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{ end }}

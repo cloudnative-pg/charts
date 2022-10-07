@@ -25,16 +25,16 @@ spec:
     spec:
       initContainers:
       - name: wait-for-cnp
-        image: {{ .Values.cnp.image }}
+        image: {{ .Values.cnpg.image }}
         env:
           {{- include "cnpg-pgbench.credentials" . | nindent 10 }}
         command:
         - sh
         - -c
         - until psql -c "SELECT 1"; do echo 'Waiting for {{ include "cnpg-pgbench.service" . }}' sleep 15; done
-      {{ if or (not .Values.cnp.existingCluster) (.Values.pgbench.initialize) }}
+      {{ if or (not .Values.cnpg.existingCluster) (.Values.pgbench.initialize) }}
       - name: pgbench-init
-        image: {{ .Values.cnp.image }}
+        image: {{ .Values.cnpg.image }}
         env:
           {{- include "cnpg-pgbench.credentials" . | nindent 10 }}
         command:
@@ -46,7 +46,7 @@ spec:
       {{- end }}
       {{- if and ( .Values.pgbench.warmTime ) ( ne ( .Values.pgbench.warmTime | quote ) "0" )}}
       - name: pgbench-warm
-        image: {{ .Values.cnp.image }}
+        image: {{ .Values.cnpg.image }}
         env:
           {{- include "cnpg-pgbench.credentials" . | nindent 10 }}
         command:
@@ -67,7 +67,7 @@ spec:
       {{- end }}
       containers:
       - name: pgbench
-        image: {{ .Values.cnp.image }}
+        image: {{ .Values.cnpg.image }}
         env:
           {{- include "cnpg-pgbench.credentials" . | nindent 10 }}
         command:
