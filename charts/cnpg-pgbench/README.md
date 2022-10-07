@@ -14,22 +14,22 @@ A Helm chart that starts a CNP Cluster and executes a PgBench job on it.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| cnp.existingCluster | bool | `false` | Whether the benchmark should be run against an existing cluster or a new one has to be created |
-| cnp.existingCredentials | string | `""` | The name of a Secret of type basic-auth containing the existing cluster credentials |
-| cnp.existingDatabase | string | `""` | The port where PostgreSQL is listening on the specified host (default: 5432) |
-| cnp.existingHost | string | `""` | The address of the existing cluster (default: empty) |
-| cnp.existingPort | string | `""` | The name of the existing database (default: empty) |
-| cnp.image | string | `"ghcr.io/cloudnative-pg/postgresql:14.5"` | The PostgreSQL image used by CNP and PgBench. |
-| cnp.instances | int | `1` | The amount of PostgreSQL instances in the CNP Cluster. |
-| cnp.monitoring | object | `{"customQueriesConfigMap":[],"customQueriesSecret":[]}` | Configures custom queries for monitoring. The arrays accept a Dictionary made by name: string (resource name), key: string (resource data field containing the queries). Documentation on the accepted values: https://docs.enterprisedb.io/cloud-native-postgresql/latest/monitoring/ |
-| cnp.nodeSelector | object | `{"workload":"postgres"}` | Dictionary of key-value pairs used to define the nodes where the cluster instances can run; used to avoid pgbench and PostgreSQL running on the same node. |
-| cnp.pooler.instances | int | `0` | The number of pooler replicas that receive the connections. If >0 the benchmarks are run with connection pooling |
-| cnp.pooler.nodeSelector.workload | string | `"pooler"` |  |
-| cnp.pooler.pgbouncer.parameters | object | `{}` | PgBouncer configuration. |
-| cnp.pooler.pgbouncer.poolMode | string | `"session"` | The pool mode, accepted values: session, transaction |
-| cnp.postgreSQLParameters | object | `{"log_autovacuum_min_duration":"1s","log_checkpoints":"on","log_lock_waits":"on","log_min_duration_statement":"1000","log_statement":"ddl","log_temp_files":"1024","maintenance_work_mem":"128MB","shared_buffers":"512MB"}` | Dictionary of key-value pairs representing PostgreSQL configuration. |
-| cnp.storage.size | string | `"1Gi"` | The size of the PVCs used by CNP instances. |
-| cnp.storage.storageClass | string | `""` | The storage class used to create PVCs for CNP instances. |
+| cnpg.existingCluster | bool | `false` | Whether the benchmark should be run against an existing cluster or a new one has to be created |
+| cnpg.existingCredentials | string | `""` | The name of a Secret of type basic-auth containing the existing cluster credentials |
+| cnpg.existingDatabase | string | `""` | The port where PostgreSQL is listening on the specified host (default: 5432) |
+| cnpg.existingHost | string | `""` | The address of the existing cluster (default: empty) |
+| cnpg.existingPort | string | `""` | The name of the existing database (default: empty) |
+| cnpg.image | string | `"ghcr.io/cloudnative-pg/postgresql:14.5"` | The PostgreSQL image used by CNP and PgBench. |
+| cnpg.instances | int | `1` | The amount of PostgreSQL instances in the CNP Cluster. |
+| cnpg.monitoring | object | `{"customQueriesConfigMap":[],"customQueriesSecret":[]}` | Configures custom queries for monitoring. The arrays accept a Dictionary made by name: string (resource name), key: string (resource data field containing the queries). Documentation on the accepted values: https://docs.enterprisedb.io/cloud-native-postgresql/latest/monitoring/ |
+| cnpg.nodeSelector | object | `{"workload":"postgres"}` | Dictionary of key-value pairs used to define the nodes where the cluster instances can run; used to avoid pgbench and PostgreSQL running on the same node. |
+| cnpg.pooler.instances | int | `0` | The number of pooler replicas that receive the connections. If >0 the benchmarks are run with connection pooling |
+| cnpg.pooler.nodeSelector.workload | string | `"pooler"` |  |
+| cnpg.pooler.pgbouncer.parameters | object | `{}` | PgBouncer configuration. |
+| cnpg.pooler.pgbouncer.poolMode | string | `"session"` | The pool mode, accepted values: session, transaction |
+| cnpg.postgreSQLParameters | object | `{"log_autovacuum_min_duration":"1s","log_checkpoints":"on","log_lock_waits":"on","log_min_duration_statement":"1000","log_statement":"ddl","log_temp_files":"1024","maintenance_work_mem":"128MB","shared_buffers":"512MB"}` | Dictionary of key-value pairs representing PostgreSQL configuration. |
+| cnpg.storage.size | string | `"1Gi"` | The size of the PVCs used by CNP instances. |
+| cnpg.storage.storageClass | string | `""` | The storage class used to create PVCs for CNP instances. |
 | pgbench.clients | int | `1` | The number of clients used by pgbench. |
 | pgbench.initialize | bool | `true` | Invoke the initialization mode (TPC-B-like test scenario) |
 | pgbench.jobs | int | `1` | The number of jobs used by pgbench. |
@@ -37,7 +37,7 @@ A Helm chart that starts a CNP Cluster and executes a PgBench job on it.
 | pgbench.reportLatencies | bool | `false` | Report the average per-statement latency (execution time from the perspective of the client) of each command after the benchmark finishes. See below for details |
 | pgbench.scaleFactor | int | `1` | Scale factor used to initialize pgbench (if initialize is set to true). |
 | pgbench.skipVacuum | bool | `false` | Perform no vacuuming before running the test. |
-| pgbench.time | int | `60` | The amount of seconds the pgbench will run for. |
+| pgbench.time | int | `30` | The amount of seconds the pgbench will run for. |
 | pgbench.warmTime | int | `0` | If >0, run an initContainer that runs pgbench for the defined amount of time (using the -T option) with the same clients and jobs that will be used for the main pgbench run; can be useful with storage classes that allow I/O bursts where could affect the actual benchmark result. |
 
 ----------------------------------------------
