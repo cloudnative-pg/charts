@@ -44,7 +44,7 @@ follow these steps:
       into `templates/crds/crds.yaml`.
     1. to update the files in the
        [templates](./charts/cloudnative-pg/templates) directory, you can diff
-       the previous CNPG release yaml against the new one,  to find what
+       the previous CNPG release yaml against the new one, to find what
        should be updated (e.g. `vimdiff
        https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/releases/cnpg-1.15.0.yaml
        https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/releases/cnpg-1.15.1.yaml`) \
