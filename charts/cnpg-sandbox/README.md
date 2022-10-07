@@ -1,6 +1,6 @@
 # cnpg-sandbox
 
-![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.0](https://img.shields.io/badge/AppVersion-1.17.0-informational?style=flat-square)
+![Version: 0.6.1](https://img.shields.io/badge/Version-0.6.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.17.1](https://img.shields.io/badge/AppVersion-1.17.1-informational?style=flat-square)
 
 A sandbox for CloudNativePG
 
@@ -20,7 +20,7 @@ A sandbox for CloudNativePG
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.15.0 |
+| https://cloudnative-pg.github.io/charts | cloudnative-pg | 0.15.1 |
 | https://prometheus-community.github.io/helm-charts | kube-prometheus-stack | 32.2.1 |
 
 ## Values
