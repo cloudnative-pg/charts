@@ -16,10 +16,10 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "cnpg-pgbench.fullname" . }}
+  name: {{ include "pgbench.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "cnpg-pgbench.labels" . | nindent 4 }}
+    {{- include "pgbench.labels" . | nindent 4 }}
 spec:
   template:
     spec:
@@ -27,16 +27,16 @@ spec:
       - name: wait-for-cnp
         image: {{ .Values.cnpg.image }}
         env:
-          {{- include "cnpg-pgbench.credentials" . | nindent 10 }}
+          {{- include "pgbench.credentials" . | nindent 10 }}
         command:
         - sh
         - -c
-        - until psql -c "SELECT 1"; do echo 'Waiting for {{ include "cnpg-pgbench.service" . }}' sleep 15; done
+        - until psql -c "SELECT 1"; do echo 'Waiting for {{ include "pgbench.service" . }}' sleep 15; done
       {{ if or (not .Values.cnpg.existingCluster) (.Values.pgbench.initialize) }}
       - name: pgbench-init
         image: {{ .Values.cnpg.image }}
         env:
-          {{- include "cnpg-pgbench.credentials" . | nindent 10 }}
+          {{- include "pgbench.credentials" . | nindent 10 }}
         command:
         - pgbench
         args:
@@ -48,7 +48,7 @@ spec:
       - name: pgbench-warm
         image: {{ .Values.cnpg.image }}
         env:
-          {{- include "cnpg-pgbench.credentials" . | nindent 10 }}
+          {{- include "pgbench.credentials" . | nindent 10 }}
         command:
         - pgbench
         args:
@@ -69,7 +69,7 @@ spec:
       - name: pgbench
         image: {{ .Values.cnpg.image }}
         env:
-          {{- include "cnpg-pgbench.credentials" . | nindent 10 }}
+          {{- include "pgbench.credentials" . | nindent 10 }}
         command:
         - pgbench
         args:

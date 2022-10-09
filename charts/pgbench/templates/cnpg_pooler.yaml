@@ -2,12 +2,12 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: pooler-{{ include "cnpg-pgbench.fullname" . }}
+  name: pooler-{{ include "pgbench.fullname" . }}
   labels:
-  {{- include "cnpg-pgbench.labels" . | nindent 4 }}
+  {{- include "pgbench.labels" . | nindent 4 }}
 spec:
   cluster:
-    name: {{ include "cnpg-pgbench.fullname" . }}
+    name: {{ include "pgbench.fullname" . }}
   instances: {{ .Values.cnpg.pooler.instances }}
   type: rw
   pgbouncer:

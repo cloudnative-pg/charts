@@ -17,7 +17,7 @@ schema: ## Generate charts' schema usign helm schema-gen plugin
 		(echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
 	@helm schema-gen charts/cnpg-sandbox/values.yaml > charts/cnpg-sandbox/values.schema.json || \
 		(@echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
-	@helm schema-gen charts/cnpg-pgbench/values.yaml > charts/cnpg-pgbench/values.schema.json
+	@helm schema-gen charts/pgbench/values.yaml > charts/pgbench/values.schema.json
 
 .PHONY: sandbox-deploy
 sandbox-deploy: ## Installs cnpg-sandbox chart
@@ -33,3 +33,12 @@ sandbox-deploy-dev: ## Installs cnpg-sandbox chart with a development version of
 sandbox-uninstall: ## Uninstalls cnpg-sandbox chart if present
 	@helm uninstall cnpg-sandbox
 	@kubectl delete cluster cnpg-sandbox
+
+.PHONY: pgbench-deploy
+pgbench-deploy: ## Installs pgbench chart
+	helm dependency update charts/pgbench
+	helm upgrade --install pgbench --atomic charts/pgbench
+
+.PHONY: pgbench-uninstall
+pgbench-uninstall: ## Uninstalls cnpg-pgbench chart if present
+	@helm uninstall pgbench

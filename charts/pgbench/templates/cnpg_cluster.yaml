@@ -17,10 +17,10 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: {{ include "cnpg-pgbench.fullname" . }}
+  name: {{ include "pgbench.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "cnpg-pgbench.labels" . | nindent 4 }}
+    {{- include "pgbench.labels" . | nindent 4 }}
 spec:
   instances: {{ .Values.cnpg.instances }}
 
