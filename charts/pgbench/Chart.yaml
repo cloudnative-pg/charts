@@ -22,3 +22,7 @@ version: 0.1.0
 home: https://cloudnative-pg.io
 sources:
   - https://github.com/cloudnative-pg/charts
+
+maintainers:
+  - name: Jitendra Wadle
+    email: jitendra.wadle@enterprisedb.com
