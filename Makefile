@@ -17,7 +17,8 @@ schema: ## Generate charts' schema usign helm schema-gen plugin
 		(echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
 	@helm schema-gen charts/cnpg-sandbox/values.yaml > charts/cnpg-sandbox/values.schema.json || \
 		(@echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
-	@helm schema-gen charts/pgbench/values.yaml > charts/pgbench/values.schema.json
+	@helm schema-gen charts/pgbench/values.yaml > charts/pgbench/values.schema.json || \
+		(@echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
 
 .PHONY: sandbox-deploy
 sandbox-deploy: ## Installs cnpg-sandbox chart

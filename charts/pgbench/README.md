@@ -6,6 +6,12 @@ A Helm chart that starts a CNP Cluster and executes a PgBench job on it.
 
 **Homepage:** <https://cloudnative-pg.io>
 
+## Maintainers
+
+| Name | Email | Url |
+| ---- | ------ | --- |
+| Jitendra | <jitendra.wadle@enterprisedb.com> |  |
+
 ## Source Code
 
 * <https://github.com/cloudnative-pg/charts>
