@@ -1,6 +1,6 @@
 {{ if .Values.cnpg.nodeSelector -}}
 Make sure at least a node has the following labels to be able to schedule the
-{{ include "pgbench.fullname" . }} CNP cluster:
+{{ include "pgbench.fullname" . }} CNPG cluster:
 {{- toYaml .Values.cnpg.nodeSelector | nindent 2}}
 {{- end }}
 

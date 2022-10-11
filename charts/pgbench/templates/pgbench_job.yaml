@@ -24,7 +24,7 @@ spec:
   template:
     spec:
       initContainers:
-      - name: wait-for-cnp
+      - name: wait-for-cnpg
         image: {{ .Values.cnpg.image }}
         env:
           {{- include "pgbench.credentials" . | nindent 10 }}

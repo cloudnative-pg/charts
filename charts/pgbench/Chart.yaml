@@ -15,7 +15,7 @@
 #
 apiVersion: v2
 name: pgbench
-description: A Helm chart that starts a CNP Cluster and executes a
+description: A Helm chart that starts a CNPG Cluster and executes a
   PgBench job on it.
 type: application
 version: 0.1.0

@@ -110,23 +110,23 @@ make pgbench-deploy
 
 You can run a `pgbench` benchmark on:
 
-- a disposable PostgreSQL cluster created by the CNP operator specifically for
+- a disposable PostgreSQL cluster created by the CNPG operator specifically for
   the benchmark
 - an existing PostgreSQL cluster, by providing connection information (host,
   port, database name, and user)
 
-The `cnp.existingCluster` option is the one that controls the above behavior.
+The `cnpg.existingCluster` option is the one that controls the above behavior.
 
 While running a job on a cluster that lives for the sole duration of the test
 is useful, we recommend that you first create your PostgreSQL cluster, possibly
 with `cnpg-sandbox` installed, and then run `pgbench` on that cluster as explained
 in the "Running `pgbench` on an existing Postgres cluster" section below.
 
-## Running `pgbench` on a disposable CNP cluster
+## Running `pgbench` on a disposable CNPG cluster
 
-When `cnp.existingCluster` is set to `false` (default), the chart will:
+When `cnpg.existingCluster` is set to `false` (default), the chart will:
 
-1. Create a CNP cluster based on the user-defined values;
+1. Create a CNPG cluster based on the user-defined values;
 1. Execute a user-defined `pgbench` job on it.
 
 You can use the `kubectl wait` command to wait until the job is complete:
@@ -138,7 +138,7 @@ kubectl wait --for=condition=complete -n pgbench-ns job/pgbench
 It is suggested to label nodes and use node selectors to avoid pgbench and
 PostgreSQL pods running on the same node. By default, the chart expects
 the nodes on which pgbench can run to be labelled with `workload: pgbench`
-and the node for CNP instances to be labelled with `workload: postgres`.
+and the node for CNPG instances to be labelled with `workload: postgres`.
 
 ``` sh
 kubectl label node/NODE_NAME workload:pgbench
@@ -169,22 +169,22 @@ tps = 565.639903 (without initial connection time)
 
 ### Adding a connection pooler
 
-CNP has native support for the PgBouncer pooler. You can create a database
-access layer with PgBouncer by managing the `cnp.pooler` section of the values
+CNPG has native support for the PgBouncer pooler. You can create a database
+access layer with PgBouncer by managing the `cnpg.pooler` section of the values
 file. By default, PgBouncer will be placed on those nodes with the `workload:
 pooler` label.
 
-Look at the `pgbench/values.yaml` for an example, as well as the CNP
+Look at the `pgbench/values.yaml` for an example, as well as the CNPG
 documentation for more information on the PgBouncer implementation.
 
 ### Running `pgbench` on an existing Postgres cluster
 
-Suppose you already have your PostgreSQL database setup (not necessarily with CNP).
+Suppose you already have your PostgreSQL database setup (not necessarily with CNPG).
 You can use `pgbench` to run a `pgbench` test.
 
 
 ``` yaml
-cnp:
+cnpg:
   existingCluster: true
   # Name of the host (or service in K8s) or IP address where Postgres is running
   existingHost: mydb
@@ -207,7 +207,7 @@ pgbench:
   reportLatencies: false
 ```
 
-The `cnp` section above, points to the existing database.
+The `cnpg` section above, points to the existing database.
 
 The `pgbench` section contains the parameters you can use to run the `pgbench` job.
 For example, you can create a job that initializes only the `pgbench` database

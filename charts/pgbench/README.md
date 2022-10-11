@@ -2,7 +2,7 @@
 
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
-A Helm chart that starts a CNP Cluster and executes a PgBench job on it.
+A Helm chart that starts a CNPG Cluster and executes a PgBench job on it.
 
 **Homepage:** <https://cloudnative-pg.io>
 
@@ -25,8 +25,8 @@ A Helm chart that starts a CNP Cluster and executes a PgBench job on it.
 | cnpg.existingDatabase | string | `""` | The port where PostgreSQL is listening on the specified host (default: 5432) |
 | cnpg.existingHost | string | `""` | The address of the existing cluster (default: empty) |
 | cnpg.existingPort | string | `""` | The name of the existing database (default: empty) |
-| cnpg.image | string | `"ghcr.io/cloudnative-pg/postgresql:14.5"` | The PostgreSQL image used by CNP and PgBench. |
-| cnpg.instances | int | `1` | The amount of PostgreSQL instances in the CNP Cluster. |
+| cnpg.image | string | `"ghcr.io/cloudnative-pg/postgresql:14.5"` | The PostgreSQL image used by CNPG and PgBench. |
+| cnpg.instances | int | `1` | The amount of PostgreSQL instances in the CNPG Cluster. |
 | cnpg.monitoring | object | `{"customQueriesConfigMap":[],"customQueriesSecret":[]}` | Configures custom queries for monitoring. The arrays accept a Dictionary made by name: string (resource name), key: string (resource data field containing the queries). Documentation on the accepted values: https://docs.enterprisedb.io/cloud-native-postgresql/latest/monitoring/ |
 | cnpg.nodeSelector | object | `{"workload":"postgres"}` | Dictionary of key-value pairs used to define the nodes where the cluster instances can run; used to avoid pgbench and PostgreSQL running on the same node. |
 | cnpg.pooler.instances | int | `0` | The number of pooler replicas that receive the connections. If >0 the benchmarks are run with connection pooling |
@@ -34,8 +34,8 @@ A Helm chart that starts a CNP Cluster and executes a PgBench job on it.
 | cnpg.pooler.pgbouncer.parameters | object | `{}` | PgBouncer configuration. |
 | cnpg.pooler.pgbouncer.poolMode | string | `"session"` | The pool mode, accepted values: session, transaction |
 | cnpg.postgreSQLParameters | object | `{"log_autovacuum_min_duration":"1s","log_checkpoints":"on","log_lock_waits":"on","log_min_duration_statement":"1000","log_statement":"ddl","log_temp_files":"1024","maintenance_work_mem":"128MB","shared_buffers":"512MB"}` | Dictionary of key-value pairs representing PostgreSQL configuration. |
-| cnpg.storage.size | string | `"1Gi"` | The size of the PVCs used by CNP instances. |
-| cnpg.storage.storageClass | string | `""` | The storage class used to create PVCs for CNP instances. |
+| cnpg.storage.size | string | `"1Gi"` | The size of the PVCs used by CNPG instances. |
+| cnpg.storage.storageClass | string | `""` | The storage class used to create PVCs for CNPG instances. |
 | pgbench.clients | int | `1` | The number of clients used by pgbench. |
 | pgbench.initialize | bool | `true` | Invoke the initialization mode (TPC-B-like test scenario) |
 | pgbench.jobs | int | `1` | The number of jobs used by pgbench. |

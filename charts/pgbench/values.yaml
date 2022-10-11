@@ -25,14 +25,14 @@ cnpg:
   existingPort: ""
   # -- The port where PostgreSQL is listening on the specified host (default: 5432)
   existingDatabase: ""
-  # -- The amount of PostgreSQL instances in the CNP Cluster.
+  # -- The amount of PostgreSQL instances in the CNPG Cluster.
   instances: 1
-  # -- The PostgreSQL image used by CNP and PgBench.
+  # -- The PostgreSQL image used by CNPG and PgBench.
   image: ghcr.io/cloudnative-pg/postgresql:14.5
   storage:
-    # -- The storage class used to create PVCs for CNP instances.
+    # -- The storage class used to create PVCs for CNPG instances.
     storageClass: ""
-    # -- The size of the PVCs used by CNP instances.
+    # -- The size of the PVCs used by CNPG instances.
     size: 1Gi
   # -- Dictionary of key-value pairs used to define the nodes
   # where the cluster instances can run; used to avoid pgbench and PostgreSQL
