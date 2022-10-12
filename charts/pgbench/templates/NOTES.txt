@@ -1,0 +1,26 @@
+{{ if .Values.cnpg.nodeSelector -}}
+Make sure at least a node has the following labels to be able to schedule the
+{{ include "pgbench.fullname" . }} CNPG cluster:
+{{- toYaml .Values.cnpg.nodeSelector | nindent 2}}
+{{- end }}
+
+{{ if .Values.pgbench.nodeSelector -}}
+Make sure at least a node has the following labels to be able to schedule the
+{{ include "pgbench.fullname" . }} job running pgbench:
+{{- toYaml .Values.pgbench.nodeSelector | nindent 2}}
+{{- end }}
+
+{{ if .Values.cnpg.pooler.instances -}}
+The benchmark is being run with connection pooling.
+Make sure at least a node has the following labels to be able to schedule the
+pooler-{{ include "pgbench.fullname" . }} pooler:
+{{- toYaml .Values.cnpg.pooler.nodeSelector | nindent 2}}
+{{ end }}
+
+After the {{ include "pgbench.fullname" . }} job completes run
+
+  kubectl logs -n {{ .Release.Namespace }} job/{{ include "pgbench.fullname" . }}
+
+to gather the pgbench results. You can then uninstall the chart
+
+  helm uninstall {{ .Release.Name }} -n {{ .Release.Namespace }}

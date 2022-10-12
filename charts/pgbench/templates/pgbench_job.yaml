@@ -1,0 +1,92 @@
+#
+# Copyright The CloudNativePG Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "pgbench.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "pgbench.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-cnpg
+        image: {{ .Values.cnpg.image }}
+        env:
+          {{- include "pgbench.credentials" . | nindent 10 }}
+        command:
+        - sh
+        - -c
+        - until psql -c "SELECT 1"; do echo 'Waiting for {{ include "pgbench.service" . }}' sleep 15; done
+      {{ if or (not .Values.cnpg.existingCluster) (.Values.pgbench.initialize) }}
+      - name: pgbench-init
+        image: {{ .Values.cnpg.image }}
+        env:
+          {{- include "pgbench.credentials" . | nindent 10 }}
+        command:
+        - pgbench
+        args:
+        - --initialize
+        - --scale
+        - {{ .Values.pgbench.scaleFactor | quote }}
+      {{- end }}
+      {{- if and ( .Values.pgbench.warmTime ) ( ne ( .Values.pgbench.warmTime | quote ) "0" )}}
+      - name: pgbench-warm
+        image: {{ .Values.cnpg.image }}
+        env:
+          {{- include "pgbench.credentials" . | nindent 10 }}
+        command:
+        - pgbench
+        args:
+        - --time
+        - {{ .Values.pgbench.warmTime | quote }}
+        - --client
+        - {{ .Values.pgbench.clients | quote }}
+        - --jobs
+        - {{ .Values.pgbench.jobs | quote }}
+        {{ if (.Values.pgbench.skipVacuum) }}
+        - --no-vacuum
+        {{- end }}
+        {{ if (.Values.pgbench.reportLatencies) }}
+        - --report-latencies
+        {{- end }}
+      {{- end }}
+      containers:
+      - name: pgbench
+        image: {{ .Values.cnpg.image }}
+        env:
+          {{- include "pgbench.credentials" . | nindent 10 }}
+        command:
+        - pgbench
+        args:
+        - --time
+        - {{ .Values.pgbench.time | quote }}
+        - --client
+        - {{ .Values.pgbench.clients | quote }}
+        - --jobs
+        - {{ .Values.pgbench.jobs | quote }}
+        {{ if (.Values.pgbench.skipVacuum) }}
+        - --no-vacuum
+        {{- end }}
+        {{ if (.Values.pgbench.reportLatencies) }}
+        - --report-latencies
+        {{- end }}
+      restartPolicy: Never
+      {{- with .Values.pgbench.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

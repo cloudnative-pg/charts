@@ -1,0 +1,155 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "cnpg": {
+            "type": "object",
+            "properties": {
+                "existingCluster": {
+                    "type": "boolean"
+                },
+                "existingCredentials": {
+                    "type": "string"
+                },
+                "existingDatabase": {
+                    "type": "string"
+                },
+                "existingHost": {
+                    "type": "string"
+                },
+                "existingPort": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "instances": {
+                    "type": "integer"
+                },
+                "monitoring": {
+                    "type": "object",
+                    "properties": {
+                        "customQueriesConfigMap": {
+                            "type": "array"
+                        },
+                        "customQueriesSecret": {
+                            "type": "array"
+                        }
+                    }
+                },
+                "nodeSelector": {
+                    "type": "object",
+                    "properties": {
+                        "workload": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "pooler": {
+                    "type": "object",
+                    "properties": {
+                        "instances": {
+                            "type": "integer"
+                        },
+                        "nodeSelector": {
+                            "type": "object",
+                            "properties": {
+                                "workload": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "pgbouncer": {
+                            "type": "object",
+                            "properties": {
+                                "parameters": {
+                                    "type": "object"
+                                },
+                                "poolMode": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "postgreSQLParameters": {
+                    "type": "object",
+                    "properties": {
+                        "log_autovacuum_min_duration": {
+                            "type": "string"
+                        },
+                        "log_checkpoints": {
+                            "type": "string"
+                        },
+                        "log_lock_waits": {
+                            "type": "string"
+                        },
+                        "log_min_duration_statement": {
+                            "type": "string"
+                        },
+                        "log_statement": {
+                            "type": "string"
+                        },
+                        "log_temp_files": {
+                            "type": "string"
+                        },
+                        "maintenance_work_mem": {
+                            "type": "string"
+                        },
+                        "shared_buffers": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "storage": {
+                    "type": "object",
+                    "properties": {
+                        "size": {
+                            "type": "string"
+                        },
+                        "storageClass": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "pgbench": {
+            "type": "object",
+            "properties": {
+                "clients": {
+                    "type": "integer"
+                },
+                "initialize": {
+                    "type": "boolean"
+                },
+                "jobs": {
+                    "type": "integer"
+                },
+                "nodeSelector": {
+                    "type": "object",
+                    "properties": {
+                        "workload": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "reportLatencies": {
+                    "type": "boolean"
+                },
+                "scaleFactor": {
+                    "type": "integer"
+                },
+                "skipVacuum": {
+                    "type": "boolean"
+                },
+                "time": {
+                    "type": "integer"
+                },
+                "warmTime": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}
