@@ -74,7 +74,7 @@ cloudnative-pg:
   config:
     create: true
     data:
-      MONITORING_QUERIES_CONFIGMAP: default-monitoring-queries
+      MONITORING_QUERIES_CONFIGMAP: cnpg-default-monitoring
 
 defaultAlerts: true
 defaultDashboard: true
