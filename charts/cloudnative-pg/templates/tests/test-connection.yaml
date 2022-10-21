@@ -28,7 +28,7 @@ spec:
   {{- end }}
   containers:
     - name: wget
-      image: "{{ .Values.test.image.repository }}:{{ .Values.test.image.tag | default latest }}"
+      image: '{{ .Values.test.image.repository }}:{{ .Values.test.image.tag | default "latest" }}'
       imagePullPolicy: {{ .Values.test.image.pullPolicy }}
       command: ['curl']
       args: ['-ki','https://{{ .Values.service.name }}:{{ .Values.service.port }}']
