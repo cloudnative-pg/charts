@@ -107,6 +107,13 @@ tolerations: []
 # -- Affinity for the operator to be installed
 affinity: {}
 
+# -- Test related configurations
+test:
+  image:
+    repository: busybox
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
 # Default monitoring queries
 monitoringQueriesConfigMap:
   # -- The name of the default monitoring configmap

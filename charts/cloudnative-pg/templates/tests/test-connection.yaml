@@ -22,9 +22,14 @@ metadata:
   annotations:
     "helm.sh/hook": test
 spec:
+  {{- with .Values.imagePullSecrets }}
+  imagePullSecrets:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
   containers:
     - name: wget
-      image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+      image: "{{ .Values.test.image.repository }}:{{ .Values.test.image.tag | default 'latest' }}"
+      imagePullPolicy: {{ .Values.test.image.pullPolicy }}
       command: ['curl']
       args: ['-ki','https://{{ .Values.service.name }}:{{ .Values.service.port }}']
   restartPolicy: Never
