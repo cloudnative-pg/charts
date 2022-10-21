@@ -71,10 +71,6 @@ kube-prometheus-stack:
 # -- here you can pass the whole values directly to the cloudnative-pg chart
 cloudnative-pg:
   enabled: true
-  config:
-    create: true
-    data:
-      MONITORING_QUERIES_CONFIGMAP: default-monitoring-queries
 
 defaultAlerts: true
 defaultDashboard: true
