@@ -47,6 +47,7 @@ CloudNativePG Helm Chart
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.create | bool | `true` | Specifies whether the service account should be created |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| test | object | `{"image":{"pullPolicy":"IfNotPresent","repository":"busybox","tag":"latest"}}` | Test related configurations |
 | tolerations | list | `[]` | Tolerations for the operator to be installed |
 | webhook.mutating.create | bool | `true` |  |
 | webhook.mutating.failurePolicy | string | `"Fail"` |  |
