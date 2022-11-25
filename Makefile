@@ -15,25 +15,6 @@ docs: ## Generate charts' docs using helm-docs
 schema: ## Generate charts' schema usign helm schema-gen plugin
 	@helm schema-gen charts/cloudnative-pg/values.yaml > charts/cloudnative-pg/values.schema.json || \
 		(echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
-	@helm schema-gen charts/cnpg-sandbox/values.yaml > charts/cnpg-sandbox/values.schema.json || \
-		(@echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
-	@helm schema-gen charts/pgbench/values.yaml > charts/pgbench/values.schema.json || \
-		(@echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
-
-.PHONY: sandbox-deploy
-sandbox-deploy: ## Installs cnpg-sandbox chart
-	helm dependency update charts/cnpg-sandbox
-	helm upgrade --install cnpg-sandbox --atomic charts/cnpg-sandbox
-
-.PHONY: sandbox-deploy-dev
-sandbox-deploy-dev: ## Installs cnpg-sandbox chart with a development version of CNP
-	helm dependency update charts/cnpg-sandbox
-	helm upgrade --install cnpg-sandbox --set cnpg.enabled=false --atomic charts/cnpg-sandbox
-
-.PHONY: sandbox-uninstall
-sandbox-uninstall: ## Uninstalls cnpg-sandbox chart if present
-	@helm uninstall cnpg-sandbox
-	@kubectl delete cluster cnpg-sandbox
 
 .PHONY: pgbench-deploy
 pgbench-deploy: ## Installs pgbench chart
