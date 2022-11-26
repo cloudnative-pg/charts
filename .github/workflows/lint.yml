@@ -37,7 +37,4 @@ jobs:
 
       - name: Run chart-testing (lint)
         run: |
-          helm dependency update charts/cnpg-sandbox
-          helm repo add cnpg https://cloudnative-pg.github.io/charts
-          helm repo add prometheus https://prometheus-community.github.io/helm-charts
           ct lint --target-branch=main --check-version-increment=false
