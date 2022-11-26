@@ -20,7 +20,7 @@ jobs:
           version: v3.6.2
 
       - name: Create kind cluster
-        uses: helm/kind-action@v1.3.0
+        uses: helm/kind-action@v1.4.0
 
       - name: Deploy using helm chart
         run: |
