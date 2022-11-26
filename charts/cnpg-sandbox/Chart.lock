@@ -1,9 +1,0 @@
-dependencies:
-- name: cloudnative-pg
-  repository: https://cloudnative-pg.github.io/charts
-  version: 0.15.1
-- name: kube-prometheus-stack
-  repository: https://prometheus-community.github.io/helm-charts
-  version: 32.2.1
-digest: sha256:ae130b175522b058e5338d0c9c1da5caaf21f46a35c6a11ba84db88047aaf66f
-generated: "2022-10-07T12:12:12.306949+02:00"
