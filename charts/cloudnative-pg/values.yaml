@@ -80,6 +80,9 @@ podSecurityContext:
     type: RuntimeDefault
   # fsGroup: 2000
 
+# -- Priority indicates the importance of a Pod relative to other Pods.
+priorityClassName: ""
+
 service:
   type: ClusterIP
   # -- DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate
