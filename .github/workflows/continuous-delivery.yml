@@ -28,7 +28,7 @@ jobs:
           --create-namespace charts/cloudnative-pg --wait
 
       - name: Install kubectl
-        uses: azure/setup-kubectl@v3.0
+        uses: azure/setup-kubectl@v3.1
 
       - name: Deploy a cluster
         run: |
