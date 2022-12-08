@@ -106,6 +106,9 @@
         "resources": {
             "type": "object"
         },
+        "priorityClassName": {
+            "type": "string"
+        },
         "service": {
             "type": "object",
             "properties": {

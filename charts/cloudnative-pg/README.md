@@ -42,6 +42,7 @@ CloudNativePG Helm Chart
 | rbac.create | bool | `true` | Specifies whether ClusterRole and ClusterRoleBinding should be created |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
+| priorityClassName | string | `""` | PriorityClassName refers to ProrityClass and ensures that mission-critical workloads have allocated resources over non-critical |
 | service.name | string | `"cnpg-webhook-service"` | DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate and can not be configured |
 | service.port | int | `443` |  |
 | service.type | string | `"ClusterIP"` |  |
