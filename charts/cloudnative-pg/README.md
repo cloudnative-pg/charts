@@ -1,6 +1,6 @@
 # cloudnative-pg
 
-![Version: 0.16.0](https://img.shields.io/badge/Version-0.16.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.18.0](https://img.shields.io/badge/AppVersion-1.18.0-informational?style=flat-square)
+![Version: 0.16.1](https://img.shields.io/badge/Version-0.16.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.18.1](https://img.shields.io/badge/AppVersion-1.18.1-informational?style=flat-square)
 
 CloudNativePG Helm Chart
 
@@ -39,10 +39,10 @@ CloudNativePG Helm Chart
 | nodeSelector | object | `{}` | Nodeselector for the operator to be installed |
 | podAnnotations | object | `{}` | Annotations to be added to the pod |
 | podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security Context for the whole pod |
+| priorityClassName | string | `""` | Priority indicates the importance of a Pod relative to other Pods. |
 | rbac.create | bool | `true` | Specifies whether ClusterRole and ClusterRoleBinding should be created |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
-| priorityClassName | string | `""` | PriorityClassName refers to ProrityClass and ensures that mission-critical workloads have allocated resources over non-critical |
 | service.name | string | `"cnpg-webhook-service"` | DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate and can not be configured |
 | service.port | int | `443` |  |
 | service.type | string | `"ClusterIP"` |  |
