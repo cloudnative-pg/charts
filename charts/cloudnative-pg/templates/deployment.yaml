@@ -88,13 +88,7 @@ spec:
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          runAsUser: 10001
-          runAsGroup: 10001
-          capabilities:
-            drop:
-              - "ALL"
+          {{- toYaml .Values.containerSecurityContext | nindent 10 }}
         volumeMounts:
         - mountPath: /controller
           name: scratch-data
