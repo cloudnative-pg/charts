@@ -73,6 +73,16 @@ podAnnotations: {}
 # -- Annotations to be added to all other resources
 commonAnnotations: {}
 
+# -- Container Security Context 
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  capabilities:
+    drop:
+      - "ALL"
+              
 # -- Security Context for the whole pod
 podSecurityContext:
   runAsNonRoot: true
