@@ -51,7 +51,7 @@ spec:
         - --secret-name={{ . }}
         {{- end }}
         - --webhook-port={{ .Values.webhook.port }}
-        {{-  range .Values.additionaArgs }}
+        {{- range .Values.additionaArgs }}
         - {{ . }}
         {{- end }}
         command:
@@ -72,6 +72,9 @@ spec:
             path: /readyz
             port: {{ .Values.webhook.port }}
             scheme: HTTPS
+          {{- if .Values.webhook.livenessProbe.initialDelaySeconds }}
+          initialDelaySeconds: {{ .Values.webhook.livenessProbe.initialDelaySeconds }}
+          {{- end }}
         name: manager
         ports:
         - containerPort: 8080
@@ -85,6 +88,9 @@ spec:
             path: /readyz
             port: {{ .Values.webhook.port }}
             scheme: HTTPS
+          {{- if .Values.webhook.readinessProbe.initialDelaySeconds }}
+          initialDelaySeconds: {{ .Values.webhook.readinessProbe.initialDelaySeconds }}
+          {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         securityContext:
