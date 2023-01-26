@@ -40,6 +40,10 @@ webhook:
   validating:
     create: true
     failurePolicy: Fail
+  livenessProbe:
+    initialDelaySeconds: 3
+  readinessProbe:
+    initialDelaySeconds: 3
 
 # Operator configuration
 config:
