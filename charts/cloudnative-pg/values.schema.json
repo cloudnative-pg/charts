@@ -187,6 +187,14 @@
         "webhook": {
             "type": "object",
             "properties": {
+                "livenessProbe": {
+                    "type": "object",
+                    "properties": {
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
                 "mutating": {
                     "type": "object",
                     "properties": {
@@ -201,6 +209,14 @@
                 "port": {
                     "type": "integer"
                 },
+                "readinessProbe": {
+                    "type": "object",
+                    "properties": {
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        }
+                    }
+                },
                 "validating": {
                     "type": "object",
                     "properties": {
@@ -209,22 +225,6 @@
                         },
                         "failurePolicy": {
                             "type": "string"
-                        }
-                    }
-                },
-                "livenessProbe": {
-                    "type": "object",
-                    "properties": {
-                        "initialDelaySeconds": {
-                            "type": "integer"
-                        }
-                    }
-                },
-                "readinessProbe": {
-                    "type": "object",
-                    "properties": {
-                        "initialDelaySeconds": {
-                            "type": "integer"
                         }
                     }
                 }
