@@ -51,7 +51,7 @@ spec:
         - --secret-name={{ . }}
         {{- end }}
         - --webhook-port={{ .Values.webhook.port }}
-        {{- range .Values.additionaArgs }}
+        {{- range .Values.additionalArgs }}
         - {{ . }}
         {{- end }}
         command:
