@@ -25,7 +25,7 @@ jobs:
       - name: Deploy using helm chart
         run: |
           helm upgrade --install cnpg --namespace cnpg-system \
-          --create-namespace charts/cloudnative-pg
+          --create-namespace charts/cloudnative-pg --wait
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v3.2
