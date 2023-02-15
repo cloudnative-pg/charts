@@ -26,6 +26,7 @@ jobs:
         run: |
           helm upgrade --install cnpg --namespace cnpg-system \
           --create-namespace charts/cloudnative-pg --wait
+          --timeout 6m0s
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v3.2
