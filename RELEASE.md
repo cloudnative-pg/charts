@@ -56,7 +56,7 @@ follow these steps:
   1. run `make docs schema` to regenerate the docs and the values schema in case it is needed
   1. `git commit -S -s -m "Release cloudnative-pg-vX.Y.Z" --edit` and add all
      the informations you wish below the commit message.
-  1. `git push --set-upstream origin release/coudnative-pg-vX.Y.Z`
+  1. `git push --set-upstream origin release/cloudnative-pg-vX.Y.Z`
   1. a PR named `Release cloudnative-pg-vX.Y.Z` will be automatically created
   1. wait for all the checks to pass
   1. two approvals are required in order to merge the PR, if you are a
