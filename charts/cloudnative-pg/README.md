@@ -39,6 +39,7 @@ CloudNativePG Helm Chart
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` | Nodeselector for the operator to be installed |
 | podAnnotations | object | `{}` | Annotations to be added to the pod |
+| podLabels | object | `{}` | Labels to be added to the pod |
 | podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security Context for the whole pod |
 | priorityClassName | string | `""` | Priority indicates the importance of a Pod relative to other Pods. |
 | rbac.create | bool | `true` | Specifies whether ClusterRole and ClusterRoleBinding should be created |
