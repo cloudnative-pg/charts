@@ -72,10 +72,12 @@ rbac:
   # -- Specifies whether ClusterRole and ClusterRoleBinding should be created
   create: true
 
-# -- Annotations to be added to the pod
-podAnnotations: {}
 # -- Annotations to be added to all other resources
 commonAnnotations: {}
+# -- Annotations to be added to the pod
+podAnnotations: {}
+# -- Labels to be added to the pod
+podLabels: {}
 
 # -- Container Security Context
 containerSecurityContext:
