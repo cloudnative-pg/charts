@@ -512,3 +512,6 @@ monitoringQueriesConfigMap:
         - setting:
             usage: "GAUGE"
             description: "Setting value"
+
+# -- Array of extra objects to deploy with the release
+extraDeploy: []

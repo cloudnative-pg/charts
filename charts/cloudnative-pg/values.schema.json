@@ -64,6 +64,9 @@
                 }
             }
         },
+        "extraDeploy": {
+            "type": "array"
+        },
         "fullnameOverride": {
             "type": "string"
         },
