@@ -11,17 +11,20 @@ type: postgresql
 ##
 # Cluster mode of operation. Available modes:
 # * `standalone` - default mode. Creates new or updates an existing CNPG cluster.
-# * `replica_cluster` - Creates a replica cluster from an existing CNPG cluster. # TODO
-# * `recovery` - Recovers a CNPG cluster from a CNPG backup (PITR supported). # TODO
-# * `recovery_external` - Recovers a CNPG cluster from a barman object store (PITR supported). # TODO
-# * `recovery_pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to
-#        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO
-mode: standalone
+# * `replica` - Creates a replica cluster from an existing CNPG cluster. # TODO
+# * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup. # TODO
+mode: recovery
 
 ##
 # Recovery settings if the chosen mode is `recovery`.
 recovery:
-  # TODO
+  ##
+  # Available recovery methods:
+  # * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. # TODO
+  # * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). # TODO
+  # * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to
+  #        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO
+  method: recovery
 
 ##
 # Database cluster configuration
@@ -47,6 +50,8 @@ cluster:
 
   monitoring:
     enablePodMonitor: true
+    grafanaDashboard:
+        enable: true # TODO
 
   # Resources requirements of every generated Pod.
   # Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.
