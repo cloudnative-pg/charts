@@ -3,6 +3,27 @@ entries:
   cloudnative-pg:
   - apiVersion: v2
     appVersion: 1.19.1
+    created: "2023-04-25T18:30:23.630345046Z"
+    description: CloudNativePG Helm Chart
+    digest: e763d09edd35ec84923e0f9ed206f6c164fc93a2ca6b3b7557bb6fb97f459165
+    home: https://cloudnative-pg.io
+    icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
+    keywords:
+    - postgresql
+    - postgres
+    - database
+    maintainers:
+    - email: p.scorsolini@gmail.com
+      name: phisco
+    name: cloudnative-pg
+    sources:
+    - https://github.com/cloudnative-pg/charts
+    type: application
+    urls:
+    - https://cloudnative-pg.github.io/charts/cloudnative-pg-0.17.2.tgz
+    version: 0.17.2
+  - apiVersion: v2
+    appVersion: 1.19.1
     created: "2023-03-20T15:37:42.106595231Z"
     description: CloudNativePG Helm Chart
     digest: ca5ea6b0f550a15d978b21437e2713f4b39521058c3908f8d28c5b711961b9e7
@@ -451,4 +472,4 @@ entries:
     urls:
     - https://cloudnative-pg.github.io/charts/pgbench-0.1.0.tgz
     version: 0.1.0
-generated: "2023-03-20T15:37:42.100979137Z"
+generated: "2023-04-25T18:30:23.622301211Z"
