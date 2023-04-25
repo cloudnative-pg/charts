@@ -1,0 +1,120 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "cluster.fullname" . }}
+  labels:
+  {{- include "cluster.labels" . | nindent 4 }}
+  {{- with .Values.serviceMonitor.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  instances: {{ .Values.cluster.instances }}
+
+  # Image name uses the value provided or a default based on the cluster type
+{{ if .Values.cluster.imageName }}
+  imageName: {{ .Values.cluster.imageName }}
+{{- else }}
+  {{ if eq .Values.type "postgresql" -}}
+  imageName: "ghcr.io/cloudnative-pg/postgresql:15.2"
+  {{- else if eq .Values.type "postgis"  }}
+  imageName: "ghcr.io/cloudnative-pg/postgis:15.2"
+  {{- else if eq .Values.type "timescaledb"  }}
+  imageName: "timescaledb:2.10.2-pg15"
+  {{- end }}
+{{- end }}
+  imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
+  imagePullSecrets: {{ .Values.cluster.imagePullSecrets }}
+
+  storage:
+    size: {{ .Values.cluster.storage.size }}
+    storageClass: {{ .Values.cluster.storage.storageClass }}
+
+  {{- with .Values.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+
+  {{- with .Values.affinity }}
+  affinity:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+
+  primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
+  primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
+  logLevel: {{ .Values.cluster.logLevel }}
+
+  certificates:
+  {{- with .Values.certificates }}
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+
+  enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
+  superuserSecret: {{ .Values.cluster.superuserSecret }}
+
+  postgresql:
+    {{- with .Values.postgresql.parameters }}
+    parameters:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+
+  monitoring:
+    enablePodMonitor: {{ .Values.cluster.monitoring.enablePodMonitor }}
+
+  backup:
+  {{ if .Values.backups.enabled -}}
+    target: "prefer-standby"
+    retentionPolicy: {{ .Values.backups.retentionPolicy }}
+    barmanObjectStore:
+      wal:
+        compression: gzip
+        encryption: AES256
+      data:
+        compression: gzip
+        encryption: AES256
+        jobs: 2
+    {{ if eq .Values.backups.provider "s3" }}
+      {{ if .Values.backups.s3.endpointURL }}
+      endpointUrl: {{ .Values.backups.s3.endpointURL }}
+      {{ else }}
+      endpointUrl: "https://s3.{{ required "You need to specify S3 region if endpointURL is not specified." .Values.backups.s3.region }}.amazonaws.com"
+      {{ end }}
+      {{ if .Values.backups.s3.destinationPath }}
+      destinationPath: {{ .Values.backups.s3.destinationPath }}
+      {{ else }}
+      destinationPath: "s3://{{ required "You need to specify S3 bucket if destinationPath is not specified." .Values.backups.s3.bucket }}{{ .Values.backups.s3.path }}/{{ include "cluster.fullname" . }}"
+      {{ end }}
+      s3Credentials:
+        accessKeyId:
+          name: {{ include "cluster.fullname" . }}-backup-s3-creds
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: {{ include "cluster.fullname" . }}-backup-s3-creds
+          key: ACCESS_SECRET_KEY
+    {{ end }}
+  {{ end }}
+
+
+    bootstrap:
+    {{ if eq .Values.mode "standalone" }}
+      initdb:
+      {{ if eq .Values.type "postgis" }}
+        postInitTemplateSQL:
+          - CREATE EXTENSION postgis;
+          - CREATE EXTENSION postgis_topology;
+          - CREATE EXTENSION fuzzystrmatch;
+          - CREATE EXTENSION postgis_tiger_geocoder;
+      {{ else if eq .Values.type "timescaledb" }}
+        postInitTemplateSQL:
+          - CREATE EXTENSION timescaledb;
+      {{ end }}
+    {{ else if eq .Values.mode "recovery" }}
+      {{ if eq .Values.recovery.method "backup" }}
+      recovery:
+        backup:
+          name: {{ .Values.recovery.backupName }}
+        {{ with .Values.recovery.pitrTarget }}
+        recoveryTarget:
+          targetTime: {{ . }}
+        {{ end }}
+      {{ end }}
+    {{ end }}

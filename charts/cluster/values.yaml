@@ -26,6 +26,13 @@ recovery:
   #        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO
   method: backup
 
+  ## Point in time recovery target.
+  # Example: "2023-02-14 17:55:00.00000+00"
+  pitrTarget: ""
+
+  ## Backup Recovery Method
+  backupName: "" # Name of the backup to recover from. Required if method is `backup`.
+
 ##
 # Database cluster configuration
 cluster:
@@ -34,7 +41,7 @@ cluster:
 
   # Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments:
   # <image>:<tag>@sha256:<digestValue>
-  imageName: "ghcr.io/cloudnative-pg/postgresql:15.2"
+  imageName: "" # Default value depends on type (postgresql/postgis/timescaledb)
 
   # Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated.
   # More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
@@ -48,11 +55,6 @@ cluster:
     size: 8Gi
     storageClass: ""
 
-  monitoring:
-    enablePodMonitor: true
-    grafanaDashboard:
-        enable: true # TODO
-
   # Resources requirements of every generated Pod.
   # Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.
   # We strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS.
@@ -65,7 +67,7 @@ cluster:
     #   cpu: 2000m
     #   memory: 8Gi
 
-  priorityClassName: "" # Waiting for https://github.com/cloudnative-pg/cloudnative-pg/discussions/1609
+  priorityClassName: "" # TODO: Blocked by https://github.com/cloudnative-pg/cloudnative-pg/discussions/1609
 
   # Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been
   # successfully updated. It can be switchover (default) or in-place (restart).
@@ -94,9 +96,16 @@ cluster:
   enableSuperuserAccess: true
   superuserSecret: ""
 
+  monitoring:
+    enablePodMonitor: true
+    grafanaDashboard:
+        enable: true # TODO
+
   # Configuration of the PostgreSQL server
   # See: https://cloudnative-pg.io/documentation/current/api_reference/#PostgresConfiguration
   postgresql:
+
+  additionalLabels: {}
 
 ##
 # Database cluster backup configuration
@@ -107,21 +116,27 @@ backups:
 
   provider: s3
   s3:
-    endpointURL: ""
+    endpointURL: "" # Leave empty if using the default S3 endpoint
+    region: ""
     bucket: ""
     path: ""
     accessKey: ""
     secretKey: ""
+    destinationPath: "" # Optional, defaults to s3://<bucket><path>/<release-name>
 
   scheduledBackups:
-    - schedule: "0 0 * * *" # Daily at midnight
+    - name: daily-backup # Daily at midnight
+      schedule: "0 0 * * *" # Daily at midnight
       backupOwnerReference: self
+
+  retentionPolicy: "30d"
 
 ##
 # Database cluster PgBouncer configuration
 pooler:
   enabled: false
   poolMode: transaction
+  instances: 3
   parameters:
     max_client_conn: "1000"
     default_pool_size: "25"
