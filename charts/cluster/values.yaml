@@ -13,7 +13,7 @@ type: postgresql
 # * `standalone` - default mode. Creates new or updates an existing CNPG cluster.
 # * `replica` - Creates a replica cluster from an existing CNPG cluster. # TODO
 # * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup. # TODO
-mode: recovery
+mode: standalone
 
 ##
 # Recovery settings if the chosen mode is `recovery`.
@@ -24,7 +24,7 @@ recovery:
   # * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). # TODO
   # * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to
   #        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO
-  method: recovery
+  method: backup
 
 ##
 # Database cluster configuration
