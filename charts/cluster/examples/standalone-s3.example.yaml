@@ -1,0 +1,7 @@
+backups:
+  provider: s3
+  s3:
+    region: "eu-west-1"
+    bucket: "db-backups"
+    accessKey: "AWS_S3_ACCESS_KEY"
+    secretKey: "AWS_S3_SECRET_KEY"

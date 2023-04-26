@@ -4,14 +4,12 @@ metadata:
   name: {{ include "cluster.fullname" . }}
   labels:
   {{- include "cluster.labels" . | nindent 4 }}
-  {{- with .Values.serviceMonitor.additionalLabels }}
+  {{- with .Values.additionalLabels }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   instances: {{ .Values.cluster.instances }}
-
-  # Image name uses the value provided or a default based on the cluster type
-{{ if .Values.cluster.imageName }}
+{{- if .Values.cluster.imageName }}
   imageName: {{ .Values.cluster.imageName }}
 {{- else }}
   {{ if eq .Values.type "postgresql" -}}
@@ -24,44 +22,36 @@ spec:
 {{- end }}
   imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
   imagePullSecrets: {{ .Values.cluster.imagePullSecrets }}
-
   storage:
     size: {{ .Values.cluster.storage.size }}
     storageClass: {{ .Values.cluster.storage.storageClass }}
-
-  {{- with .Values.resources }}
+  {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
   {{ end }}
 
-  {{- with .Values.affinity }}
+  {{- with .Values.cluster.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
-
+  {{- end }}
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
   logLevel: {{ .Values.cluster.logLevel }}
-
+  {{- with .Values.cluster.certificates }}
   certificates:
-  {{- with .Values.certificates }}
     {{- toYaml . | nindent 4 }}
   {{ end }}
-
   enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
   superuserSecret: {{ .Values.cluster.superuserSecret }}
-
   postgresql:
-    {{- with .Values.postgresql.parameters }}
+    {{- with .Values.cluster.postgresql }}
     parameters:
       {{- toYaml . | nindent 6 }}
     {{ end }}
-
   monitoring:
     enablePodMonitor: {{ .Values.cluster.monitoring.enablePodMonitor }}
-
   backup:
-  {{ if .Values.backups.enabled -}}
+  {{- if .Values.backups.enabled }}
     target: "prefer-standby"
     retentionPolicy: {{ .Values.backups.retentionPolicy }}
     barmanObjectStore:
@@ -72,17 +62,17 @@ spec:
         compression: gzip
         encryption: AES256
         jobs: 2
-    {{ if eq .Values.backups.provider "s3" }}
-      {{ if .Values.backups.s3.endpointURL }}
+    {{- if eq .Values.backups.provider "s3" }}
+      {{- if .Values.backups.s3.endpointURL }}
       endpointUrl: {{ .Values.backups.s3.endpointURL }}
-      {{ else }}
+      {{- else }}
       endpointUrl: "https://s3.{{ required "You need to specify S3 region if endpointURL is not specified." .Values.backups.s3.region }}.amazonaws.com"
-      {{ end }}
-      {{ if .Values.backups.s3.destinationPath }}
+      {{- end }}
+      {{- if .Values.backups.s3.destinationPath }}
       destinationPath: {{ .Values.backups.s3.destinationPath }}
-      {{ else }}
+      {{- else }}
       destinationPath: "s3://{{ required "You need to specify S3 bucket if destinationPath is not specified." .Values.backups.s3.bucket }}{{ .Values.backups.s3.path }}/{{ include "cluster.fullname" . }}"
-      {{ end }}
+      {{- end }}
       s3Credentials:
         accessKeyId:
           name: {{ include "cluster.fullname" . }}-backup-s3-creds
@@ -90,31 +80,29 @@ spec:
         secretAccessKey:
           name: {{ include "cluster.fullname" . }}-backup-s3-creds
           key: ACCESS_SECRET_KEY
-    {{ end }}
-  {{ end }}
-
-
+    {{- end }}
+  {{- end }}
     bootstrap:
-    {{ if eq .Values.mode "standalone" }}
+    {{- if eq .Values.mode "standalone" }}
       initdb:
-      {{ if eq .Values.type "postgis" }}
+      {{- if eq .Values.type "postgis" }}
         postInitTemplateSQL:
           - CREATE EXTENSION postgis;
           - CREATE EXTENSION postgis_topology;
           - CREATE EXTENSION fuzzystrmatch;
           - CREATE EXTENSION postgis_tiger_geocoder;
-      {{ else if eq .Values.type "timescaledb" }}
+      {{- else if eq .Values.type "timescaledb" }}
         postInitTemplateSQL:
           - CREATE EXTENSION timescaledb;
-      {{ end }}
-    {{ else if eq .Values.mode "recovery" }}
-      {{ if eq .Values.recovery.method "backup" }}
+      {{- end }}
+    {{- else if eq .Values.mode "recovery" }}
+      {{- if eq .Values.recovery.method "backup" }}
       recovery:
         backup:
           name: {{ .Values.recovery.backupName }}
-        {{ with .Values.recovery.pitrTarget }}
+        {{- with .Values.recovery.pitrTarget }}
         recoveryTarget:
           targetTime: {{ . }}
-        {{ end }}
-      {{ end }}
-    {{ end }}
+        {{- end }}
+      {{- end }}
+    {{- end }}

@@ -5,13 +5,12 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: {{ include "cluster.fullname" .  }}-{{ .name }}
-  labels:
-    {{ include "cluster.labels" $context | nindent 4 }}
+  name: {{ include "cluster.fullname" $context  }}-{{ .name }}
+  labels: {{ include "cluster.labels" $context | nindent 4 }}
 spec:
   schedule: {{ .schedule }}
   backupOwnerReference: {{ .backupOwnerReference }}
   cluster:
-    name: {{ include "cluster.fullname" . }}
+    name: {{ include "cluster.fullname" $context }}
 {{ end -}}
 {{ end }}
