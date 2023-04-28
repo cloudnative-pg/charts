@@ -62,8 +62,8 @@ spec:
               target:
                 description: The policy to decide which instance should perform this
                   backup. If empty, it defaults to `cluster.spec.backup.target`. Available
-                  options are empty string, which will default to `primary` policy,
-                  `primary` to have backups run always on primary instances, `prefer-standby`
+                  options are empty string, `primary` and `prefer-standby`. `primary`
+                  to have backups run always on primary instances, `prefer-standby`
                   to have backups run preferably on the most updated standby, if available.
                 enum:
                 - primary
@@ -1541,11 +1541,11 @@ spec:
                     pattern: ^[1-9][0-9]*[dwm]$
                     type: string
                   target:
-                    default: primary
+                    default: prefer-standby
                     description: The policy to decide which instance should perform
                       backups. Available options are empty string, which will default
-                      to `primary` policy, `primary` to have backups run always on
-                      primary instances, `prefer-standby` to have backups run preferably
+                      to `prefer-standby` policy, `primary` to have backups run always
+                      on primary instances, `prefer-standby` to have backups run preferably
                       on the most updated standby, if available.
                     enum:
                     - primary
@@ -2483,6 +2483,112 @@ spec:
                 - debug
                 - trace
                 type: string
+              managed:
+                description: The configuration that is used by the portions of PostgreSQL
+                  that are managed by the instance manager
+                properties:
+                  roles:
+                    description: Database roles managed by the `Cluster`
+                    items:
+                      description: "RoleConfiguration is the representation, in Kubernetes,
+                        of a PostgreSQL role with the additional field Ensure specifying
+                        whether to ensure the presence or absence of the role in the
+                        database \n The defaults of the CREATE ROLE command are applied
+                        Reference: https://www.postgresql.org/docs/current/sql-createrole.html"
+                      properties:
+                        bypassrls:
+                          description: Whether a role bypasses every row-level security
+                            (RLS) policy. Default is `false`.
+                          type: boolean
+                        comment:
+                          description: Description of the role
+                          type: string
+                        connectionLimit:
+                          default: -1
+                          description: If the role can log in, this specifies how
+                            many concurrent connections the role can make. `-1` (the
+                            default) means no limit.
+                          format: int64
+                          type: integer
+                        createdb:
+                          description: When set to `true`, the role being defined
+                            will be allowed to create new databases. Specifying `false`
+                            (default) will deny a role the ability to create databases.
+                          type: boolean
+                        createrole:
+                          description: Whether the role will be permitted to create,
+                            alter, drop, comment on, change the security label for,
+                            and grant or revoke membership in other roles. Default
+                            is `false`.
+                          type: boolean
+                        ensure:
+                          default: present
+                          description: Ensure the role is `present` or `absent` -
+                            defaults to "present"
+                          enum:
+                          - present
+                          - absent
+                          type: string
+                        inRoles:
+                          description: List of one or more existing roles to which
+                            this role will be immediately added as a new member. Default
+                            empty.
+                          items:
+                            type: string
+                          type: array
+                        inherit:
+                          default: true
+                          description: Whether a role "inherits" the privileges of
+                            roles it is a member of. Defaults is `true`.
+                          type: boolean
+                        login:
+                          description: Whether the role is allowed to log in. A role
+                            having the `login` attribute can be thought of as a user.
+                            Roles without this attribute are useful for managing database
+                            privileges, but are not users in the usual sense of the
+                            word. Default is `false`.
+                          type: boolean
+                        name:
+                          description: Name of the role
+                          type: string
+                        passwordSecret:
+                          description: Secret containing the password of the role
+                            (if present)
+                          properties:
+                            name:
+                              description: Name of the referent.
+                              type: string
+                          required:
+                          - name
+                          type: object
+                        replication:
+                          description: Whether a role is a replication role. A role
+                            must have this attribute (or be a superuser) in order
+                            to be able to connect to the server in replication mode
+                            (physical or logical replication) and in order to be able
+                            to create or drop replication slots. A role having the
+                            `replication` attribute is a very highly privileged role,
+                            and should only be used on roles actually used for replication.
+                            Default is `false`.
+                          type: boolean
+                        superuser:
+                          description: Whether the role is a `superuser` who can override
+                            all access restrictions within the database - superuser
+                            status is dangerous and should be used only when really
+                            needed. You must yourself be a superuser to create a new
+                            superuser. Defaults is `false`.
+                          type: boolean
+                        validUntil:
+                          description: Date and time after which the role's password
+                            is no longer valid. When omitted, the password will never
+                            expire (default).
+                          format: date-time
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
+                type: object
               maxSyncReplicas:
                 default: 0
                 description: The target value for the synchronous replication quorum,
@@ -2688,11 +2794,11 @@ spec:
                     type: object
                 type: object
               primaryUpdateMethod:
-                default: switchover
+                default: restart
                 description: 'Method to follow to upgrade the primary server during
                   a rolling update procedure, after all replicas have been successfully
-                  updated: it can be with a switchover (`switchover` - default) or
-                  in-place (`restart`)'
+                  updated: it can be with a switchover (`switchover`) or in-place
+                  (`restart` - default)'
                 enum:
                 - switchover
                 - restart
@@ -2974,6 +3080,7 @@ spec:
                     description: Replication slots for high availability configuration
                     properties:
                       enabled:
+                        default: false
                         description: If enabled, the operator will automatically manage
                           replication slots on the primary instance and use them in
                           streaming replication connections with all the standby instances
@@ -3009,7 +3116,8 @@ spec:
                     description: "Claims lists the names of resources, defined in
                       spec.resourceClaims, that are used by this container. \n This
                       is an alpha field and requires enabling the DynamicResourceAllocation
-                      feature gate. \n This field is immutable."
+                      feature gate. \n This field is immutable. It can only be set
+                      for containers."
                     items:
                       description: ResourceClaim references one entry in PodSpec.ResourceClaims.
                       properties:
@@ -3047,6 +3155,27 @@ spec:
                       it defaults to Limits if that is explicitly specified, otherwise
                       to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                     type: object
+                type: object
+              seccompProfile:
+                description: 'The SeccompProfile applied to every Pod and Container.
+                  Defaults to: `RuntimeDefault`'
+                properties:
+                  localhostProfile:
+                    description: localhostProfile indicates a profile defined in a
+                      file on the node should be used. The profile must be preconfigured
+                      on the node to work. Must be a descending path, relative to
+                      the kubelet's configured seccomp profile location. Must only
+                      be set if type is "Localhost".
+                    type: string
+                  type:
+                    description: "type indicates which kind of seccomp profile will
+                      be applied. Valid options are: \n Localhost - a profile defined
+                      in a file on the node should be used. RuntimeDefault - the container
+                      runtime default profile should be used. Unconfined - no profile
+                      should be applied."
+                    type: string
+                required:
+                - type
                 type: object
               serviceAccountTemplate:
                 description: Configure the generation of the service account
@@ -3198,7 +3327,7 @@ spec:
                               in spec.resourceClaims, that are used by this container.
                               \n This is an alpha field and requires enabling the
                               DynamicResourceAllocation feature gate. \n This field
-                              is immutable."
+                              is immutable. It can only be set for containers."
                             items:
                               description: ResourceClaim references one entry in PodSpec.ResourceClaims.
                               properties:
@@ -3445,7 +3574,7 @@ spec:
                               in spec.resourceClaims, that are used by this container.
                               \n This is an alpha field and requires enabling the
                               DynamicResourceAllocation feature gate. \n This field
-                              is immutable."
+                              is immutable. It can only be set for containers."
                             items:
                               description: ResourceClaim references one entry in PodSpec.ResourceClaims.
                               properties:
@@ -3751,7 +3880,8 @@ spec:
                   type: string
                 type: array
               instances:
-                description: Total number of instances in the cluster
+                description: The total number of PVC Groups detected in the cluster.
+                  It may differ from the number of existing instance pods.
                 type: integer
               instancesReportedState:
                 additionalProperties:
@@ -3767,7 +3897,7 @@ spec:
                   required:
                   - isPrimary
                   type: object
-                description: the reported state of the instances during the last reconciliation
+                description: The reported state of the instances during the last reconciliation
                   loop
                 type: object
               instancesStatus:
@@ -3792,6 +3922,43 @@ spec:
                 description: ID of the latest generated node (used to avoid node name
                   clashing)
                 type: integer
+              managedRolesStatus:
+                description: ManagedRolesStatus reports the state of the managed roles
+                  in the cluster
+                properties:
+                  byStatus:
+                    additionalProperties:
+                      items:
+                        type: string
+                      type: array
+                    description: ByStatus gives the list of roles in each state
+                    type: object
+                  cannotReconcile:
+                    additionalProperties:
+                      items:
+                        type: string
+                      type: array
+                    description: CannotReconcile lists roles that cannot be reconciled
+                      in PostgreSQL, with an explanation of the cause
+                    type: object
+                  passwordStatus:
+                    additionalProperties:
+                      description: PasswordState represents the state of the password
+                        of a managed RoleConfiguration
+                      properties:
+                        resourceVersion:
+                          description: the resource version of the password secret
+                          type: string
+                        transactionID:
+                          description: the last transaction ID to affect the role
+                            definition in PostgreSQL
+                          format: int64
+                          type: integer
+                      type: object
+                    description: PasswordStatus gives the last transaction id and
+                      password secret version for each managed role
+                    type: object
+                type: object
               onlineUpdateEnabled:
                 description: OnlineUpdateEnabled shows if the online upgrade is enabled
                   inside the cluster
@@ -3823,7 +3990,8 @@ spec:
                 description: Current list of read pods
                 type: string
               readyInstances:
-                description: Total number of ready instances in the cluster
+                description: The total number of ready instances in the cluster. It
+                  is equal to the number of ready instance pods.
                 type: integer
               resizingPVC:
                 description: List of all the PVCs that have ResizingPVC condition.
@@ -3849,6 +4017,11 @@ spec:
                     description: The resource version of the PostgreSQL client-side
                       CA secret version
                     type: string
+                  managedRoleSecretVersion:
+                    additionalProperties:
+                      type: string
+                    description: The resource versions of the managed roles secrets
+                    type: object
                   metrics:
                     additionalProperties:
                       type: string
@@ -5785,7 +5958,8 @@ spec:
                                     defined in spec.resourceClaims, that are used
                                     by this container. \n This is an alpha field and
                                     requires enabling the DynamicResourceAllocation
-                                    feature gate. \n This field is immutable."
+                                    feature gate. \n This field is immutable. It can
+                                    only be set for containers."
                                   items:
                                     description: ResourceClaim references one entry
                                       in PodSpec.ResourceClaims.
@@ -7155,7 +7329,8 @@ spec:
                                     defined in spec.resourceClaims, that are used
                                     by this container. \n This is an alpha field and
                                     requires enabling the DynamicResourceAllocation
-                                    feature gate. \n This field is immutable."
+                                    feature gate. \n This field is immutable. It can
+                                    only be set for containers."
                                   items:
                                     description: ResourceClaim references one entry
                                       in PodSpec.ResourceClaims.
@@ -8558,7 +8733,8 @@ spec:
                                     defined in spec.resourceClaims, that are used
                                     by this container. \n This is an alpha field and
                                     requires enabling the DynamicResourceAllocation
-                                    feature gate. \n This field is immutable."
+                                    feature gate. \n This field is immutable. It can
+                                    only be set for containers."
                                   items:
                                     description: ResourceClaim references one entry
                                       in PodSpec.ResourceClaims.
@@ -10347,7 +10523,8 @@ spec:
                                                 that are used by this container. \n
                                                 This is an alpha field and requires
                                                 enabling the DynamicResourceAllocation
-                                                feature gate. \n This field is immutable."
+                                                feature gate. \n This field is immutable.
+                                                It can only be set for containers."
                                               items:
                                                 description: ResourceClaim references
                                                   one entry in PodSpec.ResourceClaims.
@@ -11593,8 +11770,8 @@ spec:
               target:
                 description: The policy to decide which instance should perform this
                   backup. If empty, it defaults to `cluster.spec.backup.target`. Available
-                  options are empty string, which will default to `primary` policy,
-                  `primary` to have backups run always on primary instances, `prefer-standby`
+                  options are empty string, `primary` and `prefer-standby`. `primary`
+                  to have backups run always on primary instances, `prefer-standby`
                   to have backups run preferably on the most updated standby, if available.
                 enum:
                 - primary
