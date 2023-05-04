@@ -5,6 +5,12 @@ metadata:
   name: {{ include "cluster.fullname" . }}-test-backup-{{now | unixEpoch}}
   annotations:
     "helm.sh/hook": post-install
+    {{- with .Values.cluster.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+    {{- include "cluster.labels" . | nindent 4 }}
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
 spec:
   cluster:
     name: {{ include "cluster.fullname" . }}
