@@ -1,0 +1,11 @@
+{{ if .Values.backups.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: {{ include "cluster.fullname" . }}-test-backup-{{now | unixEpoch}}
+  annotations:
+    "helm.sh/hook": post-install
+spec:
+  cluster:
+    name: {{ include "cluster.fullname" . }}
+{{ end }}
