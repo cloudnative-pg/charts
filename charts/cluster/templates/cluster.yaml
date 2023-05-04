@@ -105,7 +105,7 @@ spec:
       {{- if .Values.backups.s3.destinationPath }}
       destinationPath: {{ .Values.backups.s3.destinationPath }}
       {{- else }}
-      destinationPath: "s3://{{ required "You need to specify S3 bucket if destinationPath is not specified." .Values.backups.s3.bucket }}{{ .Values.backups.s3.path }}/{{ include "cluster.fullname" . }}"
+      destinationPath: "s3://{{ required "You need to specify S3 bucket if destinationPath is not specified." .Values.backups.s3.bucket }}{{ .Values.backups.s3.path }}"
       {{- end }}
       s3Credentials:
         accessKeyId:

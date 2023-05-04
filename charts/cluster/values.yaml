@@ -118,16 +118,16 @@ backups:
   provider: s3
   s3:
     endpointURL: "" # Leave empty if using the default S3 endpoint
-    region: "" # Optional. Required if using a the default S3 endpoint
-    bucket: "" # Optional. Required to construct the default destination path
-    path: "" # Optional. Required to construct the default destination path
+    region: ""
+    bucket: ""
+    path: "/"
     accessKey: ""
     secretKey: ""
     destinationPath: "" # Optional, defaults to s3://<bucket><path>/<release-name>
 
   scheduledBackups:
     - name: daily-backup # Daily at midnight
-      schedule: "0 0 * * *" # Daily at midnight
+      schedule: "0 0 0 * * *" # Daily at midnight
       backupOwnerReference: self
 
   retentionPolicy: "30d"

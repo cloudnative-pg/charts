@@ -2,7 +2,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Backup
 metadata:
-  name: {{ include "cluster.fullname" . }}-test-backup-{{now | unixEpoch}}
+  name: {{ include "cluster.fullname" . }}-initial-backup-{{now | unixEpoch}}
   annotations:
     "helm.sh/hook": post-install
     {{- with .Values.cluster.annotations }}
