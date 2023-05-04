@@ -1,7 +1,10 @@
 The {{ include "cluster.fullname" . }} has been installed successfully.
 
 Cheatsheet
-==========
+----------
+
+Run Helm Tests:
+helm test --namespace {{ .Release.Namespace }} {{ .Release.Name }}
 
 Get a list of all base backups:
 kubectl --namespace {{ .Release.Namespace }} get backups --selector cnpg.io/cluster={{ include "cluster.fullname" . }}
