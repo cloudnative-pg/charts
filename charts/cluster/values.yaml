@@ -106,6 +106,7 @@ cluster:
   postgresql:
 
   additionalLabels: {}
+  annotations: {}
 
 ##
 # Database cluster backup configuration
@@ -117,9 +118,9 @@ backups:
   provider: s3
   s3:
     endpointURL: "" # Leave empty if using the default S3 endpoint
-    region: ""
-    bucket: ""
-    path: ""
+    region: "" # Optional. Required if using a the default S3 endpoint
+    bucket: "" # Optional. Required to construct the default destination path
+    path: "" # Optional. Required to construct the default destination path
     accessKey: ""
     secretKey: ""
     destinationPath: "" # Optional, defaults to s3://<bucket><path>/<release-name>

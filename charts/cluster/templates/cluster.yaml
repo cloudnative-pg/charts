@@ -2,10 +2,14 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: {{ include "cluster.fullname" . }}
+  {{- with .Values.cluster.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
   {{- include "cluster.labels" . | nindent 4 }}
-  {{- with .Values.additionalLabels }}
-    {{- toYaml . | nindent 4 }}
+  {{- with .Values.cluster.additionalLabels }}
+    {{ toYaml . | nindent 4 }}
   {{- end }}
 spec:
   instances: {{ .Values.cluster.instances }}
@@ -25,15 +29,16 @@ spec:
   storage:
     size: {{ .Values.cluster.storage.size }}
     storageClass: {{ .Values.cluster.storage.storageClass }}
+
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
   {{ end }}
-
   {{- with .Values.cluster.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
   logLevel: {{ .Values.cluster.logLevel }}
@@ -41,15 +46,44 @@ spec:
   certificates:
     {{- toYaml . | nindent 4 }}
   {{ end }}
+
   enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
   superuserSecret: {{ .Values.cluster.superuserSecret }}
+
   postgresql:
     {{- with .Values.cluster.postgresql }}
     parameters:
       {{- toYaml . | nindent 6 }}
     {{ end }}
+
   monitoring:
     enablePodMonitor: {{ .Values.cluster.monitoring.enablePodMonitor }}
+
+  bootstrap:
+  {{- if eq .Values.mode "standalone" }}
+    initdb:
+    {{- if eq .Values.type "postgis" }}
+      postInitTemplateSQL:
+        - CREATE EXTENSION postgis;
+        - CREATE EXTENSION postgis_topology;
+        - CREATE EXTENSION fuzzystrmatch;
+        - CREATE EXTENSION postgis_tiger_geocoder;
+    {{- else if eq .Values.type "timescaledb" }}
+      postInitTemplateSQL:
+        - CREATE EXTENSION timescaledb;
+    {{- end }}
+  {{- else if eq .Values.mode "recovery" }}
+    {{- if eq .Values.recovery.method "backup" }}
+    recovery:
+    backup:
+      name: {{ .Values.recovery.backupName }}
+      {{- with .Values.recovery.pitrTarget }}
+      recoveryTarget:
+        targetTime: {{ . }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+
   backup:
   {{- if .Values.backups.enabled }}
     target: "prefer-standby"
@@ -64,9 +98,9 @@ spec:
         jobs: 2
     {{- if eq .Values.backups.provider "s3" }}
       {{- if .Values.backups.s3.endpointURL }}
-      endpointUrl: {{ .Values.backups.s3.endpointURL }}
+      endpointURL: {{ .Values.backups.s3.endpointURL }}
       {{- else }}
-      endpointUrl: "https://s3.{{ required "You need to specify S3 region if endpointURL is not specified." .Values.backups.s3.region }}.amazonaws.com"
+      endpointURL: "https://s3.{{ required "You need to specify S3 region if endpointURL is not specified." .Values.backups.s3.region }}.amazonaws.com"
       {{- end }}
       {{- if .Values.backups.s3.destinationPath }}
       destinationPath: {{ .Values.backups.s3.destinationPath }}
@@ -82,27 +116,3 @@ spec:
           key: ACCESS_SECRET_KEY
     {{- end }}
   {{- end }}
-    bootstrap:
-    {{- if eq .Values.mode "standalone" }}
-      initdb:
-      {{- if eq .Values.type "postgis" }}
-        postInitTemplateSQL:
-          - CREATE EXTENSION postgis;
-          - CREATE EXTENSION postgis_topology;
-          - CREATE EXTENSION fuzzystrmatch;
-          - CREATE EXTENSION postgis_tiger_geocoder;
-      {{- else if eq .Values.type "timescaledb" }}
-        postInitTemplateSQL:
-          - CREATE EXTENSION timescaledb;
-      {{- end }}
-    {{- else if eq .Values.mode "recovery" }}
-      {{- if eq .Values.recovery.method "backup" }}
-      recovery:
-        backup:
-          name: {{ .Values.recovery.backupName }}
-        {{- with .Values.recovery.pitrTarget }}
-        recoveryTarget:
-          targetTime: {{ . }}
-        {{- end }}
-      {{- end }}
-    {{- end }}
