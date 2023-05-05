@@ -54,6 +54,10 @@ spec:
   superuserSecret: {{ .Values.cluster.superuserSecret }}
 
   postgresql:
+    shared_preload_libraries:
+      {{- if eq .Values.type "timescaledb" }}
+      - timescaledb
+      {{- end }}
     {{- with .Values.cluster.postgresql }}
     parameters:
       {{- toYaml . | nindent 6 }}
