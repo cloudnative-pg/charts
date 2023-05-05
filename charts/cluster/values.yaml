@@ -105,6 +105,10 @@ cluster:
   # See: https://cloudnative-pg.io/documentation/current/api_reference/#PostgresConfiguration
   postgresql:
 
+  # SQL Queries run during the initialization of the cluster
+  # Can be used to create databases, users, extensions, etc.
+  initSQL: []
+
   additionalLabels: {}
   annotations: {}
 
