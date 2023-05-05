@@ -1,0 +1,26 @@
+{{- define "cluster.bootstrap" -}}
+bootstrap:
+{{- if eq .Values.mode "standalone" }}
+  initdb:
+  {{- if eq .Values.type "postgis" }}
+    postInitTemplateSQL:
+      - CREATE EXTENSION postgis;
+      - CREATE EXTENSION postgis_topology;
+      - CREATE EXTENSION fuzzystrmatch;
+      - CREATE EXTENSION postgis_tiger_geocoder;
+  {{- else if eq .Values.type "timescaledb" }}
+    postInitTemplateSQL:
+      - CREATE EXTENSION timescaledb;
+  {{- end }}
+{{- else if eq .Values.mode "recovery" }}
+  recovery:
+    {{- if eq .Values.recovery.method "backup" }}
+    backup:
+      name: {{ .Values.recovery.backupName }}
+      {{- with .Values.recovery.pitrTarget }}
+      recoveryTarget:
+        targetTime: {{ . }}
+      {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}

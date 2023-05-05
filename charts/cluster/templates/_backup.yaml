@@ -1,0 +1,34 @@
+{{- define "cluster.backup" -}}
+backup:
+{{- if .Values.backups.enabled }}
+  target: "prefer-standby"
+  retentionPolicy: {{ .Values.backups.retentionPolicy }}
+  barmanObjectStore:
+    wal:
+      compression: gzip
+      encryption: AES256
+    data:
+      compression: gzip
+      encryption: AES256
+      jobs: 2
+  {{- if eq .Values.backups.provider "s3" }}
+    {{- if .Values.backups.s3.endpointURL }}
+    endpointURL: {{ .Values.backups.s3.endpointURL }}
+    {{- else }}
+    endpointURL: "https://s3.{{ required "You need to specify S3 region if endpointURL is not specified." .Values.backups.s3.region }}.amazonaws.com"
+    {{- end }}
+    {{- if .Values.backups.s3.destinationPath }}
+    destinationPath: {{ .Values.backups.s3.destinationPath }}
+    {{- else }}
+    destinationPath: "s3://{{ required "You need to specify S3 bucket if destinationPath is not specified." .Values.backups.s3.bucket }}{{ .Values.backups.s3.path }}"
+    {{- end }}
+    s3Credentials:
+      accessKeyId:
+        name: {{ include "cluster.fullname" . }}-backup-s3-creds
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: {{ include "cluster.fullname" . }}-backup-s3-creds
+        key: ACCESS_SECRET_KEY
+  {{- end }}
+{{- end }}
+{{- end }}
