@@ -4,5 +4,5 @@ kind: Secret
 metadata:
   name: {{ include "cluster.fullname" . }}-backup-google-recovery-creds
 data:
-  APPLICATION_CREDENTIALS: {{ .Values.recovery.google.applicationCredentials | quote | b64enc }}
+  APPLICATION_CREDENTIALS: {{ .Values.recovery.google.applicationCredentials | b64enc | quote }}
 {{- end }}
