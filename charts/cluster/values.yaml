@@ -1,21 +1,21 @@
 nameOverride: ""
 fullnameOverride: ""
 
-##
+###
 # Type of the CNPG database. Available types:
 # * `postgresql`
 # * `postgis` # TODO
 # * `timescaledb` # TODO
 type: postgresql
 
-##
+###
 # Cluster mode of operation. Available modes:
 # * `standalone` - default mode. Creates new or updates an existing CNPG cluster.
 # * `replica` - Creates a replica cluster from an existing CNPG cluster. # TODO
 # * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup. # TODO
 mode: standalone
 
-##
+###
 # Recovery settings if the chosen mode is `recovery`.
 recovery:
   ##
@@ -26,14 +26,49 @@ recovery:
   #        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO
   method: backup
 
-  ## Point in time recovery target.
-  # Example: "2023-02-14 17:55:00.00000+00"
-  pitrTarget: ""
+  ## Point in time recovery target. Specify one of the following:
+  pitrTarget:
+    time: "" # Time in RFC3339 format
 
-  ## Backup Recovery Method
+  ##
+  # Backup Recovery Method
   backupName: "" # Name of the backup to recover from. Required if method is `backup`.
 
-##
+  ##
+  # Object Store Recovery Method
+
+  clusterName: ""
+  # Overrides the provider specific default endpoint. Defaults to:
+  # S3: https://s3.<region>.amazonaws.com"
+  endpointURL: "" # Leave empty if using the default S3 endpoint
+  # Overrides the provider specific default path. Defaults to:
+  # S3: s3://<bucket><path>
+  # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path>
+  # Google: gs://<bucket><path>
+  destinationPath: ""
+  provider: s3
+  s3:
+    region: ""
+    bucket: ""
+    path: "/"
+    accessKey: ""
+    secretKey: ""
+  azure:
+    path: "/"
+    connectionString: ""
+    storageAccount: ""
+    storageKey: ""
+    storageSasToken: ""
+    containerName: ""
+    serviceName: blob
+    inheritFromAzureAD: false
+  google:
+    path: "/"
+    bucket: ""
+    gkeEnvironment: false
+    applicationCredentials: ""
+
+###
 # Database cluster configuration
 cluster:
   # Number of instances
@@ -112,7 +147,7 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
-##
+###
 # Database cluster backup configuration
 backups:
   enabled: true
@@ -156,7 +191,7 @@ backups:
 
   retentionPolicy: "30d"
 
-##
+###
 # Database cluster PgBouncer configuration
 pooler:
   enabled: false

@@ -16,13 +16,22 @@ bootstrap:
   {{- end }}
 {{- else if eq .Values.mode "recovery" }}
   recovery:
+    {{- with .Values.recovery.pitrTarget.time }}
+    recoveryTarget:
+      targetTime: {{ . }}
+    {{- end }}
     {{- if eq .Values.recovery.method "backup" }}
     backup:
       name: {{ .Values.recovery.backupName }}
-      {{- with .Values.recovery.pitrTarget }}
-      recoveryTarget:
-        targetTime: {{ . }}
-      {{- end }}
+    {{- else if eq .Values.recovery.method "object_store" }}
+    source: objectStoreRecoveryCluster
     {{- end }}
 {{- end }}
+
+externalClusters:
+  - name: objectStoreRecoveryCluster
+    barmanObjectStore:
+      serverName: {{ .Values.recovery.serverName }}
+      {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretSuffix" "-recovery" -}}
+      {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
 {{- end }}

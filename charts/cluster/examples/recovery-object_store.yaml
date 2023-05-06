@@ -1,13 +1,21 @@
 mode: recovery
 
 recovery:
-  method: backup
-  backupName: "database-clustermarket-database-daily-backup-1683244800"
+  method: object_store
+  serverName: "cluster-name-to-recover-from"
+  provider: s3
+  s3:
+    region: "eu-west-1"
+    bucket: "db-backups"
+    path: "/v1-restore"
+    accessKey: "AWS_S3_ACCESS_KEY"
+    secretKey: "AWS_S3_SECRET_KEY"
 
 cluster:
   instances: 1
 
 backups:
+  endpointURL: "https://cm-db-chart-test.ams3.digitaloceanspaces.com"
   provider: s3
   s3:
     region: "eu-west-1"
