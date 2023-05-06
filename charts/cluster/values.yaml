@@ -117,17 +117,37 @@ cluster:
 backups:
   enabled: true
 
-  # TODO: Improve this section with support for all providers
+  # Overrides the provider specific default endpoint. Defaults to:
+  # S3: https://s3.<region>.amazonaws.com"
+  endpointURL: "" # Leave empty if using the default S3 endpoint
+
+  # Overrides the provider specific default path. Defaults to:
+  # S3: s3://<bucket><path>
+  # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path>
+  # Google: gs://<bucket><path>
+  destinationPath: ""
 
   provider: s3
   s3:
-    endpointURL: "" # Leave empty if using the default S3 endpoint
     region: ""
     bucket: ""
     path: "/"
     accessKey: ""
     secretKey: ""
-    destinationPath: "" # Optional, defaults to s3://<bucket><path>/<release-name>
+  azure:
+    path: "/"
+    connectionString: ""
+    storageAccount: ""
+    storageKey: ""
+    storageSasToken: ""
+    containerName: ""
+    serviceName: blob
+    inheritFromAzureAD: false
+  google:
+    path: "/"
+    bucket: ""
+    gkeEnvironment: false
+    applicationCredentials: ""
 
   scheduledBackups:
     - name: daily-backup # Daily at midnight

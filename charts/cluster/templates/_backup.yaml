@@ -11,15 +11,17 @@ backup:
       compression: gzip
       encryption: AES256
       jobs: 2
+    {{- if .Values.backups.endpointURL }}
+    endpointURL: {{ .Values.backups.endpointURL }}
+    {{- end }}
+    {{- if .Values.backups.destinationPath }}
+    destinationPath: {{ .Values.backups.destinationPath }}
+    {{- end }}
   {{- if eq .Values.backups.provider "s3" }}
-    {{- if .Values.backups.s3.endpointURL }}
-    endpointURL: {{ .Values.backups.s3.endpointURL }}
-    {{- else }}
+    {{- if empty .Values.backups.endpointURL }}
     endpointURL: "https://s3.{{ required "You need to specify S3 region if endpointURL is not specified." .Values.backups.s3.region }}.amazonaws.com"
     {{- end }}
-    {{- if .Values.backups.s3.destinationPath }}
-    destinationPath: {{ .Values.backups.s3.destinationPath }}
-    {{- else }}
+    {{- if empty .Values.backups.destinationPath }}
     destinationPath: "s3://{{ required "You need to specify S3 bucket if destinationPath is not specified." .Values.backups.s3.bucket }}{{ .Values.backups.s3.path }}"
     {{- end }}
     s3Credentials:
@@ -29,6 +31,32 @@ backup:
       secretAccessKey:
         name: {{ include "cluster.fullname" . }}-backup-s3-creds
         key: ACCESS_SECRET_KEY
+  {{- else if eq .Values.backups.provider "azure" }}
+    {{- if empty .Values.backups.destinationPath }}
+    destinationPath: "https://{{ required "You need to specify Azure storageAccount if endpointURL is not specified." .Values.backups.azure.storageAccount }}.{{ .Values.backups.azure.serviceName }}.core.windows.net/{{ .Values.backups.azure.containerName }}{{ .Values.backups.azure.path }}"
+    {{- end }}
+    azureCredentials:
+      connectionString:
+        name: {{ include "cluster.fullname" . }}-backup-azure-creds
+        key: AZURE_CONNECTION_STRING
+      storageAccount:
+        name: {{ include "cluster.fullname" . }}-backup-azure-creds
+        key: AZURE_STORAGE_ACCOUNT
+      storageKey:
+        name: {{ include "cluster.fullname" . }}-backup-azure-creds
+        key: AZURE_STORAGE_KEY
+      storageSasToken:
+        name: {{ include "cluster.fullname" . }}-backup-azure-creds
+        key: AZURE_STORAGE_SAS_TOKEN
+  {{- else if eq .Values.backups.provider "google" }}
+    {{- if empty .Values.backups.destinationPath }}
+    destinationPath: "gs://{{ required "You need to specify Google storage bucket if destinationPath is not specified." .Values.backups.google.bucket }}{{ .Values.backups.google.path }}"
+    {{- end }}
+    googleCredentials:
+      gkeEnvironment: {{ .Values.backups.google.gkeEnvironment }}
+      applicationCredentials:
+        name: {{ include "cluster.fullname" . }}-backup-google-creds
+        key: APPLICATION_CREDENTIALS
   {{- end }}
 {{- end }}
 {{- end }}

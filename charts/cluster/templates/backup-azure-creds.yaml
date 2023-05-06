@@ -1,0 +1,11 @@
+{{- if .Values.backups.enabled }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "cluster.fullname" . }}-backup-azure-creds
+data:
+  AZURE_CONNECTION_STRING: {{ .Values.backups.azure.connectionString | quote | b64enc }}
+  AZURE_STORAGE_ACCOUNT: {{ .Values.backups.azure.storageAccount | quote | b64enc }}
+  AZURE_STORAGE_KEY: {{ .Values.backups.azure.storageKey | quote | b64enc }}
+  AZURE_STORAGE_SAS_TOKEN: {{ .Values.backups.azure.storageSasToken | quote | b64enc }}
+{{- end }}
