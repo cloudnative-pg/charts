@@ -1,0 +1,8 @@
+{{- if .Values.backups.enabled }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "cluster.fullname" . }}-backup-google-creds
+data:
+  APPLICATION_CREDENTIALS: {{ .Values.backups.google.applicationCredentials | quote | b64enc }}
+{{- end }}
