@@ -19,9 +19,11 @@ spec:
   {{ if eq .Values.type "postgresql" -}}
   imageName: "ghcr.io/cloudnative-pg/postgresql:15.2"
   {{- else if eq .Values.type "postgis"  }}
-  imageName: "ghcr.io/cloudnative-pg/postgis:15.2"
+  imageName: "ghcr.io/cloudnative-pg/postgis:14"
   {{- else if eq .Values.type "timescaledb"  }}
   imageName: "timescaledb:2.10.2-pg15"
+  {{- else }}
+  {{ fail "Invalid cluster type!" }}
   {{- end }}
 {{- end }}
   imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}

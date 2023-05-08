@@ -7,7 +7,6 @@ UNDER DEVELOPMENT. DO NOT USE!
 * Azure Cloud Storage Recovery
 * Google Cloud Storage Recovery
 * Timescale
-* PostGIS
 
 ## TODO
 * IAM Role for S3 Service Account 
