@@ -84,6 +84,14 @@
         "imagePullSecrets": {
             "type": "array"
         },
+        "monitoring": {
+            "type": "object",
+            "properties": {
+                "podMonitorEnabled": {
+                    "type": "boolean"
+                }
+            }
+        },
         "monitoringQueriesConfigMap": {
             "type": "object",
             "properties": {

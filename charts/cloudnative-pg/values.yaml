@@ -126,6 +126,10 @@ tolerations: []
 # -- Affinity for the operator to be installed
 affinity: {}
 
+monitoring:
+  # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
+  podMonitorEnabled: false
+
 # Default monitoring queries
 monitoringQueriesConfigMap:
   # -- The name of the default monitoring configmap
