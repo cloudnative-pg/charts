@@ -6,7 +6,6 @@ UNDER DEVELOPMENT. DO NOT USE!
 * Google Cloud Storage Backups
 * Azure Cloud Storage Recovery
 * Google Cloud Storage Recovery
-* Timescale
 
 ## TODO
 * IAM Role for S3 Service Account 
