@@ -5,7 +5,6 @@ fullnameOverride: ""
 # Type of the CNPG database. Available types:
 # * `postgresql`
 # * `postgis` # TODO
-# * `timescaledb` # TODO
 type: postgresql
 
 ###
