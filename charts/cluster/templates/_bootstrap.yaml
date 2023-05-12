@@ -13,8 +13,6 @@ bootstrap:
       - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
     {{- else if eq .Values.type "timescaledb" }}
       - CREATE EXTENSION IF NOT EXISTS timescaledb;
-    {{-  else }}
-      {{ fail "Invalid cluster type!" }}
   {{- end }}
 {{- else if eq .Values.mode "recovery" }}
   recovery:
