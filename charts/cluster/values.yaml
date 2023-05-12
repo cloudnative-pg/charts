@@ -4,14 +4,14 @@ fullnameOverride: ""
 ###
 # Type of the CNPG database. Available types:
 # * `postgresql`
-# * `postgis` # TODO
+# * `postgis`
 type: postgresql
 
 ###
 # Cluster mode of operation. Available modes:
 # * `standalone` - default mode. Creates new or updates an existing CNPG cluster.
 # * `replica` - Creates a replica cluster from an existing CNPG cluster. # TODO
-# * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup. # TODO
+# * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup.
 mode: standalone
 
 ###
@@ -19,8 +19,8 @@ mode: standalone
 recovery:
   ##
   # Available recovery methods:
-  # * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. # TODO
-  # * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). # TODO
+  # * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.
+  # * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported).
   # * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to
   #        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO
   method: backup
