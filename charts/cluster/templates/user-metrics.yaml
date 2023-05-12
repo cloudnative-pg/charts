@@ -1,0 +1,17 @@
+{{- if not (empty .Values.cluster.monitoring.customQueries) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cluster.fullname" . }}-monitoring
+  labels:
+    cnpg.io/reload: ""
+    {{- include "cluster.labels" . | nindent 4 }}
+data:
+  custom-queries: |
+    {{- range .Values.cluster.monitoring.customQueries }}
+    {{ .name }}:
+      query: {{ .query | quote }}
+      metrics:
+        {{- .metrics | toYaml | nindent 8 }}
+    {{- end }}
+{{- end }}
