@@ -34,7 +34,7 @@ webhooks:
       namespace: {{ .Release.Namespace }}
       path: /mutate-postgresql-cnpg-io-v1-backup
       port: {{ .Values.service.port }}
-  failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
+  failurePolicy: {{ .Values.webhook.mutating.failurePolicy }}
   name: mbackup.kb.io
   rules:
   - apiGroups:
@@ -55,7 +55,7 @@ webhooks:
       namespace: {{ .Release.Namespace }}
       path: /mutate-postgresql-cnpg-io-v1-cluster
       port: {{ .Values.service.port }}
-  failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
+  failurePolicy: {{ .Values.webhook.mutating.failurePolicy }}
   name: mcluster.kb.io
   rules:
   - apiGroups:
@@ -76,7 +76,7 @@ webhooks:
       namespace: {{ .Release.Namespace }}
       path: /mutate-postgresql-cnpg-io-v1-scheduledbackup
       port: {{ .Values.service.port }}
-  failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
+  failurePolicy: {{ .Values.webhook.mutating.failurePolicy }}
   name: mscheduledbackup.kb.io
   rules:
   - apiGroups:
