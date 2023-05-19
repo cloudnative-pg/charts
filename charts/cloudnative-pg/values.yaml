@@ -30,8 +30,10 @@ nameOverride: ""
 fullnameOverride: ""
 
 crds:
+  # -- Specifies whether the CRDs should be created when installing the chart.
   create: true
 
+# -- The webhook configuration.
 webhook:
   port: 9443
   mutating:
@@ -45,41 +47,44 @@ webhook:
   readinessProbe:
     initialDelaySeconds: 3
 
-# Operator configuration
+# -- Operator configuration.
 config:
-  # -- Specifies whether the secret should be created
+  # -- Specifies whether the secret should be created.
   create: true
-  # -- Specifies whether it should be stored in a secret, instead of a configmap
+  # -- The name of the configmap/secret to use.
+  name: cnpg-controller-manager-config
+  # -- Specifies whether it should be stored in a secret, instead of a configmap.
   secret: false
-  # Examples:
+  # -- The content of the configmap/secret, see
+  # https://cloudnative-pg.io/documentation/current/operator_conf/#available-options
+  # for all the available options.
+  data: {}
   # INHERITED_ANNOTATIONS: categories
   # INHERITED_LABELS: environment, workload, app
+  # WATCH_NAMESPACE: namespace-a,namespace-b
 
-  data: {}
-  name: cnpg-controller-manager-config
-
-# -- Additinal arguments to be added to the operator's args list
+# -- Additinal arguments to be added to the operator's args list.
 additionalArgs: []
 
 serviceAccount:
-  # -- Specifies whether the service account should be created
+  # -- Specifies whether the service account should be created.
   create: true
   # -- The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # If not set and create is true, a name is generated using the fullname template.
   name: ""
 
 rbac:
-  # -- Specifies whether ClusterRole and ClusterRoleBinding should be created
+  # -- Specifies whether ClusterRole and ClusterRoleBinding should be created.
   create: true
 
-# -- Annotations to be added to all other resources
+# -- Annotations to be added to all other resources.
 commonAnnotations: {}
-# -- Annotations to be added to the pod
+# -- Annotations to be added to the pod.
 podAnnotations: {}
-# -- Labels to be added to the pod
+# -- Labels to be added to the pod.
 podLabels: {}
 
-# -- Container Security Context
+# -- Container Security Context.
 containerSecurityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
@@ -89,7 +94,7 @@ containerSecurityContext:
     drop:
       - "ALL"
 
-# -- Security Context for the whole pod
+# -- Security Context for the whole pod.
 podSecurityContext:
   runAsNonRoot: true
   seccompProfile:
@@ -117,13 +122,13 @@ resources: {}
   #   cpu: 100m
   #   memory: 100Mi
 
-# -- Nodeselector for the operator to be installed
+# -- Nodeselector for the operator to be installed.
 nodeSelector: {}
 
-# -- Tolerations for the operator to be installed
+# -- Tolerations for the operator to be installed.
 tolerations: []
 
-# -- Affinity for the operator to be installed
+# -- Affinity for the operator to be installed.
 affinity: {}
 
 monitoring:
@@ -132,9 +137,9 @@ monitoring:
 
 # Default monitoring queries
 monitoringQueriesConfigMap:
-  # -- The name of the default monitoring configmap
+  # -- The name of the default monitoring configmap.
   name: cnpg-default-monitoring
-  # -- A string representation of a YAML defining monitoring queries
+  # -- A string representation of a YAML defining monitoring queries.
   queries: |
     backends:
       query: |
