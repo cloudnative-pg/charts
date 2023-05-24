@@ -13,7 +13,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       -
         name: Get tag
         run: |
@@ -21,7 +21,7 @@ jobs:
       -
         name: Pull Request
         id: open-pr
-        uses: repo-sync/pull-request@v2.6.2
+        uses: repo-sync/pull-request@65785d95a5a466e46a9d0708933a3bd51bbf9dde # v2.6.2
         with:
           destination_branch: "main"
           github_token: ${{ secrets.GITHUB_TOKEN }}
