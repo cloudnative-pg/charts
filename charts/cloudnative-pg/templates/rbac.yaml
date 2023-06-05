@@ -389,8 +389,6 @@ metadata:
     {{- include "cloudnative-pg.labels" . | nindent 4 }}
     {{- if .Values.rbac.aggregateClusterRoles }}
     rbac.authorization.k8s.io/aggregate-to-view: "true"
-    rbac.authorization.k8s.io/aggregate-to-edit: "true"
-    rbac.authorization.k8s.io/aggregate-to-admin: "true"
     {{- end }}
 rules:
 - apiGroups:
@@ -413,7 +411,6 @@ metadata:
     {{- include "cloudnative-pg.labels" . | nindent 4 }}
     {{- if .Values.rbac.aggregateClusterRoles }}
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
-    rbac.authorization.k8s.io/aggregate-to-admin: "true"
     {{- end }}
 rules:
 - apiGroups:
