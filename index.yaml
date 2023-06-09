@@ -3,9 +3,9 @@ entries:
   cloudnative-pg:
   - apiVersion: v2
     appVersion: 1.20.0
-    created: "2023-04-28T09:06:26.059679117Z"
+    created: "2023-06-09T14:29:02.983294969Z"
     description: CloudNativePG Helm Chart
-    digest: be6e96e572e9071d54df416bcc9a33478576f9500e1731a55dfdb421635f17e9
+    digest: bee8133154b041f5cab2473ba9e116d1b251810dc68d8d6a1f6db61c44caa968
     home: https://cloudnative-pg.io
     icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
     keywords:
@@ -493,4 +493,4 @@ entries:
     urls:
     - https://cloudnative-pg.github.io/charts/pgbench-0.1.0.tgz
     version: 0.1.0
-generated: "2023-04-28T09:06:26.051395108Z"
+generated: "2023-06-09T14:29:02.974241333Z"
