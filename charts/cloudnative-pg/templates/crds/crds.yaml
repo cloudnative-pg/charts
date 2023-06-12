@@ -3,9 +3,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.11.3
+    controller-gen.kubebuilder.io/version: v0.12.0
     helm.sh/resource-policy: keep
-  creationTimestamp: null
   name: backups.postgresql.cnpg.io
 spec:
   group: postgresql.cnpg.io
@@ -311,9 +310,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.11.3
+    controller-gen.kubebuilder.io/version: v0.12.0
     helm.sh/resource-policy: keep
-  creationTimestamp: null
   name: clusters.postgresql.cnpg.io
 spec:
   group: postgresql.cnpg.io
@@ -1593,6 +1591,12 @@ spec:
                             items:
                               type: string
                             type: array
+                          schemaOnly:
+                            default: false
+                            description: 'When set to true, only the `pre-data` and
+                              `post-data` sections of `pg_restore` are invoked, avoiding
+                              data import. Default: `false`.'
+                            type: boolean
                           source:
                             description: The source of the import
                             properties:
@@ -1758,7 +1762,9 @@ spec:
                     description: Bootstrap the cluster from a backup
                     properties:
                       backup:
-                        description: The backup we need to restore
+                        description: The backup object containing the physical base
+                          backup from which to initiate the recovery procedure. Mutually
+                          exclusive with `source` and `volumeSnapshots`.
                         properties:
                           endpointCA:
                             description: EndpointCA store the CA bundle of the barman
@@ -1848,8 +1854,61 @@ spec:
                         description: The external cluster whose backup we will restore.
                           This is also used as the name of the folder under which
                           the backup is stored, so it must be set to the name of the
-                          source cluster
+                          source cluster Mutually exclusive with `backup` and `volumeSnapshots`.
                         type: string
+                      volumeSnapshots:
+                        description: The static PVC data source(s) from which to initiate
+                          the recovery procedure. Currently supporting `VolumeSnapshot`
+                          and `PersistentVolumeClaim` resources that map an existing
+                          PVC group, compatible with CloudNativePG, and taken with
+                          a cold backup copy on a fenced Postgres instance (limitation
+                          which will be removed in the future when online backup will
+                          be implemented). Mutually exclusive with `backup` and `source`.
+                        properties:
+                          storage:
+                            description: Configuration of the storage of the instances
+                            properties:
+                              apiGroup:
+                                description: APIGroup is the group for the resource
+                                  being referenced. If APIGroup is not specified,
+                                  the specified Kind must be in the core API group.
+                                  For any other third-party types, APIGroup is required.
+                                type: string
+                              kind:
+                                description: Kind is the type of resource being referenced
+                                type: string
+                              name:
+                                description: Name is the name of resource being referenced
+                                type: string
+                            required:
+                            - kind
+                            - name
+                            type: object
+                            x-kubernetes-map-type: atomic
+                          walStorage:
+                            description: Configuration of the storage for PostgreSQL
+                              WAL (Write-Ahead Log)
+                            properties:
+                              apiGroup:
+                                description: APIGroup is the group for the resource
+                                  being referenced. If APIGroup is not specified,
+                                  the specified Kind must be in the core API group.
+                                  For any other third-party types, APIGroup is required.
+                                type: string
+                              kind:
+                                description: Kind is the type of resource being referenced
+                                type: string
+                              name:
+                                description: Name is the name of resource being referenced
+                                type: string
+                            required:
+                            - kind
+                            - name
+                            type: object
+                            x-kubernetes-map-type: atomic
+                        required:
+                        - storage
+                        type: object
                     type: object
                 type: object
               certificates:
@@ -2521,6 +2580,10 @@ spec:
                             and grant or revoke membership in other roles. Default
                             is `false`.
                           type: boolean
+                        disablePassword:
+                          description: DisablePassword indicates that a role's password
+                            should be set to NULL in Postgres
+                          type: boolean
                         ensure:
                           default: present
                           description: Ensure the role is `present` or `absent` -
@@ -2553,7 +2616,8 @@ spec:
                           type: string
                         passwordSecret:
                           description: Secret containing the password of the role
-                            (if present)
+                            (if present) If null, the password will be ignored unless
+                            DisablePassword is set
                           properties:
                             name:
                               description: Name of the referent.
@@ -2805,10 +2869,10 @@ spec:
                 type: string
               primaryUpdateStrategy:
                 default: unsupervised
-                description: 'Strategy to follow to upgrade the primary server during
-                  a rolling update procedure, after all replicas have been successfully
-                  updated: it can be automated (`unsupervised` - default) or manual
-                  (`supervised`)'
+                description: 'Deployment strategy to follow to upgrade the primary
+                  server during a rolling update procedure, after all replicas have
+                  been successfully updated: it can be automated (`unsupervised` -
+                  default) or manual (`supervised`)'
                 enum:
                 - unsupervised
                 - supervised
@@ -3153,9 +3217,15 @@ spec:
                     description: 'Requests describes the minimum amount of compute
                       resources required. If Requests is omitted for a container,
                       it defaults to Limits if that is explicitly specified, otherwise
-                      to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                      to an implementation-defined value. Requests cannot exceed Limits.
+                      More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                     type: object
                 type: object
+              schedulerName:
+                description: 'If specified, the pod will be dispatched by specified
+                  Kubernetes scheduler. If not specified, the pod will be dispatched
+                  by the default scheduler. More info: https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/'
+                type: string
               seccompProfile:
                 description: 'The SeccompProfile applied to every Pod and Container.
                   Defaults to: `RuntimeDefault`'
@@ -3365,7 +3435,7 @@ spec:
                               compute resources required. If Requests is omitted for
                               a container, it defaults to Limits if that is explicitly
                               specified, otherwise to an implementation-defined value.
-                              More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                              Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                             type: object
                         type: object
                       selector:
@@ -3463,6 +3533,179 @@ spec:
                   an infinite delay
                 format: int32
                 type: integer
+              topologySpreadConstraints:
+                description: 'TopologySpreadConstraints specifies how to spread matching
+                  pods among the given topology. More info: https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/'
+                items:
+                  description: TopologySpreadConstraint specifies how to spread matching
+                    pods among the given topology.
+                  properties:
+                    labelSelector:
+                      description: LabelSelector is used to find matching pods. Pods
+                        that match this label selector are counted to determine the
+                        number of pods in their corresponding topology domain.
+                      properties:
+                        matchExpressions:
+                          description: matchExpressions is a list of label selector
+                            requirements. The requirements are ANDed.
+                          items:
+                            description: A label selector requirement is a selector
+                              that contains values, a key, and an operator that relates
+                              the key and values.
+                            properties:
+                              key:
+                                description: key is the label key that the selector
+                                  applies to.
+                                type: string
+                              operator:
+                                description: operator represents a key's relationship
+                                  to a set of values. Valid operators are In, NotIn,
+                                  Exists and DoesNotExist.
+                                type: string
+                              values:
+                                description: values is an array of string values.
+                                  If the operator is In or NotIn, the values array
+                                  must be non-empty. If the operator is Exists or
+                                  DoesNotExist, the values array must be empty. This
+                                  array is replaced during a strategic merge patch.
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                            - key
+                            - operator
+                            type: object
+                          type: array
+                        matchLabels:
+                          additionalProperties:
+                            type: string
+                          description: matchLabels is a map of {key,value} pairs.
+                            A single {key,value} in the matchLabels map is equivalent
+                            to an element of matchExpressions, whose key field is
+                            "key", the operator is "In", and the values array contains
+                            only "value". The requirements are ANDed.
+                          type: object
+                      type: object
+                      x-kubernetes-map-type: atomic
+                    matchLabelKeys:
+                      description: "MatchLabelKeys is a set of pod label keys to select
+                        the pods over which spreading will be calculated. The keys
+                        are used to lookup values from the incoming pod labels, those
+                        key-value labels are ANDed with labelSelector to select the
+                        group of existing pods over which spreading will be calculated
+                        for the incoming pod. The same key is forbidden to exist in
+                        both MatchLabelKeys and LabelSelector. MatchLabelKeys cannot
+                        be set when LabelSelector isn't set. Keys that don't exist
+                        in the incoming pod labels will be ignored. A null or empty
+                        list means only match against labelSelector. \n This is a
+                        beta field and requires the MatchLabelKeysInPodTopologySpread
+                        feature gate to be enabled (enabled by default)."
+                      items:
+                        type: string
+                      type: array
+                      x-kubernetes-list-type: atomic
+                    maxSkew:
+                      description: 'MaxSkew describes the degree to which pods may
+                        be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`,
+                        it is the maximum permitted difference between the number
+                        of matching pods in the target topology and the global minimum.
+                        The global minimum is the minimum number of matching pods
+                        in an eligible domain or zero if the number of eligible domains
+                        is less than MinDomains. For example, in a 3-zone cluster,
+                        MaxSkew is set to 1, and pods with the same labelSelector
+                        spread as 2/2/1: In this case, the global minimum is 1. |
+                        zone1 | zone2 | zone3 | |  P P  |  P P  |   P   | - if MaxSkew
+                        is 1, incoming pod can only be scheduled to zone3 to become
+                        2/2/2; scheduling it onto zone1(zone2) would make the ActualSkew(3-1)
+                        on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming
+                        pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`,
+                        it is used to give higher precedence to topologies that satisfy
+                        it. It''s a required field. Default value is 1 and 0 is not
+                        allowed.'
+                      format: int32
+                      type: integer
+                    minDomains:
+                      description: "MinDomains indicates a minimum number of eligible
+                        domains. When the number of eligible domains with matching
+                        topology keys is less than minDomains, Pod Topology Spread
+                        treats \"global minimum\" as 0, and then the calculation of
+                        Skew is performed. And when the number of eligible domains
+                        with matching topology keys equals or greater than minDomains,
+                        this value has no effect on scheduling. As a result, when
+                        the number of eligible domains is less than minDomains, scheduler
+                        won't schedule more than maxSkew Pods to those domains. If
+                        value is nil, the constraint behaves as if MinDomains is equal
+                        to 1. Valid values are integers greater than 0. When value
+                        is not nil, WhenUnsatisfiable must be DoNotSchedule. \n For
+                        example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains
+                        is set to 5 and pods with the same labelSelector spread as
+                        2/2/2: | zone1 | zone2 | zone3 | |  P P  |  P P  |  P P  |
+                        The number of domains is less than 5(MinDomains), so \"global
+                        minimum\" is treated as 0. In this situation, new pod with
+                        the same labelSelector cannot be scheduled, because computed
+                        skew will be 3(3 - 0) if new Pod is scheduled to any of the
+                        three zones, it will violate MaxSkew. \n This is a beta field
+                        and requires the MinDomainsInPodTopologySpread feature gate
+                        to be enabled (enabled by default)."
+                      format: int32
+                      type: integer
+                    nodeAffinityPolicy:
+                      description: "NodeAffinityPolicy indicates how we will treat
+                        Pod's nodeAffinity/nodeSelector when calculating pod topology
+                        spread skew. Options are: - Honor: only nodes matching nodeAffinity/nodeSelector
+                        are included in the calculations. - Ignore: nodeAffinity/nodeSelector
+                        are ignored. All nodes are included in the calculations. \n
+                        If this value is nil, the behavior is equivalent to the Honor
+                        policy. This is a beta-level feature default enabled by the
+                        NodeInclusionPolicyInPodTopologySpread feature flag."
+                      type: string
+                    nodeTaintsPolicy:
+                      description: "NodeTaintsPolicy indicates how we will treat node
+                        taints when calculating pod topology spread skew. Options
+                        are: - Honor: nodes without taints, along with tainted nodes
+                        for which the incoming pod has a toleration, are included.
+                        - Ignore: node taints are ignored. All nodes are included.
+                        \n If this value is nil, the behavior is equivalent to the
+                        Ignore policy. This is a beta-level feature default enabled
+                        by the NodeInclusionPolicyInPodTopologySpread feature flag."
+                      type: string
+                    topologyKey:
+                      description: TopologyKey is the key of node labels. Nodes that
+                        have a label with this key and identical values are considered
+                        to be in the same topology. We consider each <key, value>
+                        as a "bucket", and try to put balanced number of pods into
+                        each bucket. We define a domain as a particular instance of
+                        a topology. Also, we define an eligible domain as a domain
+                        whose nodes meet the requirements of nodeAffinityPolicy and
+                        nodeTaintsPolicy. e.g. If TopologyKey is "kubernetes.io/hostname",
+                        each Node is a domain of that topology. And, if TopologyKey
+                        is "topology.kubernetes.io/zone", each zone is a domain of
+                        that topology. It's a required field.
+                      type: string
+                    whenUnsatisfiable:
+                      description: 'WhenUnsatisfiable indicates how to deal with a
+                        pod if it doesn''t satisfy the spread constraint. - DoNotSchedule
+                        (default) tells the scheduler not to schedule it. - ScheduleAnyway
+                        tells the scheduler to schedule the pod in any location, but
+                        giving higher precedence to topologies that would help reduce
+                        the skew. A constraint is considered "Unsatisfiable" for an
+                        incoming pod if and only if every possible node assignment
+                        for that pod would violate "MaxSkew" on some topology. For
+                        example, in a 3-zone cluster, MaxSkew is set to 1, and pods
+                        with the same labelSelector spread as 3/1/1: | zone1 | zone2
+                        | zone3 | | P P P |   P   |   P   | If WhenUnsatisfiable is
+                        set to DoNotSchedule, incoming pod can only be scheduled to
+                        zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on
+                        zone2(zone3) satisfies MaxSkew(1). In other words, the cluster
+                        can still be imbalanced, but scheduler won''t make it *more*
+                        imbalanced. It''s a required field.'
+                      type: string
+                  required:
+                  - maxSkew
+                  - topologyKey
+                  - whenUnsatisfiable
+                  type: object
+                type: array
               walStorage:
                 description: Configuration of the storage for PostgreSQL WAL (Write-Ahead
                   Log)
@@ -3612,7 +3855,7 @@ spec:
                               compute resources required. If Requests is omitted for
                               a container, it defaults to Limits if that is explicitly
                               specified, otherwise to an implementation-defined value.
-                              More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                              Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                             type: object
                         type: object
                       selector:
@@ -4097,9 +4340,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.11.3
+    controller-gen.kubebuilder.io/version: v0.12.0
     helm.sh/resource-policy: keep
-  creationTimestamp: null
   name: poolers.postgresql.cnpg.io
 spec:
   group: postgresql.cnpg.io
@@ -4151,11 +4393,68 @@ spec:
                 required:
                 - name
                 type: object
+              deploymentStrategy:
+                description: The deployment strategy to use for pgbouncer to replace
+                  existing pods with new ones
+                properties:
+                  rollingUpdate:
+                    description: 'Rolling update config params. Present only if DeploymentStrategyType
+                      = RollingUpdate. --- TODO: Update this to follow our convention
+                      for oneOf, whatever we decide it to be.'
+                    properties:
+                      maxSurge:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: 'The maximum number of pods that can be scheduled
+                          above the desired number of pods. Value can be an absolute
+                          number (ex: 5) or a percentage of desired pods (ex: 10%).
+                          This can not be 0 if MaxUnavailable is 0. Absolute number
+                          is calculated from percentage by rounding up. Defaults to
+                          25%. Example: when this is set to 30%, the new ReplicaSet
+                          can be scaled up immediately when the rolling update starts,
+                          such that the total number of old and new pods do not exceed
+                          130% of desired pods. Once old pods have been killed, new
+                          ReplicaSet can be scaled up further, ensuring that total
+                          number of pods running at any time during the update is
+                          at most 130% of desired pods.'
+                        x-kubernetes-int-or-string: true
+                      maxUnavailable:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: 'The maximum number of pods that can be unavailable
+                          during the update. Value can be an absolute number (ex:
+                          5) or a percentage of desired pods (ex: 10%). Absolute number
+                          is calculated from percentage by rounding down. This can
+                          not be 0 if MaxSurge is 0. Defaults to 25%. Example: when
+                          this is set to 30%, the old ReplicaSet can be scaled down
+                          to 70% of desired pods immediately when the rolling update
+                          starts. Once new pods are ready, old ReplicaSet can be scaled
+                          down further, followed by scaling up the new ReplicaSet,
+                          ensuring that the total number of pods available at all
+                          times during the update is at least 70% of desired pods.'
+                        x-kubernetes-int-or-string: true
+                    type: object
+                  type:
+                    description: Type of deployment. Can be "Recreate" or "RollingUpdate".
+                      Default is RollingUpdate.
+                    type: string
+                type: object
               instances:
                 default: 1
                 description: The number of replicas we want
                 format: int32
                 type: integer
+              monitoring:
+                description: The configuration of the monitoring infrastructure of
+                  this pooler.
+                properties:
+                  enablePodMonitor:
+                    default: false
+                    description: Enable or disable the `PodMonitor`
+                    type: boolean
+                type: object
               pgbouncer:
                 description: The PgBouncer configuration
                 properties:
@@ -5421,7 +5720,10 @@ spec:
                                               header to be used in HTTP probes
                                             properties:
                                               name:
-                                                description: The header field name
+                                                description: The header field name.
+                                                  This will be canonicalized upon
+                                                  output, so case-variant names will
+                                                  be understood as the same header.
                                                 type: string
                                               value:
                                                 description: The header field value
@@ -5525,7 +5827,10 @@ spec:
                                               header to be used in HTTP probes
                                             properties:
                                               name:
-                                                description: The header field name
+                                                description: The header field name.
+                                                  This will be canonicalized upon
+                                                  output, so case-variant names will
+                                                  be understood as the same header.
                                                 type: string
                                               value:
                                                 description: The header field value
@@ -5610,8 +5915,7 @@ spec:
                                   type: integer
                                 grpc:
                                   description: GRPC specifies an action involving
-                                    a GRPC port. This is a beta field and requires
-                                    enabling GRPCContainerProbe feature gate.
+                                    a GRPC port.
                                   properties:
                                     port:
                                       description: Port number of the gRPC service.
@@ -5645,7 +5949,10 @@ spec:
                                           header to be used in HTTP probes
                                         properties:
                                           name:
-                                            description: The header field name
+                                            description: The header field name. This
+                                              will be canonicalized upon output, so
+                                              case-variant names will be understood
+                                              as the same header.
                                             type: string
                                           value:
                                             description: The header field value
@@ -5822,8 +6129,7 @@ spec:
                                   type: integer
                                 grpc:
                                   description: GRPC specifies an action involving
-                                    a GRPC port. This is a beta field and requires
-                                    enabling GRPCContainerProbe feature gate.
+                                    a GRPC port.
                                   properties:
                                     port:
                                       description: Port number of the gRPC service.
@@ -5857,7 +6163,10 @@ spec:
                                           header to be used in HTTP probes
                                         properties:
                                           name:
-                                            description: The header field name
+                                            description: The header field name. This
+                                              will be canonicalized upon output, so
+                                              case-variant names will be understood
+                                              as the same header.
                                             type: string
                                           value:
                                             description: The header field value
@@ -5949,6 +6258,28 @@ spec:
                                   format: int32
                                   type: integer
                               type: object
+                            resizePolicy:
+                              description: Resources resize policy for the container.
+                              items:
+                                description: ContainerResizePolicy represents resource
+                                  resize policy for the container.
+                                properties:
+                                  resourceName:
+                                    description: 'Name of the resource to which this
+                                      resource resize policy applies. Supported values:
+                                      cpu, memory.'
+                                    type: string
+                                  restartPolicy:
+                                    description: Restart policy to apply when specified
+                                      resource is resized. If not specified, it defaults
+                                      to NotRequired.
+                                    type: string
+                                required:
+                                - resourceName
+                                - restartPolicy
+                                type: object
+                              type: array
+                              x-kubernetes-list-type: atomic
                             resources:
                               description: 'Compute Resources required by this container.
                                 Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
@@ -5998,7 +6329,8 @@ spec:
                                     of compute resources required. If Requests is
                                     omitted for a container, it defaults to Limits
                                     if that is explicitly specified, otherwise to
-                                    an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                    an implementation-defined value. Requests cannot
+                                    exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                   type: object
                               type: object
                             securityContext:
@@ -6224,8 +6556,7 @@ spec:
                                   type: integer
                                 grpc:
                                   description: GRPC specifies an action involving
-                                    a GRPC port. This is a beta field and requires
-                                    enabling GRPCContainerProbe feature gate.
+                                    a GRPC port.
                                   properties:
                                     port:
                                       description: Port number of the gRPC service.
@@ -6259,7 +6590,10 @@ spec:
                                           header to be used in HTTP probes
                                         properties:
                                           name:
-                                            description: The header field name
+                                            description: The header field name. This
+                                              will be canonicalized upon output, so
+                                              case-variant names will be understood
+                                              as the same header.
                                             type: string
                                           value:
                                             description: The header field value
@@ -6802,7 +7136,10 @@ spec:
                                               header to be used in HTTP probes
                                             properties:
                                               name:
-                                                description: The header field name
+                                                description: The header field name.
+                                                  This will be canonicalized upon
+                                                  output, so case-variant names will
+                                                  be understood as the same header.
                                                 type: string
                                               value:
                                                 description: The header field value
@@ -6906,7 +7243,10 @@ spec:
                                               header to be used in HTTP probes
                                             properties:
                                               name:
-                                                description: The header field name
+                                                description: The header field name.
+                                                  This will be canonicalized upon
+                                                  output, so case-variant names will
+                                                  be understood as the same header.
                                                 type: string
                                               value:
                                                 description: The header field value
@@ -6989,8 +7329,7 @@ spec:
                                   type: integer
                                 grpc:
                                   description: GRPC specifies an action involving
-                                    a GRPC port. This is a beta field and requires
-                                    enabling GRPCContainerProbe feature gate.
+                                    a GRPC port.
                                   properties:
                                     port:
                                       description: Port number of the gRPC service.
@@ -7024,7 +7363,10 @@ spec:
                                           header to be used in HTTP probes
                                         properties:
                                           name:
-                                            description: The header field name
+                                            description: The header field name. This
+                                              will be canonicalized upon output, so
+                                              case-variant names will be understood
+                                              as the same header.
                                             type: string
                                           value:
                                             description: The header field value
@@ -7192,8 +7534,7 @@ spec:
                                   type: integer
                                 grpc:
                                   description: GRPC specifies an action involving
-                                    a GRPC port. This is a beta field and requires
-                                    enabling GRPCContainerProbe feature gate.
+                                    a GRPC port.
                                   properties:
                                     port:
                                       description: Port number of the gRPC service.
@@ -7227,7 +7568,10 @@ spec:
                                           header to be used in HTTP probes
                                         properties:
                                           name:
-                                            description: The header field name
+                                            description: The header field name. This
+                                              will be canonicalized upon output, so
+                                              case-variant names will be understood
+                                              as the same header.
                                             type: string
                                           value:
                                             description: The header field value
@@ -7319,6 +7663,28 @@ spec:
                                   format: int32
                                   type: integer
                               type: object
+                            resizePolicy:
+                              description: Resources resize policy for the container.
+                              items:
+                                description: ContainerResizePolicy represents resource
+                                  resize policy for the container.
+                                properties:
+                                  resourceName:
+                                    description: 'Name of the resource to which this
+                                      resource resize policy applies. Supported values:
+                                      cpu, memory.'
+                                    type: string
+                                  restartPolicy:
+                                    description: Restart policy to apply when specified
+                                      resource is resized. If not specified, it defaults
+                                      to NotRequired.
+                                    type: string
+                                required:
+                                - resourceName
+                                - restartPolicy
+                                type: object
+                              type: array
+                              x-kubernetes-list-type: atomic
                             resources:
                               description: Resources are not allowed for ephemeral
                                 containers. Ephemeral containers use spare resources
@@ -7369,7 +7735,8 @@ spec:
                                     of compute resources required. If Requests is
                                     omitted for a container, it defaults to Limits
                                     if that is explicitly specified, otherwise to
-                                    an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                    an implementation-defined value. Requests cannot
+                                    exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                   type: object
                               type: object
                             securityContext:
@@ -7587,8 +7954,7 @@ spec:
                                   type: integer
                                 grpc:
                                   description: GRPC specifies an action involving
-                                    a GRPC port. This is a beta field and requires
-                                    enabling GRPCContainerProbe feature gate.
+                                    a GRPC port.
                                   properties:
                                     port:
                                       description: Port number of the gRPC service.
@@ -7622,7 +7988,10 @@ spec:
                                           header to be used in HTTP probes
                                         properties:
                                           name:
-                                            description: The header field name
+                                            description: The header field name. This
+                                              will be canonicalized upon output, so
+                                              case-variant names will be understood
+                                              as the same header.
                                             type: string
                                           value:
                                             description: The header field value
@@ -8196,7 +8565,10 @@ spec:
                                               header to be used in HTTP probes
                                             properties:
                                               name:
-                                                description: The header field name
+                                                description: The header field name.
+                                                  This will be canonicalized upon
+                                                  output, so case-variant names will
+                                                  be understood as the same header.
                                                 type: string
                                               value:
                                                 description: The header field value
@@ -8300,7 +8672,10 @@ spec:
                                               header to be used in HTTP probes
                                             properties:
                                               name:
-                                                description: The header field name
+                                                description: The header field name.
+                                                  This will be canonicalized upon
+                                                  output, so case-variant names will
+                                                  be understood as the same header.
                                                 type: string
                                               value:
                                                 description: The header field value
@@ -8385,8 +8760,7 @@ spec:
                                   type: integer
                                 grpc:
                                   description: GRPC specifies an action involving
-                                    a GRPC port. This is a beta field and requires
-                                    enabling GRPCContainerProbe feature gate.
+                                    a GRPC port.
                                   properties:
                                     port:
                                       description: Port number of the gRPC service.
@@ -8420,7 +8794,10 @@ spec:
                                           header to be used in HTTP probes
                                         properties:
                                           name:
-                                            description: The header field name
+                                            description: The header field name. This
+                                              will be canonicalized upon output, so
+                                              case-variant names will be understood
+                                              as the same header.
                                             type: string
                                           value:
                                             description: The header field value
@@ -8597,8 +8974,7 @@ spec:
                                   type: integer
                                 grpc:
                                   description: GRPC specifies an action involving
-                                    a GRPC port. This is a beta field and requires
-                                    enabling GRPCContainerProbe feature gate.
+                                    a GRPC port.
                                   properties:
                                     port:
                                       description: Port number of the gRPC service.
@@ -8632,7 +9008,10 @@ spec:
                                           header to be used in HTTP probes
                                         properties:
                                           name:
-                                            description: The header field name
+                                            description: The header field name. This
+                                              will be canonicalized upon output, so
+                                              case-variant names will be understood
+                                              as the same header.
                                             type: string
                                           value:
                                             description: The header field value
@@ -8724,6 +9103,28 @@ spec:
                                   format: int32
                                   type: integer
                               type: object
+                            resizePolicy:
+                              description: Resources resize policy for the container.
+                              items:
+                                description: ContainerResizePolicy represents resource
+                                  resize policy for the container.
+                                properties:
+                                  resourceName:
+                                    description: 'Name of the resource to which this
+                                      resource resize policy applies. Supported values:
+                                      cpu, memory.'
+                                    type: string
+                                  restartPolicy:
+                                    description: Restart policy to apply when specified
+                                      resource is resized. If not specified, it defaults
+                                      to NotRequired.
+                                    type: string
+                                required:
+                                - resourceName
+                                - restartPolicy
+                                type: object
+                              type: array
+                              x-kubernetes-list-type: atomic
                             resources:
                               description: 'Compute Resources required by this container.
                                 Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
@@ -8773,7 +9174,8 @@ spec:
                                     of compute resources required. If Requests is
                                     omitted for a container, it defaults to Limits
                                     if that is explicitly specified, otherwise to
-                                    an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                    an implementation-defined value. Requests cannot
+                                    exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                   type: object
                               type: object
                             securityContext:
@@ -8999,8 +9401,7 @@ spec:
                                   type: integer
                                 grpc:
                                   description: GRPC specifies an action involving
-                                    a GRPC port. This is a beta field and requires
-                                    enabling GRPCContainerProbe feature gate.
+                                    a GRPC port.
                                   properties:
                                     port:
                                       description: Port number of the gRPC service.
@@ -9034,7 +9435,10 @@ spec:
                                           header to be used in HTTP probes
                                         properties:
                                           name:
-                                            description: The header field name
+                                            description: The header field name. This
+                                              will be canonicalized upon output, so
+                                              case-variant names will be understood
+                                              as the same header.
                                             type: string
                                           value:
                                             description: The header field value
@@ -9406,8 +9810,9 @@ spec:
                         x-kubernetes-list-type: map
                       restartPolicy:
                         description: 'Restart policy for all containers within the
-                          pod. One of Always, OnFailure, Never. Default to Always.
-                          More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy'
+                          pod. One of Always, OnFailure, Never. In some contexts,
+                          only a subset of those values may be permitted. Default
+                          to Always. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy'
                         type: string
                       runtimeClassName:
                         description: 'RuntimeClassName refers to a RuntimeClass object
@@ -9425,10 +9830,12 @@ spec:
                         type: string
                       schedulingGates:
                         description: "SchedulingGates is an opaque list of values
-                          that if specified will block scheduling the pod. More info:
-                          \ https://git.k8s.io/enhancements/keps/sig-scheduling/3521-pod-scheduling-readiness.
-                          \n This is an alpha-level feature enabled by PodSchedulingReadiness
-                          feature gate."
+                          that if specified will block scheduling the pod. If schedulingGates
+                          is not empty, the pod will stay in the SchedulingGated state
+                          and the scheduler will not attempt to schedule the pod.
+                          \n SchedulingGates can only be set at pod creation time,
+                          and be removed only afterwards. \n This is a beta feature
+                          enabled by the PodSchedulingReadiness feature gate."
                         items:
                           description: PodSchedulingGate is associated to a Pod to
                             guard its scheduling.
@@ -9777,15 +10184,19 @@ spec:
                               type: object
                               x-kubernetes-map-type: atomic
                             matchLabelKeys:
-                              description: MatchLabelKeys is a set of pod label keys
+                              description: "MatchLabelKeys is a set of pod label keys
                                 to select the pods over which spreading will be calculated.
                                 The keys are used to lookup values from the incoming
                                 pod labels, those key-value labels are ANDed with
                                 labelSelector to select the group of existing pods
                                 over which spreading will be calculated for the incoming
-                                pod. Keys that don't exist in the incoming pod labels
-                                will be ignored. A null or empty list means only match
-                                against labelSelector.
+                                pod. The same key is forbidden to exist in both MatchLabelKeys
+                                and LabelSelector. MatchLabelKeys cannot be set when
+                                LabelSelector isn't set. Keys that don't exist in
+                                the incoming pod labels will be ignored. A null or
+                                empty list means only match against labelSelector.
+                                \n This is a beta field and requires the MatchLabelKeysInPodTopologySpread
+                                feature gate to be enabled (enabled by default)."
                               items:
                                 type: string
                               type: array
@@ -10328,7 +10739,7 @@ spec:
                                     be the minimum value between the SizeLimit specified
                                     here and the sum of memory limits of all containers
                                     in a pod. The default is nil which means that
-                                    the limit is undefined. More info: http://kubernetes.io/docs/user-guide/volumes#emptydir'
+                                    the limit is undefined. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir'
                                   pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                   x-kubernetes-int-or-string: true
                               type: object
@@ -10567,7 +10978,8 @@ spec:
                                                 a container, it defaults to Limits
                                                 if that is explicitly specified, otherwise
                                                 to an implementation-defined value.
-                                                More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                                Requests cannot exceed Limits. More
+                                                info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                               type: object
                                           type: object
                                         selector:
@@ -11690,9 +12102,8 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.11.3
+    controller-gen.kubebuilder.io/version: v0.12.0
     helm.sh/resource-policy: keep
-  creationTimestamp: null
   name: scheduledbackups.postgresql.cnpg.io
 spec:
   group: postgresql.cnpg.io
