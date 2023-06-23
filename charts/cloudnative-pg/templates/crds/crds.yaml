@@ -1915,14 +1915,13 @@ spec:
                 description: The configuration for the CA and related certificates
                 properties:
                   clientCASecret:
-                    description: 'The secret containing the Client CA certificate.
+                    description: "The secret containing the Client CA certificate.
                       If not defined, a new secret will be created with a self-signed
-                      CA and will be used to generate all the client certificates.<br
-                      /> <br /> Contains:<br /> <br /> - `ca.crt`: CA that should
+                      CA and will be used to generate all the client certificates.\n\n Contains:\n \n - `ca.crt`: CA that should
                       be used to validate the client certificates, used as `ssl_ca_file`
-                      of all the instances.<br /> - `ca.key`: key used to generate
+                      of all the instances.\n - `ca.key`: key used to generate
                       client certificates, if ReplicationTLSSecret is provided, this
-                      can be omitted.<br />'
+                      can be omitted.\n"
                     type: string
                   replicationTLSSecret:
                     description: The secret of type kubernetes.io/tls containing the
@@ -1937,14 +1936,14 @@ spec:
                       type: string
                     type: array
                   serverCASecret:
-                    description: 'The secret containing the Server CA certificate.
+                    description: "The secret containing the Server CA certificate.
                       If not defined, a new secret will be created with a self-signed
-                      CA and will be used to generate the TLS certificate ServerTLSSecret.<br
-                      /> <br /> Contains:<br /> <br /> - `ca.crt`: CA that should
+                      CA and will be used to generate the TLS certificate ServerTLSSecret.\n
+                      \n Contains:\n \n - `ca.crt`: CA that should
                       be used to validate the server certificate, used as `sslrootcert`
-                      in client connection strings.<br /> - `ca.key`: key used to
+                      in client connection strings.\n - `ca.key`: key used to
                       generate Server SSL certs, if ServerTLSSecret is provided, this
-                      can be omitted.<br />'
+                      can be omitted.\n"
                     type: string
                   serverTLSSecret:
                     description: The secret of type kubernetes.io/tls containing the
@@ -3952,14 +3951,14 @@ spec:
                   initialized with defaults.
                 properties:
                   clientCASecret:
-                    description: 'The secret containing the Client CA certificate.
+                    description: "The secret containing the Client CA certificate.
                       If not defined, a new secret will be created with a self-signed
-                      CA and will be used to generate all the client certificates.<br
-                      /> <br /> Contains:<br /> <br /> - `ca.crt`: CA that should
+                      CA and will be used to generate all the client certificates.\n
+                       \n Contains:\n \n - `ca.crt`: CA that should
                       be used to validate the client certificates, used as `ssl_ca_file`
-                      of all the instances.<br /> - `ca.key`: key used to generate
+                      of all the instances.\n - `ca.key`: key used to generate
                       client certificates, if ReplicationTLSSecret is provided, this
-                      can be omitted.<br />'
+                      can be omitted.\n"
                     type: string
                   expirations:
                     additionalProperties:
@@ -3979,14 +3978,14 @@ spec:
                       type: string
                     type: array
                   serverCASecret:
-                    description: 'The secret containing the Server CA certificate.
+                    description: "The secret containing the Server CA certificate.
                       If not defined, a new secret will be created with a self-signed
-                      CA and will be used to generate the TLS certificate ServerTLSSecret.<br
-                      /> <br /> Contains:<br /> <br /> - `ca.crt`: CA that should
+                      CA and will be used to generate the TLS certificate ServerTLSSecret.\n
+                       \n Contains:\n \n - `ca.crt`: CA that should
                       be used to validate the server certificate, used as `sslrootcert`
-                      in client connection strings.<br /> - `ca.key`: key used to
+                      in client connection strings.\n - `ca.key`: key used to
                       generate Server SSL certs, if ServerTLSSecret is provided, this
-                      can be omitted.<br />'
+                      can be omitted.\n"
                     type: string
                   serverTLSSecret:
                     description: The secret of type kubernetes.io/tls containing the
@@ -12147,11 +12146,11 @@ spec:
             properties:
               backupOwnerReference:
                 default: none
-                description: 'Indicates which ownerReference should be put inside
-                  the created backup resources.<br /> - none: no owner reference for
-                  created backup objects (same behavior as before the field was introduced)<br
-                  /> - self: sets the Scheduled backup object as owner of the backup<br
-                  /> - cluster: set the cluster as owner of the backup<br />'
+                description: "Indicates which ownerReference should be put inside
+                  the created backup resources.\n - none: no owner reference for
+                  created backup objects (same behavior as before the field was introduced)\n
+                   - self: sets the Scheduled backup object as owner of the backup\n
+                   - cluster: set the cluster as owner of the backup\n"
                 enum:
                 - none
                 - self
