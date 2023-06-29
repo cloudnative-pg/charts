@@ -13,17 +13,7 @@ metadata:
   {{- end }}
 spec:
   instances: {{ .Values.cluster.instances }}
-{{- if .Values.cluster.imageName }}
-  imageName: {{ .Values.cluster.imageName }}
-{{- else }}
-  {{ if eq .Values.type "postgresql" -}}
-  imageName: "ghcr.io/cloudnative-pg/postgresql:15.2"
-  {{- else if eq .Values.type "postgis"  }}
-  imageName: "ghcr.io/cloudnative-pg/postgis:14"
-  {{- else }}
-  {{ fail "Invalid cluster type!" }}
-  {{- end }}
-{{- end }}
+  imageName: {{ include "cluster.imageName" . }}
   imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
   {{- with .Values.cluster.imagePullSecrets}}
   imagePullSecrets:

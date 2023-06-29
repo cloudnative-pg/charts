@@ -49,3 +49,19 @@ Selector labels
 app.kubernetes.io/name: {{ include "cluster.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Cluster Image Name
+If a custom imageName is available, use it, otherwise use the defaults based on the .Values.type
+*/}}
+{{- define "cluster.imageName" -}}
+    {{- if .Values.cluster.imageName -}}
+        {{- .Values.cluster.imageName -}}
+    {{- else if eq .Values.type "postgresql" -}}
+        {{- "ghcr.io/cloudnative-pg/postgresql:15.2" -}}
+    {{- else if eq .Values.type "postgis" -}}
+        {{- "ghcr.io/cloudnative-pg/postgis:14" -}}
+    {{- else -}}
+        {{ fail "Invalid cluster type!" }}
+    {{- end }}
+{{- end -}}

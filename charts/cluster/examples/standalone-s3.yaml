@@ -4,6 +4,7 @@ cluster:
   instances: 1
 
 backups:
+  enabled: true
   provider: s3
   s3:
     region: "eu-west-1"
