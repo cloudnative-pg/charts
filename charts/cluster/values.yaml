@@ -35,7 +35,6 @@ recovery:
 
   ##
   # Object Store Recovery Method
-
   clusterName: ""
   # Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
@@ -159,7 +158,7 @@ cluster:
 ###
 # Database cluster backup configuration
 backups:
-  enabled: true
+  enabled: false # You need to configure backups manually, so backups are disabled by default.
 
   # Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
