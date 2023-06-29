@@ -1,13 +1,64 @@
-The {{ include "cluster.fullname" . }} has been installed successfully.
+{{ if .Release.IsInstall }}
+The {{ include "cluster.color-info" (include "cluster.fullname" .) }} has been installed successfully.
+{{ else if .Release.IsUpgrade }}
+The {{ include "cluster.color-info" (include "cluster.fullname" .) }} has been upgraded successfully.
+{{ end }}
+  ____ _                 _ _   _       _   _           ____   ____
+ / ___| | ___  _   _  __| | \ | | __ _| |_(_)_   _____|  _ \ / ___|
+| |   | |/ _ \| | | |/ _` |  \| |/ _` | __| \ \ / / _ \ |_) | |  _
+| |___| | (_) | |_| | (_| | |\  | (_| | |_| |\ V /  __/  __/| |_| |
+ \____|_|\___/ \__,_|\__,_|_| \_|\__,_|\__|_| \_/ \___|_|    \____|
 
 Cheatsheet
 ----------
 
 Run Helm Tests:
-helm test --namespace {{ .Release.Namespace }} {{ .Release.Name }}
+{{ include "cluster.color-info" (printf "helm test --namespace %s %s" .Release.Namespace .Release.Name) }}
 
 Get a list of all base backups:
-kubectl --namespace {{ .Release.Namespace }} get backups --selector cnpg.io/cluster={{ include "cluster.fullname" . }}
+{{ include "cluster.color-info" (printf "kubectl --namespace %s get backups --selector cnpg.io/cluster=%s" .Release.Namespace (include "cluster.fullname" .)) }}
 
 Connect to the cluster's primary instance:
-kubectl --namespace {{ .Release.Namespace }} exec --stdin --tty services/{{ include "cluster.fullname" . }}-rw -- bash
+{{ include "cluster.color-info" (printf "kubectl --namespace %s exec --stdin --tty services/%s-rw -- bash" .Release.Namespace (include "cluster.fullname" .)) }}
+
+Configuration
+-------------
+
+{{- $redundancyColor := "" -}}
+{{- if lt (int .Values.cluster.instances) 2 }}
+  {{- $redundancyColor = "error" -}}
+{{- else if lt (int .Values.cluster.instances) 3 -}}
+  {{- $redundancyColor = "warning" -}}
+{{- else -}}
+  {{- $redundancyColor = "ok" -}}
+{{- end }}
+
+{{ $scheduledBackups := (first .Values.backups.scheduledBackups).name }}
+{{- range (rest .Values.backups.scheduledBackups) -}}
+  {{ $scheduledBackups = printf "%s, %s" $scheduledBackups .name }}
+{{- end -}}
+
+╭───────────────────┬────────────────────────────────────────────╮
+│ Configuration     │ Value                                      │
+┝━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
+│ Cluster mode      │ {{ (printf "%-42s" .Values.mode) }} │
+│ Type              │ {{ (printf "%-42s" .Values.type) }} │
+│ Image             │ {{ include "cluster.color-info" (printf "%-42s" (include "cluster.imageName" .)) }} │
+│ Instances         │ {{ include (printf "%s%s" "cluster.color-" $redundancyColor) (printf "%-42s" (toString .Values.cluster.instances)) }} │
+│ Backups           │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.backups.enabled)) (printf "%-42s" (ternary "Enabled" "Disabled" .Values.backups.enabled)) }} │
+│ Backup Provider   │ {{ (printf "%-42s" (title .Values.backups.provider)) }} │
+│ Scheduled Backups │ {{ (printf "%-42s" $scheduledBackups) }} │
+│ Storage           │ {{ (printf "%-42s" .Values.cluster.storage.size) }} │
+│ Storage Class     │ {{ (printf "%-42s" (default "Default" .Values.cluster.storage.storageClass)) }} │
+│ PGBouncer         │ {{ (printf "%-42s" (ternary "Enabled" "Disabled" .Values.pooler.enabled)) }} │
+╰───────────────────┴────────────────────────────────────────────╯
+
+{{ if not .Values.backups.enabled }}
+  {{- include "cluster.color-error" "Warning! Backups not enabled. Recovery will not be possible! Do not use this configuration in production.\n" }}
+{{ end -}}
+
+{{ if lt (int .Values.cluster.instances) 2 }}
+  {{- include "cluster.color-error" "Warning! Instance failure will lead to downtime and/or data loss!\n" }}
+{{- else if lt (int .Values.cluster.instances) 3 -}}
+  {{- include "cluster.color-warning" "Warning! Single instance redundancy available only. Instance failure will put the cluster at risk.\n" }}
+{{ end -}}
