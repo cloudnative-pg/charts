@@ -1,6 +1,6 @@
-> **Warning!**  
-> This chart is under active development.  
-> **Do not use in production!**
+> **Warning**  
+> ### This chart is under active development.  
+> ### Do not use in production!
 
 ## Features that require feedback
 
