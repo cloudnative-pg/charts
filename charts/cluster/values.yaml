@@ -44,7 +44,7 @@ recovery:
   # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path>
   # Google: gs://<bucket><path>
   destinationPath: ""
-  provider: s3
+  provider: s3 # One of s3, azure, google
   s3:
     region: ""
     bucket: ""
