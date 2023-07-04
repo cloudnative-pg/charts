@@ -26,4 +26,8 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 data:
-  queries: {{- toYaml .Values.monitoringQueriesConfigMap.queries | nindent 4 }}
+  queries: |
+    {{- fromYaml .Values.monitoringQueriesConfigMap.queries 
+        | merge .Values.monitoringQueriesConfigMap.queriesData
+        | toYaml 
+        | nindent 4 }}
