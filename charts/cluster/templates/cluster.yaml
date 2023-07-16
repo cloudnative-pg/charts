@@ -39,7 +39,6 @@ spec:
   certificates:
     {{- toYaml . | nindent 4 }}
   {{ end }}
-
   enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
   superuserSecret: {{ .Values.cluster.superuserSecret }}
 
@@ -60,6 +59,5 @@ spec:
       - name: {{ include "cluster.fullname" . }}-monitoring
         key: custom-queries
     {{- end }}
-
-  {{ include "cluster.bootstrap" . | nindent 2 -}}
-  {{ include "cluster.backup" . | nindent 2 -}}
+  {{ include "cluster.bootstrap" . | nindent 2 }}
+  {{ include "cluster.backup" . | nindent 2 }}
