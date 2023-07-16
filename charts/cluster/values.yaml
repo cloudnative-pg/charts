@@ -148,9 +148,15 @@ cluster:
   # See: https://cloudnative-pg.io/documentation/current/api_reference/#PostgresConfiguration
   postgresql:
 
-  # SQL Queries run during the initialization of the cluster
-  # Can be used to create databases, users, extensions, etc.
-  initSQL: []
+  # BootstrapInitDB is the configuration of the bootstrap process when initdb is used
+  # See: https://cloudnative-pg.io/documentation/current/bootstrap/
+  # See: https://cloudnative-pg.io/documentation/current/api_reference/#bootstrapinitdb
+  initdb: {}
+    # database: app
+    # owner: "" # Defaults to the database name
+    # secret: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
+    # postInitSQL:
+    #   - CREATE EXTENSION IF NOT EXISTS vector;
 
   additionalLabels: {}
   annotations: {}
