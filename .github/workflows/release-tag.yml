@@ -20,7 +20,7 @@ jobs:
         name: Temporarily disable "include administrators" branch protection
         if: ${{ always() && github.ref == 'refs/heads/main' }}
         id: disable_include_admins
-        uses: benjefferies/branch-protection-bot@4b03de4af31ae187c57689946ae340d669c42dd4 # 1.0.8
+        uses: benjefferies/branch-protection-bot@a37e132671409118a53e37e9c81d63fd534bb2e7 # 1.0.9
         with:
           access_token: ${{ secrets.REPO_GHA_PAT }}
           branch: main
@@ -35,7 +35,7 @@ jobs:
           dry_run: false
       -
         name: Enable "include administrators" branch protection
-        uses: benjefferies/branch-protection-bot@4b03de4af31ae187c57689946ae340d669c42dd4 # 1.0.8
+        uses: benjefferies/branch-protection-bot@a37e132671409118a53e37e9c81d63fd534bb2e7 # 1.0.9
         if: ${{ always() && github.ref == 'refs/heads/main' }}
         with:
           access_token: ${{ secrets.REPO_GHA_PAT }}
