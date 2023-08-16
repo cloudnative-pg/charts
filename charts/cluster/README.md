@@ -51,20 +51,70 @@ helm repo add cnpg https://cloudnative-pg.github.io/charts
 helm upgrade --install cnpg \
   --namespace cnpg-database \
   --create-namespace \
+  --values values.yaml \
   cnpg/cluster
 ```
 
-### Examples
+A more detailed guide can be found here: [Getting Started](docs/Getting Started.md)
 
-There are several configuration examples in the [examples](examples) directory. Refer to them for a basic setup and to
-the [CloudNativePG Documentation](https://cloudnative-pg.io/documentation/current/) for more advanced configurations.
+## Cluster Configuration
+
+### Database types
+
+Currently the chart supports two database types. These are configured via the `type` parameter. These are:
+* `postgresql` - A standard PostgreSQL database.
+* `postgis` - A PostgreSQL database with the PostGIS extension installed.
+
+Depending on the type the chart will use a different Docker image and fill in some initial setup, like extension installation.
+
+### Modes of operation
+
+The chart has three modes of operation. These are configured via the `mode` parameter:
+* `standalone` - Creates new or updates an existing CNPG cluster. This is the default mode.
+* `replica` - Creates a replica cluster from an existing CNPG cluster. **_Note_ that this mode is not yet supported.**
+* `recovery` - Recovers a CNPG cluster from a backup, object store or via pg_basebackup.
+
+### Backup configuration
+
+CNPG implements disaster recovery via [Barman](https://pgbarman.org/). The following section configures the barman object
+store where backups will be stored. Barman performs backups of the cluster filesystem base backup and WALs. Both are
+stored in the specified location. The backup provider is configured via the `backups.provider` parameter. The following
+providers are supported:
+
+* S3 or S3-compatible stores, like MinIO
+* Microsoft Azure Blob Storage
+* Google Cloud Storage
+
+Additionally you can specify the following parameters:
+* `backups.retentionPolicy` - The retention policy for backups. Defaults to `30d`.
+* `backups.scheduledBackups` - An array of scheduled backups containing a name and a crontab schedule. Example:
+  ```yaml
+  backups:
+    scheduledBackups:
+      - name: daily-backup
+        schedule: "0 0 0 * * *" # Daily at midnight
+        backupOwnerReference: self
+  ```
+
+Each backup adapter takes it's own set of parameters, listed in the [Configuration options](#Configuration-options) section
+below. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backup.s3`,
+`backup.azure`, or `backup.google`.
+
+## Recovery
+
+There is a separate document outlining the recovery procedure here: **[Recovery](docs/recovery.md)**
+
+## Examples
+
+There are several configuration examples in the [examples](examples) directory. Refer to them for a basic setup and
+refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentation/current/) for more advanced configurations.
 
 ## TODO
 * IAM Role for S3 Service Account 
 * Automatic provisioning of a Grafana Dashboard
 * Automatic provisioning of a Alert Manager configuration
 
-## Configuration
+## Configuration options
 
 | Parameter                                       | Default                       | Description                                                                                                                                                                                      |
 |-------------------------------------------------|-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -118,9 +168,9 @@ the [CloudNativePG Documentation](https://cloudnative-pg.io/documentation/curren
 | `cluster.additionalLabels`                      | `{}`                          |                                                                                                                                                                                                  |
 | `cluster.annotations`                           | `{}`                          |                                                                                                                                                                                                  |
 | `backups.enabled`                               | `false`                       | Whether to enable backups.                                                                                                                                                                       |
-| `backups.scheduledBackups.name`                 | ``                            | Scheduled Backup Name.                                                                                                                                                                           |
-| `backups.scheduledBackups.schedule`             | ``                            | Cron Schedule syntax.                                                                                                                                                                            |
-| `backups.scheduledBackups.backupOwnerReference` | `self`                        | Indicates which ownerReference should be put inside the created backup resources. See [ScheduledBackupSpec](https://cloudnative-pg.io/documentation/current/api_reference/#ScheduledBackupSpec). |
+| `backups.scheduledBackups[].name`               | ``                            | Scheduled Backup Name.                                                                                                                                                                           |
+| `backups.scheduledBackups[].schedule`             | ``                            | Cron Schedule syntax.                                                                                                                                                                            |
+| `backups.scheduledBackups[].backupOwnerReference` | `self`                        | Indicates which ownerReference should be put inside the created backup resources. See [ScheduledBackupSpec](https://cloudnative-pg.io/documentation/current/api_reference/#ScheduledBackupSpec). |
 | `backups.retentionPolicy`                       | `"30d"`                       | Retention policy to be used for backups and WALs (i.e. '60d'). The retention policy is expressed in the form of XXu where XX is a positive integer and u is in [dwm] - days, weeks, months.      |
 | `backups.endpointURL`                           | `""`                          | Endpoint to be used to upload data to the cloud, overriding the automatic endpoint discovery.                                                                                                    |
 | `backups.destinationPath`                       | `""`                          | The path where to store the backup (i.e. s3://bucket/path/to/folder) this path, with different destination folders, will be used for WALs and for data.                                          |
