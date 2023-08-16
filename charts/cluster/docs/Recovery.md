@@ -14,7 +14,7 @@ There are 3 types of recovery possible with CNPG:
 
 When performing a recovery you are strongly advised to use the same configuration and PostgreSQL version as the original cluster.
 
-To beging, create a `values.yaml` that contains the following:
+To begin, create a `values.yaml` that contains the following:
 
 1. Set `mode: recovery` to indicate that you want to perform bootstrap the new cluster from an existing one.
 2. Set the `recovery.method` to the type of recovery you want to perform.
