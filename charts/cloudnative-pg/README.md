@@ -23,6 +23,7 @@ CloudNativePG Helm Chart
 | additionalArgs | list | `[]` | Additinal arguments to be added to the operator's args list. |
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
+| commonLabels | object | `{}` | Labels to be added to all other resources. |
 | config | object | `{"create":true,"data":{},"name":"cnpg-controller-manager-config","secret":false}` | Operator configuration. |
 | config.create | bool | `true` | Specifies whether the secret should be created. |
 | config.data | object | `{}` | The content of the configmap/secret, see https://cloudnative-pg.io/documentation/current/operator_conf/#available-options for all the available options. |
