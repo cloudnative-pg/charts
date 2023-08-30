@@ -137,6 +137,8 @@ affinity: {}
 monitoring:
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
   podMonitorEnabled: false
+  # -- Additional labels for Prometheus Operator resources
+  additionalLabels: {}
 
 # Default monitoring queries
 monitoringQueriesConfigMap:
