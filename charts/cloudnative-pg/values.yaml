@@ -29,10 +29,6 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-crds:
-  # -- Specifies whether the CRDs should be created when installing the chart.
-  create: true
-
 # -- The webhook configuration.
 webhook:
   port: 9443

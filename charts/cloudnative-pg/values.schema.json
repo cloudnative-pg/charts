@@ -56,14 +56,6 @@
                 }
             }
         },
-        "crds": {
-            "type": "object",
-            "properties": {
-                "create": {
-                    "type": "boolean"
-                }
-            }
-        },
         "fullnameOverride": {
             "type": "string"
         },

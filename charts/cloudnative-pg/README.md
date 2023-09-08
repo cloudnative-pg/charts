@@ -29,7 +29,6 @@ CloudNativePG Helm Chart
 | config.name | string | `"cnpg-controller-manager-config"` | The name of the configmap/secret to use. |
 | config.secret | bool | `false` | Specifies whether it should be stored in a secret, instead of a configmap. |
 | containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsUser":10001}` | Container Security Context. |
-| crds.create | bool | `true` | Specifies whether the CRDs should be created when installing the chart. |
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"ghcr.io/cloudnative-pg/cloudnative-pg"` |  |
