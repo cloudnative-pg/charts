@@ -100,6 +100,35 @@
                 },
                 "queries": {
                     "type": "string"
+                },
+                "queriesData": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                            "query": {
+                                "type": "string"
+                            },
+                            "metrics": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "object",
+                                        "properties": {
+                                            "usage": {
+                                                "type": "string",
+                                                "enum": ["COUNTER", "LABEL", "GAUGE"]
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         },

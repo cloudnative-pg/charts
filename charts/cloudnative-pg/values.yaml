@@ -515,3 +515,6 @@ monitoringQueriesConfigMap:
         - setting:
             usage: "GAUGE"
             description: "Setting value"
+  # -- The queries in YAML format. The values in queriesData will be merged with 
+  # the queries in string representation.
+  queriesData: {}
