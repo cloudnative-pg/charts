@@ -139,6 +139,9 @@
             "properties": {
                 "create": {
                     "type": "boolean"
+                },
+                "aggregateClusterRoles": {
+                    "type": "boolean"
                 }
             }
         },
