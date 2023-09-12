@@ -18,12 +18,12 @@ name: cloudnative-pg
 description: CloudNativePG Helm Chart
 icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
 type: application
-version: "0.18.1"
+version: "0.18.2"
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning, they should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "1.20.1"
+appVersion: "1.20.2"
 sources:
   - https://github.com/cloudnative-pg/charts
 keywords:

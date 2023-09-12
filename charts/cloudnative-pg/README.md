@@ -1,6 +1,6 @@
 # cloudnative-pg
 
-![Version: 0.18.1](https://img.shields.io/badge/Version-0.18.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.20.1](https://img.shields.io/badge/AppVersion-1.20.1-informational?style=flat-square)
+![Version: 0.18.2](https://img.shields.io/badge/Version-0.18.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.20.2](https://img.shields.io/badge/AppVersion-1.20.2-informational?style=flat-square)
 
 CloudNativePG Helm Chart
 
@@ -44,6 +44,7 @@ CloudNativePG Helm Chart
 | podLabels | object | `{}` | Labels to be added to the pod. |
 | podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security Context for the whole pod. |
 | priorityClassName | string | `""` | Priority indicates the importance of a Pod relative to other Pods. |
+| rbac.aggregateClusterRoles | bool | `false` | Aggregate ClusterRoles to Kubernetes default user-facing roles. Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles |
 | rbac.create | bool | `true` | Specifies whether ClusterRole and ClusterRoleBinding should be created. |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
