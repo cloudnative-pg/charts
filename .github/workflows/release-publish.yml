@@ -7,15 +7,15 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
         with:
           fetch-depth: 0
 
       - name: Publish Helm charts
-        uses: stefanprodan/helm-gh-pages@v1.7.0
+        uses: stefanprodan/helm-gh-pages@0ad2bb377311d61ac04ad9eb6f252fb68e207260 # v1.7.0
         with:
           helm_version: 3.4.0
           token: "${{ secrets.REPO_GHA_PAT }}"

@@ -84,6 +84,14 @@
         "imagePullSecrets": {
             "type": "array"
         },
+        "monitoring": {
+            "type": "object",
+            "properties": {
+                "podMonitorEnabled": {
+                    "type": "boolean"
+                }
+            }
+        },
         "monitoringQueriesConfigMap": {
             "type": "object",
             "properties": {
@@ -102,6 +110,9 @@
             "type": "object"
         },
         "podAnnotations": {
+            "type": "object"
+        },
+        "podLabels": {
             "type": "object"
         },
         "podSecurityContext": {
@@ -127,6 +138,9 @@
             "type": "object",
             "properties": {
                 "create": {
+                    "type": "boolean"
+                },
+                "aggregateClusterRoles": {
                     "type": "boolean"
                 }
             }
@@ -159,25 +173,6 @@
                 },
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "test": {
-            "type": "object",
-            "properties": {
-                "image": {
-                    "type": "object",
-                    "properties": {
-                        "pullPolicy": {
-                            "type": "string"
-                        },
-                        "repository": {
-                            "type": "string"
-                        },
-                        "tag": {
-                            "type": "string"
-                        }
-                    }
                 }
             }
         },
