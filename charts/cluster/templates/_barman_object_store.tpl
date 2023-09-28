@@ -24,7 +24,7 @@
       key: ACCESS_SECRET_KEY
 {{- else if eq .scope.provider "azure" }}
   {{- if empty .scope.destinationPath }}
-  destinationPath: "https://{{ required "You need to specify Azure storageAccount if endpointURL is not specified." .scope.azure.storageAccount }}.{{ .scope.azure.serviceName }}.core.windows.net/{{ .scope.azure.containerName }}{{ .scope.azure.path }}"
+  destinationPath: "https://{{ required "You need to specify Azure storageAccount if destinationPath is not specified." .scope.azure.storageAccount }}.{{ .scope.azure.serviceName }}.core.windows.net/{{ .scope.azure.containerName }}{{ .scope.azure.path }}"
   {{- end }}
   azureCredentials:
     connectionString:
