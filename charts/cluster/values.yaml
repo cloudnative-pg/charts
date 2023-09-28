@@ -100,7 +100,7 @@ cluster:
     #   cpu: 2000m
     #   memory: 8Gi
 
-  priorityClassName: "" # TODO: Blocked by https://github.com/cloudnative-pg/cloudnative-pg/discussions/1609
+  priorityClassName: ""
 
   # Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been
   # successfully updated. It can be switchover (default) or in-place (restart).
