@@ -61,6 +61,8 @@ If a custom imageName is available, use it, otherwise use the defaults based on 
         {{- "ghcr.io/cloudnative-pg/postgresql:15.2" -}}
     {{- else if eq .Values.type "postgis" -}}
         {{- "ghcr.io/cloudnative-pg/postgis:14" -}}
+    {{- else if eq .Values.type "timescaledb" -}}
+        {{ fail "You need to provide your own cluster.imageName as an official timescaledb image doesn't exist yet." }}
     {{- else -}}
         {{ fail "Invalid cluster type!" }}
     {{- end }}

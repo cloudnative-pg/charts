@@ -28,7 +28,7 @@ metadata:
 data:
   {{- toYaml .Values.config.data | nindent 2 }}
 {{- end }}
-{{- else -}}
+{{- else }}
 apiVersion: v1
 kind: Secret
 type: Opaque

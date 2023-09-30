@@ -30,8 +30,10 @@ nameOverride: ""
 fullnameOverride: ""
 
 crds:
+  # -- Specifies whether the CRDs should be created when installing the chart.
   create: true
 
+# -- The webhook configuration.
 webhook:
   port: 9443
   mutating:
@@ -45,39 +47,47 @@ webhook:
   readinessProbe:
     initialDelaySeconds: 3
 
-# Operator configuration
+# -- Operator configuration.
 config:
-  # -- Specifies whether the secret should be created
+  # -- Specifies whether the secret should be created.
   create: true
-  # -- Specifies whether it should be stored in a secret, instead of a configmap
+  # -- The name of the configmap/secret to use.
+  name: cnpg-controller-manager-config
+  # -- Specifies whether it should be stored in a secret, instead of a configmap.
   secret: false
-  # Examples:
+  # -- The content of the configmap/secret, see
+  # https://cloudnative-pg.io/documentation/current/operator_conf/#available-options
+  # for all the available options.
+  data: {}
   # INHERITED_ANNOTATIONS: categories
   # INHERITED_LABELS: environment, workload, app
+  # WATCH_NAMESPACE: namespace-a,namespace-b
 
-  data: {}
-  name: cnpg-controller-manager-config
-
-# -- Additinal arguments to be added to the operator's args list
+# -- Additinal arguments to be added to the operator's args list.
 additionalArgs: []
 
 serviceAccount:
-  # -- Specifies whether the service account should be created
+  # -- Specifies whether the service account should be created.
   create: true
   # -- The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # If not set and create is true, a name is generated using the fullname template.
   name: ""
 
 rbac:
-  # -- Specifies whether ClusterRole and ClusterRoleBinding should be created
+  # -- Specifies whether ClusterRole and ClusterRoleBinding should be created.
   create: true
+  # -- Aggregate ClusterRoles to Kubernetes default user-facing roles.
+  # Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles
+  aggregateClusterRoles: false
 
-# -- Annotations to be added to the pod
-podAnnotations: {}
-# -- Annotations to be added to all other resources
+# -- Annotations to be added to all other resources.
 commonAnnotations: {}
+# -- Annotations to be added to the pod.
+podAnnotations: {}
+# -- Labels to be added to the pod.
+podLabels: {}
 
-# -- Container Security Context
+# -- Container Security Context.
 containerSecurityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
@@ -87,7 +97,7 @@ containerSecurityContext:
     drop:
       - "ALL"
 
-# -- Security Context for the whole pod
+# -- Security Context for the whole pod.
 podSecurityContext:
   runAsNonRoot: true
   seccompProfile:
@@ -115,27 +125,24 @@ resources: {}
   #   cpu: 100m
   #   memory: 100Mi
 
-# -- Nodeselector for the operator to be installed
+# -- Nodeselector for the operator to be installed.
 nodeSelector: {}
 
-# -- Tolerations for the operator to be installed
+# -- Tolerations for the operator to be installed.
 tolerations: []
 
-# -- Affinity for the operator to be installed
+# -- Affinity for the operator to be installed.
 affinity: {}
 
-# -- Test related configurations
-test:
-  image:
-    repository: busybox
-    pullPolicy: IfNotPresent
-    tag: "latest"
+monitoring:
+  # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
+  podMonitorEnabled: false
 
 # Default monitoring queries
 monitoringQueriesConfigMap:
-  # -- The name of the default monitoring configmap
+  # -- The name of the default monitoring configmap.
   name: cnpg-default-monitoring
-  # -- A string representation of a YAML defining monitoring queries
+  # -- A string representation of a YAML defining monitoring queries.
   queries: |
     backends:
       query: |
@@ -237,7 +244,6 @@ monitoringQueriesConfigMap:
             description: "Time at which postgres started (based on epoch)"
 
     pg_replication:
-      primary: true
       query: "SELECT CASE WHEN NOT pg_catalog.pg_is_in_recovery()
               THEN 0
               ELSE GREATEST (0,
@@ -259,6 +265,32 @@ monitoringQueriesConfigMap:
         - streaming_replicas:
             usage: "GAUGE"
             description: "Number of streaming replicas connected to the instance"
+
+    pg_replication_slots:
+      query: |
+        SELECT slot_name,
+          slot_type,
+          database,
+          active,
+          pg_catalog.pg_wal_lsn_diff(pg_catalog.pg_current_wal_lsn(), restart_lsn)
+        FROM pg_catalog.pg_replication_slots
+        WHERE NOT temporary
+      metrics:
+        - slot_name:
+            usage: "LABEL"
+            description: "Name of the replication slot"
+        - slot_type:
+            usage: "LABEL"
+            description: "Type of the replication slot"
+        - database:
+            usage: "LABEL"
+            description: "Name of the database"
+        - active:
+            usage: "GAUGE"
+            description: "Flag indicating whether the slot is active"
+        - pg_wal_lsn_diff:
+            usage: "GAUGE"
+            description: "Replication lag in bytes"
 
     pg_stat_archiver:
       query: |
@@ -416,6 +448,7 @@ monitoringQueriesConfigMap:
             description: "Time spent writing data file blocks by backends in this database, in milliseconds"
 
     pg_stat_replication:
+      primary: true
       query: |
        SELECT usename
          , COALESCE(application_name, '') AS application_name

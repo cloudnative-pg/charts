@@ -9,11 +9,11 @@ on:
 
 jobs:
   pull-request:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
       -
         name: Get tag
         run: |
@@ -21,7 +21,7 @@ jobs:
       -
         name: Pull Request
         id: open-pr
-        uses: repo-sync/pull-request@v2.6.2
+        uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5 # v2.12.1
         with:
           destination_branch: "main"
           github_token: ${{ secrets.GITHUB_TOKEN }}
