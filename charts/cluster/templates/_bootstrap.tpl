@@ -2,20 +2,18 @@
 bootstrap:
 {{- if eq .Values.mode "standalone" }}
   initdb:
-    {{- range $key, $val := (omit .Values.cluster.initdb "postInitApplicationSQL") }}
-      {{- $key | nindent 4 }}: {{ $val | toYaml }}
-    {{- end }}
+    {{- (omit .Values.cluster.initdb "postInitApplicationSQL") | toYaml | nindent 4 }}
     postInitApplicationSQL:
       {{- range .Values.cluster.initdb.postInitApplicationSQL }}
-        - {{ . }}
+      - {{ . }}
       {{- end -}}
       {{- if eq .Values.type "postgis" }}
-        - CREATE EXTENSION IF NOT EXISTS postgis;
-        - CREATE EXTENSION IF NOT EXISTS postgis_topology;
-        - CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
-        - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
+      - CREATE EXTENSION IF NOT EXISTS postgis;
+      - CREATE EXTENSION IF NOT EXISTS postgis_topology;
+      - CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+      - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
       {{- else if eq .Values.type "timescaledb" }}
-        - CREATE EXTENSION IF NOT EXISTS timescaledb;
+      - CREATE EXTENSION IF NOT EXISTS timescaledb;
       {{- end }}
 {{- else if eq .Values.mode "recovery" }}
   recovery:
