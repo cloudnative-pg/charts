@@ -1,16 +1,16 @@
 Recovery
 ========
 
-This chart can be used to initiate a recovery opetation of a CNPG cluster no matter if it was created with the chart or not.
+This chart can be used to initiate a recovery operation of a CNPG cluster no matter if it was created with the chart or not.
 
-CNPG does not support recovery in-place. Instead you need to create a new cluster that will be bootstrapped from the existing one or a backup.
+CNPG does not support recovery in-place. Instead you need to create a new cluster that will be bootstrapped from the existing one or from a backup.
 
 You can find more information about the recovery process in the [CNPG documentation](https://cloudnative-pg.io/documentation/current/backup_recovery).
 
 There are 3 types of recovery possible with CNPG:
 * Recovery from a backup object in the same Kubernetes namespace.
 * Recovery from a Barman Object Store, that could be located anywhere.
-* Streaming replication from an operating cluster using `pg_basebackup` (not supported by the chart).
+* Streaming replication from an operating cluster using `pg_basebackup` (not supported by the chart yet).
 
 When performing a recovery you are strongly advised to use the same configuration and PostgreSQL version as the original cluster.
 
