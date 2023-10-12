@@ -27,18 +27,24 @@
   destinationPath: "https://{{ required "You need to specify Azure storageAccount if destinationPath is not specified." .scope.azure.storageAccount }}.{{ .scope.azure.serviceName }}.core.windows.net/{{ .scope.azure.containerName }}{{ .scope.azure.path }}"
   {{- end }}
   azureCredentials:
+  {{- if .scope.azure.connectionString }}
     connectionString:
       name: {{ .chartFullname }}-backup-azure{{ .secretSuffix }}-creds
       key: AZURE_CONNECTION_STRING
+  {{- else }}
     storageAccount:
       name: {{ .chartFullname }}-backup-azure{{ .secretSuffix }}-creds
       key: AZURE_STORAGE_ACCOUNT
+    {{- if .scope.azure.storageKey }}
     storageKey:
       name: {{ .chartFullname }}-backup-azure{{ .secretSuffix }}-creds
       key: AZURE_STORAGE_KEY
+    {{- else }}
     storageSasToken:
       name: {{ .chartFullname }}-backup-azure{{ .secretSuffix }}-creds
       key: AZURE_STORAGE_SAS_TOKEN
+    {{- end }}
+  {{- end }}
 {{- else if eq .scope.provider "google" }}
   {{- if empty .scope.destinationPath }}
   destinationPath: "gs://{{ required "You need to specify Google storage bucket if destinationPath is not specified." .scope.google.bucket }}{{ .scope.google.path }}"
