@@ -89,6 +89,12 @@
             "properties": {
                 "podMonitorEnabled": {
                     "type": "boolean"
+                },
+                "podMonitorMetricRelabelings": {
+                    "type": "array"
+                },
+                "podMonitorRelabelings": {
+                    "type": "array"
                 }
             }
         },

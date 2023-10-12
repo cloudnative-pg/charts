@@ -137,6 +137,10 @@ affinity: {}
 monitoring:
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
   podMonitorEnabled: false
+  # -- Metrics relabel configurations to apply to samples before ingestion.
+  podMonitorMetricRelabelings: []
+  # -- Relabel configurations to apply to samples before scraping.
+  podMonitorRelabelings: []
 
 # Default monitoring queries
 monitoringQueriesConfigMap:
