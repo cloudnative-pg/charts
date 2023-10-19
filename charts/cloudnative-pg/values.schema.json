@@ -53,6 +53,14 @@
                 },
                 "runAsUser": {
                     "type": "integer"
+                },
+                "seccompProfile": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         },
@@ -137,10 +145,10 @@
         "rbac": {
             "type": "object",
             "properties": {
-                "create": {
+                "aggregateClusterRoles": {
                     "type": "boolean"
                 },
-                "aggregateClusterRoles": {
+                "create": {
                     "type": "boolean"
                 }
             }
