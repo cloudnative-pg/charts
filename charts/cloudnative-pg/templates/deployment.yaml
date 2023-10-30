@@ -49,9 +49,12 @@ spec:
       - args:
         - controller
         - --leader-elect
-        {{- with .Values.config.name }}
-        - --config-map-name={{ . }}
-        - --secret-name={{ . }}
+        {{- if .Values.config.name }}
+        {{- if not .Values.config.secret }}
+        - --config-map-name={{ .Values.config.name }}
+        {{- else }}
+        - --secret-name={{ .Values.config.name }}
+        {{- end }}
         {{- end }}
         - --webhook-port={{ .Values.webhook.port }}
         {{- range .Values.additionalArgs }}
