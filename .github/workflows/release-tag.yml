@@ -28,7 +28,7 @@ jobs:
       -
         name: Create tag
         if: github.event.pull_request.merged == true && startsWith(${{ github.head_ref }}, "release/")
-        uses: christophebedard/tag-version-commit@ea0363ff76cae3e81c21695cdd21218204be290b # v1.6.3
+        uses: christophebedard/tag-version-commit@57ffb155fc61c8ab098fcfa273469b532c1d4ce7 # v1.7.0
         with:
           token: ${{ secrets.REPO_GHA_PAT }}
           version_regex: '^Release ([a-z-]+-v[0-9]+\.[0-9]+\.[0-9]+)'
