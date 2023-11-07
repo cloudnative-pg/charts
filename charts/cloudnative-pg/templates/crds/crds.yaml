@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.1
+    controller-gen.kubebuilder.io/version: v0.13.0
     helm.sh/resource-policy: keep
   name: backups.postgresql.cnpg.io
 spec:
@@ -21,6 +21,9 @@ spec:
       type: date
     - jsonPath: .spec.cluster.name
       name: Cluster
+      type: string
+    - jsonPath: .spec.method
+      name: Method
       type: string
     - jsonPath: .status.phase
       name: Phase
@@ -58,6 +61,46 @@ spec:
                 required:
                 - name
                 type: object
+              method:
+                default: barmanObjectStore
+                description: 'The backup method to be used, possible options are `barmanObjectStore`
+                  and `volumeSnapshot`. Defaults to: `barmanObjectStore`.'
+                enum:
+                - barmanObjectStore
+                - volumeSnapshot
+                type: string
+              online:
+                description: Whether the default type of backup with volume snapshots
+                  is online/hot (`true`, default) or offline/cold (`false`) Overrides
+                  the default setting specified in the cluster field '.spec.backup.volumeSnapshot.online'
+                type: boolean
+              onlineConfiguration:
+                description: Configuration parameters to control the online/hot backup
+                  with volume snapshots Overrides the default settings specified in
+                  the cluster '.backup.volumeSnapshot.onlineConfiguration' stanza
+                properties:
+                  immediateCheckpoint:
+                    description: Control whether the I/O workload for the backup initial
+                      checkpoint will be limited, according to the `checkpoint_completion_target`
+                      setting on the PostgreSQL server. If set to true, an immediate
+                      checkpoint will be used, meaning PostgreSQL will complete the
+                      checkpoint as soon as possible. `false` by default.
+                    type: boolean
+                  waitForArchive:
+                    default: true
+                    description: If false, the function will return immediately after
+                      the backup is completed, without waiting for WAL to be archived.
+                      This behavior is only useful with backup software that independently
+                      monitors WAL archiving. Otherwise, WAL required to make the
+                      backup consistent might be missing and make the backup useless.
+                      By default, or when this parameter is true, pg_backup_stop will
+                      wait for WAL to be archived when archiving is enabled. On a
+                      standby, this means that it will wait only when archive_mode
+                      = always. If write activity on the primary is low, it may be
+                      useful to run pg_switch_wal on the primary in order to trigger
+                      an immediate segment switch.
+                    type: boolean
+                type: object
               target:
                 description: The policy to decide which instance should perform this
                   backup. If empty, it defaults to `cluster.spec.backup.target`. Available
@@ -68,6 +111,8 @@ spec:
                 - primary
                 - prefer-standby
                 type: string
+            required:
+            - cluster
             type: object
           status:
             description: 'Most recently observed status of the backup. This data may
@@ -137,6 +182,11 @@ spec:
                 type: object
               backupId:
                 description: The ID of the Barman backup
+                type: string
+              backupLabelFile:
+                description: Backup label file content as returned by Postgres in
+                  case of online (hot) backups
+                format: byte
                 type: string
               backupName:
                 description: The Name of the Barman backup
@@ -223,6 +273,13 @@ spec:
                     description: The pod name
                     type: string
                 type: object
+              method:
+                description: The backup method being used
+                type: string
+              online:
+                description: Whether the backup was online/hot (`true`) or offline/cold
+                  (`false`)
+                type: boolean
               phase:
                 description: The last backup status
                 type: string
@@ -291,6 +348,29 @@ spec:
                 description: The server name on S3, the cluster name is used if this
                   parameter is omitted
                 type: string
+              snapshotBackupStatus:
+                description: Status of the volumeSnapshot backup
+                properties:
+                  elements:
+                    description: The elements list, populated with the gathered volume
+                      snapshots
+                    items:
+                      description: BackupSnapshotElementStatus is a volume snapshot
+                        that is part of a volume snapshot method backup
+                      properties:
+                        name:
+                          description: Name is the snapshot resource name
+                          type: string
+                        type:
+                          description: Type is tho role of the snapshot in the cluster,
+                            such as PG_DATA and PG_WAL
+                          type: string
+                      required:
+                      - name
+                      - type
+                      type: object
+                    type: array
+                type: object
               startedAt:
                 description: When the backup was started
                 format: date-time
@@ -299,7 +379,15 @@ spec:
                 description: When the backup was terminated
                 format: date-time
                 type: string
+              tablespaceMapFile:
+                description: Tablespace map file content as returned by Postgres in
+                  case of online (hot) backups
+                format: byte
+                type: string
             type: object
+        required:
+        - metadata
+        - spec
         type: object
     served: true
     storage: true
@@ -310,7 +398,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.1
+    controller-gen.kubebuilder.io/version: v0.13.0
     helm.sh/resource-policy: keep
   name: clusters.postgresql.cnpg.io
 spec:
@@ -1535,7 +1623,8 @@ spec:
                     description: RetentionPolicy is the retention policy to be used
                       for backups and WALs (i.e. '60d'). The retention policy is expressed
                       in the form of `XXu` where `XX` is a positive integer and `u`
-                      is in `[dwm]` - days, weeks, months.
+                      is in `[dwm]` - days, weeks, months. It's currently only applicable
+                      when using the BarmanObjectStore method.
                     pattern: ^[1-9][0-9]*[dwm]$
                     type: string
                   target:
@@ -1549,6 +1638,78 @@ spec:
                     - primary
                     - prefer-standby
                     type: string
+                  volumeSnapshot:
+                    description: VolumeSnapshot provides the configuration for the
+                      execution of volume snapshot backups.
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        description: Annotations key-value pairs that will be added
+                          to .metadata.annotations snapshot resources.
+                        type: object
+                      className:
+                        description: ClassName specifies the Snapshot Class to be
+                          used for PG_DATA PersistentVolumeClaim. It is the default
+                          class for the other types if no specific class is present
+                        type: string
+                      labels:
+                        additionalProperties:
+                          type: string
+                        description: Labels are key-value pairs that will be added
+                          to .metadata.labels snapshot resources.
+                        type: object
+                      online:
+                        default: true
+                        description: Whether the default type of backup with volume
+                          snapshots is online/hot (`true`, default) or offline/cold
+                          (`false`)
+                        type: boolean
+                      onlineConfiguration:
+                        default:
+                          immediateCheckpoint: false
+                          waitForArchive: true
+                        description: Configuration parameters to control the online/hot
+                          backup with volume snapshots
+                        properties:
+                          immediateCheckpoint:
+                            description: Control whether the I/O workload for the
+                              backup initial checkpoint will be limited, according
+                              to the `checkpoint_completion_target` setting on the
+                              PostgreSQL server. If set to true, an immediate checkpoint
+                              will be used, meaning PostgreSQL will complete the checkpoint
+                              as soon as possible. `false` by default.
+                            type: boolean
+                          waitForArchive:
+                            default: true
+                            description: If false, the function will return immediately
+                              after the backup is completed, without waiting for WAL
+                              to be archived. This behavior is only useful with backup
+                              software that independently monitors WAL archiving.
+                              Otherwise, WAL required to make the backup consistent
+                              might be missing and make the backup useless. By default,
+                              or when this parameter is true, pg_backup_stop will
+                              wait for WAL to be archived when archiving is enabled.
+                              On a standby, this means that it will wait only when
+                              archive_mode = always. If write activity on the primary
+                              is low, it may be useful to run pg_switch_wal on the
+                              primary in order to trigger an immediate segment switch.
+                            type: boolean
+                        type: object
+                      snapshotOwnerReference:
+                        default: none
+                        description: SnapshotOwnerReference indicates the type of
+                          owner reference the snapshot should have
+                        enum:
+                        - none
+                        - cluster
+                        - backup
+                        type: string
+                      walClassName:
+                        description: WalClassName specifies the Snapshot Class to
+                          be used for the PG_WAL PersistentVolumeClaim.
+                        type: string
+                    type: object
                 type: object
               bootstrap:
                 description: Instructions to bootstrap this cluster
@@ -1592,7 +1753,6 @@ spec:
                               type: string
                             type: array
                           schemaOnly:
-                            default: false
                             description: 'When set to true, only the `pre-data` and
                               `post-data` sections of `pg_restore` are invoked, avoiding
                               data import. Default: `false`.'
@@ -1855,7 +2015,7 @@ spec:
                         description: The external cluster whose backup we will restore.
                           This is also used as the name of the folder under which
                           the backup is stored, so it must be set to the name of the
-                          source cluster Mutually exclusive with `backup` and `volumeSnapshots`.
+                          source cluster Mutually exclusive with `backup`.
                         type: string
                       volumeSnapshots:
                         description: The static PVC data source(s) from which to initiate
@@ -1864,7 +2024,7 @@ spec:
                           PVC group, compatible with CloudNativePG, and taken with
                           a cold backup copy on a fenced Postgres instance (limitation
                           which will be removed in the future when online backup will
-                          be implemented). Mutually exclusive with `backup` and `source`.
+                          be implemented). Mutually exclusive with `backup`.
                         properties:
                           storage:
                             description: Configuration of the storage of the instances
@@ -1959,13 +2119,13 @@ spec:
                 description: Description of this PostgreSQL cluster
                 type: string
               enableSuperuserAccess:
-                default: true
+                default: false
                 description: When this option is enabled, the operator will use the
                   `SuperuserSecret` to update the `postgres` user password (if the
                   secret is not present, the operator will automatically create one).
                   When this option is disabled, the operator will ignore the `SuperuserSecret`
                   content, delete it when automatically created, and then blank the
-                  password of the `postgres` user by setting it to `NULL`. Enabled
+                  password of the `postgres` user by setting it to `NULL`. Disabled
                   by default.
                 type: boolean
               env:
@@ -2114,6 +2274,26 @@ spec:
                       x-kubernetes-map-type: atomic
                   type: object
                 type: array
+              ephemeralVolumesSizeLimit:
+                description: EphemeralVolumesSizeLimit allows the user to set the
+                  limits for the ephemeral volumes
+                properties:
+                  shm:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: Shm is the size limit of the shared memory volume
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  temporaryData:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: TemporaryData is the size limit of the temporary
+                      data volume
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                type: object
               externalClusters:
                 description: The list of external clusters which are used in the configuration
                 items:
@@ -2729,8 +2909,6 @@ spec:
                     description: Reuse the existing PVC (wait for the node to come
                       up again) or not (recreate it elsewhere - when `instances` >1)
                     type: boolean
-                required:
-                - inProgress
                 type: object
               postgresGID:
                 default: 26
@@ -3133,8 +3311,8 @@ spec:
                     description: If replica mode is enabled, this cluster will be
                       a replica of an existing cluster. Replica cluster can be created
                       from a recovery object store or via streaming through pg_basebackup.
-                      Refer to the Replication page of the documentation for more
-                      information.
+                      Refer to the Replica clusters page of the documentation for
+                      more information.
                     type: boolean
                   source:
                     description: The name of the external cluster which is the replication
@@ -3142,25 +3320,30 @@ spec:
                     minLength: 1
                     type: string
                 required:
+                - enabled
                 - source
                 type: object
               replicationSlots:
+                default:
+                  highAvailability:
+                    enabled: true
                 description: Replication slots management configuration
                 properties:
                   highAvailability:
+                    default:
+                      enabled: true
                     description: Replication slots for high availability configuration
                     properties:
                       enabled:
-                        default: false
-                        description: If enabled, the operator will automatically manage
-                          replication slots on the primary instance and use them in
-                          streaming replication connections with all the standby instances
-                          that are part of the HA cluster. If disabled (default),
+                        default: true
+                        description: If enabled (default), the operator will automatically
+                          manage replication slots on the primary instance and use
+                          them in streaming replication connections with all the standby
+                          instances that are part of the HA cluster. If disabled,
                           the operator will not take advantage of replication slots
                           in streaming connections with the replicas. This feature
                           also controls replication slots in replica cluster, from
-                          the designated primary to its cascading replicas. This can
-                          only be set at creation time.
+                          the designated primary to its cascading replicas.
                         type: boolean
                       slotPrefix:
                         default: _cnpg_
@@ -3241,8 +3424,8 @@ spec:
                     description: localhostProfile indicates a profile defined in a
                       file on the node should be used. The profile must be preconfigured
                       on the node to work. Must be a descending path, relative to
-                      the kubelet's configured seccomp profile location. Must only
-                      be set if type is "Localhost".
+                      the kubelet's configured seccomp profile location. Must be set
+                      if type is "Localhost". Must NOT be set for any other type.
                     type: string
                   type:
                     description: "type indicates which kind of seccomp profile will
@@ -3282,16 +3465,26 @@ spec:
                 required:
                 - metadata
                 type: object
+              smartShutdownTimeout:
+                default: 180
+                description: 'The time in seconds that controls the window of time
+                  reserved for the smart shutdown of Postgres to complete. Make sure
+                  you reserve enough time for the operator to request a fast shutdown
+                  of Postgres (that is: `stopDelay` - `smartShutdownTimeout`).'
+                format: int32
+                type: integer
               startDelay:
-                default: 30
-                description: The time in seconds that is allowed for a PostgreSQL
-                  instance to successfully start up (default 30)
+                default: 3600
+                description: 'The time in seconds that is allowed for a PostgreSQL
+                  instance to successfully start up (default 3600). The startup probe
+                  failure threshold is derived from this value using the formula:
+                  ceiling(startDelay / 10).'
                 format: int32
                 type: integer
               stopDelay:
-                default: 30
+                default: 1800
                 description: The time in seconds that is allowed for a PostgreSQL
-                  instance to gracefully shutdown (default 30)
+                  instance to gracefully shutdown (default 1800)
                 format: int32
                 type: integer
               storage:
@@ -3533,11 +3726,10 @@ spec:
                 - name
                 type: object
               switchoverDelay:
-                default: 40000000
+                default: 3600
                 description: The time in seconds that is allowed for a primary PostgreSQL
                   instance to gracefully shutdown during a switchover. Default value
-                  is 40000000, greater than one year in seconds, big enough to simulate
-                  an infinite delay
+                  is 3600 seconds (1 hour).
                 format: int32
                 type: integer
               topologySpreadConstraints:
@@ -4343,6 +4535,9 @@ spec:
                 description: Current write pod
                 type: string
             type: object
+        required:
+        - metadata
+        - spec
         type: object
     served: true
     storage: true
@@ -4356,7 +4551,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.1
+    controller-gen.kubebuilder.io/version: v0.13.0
     helm.sh/resource-policy: keep
   name: poolers.postgresql.cnpg.io
 spec:
@@ -4396,7 +4591,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: PoolerSpec defines the desired state of Pooler
+            description: 'Specification of the desired behavior of the Pooler. More
+              info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
             properties:
               cluster:
                 description: This is the cluster reference on which the Pooler will
@@ -4459,7 +4655,7 @@ spec:
                 type: object
               instances:
                 default: 1
-                description: The number of replicas we want
+                description: 'The number of replicas we want. Default: 1.'
                 format: int32
                 type: integer
               monitoring:
@@ -4517,13 +4713,11 @@ spec:
                     type: array
                   poolMode:
                     default: session
-                    description: The pool mode
+                    description: 'The pool mode. Default: `session`.'
                     enum:
                     - session
                     - transaction
                     type: string
-                required:
-                - poolMode
                 type: object
               template:
                 description: The template of the Pod to be created
@@ -6349,6 +6543,28 @@ spec:
                                     exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                   type: object
                               type: object
+                            restartPolicy:
+                              description: 'RestartPolicy defines the restart behavior
+                                of individual containers in a pod. This field may
+                                only be set for init containers, and the only allowed
+                                value is "Always". For non-init containers or when
+                                this field is not specified, the restart behavior
+                                is defined by the Pod''s restart policy and the container
+                                type. Setting the RestartPolicy as "Always" for the
+                                init container will have the following effect: this
+                                init container will be continually restarted on exit
+                                until all regular containers have terminated. Once
+                                all regular containers have completed, all init containers
+                                with restartPolicy "Always" will be shut down. This
+                                lifecycle differs from normal init containers and
+                                is often referred to as a "sidecar" container. Although
+                                this init container still starts in the init container
+                                sequence, it does not wait for the container to complete
+                                before proceeding to the next init container. Instead,
+                                the next init container starts immediately after this
+                                init container is started, or after any startupProbe
+                                has successfully completed.'
+                              type: string
                             securityContext:
                               description: 'SecurityContext defines the security options
                                 the container should be run with. If set, the fields
@@ -6478,7 +6694,8 @@ spec:
                                         The profile must be preconfigured on the node
                                         to work. Must be a descending path, relative
                                         to the kubelet's configured seccomp profile
-                                        location. Must only be set if type is "Localhost".
+                                        location. Must be set if type is "Localhost".
+                                        Must NOT be set for any other type.
                                       type: string
                                     type:
                                       description: "type indicates which kind of seccomp
@@ -6514,14 +6731,10 @@ spec:
                                     hostProcess:
                                       description: HostProcess determines if a container
                                         should be run as a 'Host Process' container.
-                                        This field is alpha-level and will only be
-                                        honored by components that enable the WindowsHostProcessContainers
-                                        feature flag. Setting this field without the
-                                        feature flag will result in errors when validating
-                                        the Pod. All of a Pod's containers must have
-                                        the same effective HostProcess value (it is
-                                        not allowed to have a mix of HostProcess containers
-                                        and non-HostProcess containers).  In addition,
+                                        All of a Pod's containers must have the same
+                                        effective HostProcess value (it is not allowed
+                                        to have a mix of HostProcess containers and
+                                        non-HostProcess containers). In addition,
                                         if HostProcess is true then HostNetwork must
                                         also be set to true.
                                       type: boolean
@@ -7755,6 +7968,12 @@ spec:
                                     exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                   type: object
                               type: object
+                            restartPolicy:
+                              description: Restart policy for the container to manage
+                                the restart behavior of each container within a pod.
+                                This may only be set for init containers. You cannot
+                                set this field on ephemeral containers.
+                              type: string
                             securityContext:
                               description: 'Optional: SecurityContext defines the
                                 security options the ephemeral container should be
@@ -7884,7 +8103,8 @@ spec:
                                         The profile must be preconfigured on the node
                                         to work. Must be a descending path, relative
                                         to the kubelet's configured seccomp profile
-                                        location. Must only be set if type is "Localhost".
+                                        location. Must be set if type is "Localhost".
+                                        Must NOT be set for any other type.
                                       type: string
                                     type:
                                       description: "type indicates which kind of seccomp
@@ -7920,14 +8140,10 @@ spec:
                                     hostProcess:
                                       description: HostProcess determines if a container
                                         should be run as a 'Host Process' container.
-                                        This field is alpha-level and will only be
-                                        honored by components that enable the WindowsHostProcessContainers
-                                        feature flag. Setting this field without the
-                                        feature flag will result in errors when validating
-                                        the Pod. All of a Pod's containers must have
-                                        the same effective HostProcess value (it is
-                                        not allowed to have a mix of HostProcess containers
-                                        and non-HostProcess containers).  In addition,
+                                        All of a Pod's containers must have the same
+                                        effective HostProcess value (it is not allowed
+                                        to have a mix of HostProcess containers and
+                                        non-HostProcess containers). In addition,
                                         if HostProcess is true then HostNetwork must
                                         also be set to true.
                                       type: boolean
@@ -9194,6 +9410,28 @@ spec:
                                     exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
                                   type: object
                               type: object
+                            restartPolicy:
+                              description: 'RestartPolicy defines the restart behavior
+                                of individual containers in a pod. This field may
+                                only be set for init containers, and the only allowed
+                                value is "Always". For non-init containers or when
+                                this field is not specified, the restart behavior
+                                is defined by the Pod''s restart policy and the container
+                                type. Setting the RestartPolicy as "Always" for the
+                                init container will have the following effect: this
+                                init container will be continually restarted on exit
+                                until all regular containers have terminated. Once
+                                all regular containers have completed, all init containers
+                                with restartPolicy "Always" will be shut down. This
+                                lifecycle differs from normal init containers and
+                                is often referred to as a "sidecar" container. Although
+                                this init container still starts in the init container
+                                sequence, it does not wait for the container to complete
+                                before proceeding to the next init container. Instead,
+                                the next init container starts immediately after this
+                                init container is started, or after any startupProbe
+                                has successfully completed.'
+                              type: string
                             securityContext:
                               description: 'SecurityContext defines the security options
                                 the container should be run with. If set, the fields
@@ -9323,7 +9561,8 @@ spec:
                                         The profile must be preconfigured on the node
                                         to work. Must be a descending path, relative
                                         to the kubelet's configured seccomp profile
-                                        location. Must only be set if type is "Localhost".
+                                        location. Must be set if type is "Localhost".
+                                        Must NOT be set for any other type.
                                       type: string
                                     type:
                                       description: "type indicates which kind of seccomp
@@ -9359,14 +9598,10 @@ spec:
                                     hostProcess:
                                       description: HostProcess determines if a container
                                         should be run as a 'Host Process' container.
-                                        This field is alpha-level and will only be
-                                        honored by components that enable the WindowsHostProcessContainers
-                                        feature flag. Setting this field without the
-                                        feature flag will result in errors when validating
-                                        the Pod. All of a Pod's containers must have
-                                        the same effective HostProcess value (it is
-                                        not allowed to have a mix of HostProcess containers
-                                        and non-HostProcess containers).  In addition,
+                                        All of a Pod's containers must have the same
+                                        effective HostProcess value (it is not allowed
+                                        to have a mix of HostProcess containers and
+                                        non-HostProcess containers). In addition,
                                         if HostProcess is true then HostNetwork must
                                         also be set to true.
                                       type: boolean
@@ -9802,19 +10037,14 @@ spec:
                                     namespace as this pod. \n The template will be
                                     used to create a new ResourceClaim, which will
                                     be bound to this pod. When this pod is deleted,
-                                    the ResourceClaim will also be deleted. The name
-                                    of the ResourceClaim will be <pod name>-<resource
-                                    name>, where <resource name> is the PodResourceClaim.Name.
-                                    Pod validation will reject the pod if the concatenated
-                                    name is not valid for a ResourceClaim (e.g. too
-                                    long). \n An existing ResourceClaim with that
-                                    name that is not owned by the pod will not be
-                                    used for the pod to avoid using an unrelated resource
-                                    by mistake. Scheduling and pod startup are then
-                                    blocked until the unrelated ResourceClaim is removed.
-                                    \n This field is immutable and no changes will
-                                    be made to the corresponding ResourceClaim by
-                                    the control plane after creating the ResourceClaim."
+                                    the ResourceClaim will also be deleted. The pod
+                                    name and resource name, along with a generated
+                                    component, will be used to form a unique name
+                                    for the ResourceClaim, which will be recorded
+                                    in pod.status.resourceClaimStatuses. \n This field
+                                    is immutable and no changes will be made to the
+                                    corresponding ResourceClaim by the control plane
+                                    after creating the ResourceClaim."
                                   type: string
                               type: object
                           required:
@@ -9961,8 +10191,9 @@ spec:
                                   defined in a file on the node should be used. The
                                   profile must be preconfigured on the node to work.
                                   Must be a descending path, relative to the kubelet's
-                                  configured seccomp profile location. Must only be
-                                  set if type is "Localhost".
+                                  configured seccomp profile location. Must be set
+                                  if type is "Localhost". Must NOT be set for any
+                                  other type.
                                 type: string
                               type:
                                 description: "type indicates which kind of seccomp
@@ -10030,15 +10261,11 @@ spec:
                                 type: string
                               hostProcess:
                                 description: HostProcess determines if a container
-                                  should be run as a 'Host Process' container. This
-                                  field is alpha-level and will only be honored by
-                                  components that enable the WindowsHostProcessContainers
-                                  feature flag. Setting this field without the feature
-                                  flag will result in errors when validating the Pod.
-                                  All of a Pod's containers must have the same effective
+                                  should be run as a 'Host Process' container. All
+                                  of a Pod's containers must have the same effective
                                   HostProcess value (it is not allowed to have a mix
-                                  of HostProcess containers and non-HostProcess containers).  In
-                                  addition, if HostProcess is true then HostNetwork
+                                  of HostProcess containers and non-HostProcess containers).
+                                  In addition, if HostProcess is true then HostNetwork
                                   must also be set to true.
                                 type: boolean
                               runAsUserName:
@@ -12038,19 +12265,18 @@ spec:
                 type: object
               type:
                 default: rw
-                description: Which instances we must forward traffic to?
+                description: 'Type of service to forward traffic to. Default: `rw`.'
                 enum:
                 - rw
                 - ro
                 type: string
             required:
             - cluster
-            - instances
             - pgbouncer
-            - type
             type: object
           status:
-            description: PoolerStatus defines the observed state of Pooler
+            description: 'Most recently observed status of the Pooler. This data may
+              not be up to date. Populated by the system. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
             properties:
               instances:
                 description: The number of pods trying to be scheduled
@@ -12105,6 +12331,9 @@ spec:
                     type: object
                 type: object
             type: object
+        required:
+        - metadata
+        - spec
         type: object
     served: true
     storage: true
@@ -12118,7 +12347,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.1
+    controller-gen.kubebuilder.io/version: v0.13.0
     helm.sh/resource-policy: keep
   name: scheduledbackups.postgresql.cnpg.io
 spec:
@@ -12186,6 +12415,46 @@ spec:
                 description: If the first backup has to be immediately start after
                   creation or not
                 type: boolean
+              method:
+                default: barmanObjectStore
+                description: 'The backup method to be used, possible options are `barmanObjectStore`
+                  and `volumeSnapshot`. Defaults to: `barmanObjectStore`.'
+                enum:
+                - barmanObjectStore
+                - volumeSnapshot
+                type: string
+              online:
+                description: Whether the default type of backup with volume snapshots
+                  is online/hot (`true`, default) or offline/cold (`false`) Overrides
+                  the default setting specified in the cluster field '.spec.backup.volumeSnapshot.online'
+                type: boolean
+              onlineConfiguration:
+                description: Configuration parameters to control the online/hot backup
+                  with volume snapshots Overrides the default settings specified in
+                  the cluster '.backup.volumeSnapshot.onlineConfiguration' stanza
+                properties:
+                  immediateCheckpoint:
+                    description: Control whether the I/O workload for the backup initial
+                      checkpoint will be limited, according to the `checkpoint_completion_target`
+                      setting on the PostgreSQL server. If set to true, an immediate
+                      checkpoint will be used, meaning PostgreSQL will complete the
+                      checkpoint as soon as possible. `false` by default.
+                    type: boolean
+                  waitForArchive:
+                    default: true
+                    description: If false, the function will return immediately after
+                      the backup is completed, without waiting for WAL to be archived.
+                      This behavior is only useful with backup software that independently
+                      monitors WAL archiving. Otherwise, WAL required to make the
+                      backup consistent might be missing and make the backup useless.
+                      By default, or when this parameter is true, pg_backup_stop will
+                      wait for WAL to be archived when archiving is enabled. On a
+                      standby, this means that it will wait only when archive_mode
+                      = always. If write activity on the primary is low, it may be
+                      useful to run pg_switch_wal on the primary in order to trigger
+                      an immediate segment switch.
+                    type: boolean
+                type: object
               schedule:
                 description: The schedule does not follow the same format used in
                   Kubernetes CronJobs as it includes an additional seconds specifier,
@@ -12205,6 +12474,7 @@ spec:
                 - prefer-standby
                 type: string
             required:
+            - cluster
             - schedule
             type: object
           status:
@@ -12226,6 +12496,9 @@ spec:
                 format: date-time
                 type: string
             type: object
+        required:
+        - metadata
+        - spec
         type: object
     served: true
     storage: true
