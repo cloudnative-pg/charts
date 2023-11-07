@@ -168,7 +168,7 @@ backups:
 
   # Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
-  endpointURL: "" # Leave empty if using the default S3 endpoint
+  endpointURL: ""  # Leave empty if using the default S3 endpoint
 
   # Overrides the provider specific default path. Defaults to:
   # S3: s3://<bucket><path>
