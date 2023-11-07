@@ -31,7 +31,7 @@ recovery:
 
   ##
   # Backup Recovery Method
-  backupName: "" # Name of the backup to recover from. Required if method is `backup`.
+  backupName: ""  # Name of the backup to recover from. Required if method is `backup`.
 
   ##
   # Object Store Recovery Method
