@@ -2,11 +2,12 @@
 bootstrap:
 {{- if eq .Values.mode "standalone" }}
   initdb:
-    {{- (omit .Values.cluster.initdb "postInitApplicationSQL") | toYaml | nindent 4 }}
+    {{- with .Values.cluster.initdb }}
+        {{- with (omit . "postInitApplicationSQL") }}
+            {{- . | toYaml | nindent 4 }}
+        {{- end }}
+    {{- end }}
     postInitApplicationSQL:
-      {{- range .Values.cluster.initdb.postInitApplicationSQL }}
-      - {{ . }}
-      {{- end -}}
       {{- if eq .Values.type "postgis" }}
       - CREATE EXTENSION IF NOT EXISTS postgis;
       - CREATE EXTENSION IF NOT EXISTS postgis_topology;
@@ -15,6 +16,11 @@ bootstrap:
       {{- else if eq .Values.type "timescaledb" }}
       - CREATE EXTENSION IF NOT EXISTS timescaledb;
       {{- end }}
+      {{- with .Values.cluster.initdb }}
+          {{- range .postInitApplicationSQL }}
+            {{- printf "- %s" . | nindent 6 }}
+          {{- end -}}
+      {{- end -}}
 {{- else if eq .Values.mode "recovery" }}
   recovery:
     {{- with .Values.recovery.pitrTarget.time }}
