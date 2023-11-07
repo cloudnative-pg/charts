@@ -27,7 +27,7 @@ recovery:
 
   ## Point in time recovery target. Specify one of the following:
   pitrTarget:
-    time: "" # Time in RFC3339 format
+    time: ""  # Time in RFC3339 format
 
   ##
   # Backup Recovery Method
@@ -38,13 +38,13 @@ recovery:
   clusterName: ""
   # Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
-  endpointURL: "" # Leave empty if using the default S3 endpoint
+  endpointURL: ""  # Leave empty if using the default S3 endpoint
   # Overrides the provider specific default path. Defaults to:
   # S3: s3://<bucket><path>
   # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path>
   # Google: gs://<bucket><path>
   destinationPath: ""
-  provider: s3 # One of s3, azure, google
+  provider: s3  # One of s3, azure, google
   s3:
     region: ""
     bucket: ""
@@ -74,7 +74,7 @@ cluster:
 
   # Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments:
   # <image>:<tag>@sha256:<digestValue>
-  imageName: "" # Default value depends on type (postgresql/postgis/timescaledb)
+  imageName: ""  # Default value depends on type (postgresql/postgis/timescaledb)
 
   # Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated.
   # More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
@@ -132,7 +132,7 @@ cluster:
   monitoring:
     enablePodMonitor: true
     grafanaDashboard:
-        enable: true # TODO
+      enable: true  # TODO
     customQueries: []
       # - name: "pg_cache_hit_ratio"
       #   query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
@@ -164,7 +164,7 @@ cluster:
 ###
 # Database cluster backup configuration
 backups:
-  enabled: false # You need to configure backups manually, so backups are disabled by default.
+  enabled: false  # You need to configure backups manually, so backups are disabled by default.
 
   # Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
@@ -199,8 +199,8 @@ backups:
     applicationCredentials: ""
 
   scheduledBackups:
-    - name: daily-backup # Daily at midnight
-      schedule: "0 0 0 * * *" # Daily at midnight
+    - name: daily-backup  # Daily at midnight
+      schedule: "0 0 0 * * *"  # Daily at midnight
       backupOwnerReference: self
 
   retentionPolicy: "30d"
