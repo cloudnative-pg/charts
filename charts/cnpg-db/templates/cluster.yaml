@@ -1,0 +1,250 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "cnpgdb.fullname" . }}
+  namespace: {{ include "cnpgdb.namespace" . }}
+
+  {{- with .Values.cluster.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+  {{- with .Values.additionalLabels }}
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+
+  imageName: {{ include "cnpgdb.imageName" . }}
+  imagePullPolicy: {{ .Values.imagePullPolicy }}
+
+  {{- with .Values.imagePullSecrets }}
+  imagePullSecrets:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.inheritedMetadata }}
+  inheritedMetadata:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  schedulerName: {{ .Values.schedulerName }}
+
+  {{- with .Values.seccompProfile }}
+  seccompProfile:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.serviceAccountTemplate }}
+  serviceAccountTemplate:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  minSyncReplicas: {{ .Values.minSyncReplicas | default 0 }}
+  maxSyncReplicas: {{ .Values.maxSyncReplicas | default 0 }}
+
+  {{- with .Values.replicationSlots }}
+  replicationSlots:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.affinity }}
+  affinity:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.topologySpreadConstraints }}
+  topologySpreadConstraints:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+
+  {{- with .Values.replica }}
+  {{- if .enabled }}
+  replica:
+    enabled: {{ .enabled }}
+    source: {{ .source }}
+  {{- end }}
+  {{- end }}
+
+
+  {{- with .Values.backup }}
+  {{- if .enabled }}
+  backup:
+    target: {{ .target }}
+    retentionPolicy: {{ .retentionPolicy }}
+
+    {{- with .volumeSnapshot }}
+    volumeSnapshot:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+
+    {{- with .barmanObjectStore }}
+    barmanObjectStore:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- end }}
+  {{- end }}
+
+
+  ###
+  # Bootstrap Configuration
+  bootstrap:
+
+  {{- with .Values.initdb }}
+  {{- if .enabled }} 
+    initdb:
+      database: {{ required "database name has to be specified" .database }}
+      owner: {{ .owner | default .Values.initdb.database }}
+      dataChecksums: {{ .dataChecksums }}
+      encoding: {{ .encoding | default "UTF8" }}
+      localeCType: {{ .localeCType | default "C" }}
+      localeCollate: {{ .localeCollate | default "C" }}
+      walSegmentSize: {{ .walSegmentSize }}
+
+      postInitSQL: {{ .postInitSQL }}
+      postInitTemplateSQL: {{ .postInitTemplateSQL }}
+      postInitApplicationSQL: {{ .postInitApplicationSQL }}
+      postInitApplicationSQLRefs: {{ .postInitApplicationSQLRefs }}
+
+      {{- with .Values.initdb.secret }}
+      secret:
+        name: {{ .name }}
+      {{- end }}
+
+      {{- with .options }}
+      options:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .import }}
+      import:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+  {{- end }}
+  {{- end }}
+
+  {{- with .Values.pg_basebackup }}
+  {{- if .enabled }}
+    pg_basebackup:
+      database: {{ required "pg_basebackup database name has to be specified" .database }}
+      owner: {{ .owner }}
+
+      {{- with .secret }}
+      secret:
+        name: {{ .name }}
+      {{- end }}
+
+      source: {{ .source }}
+  {{- end }}
+  {{- end }}
+
+  {{- with .Values.recovery }}
+  {{- if .enabled }}
+    recovery:
+      database: {{ required "recovery database name has to be specified" .database }}
+      owner: {{ .owner }}
+      
+      {{- with .secret }}
+      secret:
+        name: {{ .name }}
+      {{- end }}
+
+      {{- with .backup }}
+      backup:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .recoveryTarget }}
+      recoveryTarget:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .source }}
+      source: {{ . }}
+      {{- end }}
+
+      {{- with .volumeSnapshot }}
+      volumeSnapshot:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  {{- end }}
+  {{- end }}
+
+  postgresGID: {{ .Values.cluster.postgresGID | default 26 }}
+  postgresUID: {{ .Values.cluster.postgresUID | default 26 }}
+  enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess | default false }}
+
+  {{- with .Values.cluster.superUserSecret }}
+  superUserSecret:
+    name: {{ .name }}
+  {{- end }}
+
+  instances: {{ .Values.cluster.instances }}
+  logLevel: {{ .Values.cluster.logLevel }}
+
+
+  priorityClassName: {{ .Values.cluster.priorityClassName }}
+
+  smartShutdownTimeout: {{ .Values.cluster.smartShutdownTimeout }}
+  startDelay: {{ .Values.cluster.startDelay }}
+  stopDelay: {{ .Values.cluster.stopDelay }}
+  failoverDelay: {{ .Values.cluster.failoverDelay }}
+  switchoverDelay: {{ .Values.cluster.switchoverDelay }}
+  primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
+  primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
+
+  {{- with .Values.cluster.resources }}
+  resources:
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.cluster.certificates }}
+  certificates:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.cluster.postgresql }}
+  postgresql:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.cluster.managed }}
+  managed:
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+
+  storage:
+  {{- $storageClass := .Values.cluster.storage.storageClass | required "Storage has to be set." -}}
+  {{- with .Values.cluster.storage }}
+    size: {{ .size | default "1Gi" }}
+    storageClass: {{ required "StorageClass has to be defined" .storageClass }}
+
+    {{- with .resizeInUseVolumes }}
+    resizeInUseVolumes: {{ . }}
+    {{- end }}
+
+    {{- with .pvcTemplate }}
+    pvcTemplate:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+
+  {{ end }}
+
+  {{- with .Values.cluster.walStorage }}
+  walStorage:
+    size: {{ .size }}
+    storageClass: {{ .storageClass }}
+    resizeInUseVolumes: {{ .resizeInUseVolumes }}
+    {{- with .pvcTemplate }}
+    pvcTemplate:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+  {{ end }}
+
+  {{- with .Values.externalClusters }}
+  externalClusters:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+    
+

@@ -1,0 +1,50 @@
+{{ if .Values.pooler.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: {{- printf "%s-%s" (include "cnpgdb.fullname" .) "pooler" }}
+  namespace: {{ include "cnpgdb.namespace" . }}
+spec:
+  cluster:
+    name: {{ include "cnpgdb.fullname" . }}
+  instances: {{ .Values.pooler.instances }}
+  type: {{ .Values.pooler.type }}
+
+  pgbouncer:
+    authQuery: {{ .Values.pooler.pgbouncer.authQuery }}
+
+    {{- with .Values.pooler.pgbouncer.authQuerySecret }}
+    authQuerySecret: 
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+
+    paused: {{ .Values.pooler.pgbouncer.paused }} 
+
+    {{- with .Values.pooler.pgbouncer.pg_hba }} 
+    pg_hba:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+
+    poolMode: {{ .Values.pooler.pgbouncer.poolMode }}
+
+    {{- with .Values.pooler.parameter }}
+    parameters:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+
+  {{- with .Values.pooler.deploymentStrategy }}
+  deploymentStrategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.pooler.template }}
+  template: 
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.pooler.monitoring }}
+  monitoring:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+{{ end }}

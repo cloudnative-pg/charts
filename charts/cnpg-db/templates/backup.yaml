@@ -1,0 +1,68 @@
+{{ if .Values.backup.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: {{- printf "%s-%s" (include "cnpgdb.fullname" .) "backup" }}
+  namespace: {{ include "cnpgdb.namespace" . }}
+
+  annotations:
+    "helm.sh/hook": post-install
+  {{- with .Values.backup.annotations }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+  {{- with .Values.backup.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+spec:
+  cluster:
+    name: {{ include "cluster.fullname" . }}
+
+  online: {{ .Values.backup.volumeSnapshot.online}}
+  target: {{ .Values.backup.target }}
+  method: {{ .Values.backup.volumeSnapshot.enabled | ternary "volumeSnapshot" "barmanObjectStore" }}
+
+  {{- with .Values.backup.volumeSnapshot.onlineConfiguration }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+{{- range .Values.backups.scheduledBackups }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: {{- printf "%s-%s-%s" (include "cnpgdb.name" .) "scheduled-backup" .name }}
+  namespace: {{ include "cnpgdb.namespace" . }}
+
+  annotations:
+    "helm.sh/hook": post-install
+  {{- with .Values.backup.annotations }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+  {{- with .Values.backup.labels }}
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+spec:
+  cluster:
+    name: {{ include "cluster.fullname" . }}
+
+  online: {{ .Values.backup.volumeSnapshot.enabled | ternary .Values.backup.volumeSnapshot.online false }}
+  method: {{ .Values.backup.volumeSnapshot.enabled | ternary "volumeSnapshot" "barmanObjectStore" }}
+
+  schedule: {{ required "scheduled Backup require a schedule." .schedule }}
+  backupOwnerRefernce: {{ .backupOwnerReference | default "self" }}
+  immediate: {{ .immediate | default false }}
+  suspend: {{ .suspend | default false}}
+  # TODO: either .target or ...
+  target: {{ .Values.backup.target | default "prefer-standby" }}
+
+{{- end }}
+{{- end }}
+

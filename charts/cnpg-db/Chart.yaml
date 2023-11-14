@@ -1,0 +1,12 @@
+apiVersion: v2
+name: cloudnative-pg-db
+type: application
+version: 0.1.0
+description: A Helm chart for Kubernetes
+
+# missing shell image
+annotations:
+  category: Database
+  images: | 
+    - name: postgresql
+      image: ghcr.io/cloudnative-pg/postgresql:15.2

@@ -1,0 +1,69 @@
+name: ""
+fullname: ""
+namespace: ""
+type: postgresql
+
+imageName: ""
+imagePullPolicy: IfNotPresent
+imagePullSecrets: []
+inheritedMetadata: {}
+schedulerName: ""
+
+replica:
+  enabled: false
+
+pooler:
+  enabled: false
+
+backup:
+  enabled: false
+
+bootstrap:
+  initdb:
+    enabled: true
+
+    database: "app"
+    dataChecksums: false
+    encoding: "UTF8"
+    localeCType: "C"
+    localeCollate: "C"
+    walSegmentSize: ""
+
+
+  pg_basebackup: 
+    enabled: false
+
+  recovery:
+    enabled: false
+
+cluster:
+
+  postgresGID: 26
+  postgresUID: 26
+
+  instances: 1
+  logLevel: "info"
+
+  smartShutdownTimeout: 180
+  startDelay: 3600
+  stopDelay: 1800
+  failoverDelay: 0
+  switchoverDelay: 3600
+  primaryUpdateMethod: "restart"
+  primaryUpdateStrategy: "unsupervised"
+
+  resources:
+    requests:
+      memory: "1024Mi"
+      cpu: 1
+    limits:
+      memory: "1024Mi"
+      cpu: 1
+  
+  postgresql:
+    parameters: 
+      huge_pages: "off"
+
+  storage:
+    size: "1Gi"
+    storageClass: "csi-driver-nfs"
