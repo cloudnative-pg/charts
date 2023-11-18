@@ -14,7 +14,7 @@ CloudNativePG Operator Helm Chart
 
 ## Source Code
 
-* <https://github.com/cloudnative-pg/charts>
+* <https://github.com/cloudnative-pg/charts/cnpg-operator>
 
 ## Values
 
