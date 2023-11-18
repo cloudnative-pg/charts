@@ -4,13 +4,13 @@
 
 CloudNativePG Helm Chart
 
+
 **Homepage:** <https://cloudnative-pg.io>
 
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| phisco | <p.scorsolini@gmail.com> |  |
 
 ## Source Code
 

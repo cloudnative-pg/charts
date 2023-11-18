@@ -32,6 +32,4 @@ keywords:
   - database
 home: https://cloudnative-pg.io
 maintainers:
-  - name: phisco
-    email: p.scorsolini@gmail.com
 deprecated: true
