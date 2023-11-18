@@ -4,6 +4,7 @@
 
 CloudNativePG Helm Chart
 
+**DEPRECATED**
 
 **Homepage:** <https://cloudnative-pg.io>
 

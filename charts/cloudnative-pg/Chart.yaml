@@ -15,7 +15,7 @@
 #
 apiVersion: v2
 name: cloudnative-pg
-description: CloudNativePG Helm Chart
+description: DEPRECATED CloudNativePG Helm Chart
 icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
 type: application
 version: "0.19.2"
