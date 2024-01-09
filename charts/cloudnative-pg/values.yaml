@@ -82,6 +82,8 @@ rbac:
 
 # -- Annotations to be added to all other resources.
 commonAnnotations: {}
+# -- Labels to be added to all other resources.
+commonLabels: {}
 # -- Annotations to be added to the pod.
 podAnnotations: {}
 # -- Labels to be added to the pod.
@@ -139,6 +141,8 @@ affinity: {}
 monitoring:
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
   podMonitorEnabled: false
+  # -- Additional labels for Prometheus Operator resources
+  additionalLabels: {}
 
 # Default monitoring queries
 monitoringQueriesConfigMap:
