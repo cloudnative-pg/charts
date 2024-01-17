@@ -33,7 +33,7 @@ CloudNativePG Helm Chart
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"ghcr.io/cloudnative-pg/cloudnative-pg"` |  |
-| image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `""` | Overrides the image tag (and the `app.kubernetes.io/version` label) whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` |  |
 | monitoring.podMonitorEnabled | bool | `false` | Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs. |
 | monitoringQueriesConfigMap.name | string | `"cnpg-default-monitoring"` | The name of the default monitoring configmap. |

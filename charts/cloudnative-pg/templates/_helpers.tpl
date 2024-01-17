@@ -36,9 +36,7 @@ Common labels
 {{- define "cloudnative-pg.labels" -}}
 helm.sh/chart: {{ include "cloudnative-pg.chart" . }}
 {{ include "cloudnative-pg.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
