@@ -81,7 +81,7 @@ cluster:
   imagePullPolicy: IfNotPresent
 
   # The list of pull secrets to be used to pull the images
-  # See: https://cloudnative-pg.io/documentation/current/api_reference/#LocalObjectReference
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-LocalObjectReference
   imagePullSecrets: []
 
   storage:
@@ -114,12 +114,12 @@ cluster:
   logLevel: "info"
 
   # Affinity/Anti-affinity rules for Pods
-  # See: https://cloudnative-pg.io/documentation/current/api_reference/#AffinityConfiguration
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration
   affinity:
     topologyKey: topology.kubernetes.io/zone
 
   # The configuration for the CA and related certificates
-  # See: https://cloudnative-pg.io/documentation/current/api_reference/#CertificatesConfiguration
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration
   certificates:
 
   # When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password.
@@ -145,12 +145,12 @@ cluster:
       #         description: "Cache hit ratio"
 
   # Configuration of the PostgreSQL server
-  # See: https://cloudnative-pg.io/documentation/current/api_reference/#PostgresConfiguration
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration
   postgresql:
 
   # BootstrapInitDB is the configuration of the bootstrap process when initdb is used
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
-  # See: https://cloudnative-pg.io/documentation/current/api_reference/#bootstrapinitdb
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb
   initdb: {}
     # database: app
     # owner: "" # Defaults to the database name
