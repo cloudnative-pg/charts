@@ -8,6 +8,7 @@ metadata:
   name: {{ include "cluster.fullname" $context  }}-{{ .name }}
   labels: {{ include "cluster.labels" $context | nindent 4 }}
 spec:
+  immediate: true
   schedule: {{ .schedule }}
   backupOwnerReference: {{ .backupOwnerReference }}
   cluster:
