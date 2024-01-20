@@ -1,0 +1,13 @@
+name: Deploy the CNPG Operator
+
+on:
+  workflow_call: {}
+
+jobs:
+  deploy_operator:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Deploy the operator
+        run: |
+          helm upgrade --install cnpg --namespace cnpg-system \
+          --create-namespace charts/cloudnative-pg --wait

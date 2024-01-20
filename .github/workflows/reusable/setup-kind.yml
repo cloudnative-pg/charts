@@ -1,0 +1,28 @@
+name: Setup Kind
+
+on:
+  workflow_call:
+    outputs:
+      helm-path: ${{ jobs.setup_kind.outputs.helm-path }}
+      kubectl-path: ${{ jobs.setup_kind.outputs.kubectl-path }}
+
+jobs:
+  setup_kind:
+    runs-on: ubuntu-22.04
+    outputs:
+      helm-path: ${{ steps.helm.outputs.helm-path }}
+      kubectl-path: ${{ steps.kubectl.outputs.kubectl-path }}
+
+    steps:
+      - id: helm
+        name: Set up Helm
+        uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # v3.5
+        with:
+          version: v3.6.2
+
+      - id: kubectl
+        name: Install kubectl
+        uses: azure/setup-kubectl@901a10e89ea615cf61f57ac05cecdf23e7de06d8 # v3.2
+
+      - name: Create kind cluster
+        uses: helm/kind-action@dda0770415bac9fc20092cacbc54aa298604d140 # v1.8.0

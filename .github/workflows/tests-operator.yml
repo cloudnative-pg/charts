@@ -1,4 +1,4 @@
-name: continuous-delivery
+name: tests-operator
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - 'gh-pages'
 
 jobs:
-  install_deploy:
+  deploy_operator:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
