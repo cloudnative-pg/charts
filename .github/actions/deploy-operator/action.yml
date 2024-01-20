@@ -1,0 +1,10 @@
+name: Deploy the CNPG Operator
+description: Deploys the CNPG Operator to a Kubernetes cluster
+runs:
+  using: composite
+  steps:
+    - name: Deploy the operator
+      shell: bash
+      run: |
+        helm upgrade --install cnpg --namespace cnpg-system \
+        --create-namespace charts/cloudnative-pg --wait
