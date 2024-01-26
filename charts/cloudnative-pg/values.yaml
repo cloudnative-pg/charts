@@ -139,6 +139,9 @@ affinity: {}
 monitoring:
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
   podMonitorEnabled: false
+  grafanaDashboard:
+    enabled: false
+    namespace: ""
 
 # Default monitoring queries
 monitoringQueriesConfigMap:
