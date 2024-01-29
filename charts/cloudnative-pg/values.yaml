@@ -143,9 +143,12 @@ monitoring:
     enabled: false
     # -- Allows overriding the namespace where the dashboard is installed.
     namespace: ""
-    sidecarLabel: "grafana_dashboard"
     # -- The name of the configmap containing the dashboard.
     configMapName: "cnpg-grafana-dashboard"
+    # -- Label that config maps with dashboards should have to be added
+    sidecarLabel: "grafana_dashboard"
+    # -- Label value that config maps with dashboards should have to be added
+    sidecarLabelValue: ""
 
 # Default monitoring queries
 monitoringQueriesConfigMap:
