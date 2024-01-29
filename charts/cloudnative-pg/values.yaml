@@ -141,7 +141,9 @@ monitoring:
   podMonitorEnabled: false
   grafanaDashboard:
     enabled: false
-    namespace: ""
+    namespace: "" # Allows overriding the namespace where the dashboard is installed.
+    sidecarLabel: "grafana_dashboard"
+    configMapName: "cnpg-grafana-dashboard" # Allows overriding the name of the configmap where the dashboard is stored.
 
 # Default monitoring queries
 monitoringQueriesConfigMap:
