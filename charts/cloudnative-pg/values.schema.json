@@ -101,7 +101,7 @@
                         "configMapName": {
                             "type": "string"
                         },
-                        "enabled": {
+                        "create": {
                             "type": "boolean"
                         },
                         "namespace": {
