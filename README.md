@@ -1,4 +1,6 @@
-# CloudNativePG Helm Chart
+# CloudNativePG Helm Charts
+
+## Operator chart
 
 Helm chart to install the
 [CloudNativePG operator](https://cloudnative-pg.io), originally created and sponsored by
@@ -6,9 +8,6 @@ Helm chart to install the
 running in private, public, or hybrid cloud environments.
 
 **NOTE**: supports only the latest point release of the CloudNativePG operator.
-
-## Deployment using the latest release
-
 ```console
 helm repo add cnpg https://cloudnative-pg.github.io/charts
 helm upgrade --install cnpg \
@@ -17,27 +16,21 @@ helm upgrade --install cnpg \
   cnpg/cloudnative-pg
 ```
 
-## Deployment using local chart
+Refer to the [Operator Chart documentation](charts/cloudnative-pg/README.md) for advanced configuration and monitoring.
 
-To deploy the operator from sources you can run the following command:
+## Cluster chart
+
+Helm chart to install a CloudNativePG database cluster.
 
 ```console
-helm upgrade --install cnpg \
-  --namespace cnpg-system \
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm upgrade --install database \
+  --namespace database \
   --create-namespace \
-  charts/cloudnative-pg
+  cnpg/cluster
 ```
 
-## Sandbox for CloudNativePG
-
-CloudNativePG Sandbox, aka `cnpg-sandbox`, is now deprecated and has been removed from this project.
-
-All its resources have been moved in the primary `cloudnativepg` repository, in the form of:
-
-- documentation (["Quickstart"](https://cloudnative-pg.io/documentation/current/quickstart/)
-  and ["Monitoring"](https://cloudnative-pg.io/documentation/current/monitoring/) sections)
-- plugin commands ([`pgbench`](https://cloudnative-pg.io/documentation/current/cnpg-plugin/#benchmarking-the-database-with-pgbench)
-- manifests
+Refer to the [Cluster Chart documentation](charts/cluster/README.md) for advanced configuration options.
 
 ## Contributing
 
@@ -46,4 +39,4 @@ Please read the [code of conduct](CODE-OF-CONDUCT.md) and the
 
 ## Copyright
 
-Helm charts for CloudNativePG are distributed under Apache License 2.0.
+Helm charts for CloudNativePG are distributed under [Apache License 2.0](LICENSE).
