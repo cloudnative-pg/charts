@@ -96,9 +96,9 @@ Additionally you can specify the following parameters:
 ```yaml
 backups:
   scheduledBackups:
-	- name: daily-backup
-	  schedule: "0 0 0 * * *" # Daily at midnight
-	  backupOwnerReference: self
+    - name: daily-backup
+      schedule: "0 0 0 * * *" # Daily at midnight
+      backupOwnerReference: self
 ```
 
 Each backup adapter takes it's own set of parameters, listed in the [Configuration options](#Configuration-options) section
