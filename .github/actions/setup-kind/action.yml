@@ -8,7 +8,7 @@ outputs:
     description: The path to the kubectl binary
     value: ${{ steps.kubectl.outputs.kubectl-path }}
 runs:
-  using: "composite"
+  using: composite
   steps:
     - id: helm
       name: Set up Helm
