@@ -75,6 +75,9 @@
         "fullnameOverride": {
             "type": "string"
         },
+        "hostNetwork": {
+            "type": "boolean"
+        },
         "image": {
             "type": "object",
             "properties": {
