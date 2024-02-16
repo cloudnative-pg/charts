@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "cluster.fullname" . }}-ping-test
+  labels:
+    app.kubernetes.io/component: database-ping-test
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    metadata:
+      name: {{ include "cluster.fullname" . }}-ping-test
+      labels:
+        app.kubernetes.io/component: database-ping-test
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: alpine
+          image: alpine:3.17
+          command: [ 'sh' ]
+          env:
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "cluster.fullname" . }}-app
+                  key: username
+            - name: PGPASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "cluster.fullname" . }}-app
+                  key: password
+          args:
+            - "-c"
+            - >-
+              apk add postgresql-client &&
+              psql "postgresql://$PGUSER:$PGPASS@{{ include "cluster.fullname" . }}-rw.{{ .Release.Namespace }}.svc.cluster.local:5432" -c 'SELECT 1'

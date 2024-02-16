@@ -1,0 +1,19 @@
+mode: standalone
+
+cluster:
+  instances: 1
+
+backups:
+  enabled: true
+  provider: s3
+  s3:
+    region: "eu-west-1"
+    bucket: "db-backups"
+    path: "/v1"
+    accessKey: "AWS_S3_ACCESS_KEY"
+    secretKey: "AWS_S3_SECRET_KEY"
+  scheduledBackups:
+    - name: daily-backup # Daily at midnight
+      schedule: "0 0 0 * * *" # Daily at midnight
+      backupOwnerReference: self
+  retentionPolicy: "30d"

@@ -1,0 +1,22 @@
+mode: recovery
+
+recovery:
+  method: backup
+  backupName: "database-clustermarket-database-daily-backup-1683244800"
+
+cluster:
+  instances: 1
+
+backups:
+  provider: s3
+  s3:
+    region: "eu-west-1"
+    bucket: "db-backups"
+    path: "/v1-restore"
+    accessKey: "AWS_S3_ACCESS_KEY"
+    secretKey: "AWS_S3_SECRET_KEY"
+  scheduledBackups:
+    - name: daily-backup # Daily at midnight
+      schedule: "0 0 0 * * *" # Daily at midnight
+      backupOwnerReference: self
+  retentionPolicy: "30d"
