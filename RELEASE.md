@@ -22,9 +22,9 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
     ```bash
     NEW_VERSION="X.Y.Z"
     ```
-3. Create a branch named `release/cloudnative-pg-X.Y.Z` and switch to it:
+3. Create a branch named `release/cloudnative-pg-vX.Y.Z` and switch to it:
     ```bash
-    git checkout -b release/cluster-$NEW_VERSION
+    git checkout -b release/cloudnative-pg-v$NEW_VERSION
     ```
 4. Update the `.version` in the [Chart.yaml](./charts/cloudnative-pg/Chart.yaml) file to `"X.Y.Z"`
     ```bash
@@ -73,12 +73,13 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
     ```bash
     git push --set-upstream origin release/cloudnative-pg-v$NEW_VERSION
     ```
-9. A PR named `Release cloudnative-pg-X.Y.Z` should be automatically created
+9. A PR named `Release cloudnative-pg-vX.Y.Z` should be automatically created
 10. Wait for all the checks to pass
 11. Two approvals are required in order to merge the PR, if you are a maintainer approve the PR yourself and ask for
     another approval, otherwise ask for two approvals directly.
-12. Merge the PR squashing all commits and **taking care to keep the commit message to be `Release cloudnative-pg-X.Y.Z`**
-13. A release `cloudnative-pg-X.Y.Z` should be automatically created by an action, which will then trigger the release 
+12. Merge the PR squashing all commits and **taking care to keep the commit message to be 
+    `Release cloudnative-pg-vX.Y.Z`**
+13. A release `cloudnative-pg-vX.Y.Z` should be automatically created by an action, which will then trigger the release 
     action. Verify they both are successful.
 14. Once done you should be able to run:
     ```bash
@@ -98,9 +99,9 @@ In order to create a new release of the `cluster` chart, follow these steps:
     ```bash
     NEW_VERSION="X.Y.Z"
     ```
-3. Create a branch: named `release/cluster-X.Y.Z` and switch to it
+3. Create a branch: named `release/cluster-vX.Y.Z` and switch to it
     ```bash
-    git checkout -b release/cluster-$NEW_VERSION
+    git checkout -b release/cluster-v$NEW_VERSION
     ```
 4. Update the `.version` in the [Chart.yaml](./charts/cluster/Chart.yaml) file to `"X.Y.Z"`
     ```bash
@@ -116,7 +117,7 @@ In order to create a new release of the `cluster` chart, follow these steps:
     ```
 7. Push the new branch
     ```bash
-    git push --set-upstream origin release/cloudnative-pg-v$NEW_VERSION
+    git push --set-upstream origin release/cluster-v$NEW_VERSION
     ```
 8. A PR should be automatically created
 9. Wait for all the checks to pass
@@ -124,8 +125,8 @@ In order to create a new release of the `cluster` chart, follow these steps:
     maintainer approve the PR yourself and ask for another approval, otherwise
     ask for two approvals directly.
 11. Merge the PR squashing all commits and **taking care to keep the commit
-    message to be `Release cluster-X.Y.Z`**
-12. A release `cluster-X.Y.Z` should be automatically created by an action, which will ten trigger the release action.
+    message to be `Release cluster-vX.Y.Z`**
+12. A release `cluster-vX.Y.Z` should be automatically created by an action, which will ten trigger the release action.
     Verify they both are successful.
 13. Once done you should be able to run:
     ```bash
