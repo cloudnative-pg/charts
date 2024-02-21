@@ -27,5 +27,5 @@ jobs:
           BODY="Automated PR. Will trigger the ${TAG} release when approved."
           LABEL=release
           ASSIGNEE=${{ github.actor }}
-          gh pr create --title "${TITLE}" --body "${BODY}" --label "${LABEL}" --assignee "@${ASSIGNEE}" ||
+          gh pr create --title "${TITLE}" --body "${BODY}" --label "${LABEL}" --assignee "${ASSIGNEE}" ||
           gh pr edit --title "${TITLE}" --body "${BODY}" --add-label "${LABEL}"
