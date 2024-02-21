@@ -66,6 +66,6 @@ jobs:
             file=${pkg##*/}
             name=${file%-*}
             version=${file%.*}
-            version=${version#*-}
+            version=${version##*-}
             cosign sign ghcr.io/"${GITHUB_REPOSITORY_OWNER}"/charts/"${name}":"${version}"
           done
