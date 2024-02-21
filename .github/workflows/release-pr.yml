@@ -6,7 +6,7 @@ name: release-pr
 on:
   push:
     branches:
-      - release/*-v*
+      - release/*
 
 permissions:
   pull-requests: write
