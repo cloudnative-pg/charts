@@ -88,9 +88,9 @@ Additionally you can specify the following parameters:
 ```yaml
 backups:
   scheduledBackups:
-	- name: daily-backup
-	  schedule: "0 0 0 * * *" # Daily at midnight
-	  backupOwnerReference: self
+    - name: daily-backup
+      schedule: "0 0 0 * * *" # Daily at midnight
+      backupOwnerReference: self
 ```
 
 Each backup adapter takes it's own set of parameters, listed in the [Configuration options](#Configuration-options) section
@@ -149,8 +149,10 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.instances | int | `3` | Number of instances |
 | cluster.logLevel | string | `"info"` | The instances' log level, one of the following values: error, warning, info (default), debug, trace |
 | cluster.monitoring.customQueries | list | `[]` |  |
-| cluster.monitoring.enablePodMonitor | bool | `false` |  |
-| cluster.postgresql | string | `nil` | Configuration of the PostgreSQL server See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration |
+| cluster.monitoring.enabled | bool | `false` |  |
+| cluster.monitoring.podMonitor.enabled | bool | `true` |  |
+| cluster.monitoring.prometheusRule.enabled | bool | `true` |  |
+| cluster.postgresql | object | `{}` | Configuration of the PostgreSQL server See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration |
 | cluster.primaryUpdateMethod | string | `"switchover"` | Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated. It can be switchover (default) or in-place (restart). |
 | cluster.primaryUpdateStrategy | string | `"unsupervised"` | Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated: it can be automated (unsupervised - default) or manual (supervised) |
 | cluster.priorityClassName | string | `""` |  |
