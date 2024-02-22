@@ -4,7 +4,7 @@ CNPGClusterHighReplicationLag
 Meaning
 -------
 
-This alert is triggered when the replication lag of the CNPG cluster is too high.
+This alert is triggered when the replication lag of the CNPG cluster exceed `1s`.
 
 Impact
 ------

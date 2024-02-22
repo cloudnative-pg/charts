@@ -1,10 +1,10 @@
 CNPGClusterHighConnectionsCritical
-=========
+==================================
 
 Meaning
 -------
 
-This alert is triggered when the number of connections to the CNPG cluster instance exceeds 85% of its capacity.
+This alert is triggered when the number of connections to the CNPG cluster instance exceeds 95% of its capacity.
 
 Impact
 ------
