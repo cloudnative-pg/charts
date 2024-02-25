@@ -1,10 +1,13 @@
-{{- if .Values.monitoring.podMonitorEnabled }}
+{{- if .Values.monitoring.podMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: {{ include "cloudnative-pg.fullname" . }}
   labels:
     {{- include "cloudnative-pg.labels" . | nindent 4 }}
+    {{- with .Values.monitoring.podMonitor.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end}}
   {{- with .Values.commonAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
