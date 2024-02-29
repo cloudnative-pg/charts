@@ -12,7 +12,7 @@ backup:
       encryption: AES256
       jobs: 2
 
-    {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.backups }}
+    {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.backups "secretSuffix" "" }}
     {{- include "cluster.barmanObjectStoreConfig" $d | nindent 2 }}
 {{- end }}
 {{- end }}

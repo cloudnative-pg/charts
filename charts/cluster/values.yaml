@@ -48,6 +48,9 @@ recovery:
   destinationPath: ""
   # -- One of `s3`, `azure` or `google`
   provider: s3
+  secret:
+    create: true
+    name: ""
   s3:
     region: ""
     bucket: ""
@@ -182,6 +185,9 @@ backups:
   destinationPath: ""
   # -- One of `s3`, `azure` or `google`
   provider: s3
+  secret:
+    create: true
+    name: ""
   s3:
     region: ""
     bucket: ""
