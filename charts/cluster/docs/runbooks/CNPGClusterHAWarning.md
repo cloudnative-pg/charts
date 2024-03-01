@@ -15,7 +15,7 @@ Impact
 Having less than two available replicas puts your cluster at risk if another instance fails. The cluster is still able
 to operate normally, although the `-ro` and `-r` endpoints operate at reduced capacity.
 
-This can happen during a normal fail-over or automated minor version upgrades. The replaced instance may need some time
+This can happen during a normal failover or automated minor version upgrades. The replaced instance may need some time
 to catch-up with the cluster primary instance which will trigger the alert if the operation takes more than 5 minutes.
 
 At `0` available ready replicas, a `CNPGClusterHACritical` alert will be triggered.

@@ -4,7 +4,7 @@ CNPGClusterHighReplicationLag
 Meaning
 -------
 
-This alert is triggered when the replication lag of the CNPG cluster exceed `1s`.
+This alert is triggered when the replication lag of the CloudNativePG cluster exceed `1s`.
 
 Impact
 ------
@@ -21,7 +21,7 @@ High replication lag can be caused by a number of factors, including:
 * Network issues
 * High load on the primary or replicas
 * Long running queries
-* Suboptimal Postgres configuration, in particular small numbers of `max_wal_senders`.
+* Suboptimal PostgreSQL configuration, in particular small numbers of `max_wal_senders`.
 
 ```yaml
 kubectl exec --namespace <namespace> --stdin --tty services/<cluster_name>-rw -- psql -c "SELECT * from pg_stat_replication;"
