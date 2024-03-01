@@ -17,6 +17,9 @@ release (e.g. 1.17.1)
 In order to create a new release of the `cloudnative-pg` chart, follow these steps:
 
 1. Take note of the current value of the release: see `.version` in `charts/cloudnative-pg/Chart.yaml`
+    ```bash
+    yq -r '.version' charts/cloudnative-pg/Chart.yaml
+    ```
 2. Decide which version to create, depending on the kind of jump of the CloudNativePG release, following semver
     semantics. For this document, let's call it `X.Y.Z`
     ```bash
@@ -28,7 +31,7 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
     ```
 4. Update the `.version` in the [Chart.yaml](./charts/cloudnative-pg/Chart.yaml) file to `"X.Y.Z"`
     ```bash
-    sed -i -E "s/^version: ([0-9]+.?)+/version: $APP_VERSION/" charts/cloudnative-pg/Chart.yaml
+    sed -i -E "s/^version: ([0-9]+.?)+/version: $NEW_VERSION/" charts/cloudnative-pg/Chart.yaml
     ```
 5. Update everything else as required, e.g. if releasing due to a new `cloudnative-pg` version being released, you might
     want to update the following:
@@ -67,6 +70,7 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
     ```
 7. Commit and add the relevant information you wish in the commit message.
     ```bash
+    git add .
     git commit -S -s -m "Release cloudnative-pg-v$NEW_VERSION" --edit
     ```
 8. Push the new branch
@@ -94,6 +98,9 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
 In order to create a new release of the `cluster` chart, follow these steps:
 
 1. Take note of the current value of the release: see `.version` in `charts/cluster/Chart.yaml`
+    ```bash
+    yq -r '.version' charts/cluster/Chart.yaml
+    ```
 2. Decide which version to create, depending on the kind of changes and backwards compatibility, following semver
    semantics. For this document, let's call it `X.Y.Z`
     ```bash
@@ -105,7 +112,7 @@ In order to create a new release of the `cluster` chart, follow these steps:
     ```
 4. Update the `.version` in the [Chart.yaml](./charts/cluster/Chart.yaml) file to `"X.Y.Z"`
     ```bash
-    sed -i -E "s/^version: ([0-9]+.?)+/version: $APP_VERSION/" charts/cluster/Chart.yaml
+    sed -i -E "s/^version: ([0-9]+.?)+/version: $NEW_VERSION/" charts/cluster/Chart.yaml
     ```
 5. Run `make docs schema` to regenerate the docs and the values schema in case it is needed
     ```bash
@@ -113,6 +120,7 @@ In order to create a new release of the `cluster` chart, follow these steps:
     ```
 6. Commit and add the relevant information you wish in the commit message.
     ```bash
+    git add .
     git commit -S -s -m "Release cluster-v$NEW_VERSION" --edit
     ```
 7. Push the new branch
