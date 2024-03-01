@@ -54,7 +54,7 @@ spec:
     {{ end }}
 
   monitoring:
-    enablePodMonitor: {{ .Values.cluster.monitoring.enablePodMonitor }}
+    enablePodMonitor: {{ and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
     {{- if not (empty .Values.cluster.monitoring.customQueries) }}
     customQueriesConfigMap:
       - name: {{ include "cluster.fullname" . }}-monitoring

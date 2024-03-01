@@ -132,7 +132,11 @@ cluster:
   superuserSecret: ""
 
   monitoring:
-    enablePodMonitor: false
+    enabled: false
+    podMonitor:
+      enabled: true
+    prometheusRule:
+      enabled: true
     customQueries: []
       # - name: "pg_cache_hit_ratio"
       #   query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
@@ -146,7 +150,8 @@ cluster:
 
   # -- Configuration of the PostgreSQL server
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration
-  postgresql:
+  postgresql: {}
+    # max_connections: 300
 
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/

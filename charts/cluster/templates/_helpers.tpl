@@ -48,6 +48,7 @@ Selector labels
 {{- define "cluster.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "cluster.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/part-of: cloudnative-pg
 {{- end }}
 
 {{/*

@@ -4,6 +4,7 @@ mode: standalone
 cluster:
   instances: 1
   monitoring:
+    enabled: true
     customQueries:
       - name: "pg_cache_hit"
         query: |

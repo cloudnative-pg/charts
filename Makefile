@@ -12,15 +12,12 @@ docs: ## Generate charts' docs using helm-docs
 		(echo "Please, install https://github.com/norwoodj/helm-docs first" && exit 1)
 
 .PHONY: schema
-schema: ## Generate charts' schema usign helm schema-gen plugin
-	@helm schema-gen charts/cloudnative-pg/values.yaml > charts/cloudnative-pg/values.schema.json || \
+schema: cloudnative-pg-schema cluster-schema ## Generate charts' schema using helm-schema-gen
+
+cloudnative-pg-schema:
+	@helm schema-gen charts/cloudnative-pg/values.yaml | cat > charts/cloudnative-pg/values.schema.json || \
 		(echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
 
-.PHONY: pgbench-deploy
-pgbench-deploy: ## Installs pgbench chart
-	helm dependency update charts/pgbench
-	helm upgrade --install pgbench --atomic charts/pgbench
-
-.PHONY: pgbench-uninstall
-pgbench-uninstall: ## Uninstalls cnpg-pgbench chart if present
-	@helm uninstall pgbench
+cluster-schema:
+	@helm schema-gen charts/cluster/values.yaml | cat > charts/cluster/values.schema.json || \
+		(echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
