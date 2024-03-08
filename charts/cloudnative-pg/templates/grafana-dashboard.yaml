@@ -6,6 +6,10 @@ metadata:
   namespace: {{ default .Release.Namespace .Values.monitoring.grafanaDashboard.namespace }}
   labels:
     {{ .Values.monitoring.grafanaDashboard.sidecarLabel }}: {{ .Values.monitoring.grafanaDashboard.sidecarLabelValue | quote }}
+  {{- with .Values.monitoring.grafanaDashboard.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 data:
     cnp.json: |-
 {{ .Files.Get "monitoring/grafana-dashboard.json" | indent 6 }}
