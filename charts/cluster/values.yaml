@@ -90,6 +90,12 @@ cluster:
     size: 8Gi
     storageClass: ""
 
+  # -- The UID of the postgres user inside the image, defaults to 26
+  postgresUID: 26
+  
+  # -- The GID of the postgres user inside the image, defaults to 26
+  postgresGID: 26
+
   # -- Resources requirements of every generated Pod.
   # Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.
   # We strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS.
