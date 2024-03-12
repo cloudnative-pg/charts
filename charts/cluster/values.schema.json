@@ -176,6 +176,12 @@
                 "postgresql": {
                     "type": "object"
                 },
+                "postgresUID": {
+                    "type": "integer"
+                },
+                "postgresGID": {
+                    "type": "integer"
+                },
                 "primaryUpdateMethod": {
                     "type": "string"
                 },
