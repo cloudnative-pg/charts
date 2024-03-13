@@ -115,8 +115,16 @@
                         }
                     }
                 },
-                "podMonitorEnabled": {
-                    "type": "boolean"
+                "podMonitor": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "additionalLabels": {
+                            "type": "object"
+                        }
+                    }
                 }
             }
         },
