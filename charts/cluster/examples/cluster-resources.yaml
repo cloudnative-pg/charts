@@ -1,0 +1,12 @@
+mode: standalone
+
+cluster:
+  instances: 1
+
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "1"
+    limits:
+      memory: "1Gi"
+      cpu: "2"
