@@ -43,8 +43,10 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{ end }}
   enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
-  superuserSecret: {{ .Values.cluster.superuserSecret }}
-
+  {{- with .Values.cluster.superuserSecret }}
+  superuserSecret:
+    name: {{ . }}
+  {{ end }}
   postgresql:
     shared_preload_libraries:
       {{- if eq .Values.type "timescaledb" }}
