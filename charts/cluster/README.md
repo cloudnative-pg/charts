@@ -111,7 +111,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 ## Values
 
 | Key | Type | Default | Description |
-|-----|-----|---------|-------------|
+|-----|------|---------|-------------|
 | backups.azure.connectionString | string | `""` |  |
 | backups.azure.containerName | string | `""` |  |
 | backups.azure.inheritFromAzureAD | bool | `false` |  |
