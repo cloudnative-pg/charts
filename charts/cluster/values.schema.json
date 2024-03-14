@@ -173,14 +173,14 @@
                         }
                     }
                 },
-                "postgresql": {
-                    "type": "object"
+                "postgresGID": {
+                    "type": "integer"
                 },
                 "postgresUID": {
                     "type": "integer"
                 },
-                "postgresGID": {
-                    "type": "integer"
+                "postgresql": {
+                    "type": "object"
                 },
                 "primaryUpdateMethod": {
                     "type": "string"
@@ -192,7 +192,7 @@
                     "type": "string"
                 },
                 "resources": {
-                    "type": "null"
+                    "type": "object"
                 },
                 "storage": {
                     "type": "object",
