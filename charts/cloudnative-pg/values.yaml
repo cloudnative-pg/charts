@@ -149,6 +149,8 @@ monitoring:
     sidecarLabel: "grafana_dashboard"
     # -- Label value that ConfigMaps should have to be loaded as dashboards.
     sidecarLabelValue: "1"
+    # -- Annotation for ConfigMaps describing the grafana folder
+    sidecarAnnotationValue: ""
 
 # Default monitoring queries
 monitoringQueriesConfigMap:
