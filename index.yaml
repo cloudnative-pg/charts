@@ -2,6 +2,29 @@ apiVersion: v1
 entries:
   cloudnative-pg:
   - apiVersion: v2
+    appVersion: 1.22.2
+    created: "2024-03-14T17:32:23.300008596Z"
+    description: CloudNativePG Operator Helm Chart
+    digest: b3ec7cdced059cd98d61932be546d7233a28b27d28a5f2fd9c076d54998be3bb
+    home: https://cloudnative-pg.io
+    icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
+    keywords:
+    - operator
+    - controller
+    - postgresql
+    - postgres
+    - database
+    maintainers:
+    - email: p.scorsolini@gmail.com
+      name: phisco
+    name: cloudnative-pg
+    sources:
+    - https://github.com/cloudnative-pg/charts
+    type: application
+    urls:
+    - https://github.com/cloudnative-pg/charts/releases/download/cloudnative-pg-v0.20.2/cloudnative-pg-0.20.2.tgz
+    version: 0.20.2
+  - apiVersion: v2
     appVersion: 1.22.1
     created: "2024-02-05T12:14:46.301336423Z"
     description: CloudNativePG Helm Chart
@@ -660,4 +683,4 @@ entries:
     urls:
     - https://cloudnative-pg.github.io/charts/pgbench-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-01T10:25:03.127189792Z"
+generated: "2024-03-14T17:32:23.430083212Z"
