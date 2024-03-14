@@ -23,7 +23,7 @@ version: "0.20.1"
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning, they should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "1.22.1"
+appVersion: "1.22.2"
 sources:
   - https://github.com/cloudnative-pg/charts
 keywords:
