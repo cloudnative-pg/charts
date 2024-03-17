@@ -34,6 +34,20 @@
                         }
                     }
                 },
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "compression": {
+                            "type": "string"
+                        },
+                        "encryption": {
+                            "type": "string"
+                        },
+                        "jobs": {
+                            "type": "integer"
+                        }
+                    }
+                },
                 "destinationPath": {
                     "type": "string"
                 },
@@ -100,6 +114,20 @@
                             "schedule": {
                                 "type": "string"
                             }
+                        }
+                    }
+                },
+                "wal": {
+                    "type": "object",
+                    "properties": {
+                        "compression": {
+                            "type": "string"
+                        },
+                        "encryption": {
+                            "type": "string"
+                        },
+                        "maxParallel": {
+                            "type": "integer"
                         }
                     }
                 }

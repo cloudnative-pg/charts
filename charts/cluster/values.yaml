@@ -209,6 +209,21 @@ backups:
     gkeEnvironment: false
     applicationCredentials: ""
 
+  wal:
+    # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
+    compression: gzip
+    # -- Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`.
+    encryption: AES256
+    # -- Number of WAL files to be archived or restored in parallel.
+    maxParallel: 1
+  data:
+    # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
+    compression: gzip
+    # -- Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`.
+    encryption: AES256
+    # -- Number of data files to be archived or restored in parallel.
+    jobs: 2
+
   scheduledBackups:
     -
       # -- Scheduled backup name
@@ -220,6 +235,7 @@ backups:
 
   # -- Retention policy for backups
   retentionPolicy: "30d"
+
 
 pooler:
   # -- Whether to enable PgBouncer

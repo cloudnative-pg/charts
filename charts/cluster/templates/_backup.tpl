@@ -5,12 +5,13 @@ backup:
   retentionPolicy: {{ .Values.backups.retentionPolicy }}
   barmanObjectStore:
     wal:
-      compression: gzip
-      encryption: AES256
+      compression: {{ .Values.backups.wal.compression }}
+      encryption: {{ .Values.backups.wal.encryption }}
+      maxParallel: {{ .Values.backups.wal.maxParallel }}
     data:
-      compression: gzip
-      encryption: AES256
-      jobs: 2
+      compression: {{ .Values.backups.data.compression }}
+      encryption: {{ .Values.backups.data.encryption }}
+      jobs: {{ .Values.backups.data.jobs }}
 
     {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.backups }}
     {{- include "cluster.barmanObjectStoreConfig" $d | nindent 2 }}
