@@ -13,7 +13,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Wait for cluster to become ready
+    - name: Wait for the cluster to become ready
       shell: bash
       run: |
         ITER=0
@@ -22,7 +22,7 @@ runs:
             echo "Cluster not ready"
             exit 1
           fi
-          READY_INSTANCES=$(kubectl get cluster ${INPUT_CLUSTER_NAME} -o jsonpath='{.status.readyInstances}')
+          READY_INSTANCES=$(kubectl get clusters.postgresql.cnpg.io ${INPUT_CLUSTER_NAME} -o jsonpath='{.status.readyInstances}')
           if [[ "$READY_INSTANCES" == ${INPUT_READY_INSTANCES} ]]; then
             echo "Cluster up and running"
             break

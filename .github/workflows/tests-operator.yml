@@ -35,7 +35,7 @@ jobs:
           EOF
 
       - name: Verify that the cluster is ready
-        uses: ./.github/actions/verify-ready-instances
+        uses: ./.github/actions/verify-cluster-ready
         with:
           cluster-name: cluster-example
           ready-instances: 3

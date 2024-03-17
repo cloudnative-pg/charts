@@ -144,23 +144,23 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
 | cluster.additionalLabels | object | `{}` |  |
-| cluster.affinity | object | `{"topologyKey":"topology.kubernetes.io/zone"}` | Affinity/Anti-affinity rules for Pods See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
+| cluster.affinity | object | `{"topologyKey":"topology.kubernetes.io/zone"}` | Affinity/Anti-affinity rules for Pods. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
 | cluster.annotations | object | `{}` |  |
-| cluster.certificates | string | `nil` | The configuration for the CA and related certificates See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration |
+| cluster.certificates | string | `nil` | The configuration for the CA and related certificates. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration |
 | cluster.enableSuperuserAccess | bool | `true` | When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password. If the secret is not present, the operator will automatically create one. When this option is disabled, the operator will ignore the SuperuserSecret content, delete it when automatically created, and then blank the password of the postgres user by setting it to NULL. |
 | cluster.imageName | string | `""` | Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments: <image>:<tag>@sha256:<digestValue> |
 | cluster.imagePullPolicy | string | `"IfNotPresent"` | Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images |
-| cluster.imagePullSecrets | list | `[]` | The list of pull secrets to be used to pull the images See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-LocalObjectReference |
-| cluster.initdb | object | `{}` | BootstrapInitDB is the configuration of the bootstrap process when initdb is used See: https://cloudnative-pg.io/documentation/current/bootstrap/ See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb |
+| cluster.imagePullSecrets | list | `[]` | The list of pull secrets to be used to pull the images. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-LocalObjectReference |
+| cluster.initdb | object | `{}` | BootstrapInitDB is the configuration of the bootstrap process when initdb is used. See: https://cloudnative-pg.io/documentation/current/bootstrap/ See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb |
 | cluster.instances | int | `3` | Number of instances |
 | cluster.logLevel | string | `"info"` | The instances' log level, one of the following values: error, warning, info (default), debug, trace |
-| cluster.monitoring.customQueries | list | `[]` |  |
-| cluster.monitoring.enabled | bool | `false` |  |
-| cluster.monitoring.podMonitor.enabled | bool | `true` |  |
-| cluster.monitoring.prometheusRule.enabled | bool | `true` |  |
+| cluster.monitoring.customQueries | list | `[]` | Custom Prometheus metrics |
+| cluster.monitoring.enabled | bool | `false` | Whether to enable monitoring |
+| cluster.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
+| cluster.monitoring.prometheusRule.enabled | bool | `true` | Whether to enable the PrometheusRule automated alerts |
 | cluster.postgresGID | int | `26` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `26` | The UID of the postgres user inside the image, defaults to 26 |
-| cluster.postgresql | object | `{}` | Configuration of the PostgreSQL server See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration |
+| cluster.postgresql | object | `{}` | Configuration of the PostgreSQL server. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration |
 | cluster.primaryUpdateMethod | string | `"switchover"` | Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated. It can be switchover (default) or in-place (restart). |
 | cluster.primaryUpdateStrategy | string | `"unsupervised"` | Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated: it can be automated (unsupervised - default) or manual (supervised) |
 | cluster.priorityClassName | string | `""` |  |
@@ -173,8 +173,12 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | nameOverride | string | `""` | Override the name of the chart |
 | pooler.enabled | bool | `false` | Whether to enable PgBouncer |
 | pooler.instances | int | `3` | Number of PgBouncer instances |
+| pooler.monitoring.enabled | bool | `false` | Whether to enable monitoring |
+| pooler.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
 | pooler.parameters | object | `{"default_pool_size":"25","max_client_conn":"1000"}` | PgBouncer configuration parameters |
 | pooler.poolMode | string | `"transaction"` | PgBouncer pooling mode |
+| pooler.template | object | `{}` | Custom PgBouncer deployment template. Use to override image, specify resources, etc. |
+| pooler.type | string | `"rw"` | PgBouncer type of service to forward traffic to. |
 | recovery.azure.connectionString | string | `""` |  |
 | recovery.azure.containerName | string | `""` |  |
 | recovery.azure.inheritFromAzureAD | bool | `false` |  |
