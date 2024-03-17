@@ -228,6 +228,22 @@
                 "instances": {
                     "type": "integer"
                 },
+                "monitoring": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "podMonitor": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -240,6 +256,12 @@
                     }
                 },
                 "poolMode": {
+                    "type": "string"
+                },
+                "template": {
+                    "type": "object"
+                },
+                "type": {
                     "type": "string"
                 }
             }
