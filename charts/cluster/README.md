@@ -120,6 +120,9 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.azure.storageAccount | string | `""` |  |
 | backups.azure.storageKey | string | `""` |  |
 | backups.azure.storageSasToken | string | `""` |  |
+| backups.data.compression | string | `"gzip"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
+| backups.data.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
+| backups.data.jobs | int | `2` | Number of data files to be archived or restored in parallel. |
 | backups.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path> Google: gs://<bucket><path> |
 | backups.enabled | bool | `false` | You need to configure backups manually, so backups are disabled by default. |
 | backups.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" |
@@ -137,6 +140,9 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.scheduledBackups[0].backupOwnerReference | string | `"self"` | Backup owner reference |
 | backups.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
+| backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
+| backups.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
+| backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
 | cluster.additionalLabels | object | `{}` |  |
 | cluster.affinity | object | `{"topologyKey":"topology.kubernetes.io/zone"}` | Affinity/Anti-affinity rules for Pods See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
 | cluster.annotations | object | `{}` |  |
