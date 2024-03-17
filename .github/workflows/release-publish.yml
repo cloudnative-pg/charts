@@ -80,5 +80,5 @@ jobs:
             name=${file%-*}
             version=${file%.*}
             version=${version##*-}
-            cosign sign ghcr.io/"${GITHUB_REPOSITORY_OWNER}"/charts/"${name}":"${version}"
+            cosign sign --yes ghcr.io/"${GITHUB_REPOSITORY_OWNER}"/charts/"${name}":"${version}"
           done
