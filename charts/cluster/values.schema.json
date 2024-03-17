@@ -173,6 +173,12 @@
                         }
                     }
                 },
+                "postgresGID": {
+                    "type": "integer"
+                },
+                "postgresUID": {
+                    "type": "integer"
+                },
                 "postgresql": {
                     "type": "object"
                 },
@@ -186,7 +192,7 @@
                     "type": "string"
                 },
                 "resources": {
-                    "type": "null"
+                    "type": "object"
                 },
                 "storage": {
                     "type": "object",

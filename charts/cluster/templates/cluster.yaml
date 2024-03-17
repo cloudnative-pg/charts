@@ -19,6 +19,8 @@ spec:
   imagePullSecrets:
     {{- . | toYaml | nindent 4 }}
   {{- end }}
+  postgresUID: {{ .Values.cluster.postgresUID }}
+  postgresGID: {{ .Values.cluster.postgresGID }}
   storage:
     size: {{ .Values.cluster.storage.size }}
     storageClass: {{ .Values.cluster.storage.storageClass }}
@@ -41,8 +43,10 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{ end }}
   enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
-  superuserSecret: {{ .Values.cluster.superuserSecret }}
-
+  {{- with .Values.cluster.superuserSecret }}
+  superuserSecret:
+    name: {{ . }}
+  {{ end }}
   postgresql:
     shared_preload_libraries:
       {{- if eq .Values.type "timescaledb" }}
