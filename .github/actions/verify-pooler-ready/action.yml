@@ -22,7 +22,7 @@ runs:
             echo "Pooler not ready"
             exit 1
           fi
-          READY_INSTANCES=$(kubectl get cluster ${INPUT_POOLER_NAME} -o jsonpath='{.status.readyInstances}')
+          READY_INSTANCES=$(kubectl get deployments.apps ${INPUT_POOLER_NAME} -o jsonpath='{.status.readyReplicas}')
           if [[ "$READY_INSTANCES" == ${INPUT_READY_INSTANCES} ]]; then
             echo "Pooler up and running"
             break
