@@ -1,0 +1,11 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestAssert
+timeout: 60
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: database-cluster
+  namespace: database
+status:
+  readyInstances: 2

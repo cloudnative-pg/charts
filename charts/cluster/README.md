@@ -125,6 +125,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.data.jobs | int | `2` | Number of data files to be archived or restored in parallel. |
 | backups.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path> Google: gs://<bucket><path> |
 | backups.enabled | bool | `false` | You need to configure backups manually, so backups are disabled by default. |
+| backups.endpointCA | object | `{}` | Specify a secret containing the CA bundle of the barman endpoint. Useful when using self-signed certificates to avoid errors with certificate issuer and barman-cloud-wal-archive |
 | backups.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" |
 | backups.google.applicationCredentials | string | `""` |  |
 | backups.google.bucket | string | `""` |  |

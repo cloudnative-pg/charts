@@ -1,11 +1,16 @@
 {{- define "cluster.barmanObjectStoreConfig" -}}
 
-{{- if .scope.endpointURL }}
-  endpointURL: {{ .scope.endpointURL }}
+{{- with .scope.endpointURL }}
+  endpointURL: {{ . }}
 {{- end }}
 
-{{- if .scope.destinationPath }}
-  destinationPath: {{ .scope.destinationPath }}
+{{- with .scope.endpointCA }}
+  endpointCA:
+    {{- . | toYaml | nindent 4 }}
+{{- end }}
+
+{{- with .scope.destinationPath }}
+  destinationPath: {{ . }}
 {{- end }}
 
 {{- if eq .scope.provider "s3" }}

@@ -1,0 +1,15 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestStep
+commands:
+  - script: kubectl get secret/myminio-tls -n minio -o json | jq 'del(.metadata["namespace","creationTimestamp","resourceVersion","selfLink","uid","ownerReferences"])' | kubectl apply --namespace=$NAMESPACE -f -
+  - namespaced: true
+    command:
+      helm upgrade
+        --install
+        --namespace database
+        --create-namespace
+        --values ./standalone.yaml
+        --wait
+        database ../../charts/cluster
+  - command: sleep 180
+timeout: 120

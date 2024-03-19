@@ -172,6 +172,11 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
+  # -- Env follows the Env format to pass environment variables to the pods created in the cluster
+  env: []
+
+  # -- EnvFrom follows the EnvFrom format to pass environment variables sources to the pods to be used by Env
+  envFrom: []
 
 backups:
   # -- You need to configure backups manually, so backups are disabled by default.
@@ -180,6 +185,12 @@ backups:
   # -- Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
   endpointURL: ""  # Leave empty if using the default S3 endpoint
+
+  # -- Specify a secret containing the CA bundle of the barman endpoint. Useful when using self-signed certificates to
+  # avoid errors with certificate issuer and barman-cloud-wal-archive
+  endpointCA: {}
+    # name: ""
+    # key: ""
 
   # -- Overrides the provider specific default path. Defaults to:
   # S3: s3://<bucket><path>

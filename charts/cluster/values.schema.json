@@ -54,6 +54,9 @@
                 "enabled": {
                     "type": "boolean"
                 },
+                "endpointCA": {
+                    "type": "object"
+                },
                 "endpointURL": {
                     "type": "string"
                 },
