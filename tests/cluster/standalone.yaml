@@ -1,17 +1,15 @@
 mode: standalone
 cluster:
-  instances: 1
-  env:
-    - name: AWS_CA_BUNDLE
-      value: /run/certificates/backup-barman-ca.crt
-
+  instances: 2
+  postgresql:
+    archive_timout: "10"
 backups:
   enabled: true
   provider: s3
   endpointURL: "https://minio.minio.svc.cluster.local"
   endpointCA:
-    name: myminio-tls
-    key: public.crt
+    name: kube-root-ca.crt
+    key: ca.crt
   wal:
     encryption: ""
   data:
