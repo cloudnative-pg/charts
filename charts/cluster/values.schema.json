@@ -159,6 +159,12 @@
                 "enableSuperuserAccess": {
                     "type": "boolean"
                 },
+                "env": {
+                    "type": "array"
+                },
+                "envFrom": {
+                    "type": "array"
+                },
                 "imageName": {
                     "type": "string"
                 },
