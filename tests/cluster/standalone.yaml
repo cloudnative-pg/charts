@@ -3,6 +3,8 @@ cluster:
   instances: 2
   postgresql:
     archive_timout: "10"
+  storage:
+    size: 256Mi
 backups:
   enabled: true
   provider: s3

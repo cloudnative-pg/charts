@@ -1,0 +1,31 @@
+name: Setup Kind
+description: Sets up a kind cluster and installs Helm and kubectl
+outputs:
+  krew-path:
+    description: The path to the Helm binary
+    value: ${{ steps.krew.outputs.path }}
+  kuttl-path:
+    description: The path to the Helm binary
+    value: ${{ steps.kuttl.outputs.path }}
+runs:
+  using: composite
+  steps:
+    - id: krew
+      name: Install Krew
+      shell: bash
+      script: |
+        set -x; cd "$(mktemp -d)"
+        OS="$(uname | tr '[:upper:]' '[:lower:]')"
+        ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
+        KREW="krew-${OS}_${ARCH}"
+        curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
+        tar zxvf "${KREW}.tar.gz"
+        ./"${KREW}" install krew
+        echo "path=${KREW_ROOT:-$HOME/.krew}/bin/kubectl-krew" >> "$GITHUB_OUTPUT"
+
+    - id: kuttl
+      name: Install KUTTL
+      shell: bash
+      script: |
+        kubectl krew install kuttl
+        echo "path=$(which kubectl-kuttl)" >> "$GITHUB_OUTPUT"

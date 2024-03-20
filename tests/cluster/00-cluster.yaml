@@ -9,4 +9,3 @@ commands:
         --values ./standalone.yaml
         --wait
         standalone ../../charts/cluster
-timeout: 180

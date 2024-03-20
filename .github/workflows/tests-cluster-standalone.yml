@@ -20,17 +20,9 @@ jobs:
       - name: Deploy the operator
         uses: ./.github/actions/deploy-operator
 
-      - name: Deploy a standalone cluster
-        run: |
-          helm upgrade --install \
-            --values charts/cluster/examples/basic.yaml \
-            --namespace database \
-            --create-namespace \
-            --wait \
-            database ./charts/cluster
+      - name: Install KUTTL
+        uses: ./.github/actions/setup-kuttl
 
-      - name: Verify that the cluster is ready
-        uses: ./.github/actions/verify-ready-instances
-        with:
-          cluster-name: database-cluster
-          ready-instances: 1
+      - name: Run KUTTL tests
+        run: |
+          kubectl kuttl test
