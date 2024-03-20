@@ -1,11 +1,11 @@
 name: Setup Kind
 description: Sets up a kind cluster and installs Helm and kubectl
 outputs:
-  krew-path:
-    description: The path to the Helm binary
+  kubectl-krew-path:
+    description: The path to the kubectl-krew binary
     value: ${{ steps.krew.outputs.path }}
-  kuttl-path:
-    description: The path to the Helm binary
+  kubectl-kuttl-path:
+    description: The path to the kubectl-kuttl binary
     value: ${{ steps.kuttl.outputs.path }}
 runs:
   using: composite
