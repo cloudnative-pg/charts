@@ -1,8 +1,6 @@
 mode: standalone
 cluster:
   instances: 1
-  postgresql:
-    archive_timout: "10"
   storage:
     size: 256Mi
 backups:
