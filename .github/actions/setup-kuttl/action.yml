@@ -21,6 +21,7 @@ runs:
         curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
         tar zxvf "${KREW}.tar.gz"
         ./"${KREW}" install krew
+        echo "${KREW_ROOT:-$HOME/.krew}/bin/" >> $GITHUB_PATH
         echo "path=${KREW_ROOT:-$HOME/.krew}/bin/kubectl-krew" >> "$GITHUB_OUTPUT"
 
     - id: kuttl
