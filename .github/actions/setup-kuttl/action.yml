@@ -21,11 +21,15 @@ runs:
         curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
         tar zxvf "${KREW}.tar.gz"
         ./"${KREW}" install krew
+        export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
         echo "path=${KREW_ROOT:-$HOME/.krew}/bin/kubectl-krew" >> "$GITHUB_OUTPUT"
 
     - id: kuttl
       name: Install KUTTL
       shell: bash
+      env:
+        KREW_PATH: ${{needs.krew.outputs.path}}
       run: |
+        export PATH="$(dirname $KREW_PATH):$PATH"
         kubectl krew install kuttl
         echo "path=$(which kubectl-kuttl)" >> "$GITHUB_OUTPUT"
