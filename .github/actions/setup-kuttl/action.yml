@@ -13,7 +13,7 @@ runs:
     - id: krew
       name: Install Krew
       shell: bash
-      script: |
+      run: |
         set -x; cd "$(mktemp -d)"
         OS="$(uname | tr '[:upper:]' '[:lower:]')"
         ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
@@ -26,6 +26,6 @@ runs:
     - id: kuttl
       name: Install KUTTL
       shell: bash
-      script: |
+      run: |
         kubectl krew install kuttl
         echo "path=$(which kubectl-kuttl)" >> "$GITHUB_OUTPUT"
