@@ -4,6 +4,12 @@ on:
   pull_request:
     branches-ignore:
       - 'gh-pages'
+    paths:
+      - .github/
+      - charts/cluster/
+      - tests/cluster/
+      - tests/minio.yaml
+      - kuttl-test.yaml
 
 jobs:
   test-cluster-standalone:
