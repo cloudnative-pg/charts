@@ -32,6 +32,11 @@ helm upgrade --install database \
 
 Refer to the [Cluster Chart documentation](charts/cluster/README.md) for advanced configuration options.
 
+## Provenance
+
+The charts support Helm Provenance and Integrity. 
+Here is a link to the [PGP key](provenance.gpg) used by GitHub Actions to sign the charts.
+
 ## Contributing
 
 Please read the [code of conduct](CODE-OF-CONDUCT.md) and the

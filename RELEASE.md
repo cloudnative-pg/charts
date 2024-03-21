@@ -86,10 +86,8 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
 10. Wait for all the checks to pass
 11. Two approvals are required in order to merge the PR, if you are a maintainer approve the PR yourself and ask for
     another approval, otherwise ask for two approvals directly.
-12. Merge the PR squashing all commits and **taking care to keep the commit message to be 
-    `Release cloudnative-pg-vX.Y.Z`**
-13. A release `cloudnative-pg-vX.Y.Z` should be automatically created by an action, which will then trigger the release 
-    action. Verify they both are successful.
+12. Merge the PR squashing all commits and **taking care to keep the commit message to be `Release cloudnative-pg-vX.Y.Z`**
+13. A release `cloudnative-pg-vX.Y.Z` should be automatically created.
 14. Once done you should be able to run:
     ```bash
     helm repo add cnpg https://cloudnative-pg.github.io/charts
@@ -137,9 +135,8 @@ In order to create a new release of the `cluster` chart, follow these steps:
 10. Two approvals are required in order to merge the PR, if you are a
     maintainer approve the PR yourself and ask for another approval, otherwise
     ask for two approvals directly.
-11. Merge the PR squashing all commits and **taking care to keep the commit
-    message to be `Release cluster-vX.Y.Z`**
-12. A release `cluster-vX.Y.Z` should be automatically created by an action, which will ten trigger the release action.
+11. Merge the PR squashing all commits and **taking care to keep the commit message to be `Release cluster-vX.Y.Z`**
+12. A release `cluster-vX.Y.Z` should be automatically created.
     Verify they both are successful.
 13. Once done you should be able to run:
     ```bash
