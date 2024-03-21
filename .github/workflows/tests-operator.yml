@@ -4,6 +4,9 @@ on:
   pull_request:
     branches-ignore:
       - 'gh-pages'
+    paths:
+      - .github/
+      - charts/cloudnative-pg/
 
 jobs:
   deploy_operator:
