@@ -1,5 +1,5 @@
-name: Setup Kind
-description: Sets up a kind cluster and installs Helm and kubectl
+name: Setup KUTTL
+description: Installs Krew and KUTTL
 outputs:
   kubectl-krew-path:
     description: The path to the kubectl-krew binary
