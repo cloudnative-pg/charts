@@ -174,6 +174,9 @@
                 "logLevel": {
                     "type": "string"
                 },
+                "roles": {
+                    "type": "array"
+                },
                 "monitoring": {
                     "type": "object",
                     "properties": {
