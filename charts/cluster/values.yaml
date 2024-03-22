@@ -137,7 +137,7 @@ cluster:
   enableSuperuserAccess: true
   superuserSecret: ""
 
-  # -- This feature enables declarative management of existing roles, as well as the creation of new roles if they are not 
+  # -- This feature enables declarative management of existing roles, as well as the creation of new roles if they are not
   # already present in the database.
   # See: https://cloudnative-pg.io/documentation/current/declarative_role_management/
   roles: []
