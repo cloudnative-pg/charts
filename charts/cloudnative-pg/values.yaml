@@ -29,6 +29,8 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+hostNetwork: false
+
 crds:
   # -- Specifies whether the CRDs should be created when installing the chart.
   create: true
