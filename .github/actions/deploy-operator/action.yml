@@ -7,9 +7,9 @@ runs:
       shell: bash
       run: |
         helm upgrade \
-          --install \ 
-          --namespace cnpg-system \
-          --create-namespace \
-          --wait \
-          --dependency-update \
-          cnpg charts/cloudnative-pg
+        --install \ 
+        --namespace cnpg-system \
+        --create-namespace \
+        --wait \
+        --dependency-update \
+        cnpg charts/cloudnative-pg
