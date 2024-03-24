@@ -1,3 +1,6 @@
+# Ignore Helm subcharts
+charts/**/charts/*.tgz
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
