@@ -37,6 +37,10 @@ jobs:
         with:
           version: v3.14.1
 
+      - name: Add chart dependencies
+        run: |
+          helm repo add cnpg-grafana-dashboard https://cloudnative-pg.github.io/grafana-dashboards
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@a917fd15b20e8b64b94d9158ad54cd6345335584 # v1.6.0
         env:
