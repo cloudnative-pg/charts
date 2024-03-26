@@ -54,25 +54,25 @@
                 "enabled": {
                     "type": "boolean"
                 },
-                "endpointURL": {
-                    "type": "string"
-                },
                 "endpointCA": {
                     "type": "object",
                     "properties": {
-                        "createSecret": {
+                        "create": {
                             "type": "boolean"
                         },
-                        "name": {
+                        "key": {
                             "type": "string"
                         },
-                        "key": {
+                        "name": {
                             "type": "string"
                         },
                         "value": {
                             "type": "string"
                         }
                     }
+                },
+                "endpointURL": {
+                    "type": "string"
                 },
                 "google": {
                     "type": "object",
@@ -352,25 +352,25 @@
                 "destinationPath": {
                     "type": "string"
                 },
-                "endpointURL": {
-                    "type": "string"
-                },
                 "endpointCA": {
                     "type": "object",
                     "properties": {
-                        "createSecret": {
+                        "create": {
                             "type": "boolean"
                         },
-                        "name": {
+                        "key": {
                             "type": "string"
                         },
-                        "key": {
+                        "name": {
                             "type": "string"
                         },
                         "value": {
                             "type": "string"
                         }
                     }
+                },
+                "endpointURL": {
+                    "type": "string"
                 },
                 "google": {
                     "type": "object",
