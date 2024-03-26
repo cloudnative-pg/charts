@@ -1,5 +1,6 @@
-{{- if not (has "CNPGClusterLowDiskSpaceCritical" .excludeRules) -}}
-alert: CNPGClusterLowDiskSpaceCritical
+{{- $alert := "CNPGClusterLowDiskSpaceCritical" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
 annotations:
   summary: CNPG Instance is running out of disk space!
   description: |-

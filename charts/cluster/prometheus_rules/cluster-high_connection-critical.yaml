@@ -1,5 +1,6 @@
-{{- if not (has "CNPGClusterHighConnectionsCritical" .excludeRules) -}}
-alert: CNPGClusterHighConnectionsCritical
+{{- $alert := "CNPGClusterHighConnectionsCritical" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
 annotations:
   summary: CNPG Instance maximum number of connections critical!
   description: |-

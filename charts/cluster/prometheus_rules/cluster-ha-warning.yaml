@@ -1,5 +1,6 @@
-{{- if not (has "CNPGClusterHAWarning" .excludeRules) -}}
-alert: CNPGClusterHAWarning
+{{- $alert := "CNPGClusterHAWarning" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster less than 2 standby replicas.
   description: |-

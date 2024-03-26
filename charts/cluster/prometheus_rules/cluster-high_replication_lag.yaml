@@ -1,5 +1,6 @@
-{{- if not (has "CNPGClusterHighReplicationLag" .excludeRules) -}}
-alert: CNPGClusterHighReplicationLag
+{{- $alert := "CNPGClusterHighReplicationLag" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster high replication lag
   description: |-

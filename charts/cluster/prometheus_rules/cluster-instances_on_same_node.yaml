@@ -1,5 +1,6 @@
-{{- if not (has "CNPGClusterInstancesOnSameNode" .excludeRules) -}}
-alert: CNPGClusterInstancesOnSameNode
+{{- $alert := "CNPGClusterInstancesOnSameNode" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster instances are located on the same node.
   description: |-

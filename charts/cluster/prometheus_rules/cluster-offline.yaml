@@ -1,5 +1,6 @@
-{{- if not (has "CNPGClusterOffline" .excludeRules) -}}
-alert: CNPGClusterOffline
+{{- $alert := "CNPGClusterOffline" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster has no running instances!
   description: |-

@@ -1,5 +1,6 @@
-{{- if not (has "CNPGClusterZoneSpreadWarning" .excludeRules) -}}
-alert: CNPGClusterZoneSpreadWarning
+{{- $alert := "CNPGClusterZoneSpreadWarning" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster instances in the same zone.
   description: |-
