@@ -216,6 +216,9 @@
                             "properties": {
                                 "enabled": {
                                     "type": "boolean"
+                                },
+                                "excludeRules": {
+                                    "type": "array"
                                 }
                             }
                         }
