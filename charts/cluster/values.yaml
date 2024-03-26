@@ -148,7 +148,7 @@ cluster:
       enabled: true
       # -- Exclude specified rules
       excludeRules: []
-        #- CNPGClusterZoneSpreadWarning
+        # - CNPGClusterZoneSpreadWarning
     # -- Custom Prometheus metrics
     customQueries: []
       # - name: "pg_cache_hit_ratio"
