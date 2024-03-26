@@ -144,8 +144,11 @@ cluster:
       # -- Whether to enable the PodMonitor
       enabled: true
     prometheusRule:
-        # -- Whether to enable the PrometheusRule automated alerts
+      # -- Whether to enable the PrometheusRule automated alerts
       enabled: true
+      # -- Exclude specified rules
+      excludeRules: []
+        #- CNPGClusterZoneSpreadWarning
     # -- Custom Prometheus metrics
     customQueries: []
       # - name: "pg_cache_hit_ratio"
