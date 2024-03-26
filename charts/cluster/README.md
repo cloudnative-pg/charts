@@ -125,6 +125,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.data.jobs | int | `2` | Number of data files to be archived or restored in parallel. |
 | backups.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path> Google: gs://<bucket><path> |
 | backups.enabled | bool | `false` | You need to configure backups manually, so backups are disabled by default. |
+| backups.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
+| backups.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
 | backups.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" |
 | backups.google.applicationCredentials | string | `""` |  |
 | backups.google.bucket | string | `""` |  |
@@ -190,6 +192,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.backupName | string | `""` | Backup Recovery Method |
 | recovery.clusterName | string | `""` | Object Store Recovery Method |
 | recovery.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path> Google: gs://<bucket><path> |
+| recovery.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
+| recovery.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
 | recovery.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" Leave empty if using the default S3 endpoint |
 | recovery.google.applicationCredentials | string | `""` |  |
 | recovery.google.bucket | string | `""` |  |

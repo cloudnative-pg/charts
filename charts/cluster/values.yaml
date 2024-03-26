@@ -41,6 +41,13 @@ recovery:
   # S3: https://s3.<region>.amazonaws.com"
   # Leave empty if using the default S3 endpoint
   endpointURL: ""
+  # -- Specifies a CA bundle to validate a privately signed certificate.
+  endpointCA:
+    # -- Creates a secret with the given value if true, otherwise uses an existing secret.
+    create: false
+    name: ""
+    key: ""
+    value: ""
   # -- Overrides the provider specific default path. Defaults to:
   # S3: s3://<bucket><path>
   # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path>
@@ -197,6 +204,13 @@ backups:
   # -- Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
   endpointURL: ""  # Leave empty if using the default S3 endpoint
+  # -- Specifies a CA bundle to validate a privately signed certificate.
+  endpointCA:
+    # -- Creates a secret with the given value if true, otherwise uses an existing secret.
+    create: false
+    name: ""
+    key: ""
+    value: ""
 
   # -- Overrides the provider specific default path. Defaults to:
   # S3: s3://<bucket><path>
