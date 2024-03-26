@@ -32,3 +32,38 @@ jobs:
       - name: Run KUTTL tests
         run: |
           kubectl kuttl test
+
+  test-cluster-pgbouncer:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup kind
+        uses: ./.github/actions/setup-kind
+
+      - name: Deploy the operator
+        uses: ./.github/actions/deploy-operator
+
+      - name: Deploy a standalone cluster
+        run: |
+          helm upgrade --install \
+            --values charts/cluster/examples/pgbouncer.yaml \
+            --namespace database \
+            --create-namespace \
+            --wait \
+            database ./charts/cluster
+
+      - name: Verify that the cluster is ready
+        uses: ./.github/actions/verify-cluster-ready
+        with:
+          cluster-name: database-cluster
+          ready-instances: 1
+
+      - name: Verify that the pooler is ready
+        uses: ./.github/actions/verify-pooler-ready
+        with:
+          pooler-name: database-cluster-pooler-rw
+          ready-instances: 1

@@ -82,7 +82,7 @@ cluster:
   # More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
   imagePullPolicy: IfNotPresent
 
-  # -- The list of pull secrets to be used to pull the images
+  # -- The list of pull secrets to be used to pull the images.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-LocalObjectReference
   imagePullSecrets: []
 
@@ -121,12 +121,12 @@ cluster:
   # -- The instances' log level, one of the following values: error, warning, info (default), debug, trace
   logLevel: "info"
 
-  # -- Affinity/Anti-affinity rules for Pods
+  # -- Affinity/Anti-affinity rules for Pods.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration
   affinity:
     topologyKey: topology.kubernetes.io/zone
 
-  # -- The configuration for the CA and related certificates
+  # -- The configuration for the CA and related certificates.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration
   certificates:
 
@@ -138,11 +138,15 @@ cluster:
   superuserSecret: ""
 
   monitoring:
+    # -- Whether to enable monitoring
     enabled: false
     podMonitor:
+      # -- Whether to enable the PodMonitor
       enabled: true
     prometheusRule:
+        # -- Whether to enable the PrometheusRule automated alerts
       enabled: true
+    # -- Custom Prometheus metrics
     customQueries: []
       # - name: "pg_cache_hit_ratio"
       #   query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
@@ -154,12 +158,12 @@ cluster:
       #         usage: GAUGE
       #         description: "Cache hit ratio"
 
-  # -- Configuration of the PostgreSQL server
+  # -- Configuration of the PostgreSQL server.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration
   postgresql: {}
     # max_connections: "300"
 
-  # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used
+  # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb
   initdb: {}
@@ -251,6 +255,8 @@ backups:
 pooler:
   # -- Whether to enable PgBouncer
   enabled: false
+  # -- PgBouncer type of service to forward traffic to.
+  type: rw
   # -- PgBouncer pooling mode
   poolMode: transaction
   # -- Number of PgBouncer instances
@@ -259,3 +265,14 @@ pooler:
   parameters:
     max_client_conn: "1000"
     default_pool_size: "25"
+
+  monitoring:
+    # -- Whether to enable monitoring
+    enabled: false
+    podMonitor:
+        # -- Whether to enable the PodMonitor
+      enabled: true
+
+  # -- Custom PgBouncer deployment template.
+  # Use to override image, specify resources, etc.
+  template: {}

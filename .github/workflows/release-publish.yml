@@ -37,6 +37,10 @@ jobs:
         with:
           version: v3.14.1
 
+      - name: Add chart dependencies
+        run: |
+          helm repo add cnpg-grafana-dashboard https://cloudnative-pg.github.io/grafana-dashboards
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@a917fd15b20e8b64b94d9158ad54cd6345335584 # v1.6.0
         env:
@@ -71,14 +75,14 @@ jobs:
         # would be preserved, causing a non-zero exit. Set nullglob to fix this
         run: |
           shopt -s nullglob
-          for pkg in .cr-release-packages/*; do
+          for pkg in .cr-release-packages/*.tgz; do
             if [ -z "${pkg:-}" ]; then
               break
             fi
-            helm push "${pkg}" oci://ghcr.io/"${GITHUB_REPOSITORY_OWNER}"/charts
+            helm push "${pkg}" oci://ghcr.io/"${GITHUB_REPOSITORY}"
             file=${pkg##*/}
             name=${file%-*}
             version=${file%.*}
             version=${version##*-}
-            cosign sign ghcr.io/"${GITHUB_REPOSITORY_OWNER}"/charts/"${name}":"${version}"
+            cosign sign --yes ghcr.io/"${GITHUB_REPOSITORY}"/"${name}":"${version}"
           done

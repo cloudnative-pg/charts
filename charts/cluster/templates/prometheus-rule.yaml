@@ -173,5 +173,5 @@ spec:
             ) > 0.9
           for: 5m
           labels:
-            severity: warning
+            severity: critical
 {{ end }}
