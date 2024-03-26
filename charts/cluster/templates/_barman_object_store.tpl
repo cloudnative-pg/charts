@@ -4,6 +4,12 @@
   endpointURL: {{ .scope.endpointURL }}
 {{- end }}
 
+{{- if or (.scope.endpointCA.create) (.scope.endpointCA.name) }}
+  endpointCA:
+    name: {{ .chartFullname }}-ca-bundle
+    key: ca-bundle.crt
+{{- end }}
+
 {{- if .scope.destinationPath }}
   destinationPath: {{ .scope.destinationPath }}
 {{- end }}
