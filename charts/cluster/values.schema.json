@@ -57,6 +57,23 @@
                 "endpointURL": {
                     "type": "string"
                 },
+                "endpointCA": {
+                    "type": "object",
+                    "properties": {
+                        "createSecret": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
+                },
                 "google": {
                     "type": "object",
                     "properties": {
@@ -337,6 +354,23 @@
                 },
                 "endpointURL": {
                     "type": "string"
+                },
+                "endpointCA": {
+                    "type": "object",
+                    "properties": {
+                        "createSecret": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "google": {
                     "type": "object",
