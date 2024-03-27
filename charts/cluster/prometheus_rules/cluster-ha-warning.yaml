@@ -19,4 +19,6 @@ expr: |
 for: 5m
 labels:
   severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
 {{- end -}}

@@ -4,7 +4,7 @@ alert: {{ $alert }}
 annotations:
   summary: CNPG Instance is running out of disk space.
   description: |-
-    CloudNativePG Cluster "{{ .cluster }}" is running low on disk space. Check attached PVCs.
+    CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" is running low on disk space. Check attached PVCs.
   runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterLowDiskSpaceWarning.md
 expr: |
   max(max by(persistentvolumeclaim) (1 - kubelet_volume_stats_available_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}"} / kubelet_volume_stats_capacity_bytes{namespace="{{ .namespace }}", persistentvolumeclaim=~"{{ .podSelector }}"})) > 0.7 OR
@@ -19,4 +19,6 @@ expr: |
 for: 5m
 labels:
   severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
 {{- end -}}
