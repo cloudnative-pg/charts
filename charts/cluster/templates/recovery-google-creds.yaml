@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ include "cluster.fullname" . }}-backup-google-recovery-creds
+  name: {{ include "cluster.fullname" . }}-recovery-google-creds
 data:
   APPLICATION_CREDENTIALS: {{ .Values.recovery.google.applicationCredentials | b64enc | quote }}
 {{- end }}

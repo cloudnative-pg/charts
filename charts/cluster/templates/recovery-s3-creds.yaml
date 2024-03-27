@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ include "cluster.fullname" . }}-backup-s3-recovery-creds
+  name: {{ include "cluster.fullname" . }}-recovery-s3-creds
 data:
   ACCESS_KEY_ID: {{ required ".Values.recovery.s3.accessKey is required, but not specified." .Values.recovery.s3.accessKey | b64enc | quote }}
   ACCESS_SECRET_KEY: {{ required ".Values.recovery.s3.secretKey is required, but not specified." .Values.recovery.s3.secretKey | b64enc | quote }}
