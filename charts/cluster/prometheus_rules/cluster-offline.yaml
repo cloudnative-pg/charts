@@ -14,4 +14,6 @@ expr: |
 for: 5m
 labels:
   severity: critical
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
 {{- end -}}

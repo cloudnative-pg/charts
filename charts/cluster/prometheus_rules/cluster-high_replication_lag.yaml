@@ -4,7 +4,7 @@ alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster high replication lag
   description: |-
-    CloudNativePG Cluster "{{ .cluster }}" is experiencing a high replication lag of
+    CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" is experiencing a high replication lag of
     {{ .value }}ms.
 
     High replication lag indicates network issues, busy instances, slow queries or suboptimal configuration.
@@ -14,4 +14,6 @@ expr: |
 for: 5m
 labels:
   severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
 {{- end -}}
