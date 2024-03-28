@@ -144,6 +144,19 @@ cluster:
   enableSuperuserAccess: true
   superuserSecret: ""
 
+  # -- This feature enables declarative management of existing roles, as well as the creation of new roles if they are not
+  # already present in the database.
+  # See: https://cloudnative-pg.io/documentation/current/declarative_role_management/
+  roles: []
+    # - name: dante
+    #   ensure: present
+    #   comment: Dante Alighieri
+    #   login: true
+    #   superuser: false
+    #   inRoles:
+    #     - pg_monitor
+    #     - pg_signal_backend
+
   monitoring:
     # -- Whether to enable monitoring
     enabled: false

@@ -57,6 +57,12 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{ end }}
 
+  managed:
+    {{- with .Values.cluster.roles }}
+    roles:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+
   monitoring:
     enablePodMonitor: {{ and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
     {{- if not (empty .Values.cluster.monitoring.customQueries) }}
