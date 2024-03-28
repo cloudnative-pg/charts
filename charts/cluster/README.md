@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.0.5](https://img.shields.io/badge/Version-0.0.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -125,7 +125,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.data.jobs | int | `2` | Number of data files to be archived or restored in parallel. |
 | backups.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path> Google: gs://<bucket><path> |
 | backups.enabled | bool | `false` | You need to configure backups manually, so backups are disabled by default. |
-| backups.endpointCA | object | `{}` | Specify a secret containing the CA bundle of the barman endpoint. Useful when using self-signed certificates to avoid errors with certificate issuer and barman-cloud-wal-archive |
+| backups.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
+| backups.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
 | backups.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" |
 | backups.google.applicationCredentials | string | `""` |  |
 | backups.google.bucket | string | `""` |  |
@@ -161,6 +162,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.monitoring.enabled | bool | `false` | Whether to enable monitoring |
 | cluster.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
 | cluster.monitoring.prometheusRule.enabled | bool | `true` | Whether to enable the PrometheusRule automated alerts |
+| cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
 | cluster.postgresGID | int | `26` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `26` | The UID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresql | object | `{}` | Configuration of the PostgreSQL server. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration |
@@ -193,6 +195,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.backupName | string | `""` | Backup Recovery Method |
 | recovery.clusterName | string | `""` | Object Store Recovery Method |
 | recovery.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path> Google: gs://<bucket><path> |
+| recovery.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
+| recovery.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
 | recovery.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" Leave empty if using the default S3 endpoint |
 | recovery.google.applicationCredentials | string | `""` |  |
 | recovery.google.bucket | string | `""` |  |

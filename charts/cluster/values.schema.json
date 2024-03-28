@@ -55,7 +55,21 @@
                     "type": "boolean"
                 },
                 "endpointCA": {
-                    "type": "object"
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "endpointURL": {
                     "type": "string"
@@ -205,6 +219,9 @@
                             "properties": {
                                 "enabled": {
                                     "type": "boolean"
+                                },
+                                "excludeRules": {
+                                    "type": "array"
                                 }
                             }
                         }
@@ -343,6 +360,23 @@
                 },
                 "destinationPath": {
                     "type": "string"
+                },
+                "endpointCA": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "endpointURL": {
                     "type": "string"

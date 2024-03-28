@@ -4,9 +4,14 @@
   endpointURL: {{ . }}
 {{- end }}
 
-{{- with .scope.endpointCA }}
+{{- if or (.scope.endpointCA.create) (.scope.endpointCA.name) }}
   endpointCA:
-    {{- . | toYaml | nindent 4 }}
+    name: {{ .chartFullname }}-ca-bundle
+    key: ca-bundle.crt
+{{- end }}
+
+{{- if .scope.destinationPath }}
+  destinationPath: {{ .scope.destinationPath }}
 {{- end }}
 
 {{- with .scope.destinationPath }}
