@@ -6,10 +6,6 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Backup
 metadata:
   name: post-init-backup
-  labels:
-    cnpg.io/cluster: standalone-cluster
-    cnpg.io/immediateBackup: "true"
-    cnpg.io/scheduled-backup: standalone-cluster-daily-backup
 spec:
   cluster:
     name: standalone-cluster
