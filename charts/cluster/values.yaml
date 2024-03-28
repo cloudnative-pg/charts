@@ -199,19 +199,15 @@ backups:
   # -- Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
   endpointURL: ""  # Leave empty if using the default S3 endpoint
-  # -- Specifies a CA bundle to validate a privately signed certificate.
+
+  # -- Specify a secret containing the CA bundle of the barman endpoint. Useful when using self-signed certificates to
+  # avoid errors with certificate issuer and barman-cloud-wal-archive
   endpointCA:
     # -- Creates a secret with the given value if true, otherwise uses an existing secret.
     create: false
     name: ""
     key: ""
     value: ""
-
-  # -- Specify a secret containing the CA bundle of the barman endpoint. Useful when using self-signed certificates to
-  # avoid errors with certificate issuer and barman-cloud-wal-archive
-  endpointCA: {}
-    # name: ""
-    # key: ""
 
   # -- Overrides the provider specific default path. Defaults to:
   # S3: s3://<bucket><path>
