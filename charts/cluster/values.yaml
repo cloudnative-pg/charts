@@ -75,6 +75,11 @@ recovery:
     bucket: ""
     gkeEnvironment: false
     applicationCredentials: ""
+  secret:
+    # -- Whether to create a secret for the backup credentials
+    create: true
+    # -- Name of the backup credentials secret
+    name: ""
 
 
 cluster:
@@ -229,6 +234,11 @@ backups:
     bucket: ""
     gkeEnvironment: false
     applicationCredentials: ""
+  secret:
+    # -- Whether to create a secret for the backup credentials
+    create: true
+    # -- Name of the backup credentials secret
+    name: ""
 
   wal:
     # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
