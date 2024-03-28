@@ -22,6 +22,6 @@ spec:
            DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
            END_TIME=$(( $(date +%s) + 60 ))
            while [ $(date +%s) -lt $END_TIME ]; do
-             psql "$DB_URI" -c "CHECKPOINT;SELECT pg_switch_wal();"
+             psql "$DB_URI" -c "SELECT pg_switch_wal();CHECKPOINT;"
              sleep 10
            done
