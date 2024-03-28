@@ -171,7 +171,7 @@ cluster:
   # -- Configuration of the PostgreSQL server.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration
   postgresql: {}
-    # max_connections: 300
+    # max_connections: "300"
 
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
@@ -186,6 +186,11 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
+  # -- Env follows the Env format to pass environment variables to the pods created in the cluster
+  env: []
+
+  # -- EnvFrom follows the EnvFrom format to pass environment variables sources to the pods to be used by Env
+  envFrom: []
 
 backups:
   # -- You need to configure backups manually, so backups are disabled by default.
@@ -194,7 +199,9 @@ backups:
   # -- Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
   endpointURL: ""  # Leave empty if using the default S3 endpoint
-  # -- Specifies a CA bundle to validate a privately signed certificate.
+
+  # -- Specify a secret containing the CA bundle of the barman endpoint. Useful when using self-signed certificates to
+  # avoid errors with certificate issuer and barman-cloud-wal-archive
   endpointCA:
     # -- Creates a secret with the given value if true, otherwise uses an existing secret.
     create: false

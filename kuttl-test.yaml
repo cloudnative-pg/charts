@@ -1,0 +1,29 @@
+apiVersion: kuttl.dev/v1beta1
+kind: TestSuite
+commands:
+  - command:
+      helm upgrade 
+        --install 
+        --namespace cnpg-system
+        --create-namespace 
+        --wait
+        cnpg ./charts/cloudnative-pg
+  - command:
+      helm repo add minio-operator https://operator.min.io
+  - command:
+      helm upgrade
+        --install
+        --namespace minio-system
+        --create-namespace
+        --wait
+        operator minio-operator/operator
+  - command:
+      helm upgrade
+        --install
+        --namespace minio
+        --create-namespace
+        --wait
+        --values ./tests/minio.yaml
+        tenant minio-operator/tenant
+testDirs:
+  - ./tests
