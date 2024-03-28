@@ -21,25 +21,27 @@
   {{- if empty .scope.destinationPath -}}
   {{ "  destinationPath: \"s3://" }}{{ required "You need to specify S3 bucket if destinationPath is not specified." .scope.s3.bucket }}{{ .scope.s3.path }}"
   {{- end }}
+  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-s3-creds" .chartFullname .secretSuffix) -}}
   s3Credentials:
     accessKeyId:
-      name: {{ .chartFullname }}-{{ .secretPrefix }}-s3-creds
+      name: {{ $secretName }}
       key: ACCESS_KEY_ID
     secretAccessKey:
-      name: {{ .chartFullname }}-{{ .secretPrefix }}-s3-creds
+      name: {{ $secretName }}
       key: ACCESS_SECRET_KEY
 {{- else if eq .scope.provider "azure" }}
   {{- if empty .scope.destinationPath -}}
   {{ "  destinationPath: \"https://" }}{{ required "You need to specify Azure storageAccount if destinationPath is not specified." .scope.azure.storageAccount }}.{{ .scope.azure.serviceName }}.core.windows.net/{{ .scope.azure.containerName }}{{ .scope.azure.path }}"
   {{- end }}
+  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-azure-creds" .chartFullname .secretSuffix) -}}
   azureCredentials:
   {{- if .scope.azure.connectionString }}
     connectionString:
-      name: {{ .chartFullname }}-{{ .secretPrefix }}-azure-creds
+      name: {{ $secretName }}
       key: AZURE_CONNECTION_STRING
   {{- else }}
     storageAccount:
-      name: {{ .chartFullname }}-{{ .secretPrefix }}-azure-creds
+      name: {{ $secretName }}
       key: AZURE_STORAGE_ACCOUNT
     {{- if .scope.azure.storageKey }}
     storageKey:
@@ -55,10 +57,11 @@
   {{- if empty .scope.destinationPath -}}
   {{ "  destinationPath: \"gs://" }}{{ required "You need to specify Google storage bucket if destinationPath is not specified." .scope.google.bucket }}{{ .scope.google.path }}"
   {{- end }}
+  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-google-creds" .chartFullname .secretSuffix) -}}
   googleCredentials:
     gkeEnvironment: {{ .scope.google.gkeEnvironment }}
     applicationCredentials:
-      name: {{ .chartFullname }}-{{ .secretPrefix }}-google-creds
+      name: {{ $secretName }}
       key: APPLICATION_CREDENTIALS
 {{- end -}}
 {{- end -}}
