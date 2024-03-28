@@ -3,6 +3,10 @@ cluster:
   instances: 1
   storage:
     size: 256Mi
+  initdb:
+    postInitSQL:
+      - CREATE DATABASE mydb;
+      - CHECKPOINT
 backups:
   enabled: true
   provider: s3
