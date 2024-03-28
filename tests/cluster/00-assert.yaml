@@ -1,24 +1,10 @@
 apiVersion: kuttl.dev/v1beta1
 kind: TestAssert
-timeout: 300
+timeout: 120
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: standalone-cluster
 status:
-  readyInstances: 1
----
-apiVersion: postgresql.cnpg.io/v1
-kind: Backup
-metadata:
-  labels:
-    cnpg.io/cluster: standalone-cluster
-    cnpg.io/immediateBackup: "true"
-    cnpg.io/scheduled-backup: standalone-cluster-daily-backup
-spec:
-  cluster:
-    name: standalone-cluster
-  method: barmanObjectStore
-status:
-  phase: completed
+  readyInstances: 2

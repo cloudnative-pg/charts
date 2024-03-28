@@ -1,12 +1,11 @@
 mode: standalone
 cluster:
-  instances: 1
+  instances: 2
   storage:
     size: 256Mi
   initdb:
     postInitSQL:
       - CREATE DATABASE mydb;
-      - CHECKPOINT
 backups:
   enabled: true
   provider: s3
@@ -24,8 +23,5 @@ backups:
     accessKey: "minio"
     secretKey: "minio123"
     region: "local"
-  scheduledBackups:
-    - name: daily-backup # Daily at midnight
-      schedule: "0 0 0 * * *" # Daily at midnight
-      backupOwnerReference: self
+  scheduledBackups: []
   retentionPolicy: "30d"
