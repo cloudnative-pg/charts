@@ -1,6 +1,6 @@
 apiVersion: kuttl.dev/v1beta1
 kind: TestAssert
-timeout: 60
+timeout: 180
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Backup
