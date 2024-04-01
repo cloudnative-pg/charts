@@ -4,8 +4,8 @@
 [![GitHub License](https://img.shields.io/github/license/cloudnative-pg/charts)][license]
 
 
-[![GitHub Release](https://img.shields.io/github/v/release/cloudnative-pg/charts?filter=cloudnative-pg-*)]([https://github.com/cloudnative-pg/charts/releases](https://github.com/cloudnative-pg/charts/tree/main/charts/cloudnative-pg))
-[![GitHub Release](https://img.shields.io/github/v/release/cloudnative-pg/charts?filter=cluster-*)]([https://github.com/cloudnative-pg/charts/releases](https://github.com/cloudnative-pg/charts/tree/main/charts/cluster))
+[![GitHub Release](https://img.shields.io/github/v/release/cloudnative-pg/charts?filter=cloudnative-pg-*)](https://github.com/cloudnative-pg/charts/tree/main/charts/cloudnative-pg)
+[![GitHub Release](https://img.shields.io/github/v/release/cloudnative-pg/charts?filter=cluster-*)](https://github.com/cloudnative-pg/charts/tree/main/charts/cluster)
 
 
 ## Operator chart
