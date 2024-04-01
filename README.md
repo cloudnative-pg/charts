@@ -1,5 +1,13 @@
 # CloudNativePG Helm Charts
 
+[![Stack Overflow](https://img.shields.io/badge/stackoverflow-cloudnative--pg-blue?logo=stackoverflow&logoColor=%23F48024&link=https%3A%2F%2Fstackoverflow.com%2Fquestions%2Ftagged%2Fcloudnative-pg)][stackoverflow]
+[![GitHub License](https://img.shields.io/github/license/cloudnative-pg/charts)][license]
+
+
+[![GitHub Release](https://img.shields.io/github/v/release/cloudnative-pg/charts?filter=cloudnative-pg-*)]([https://github.com/cloudnative-pg/charts/releases](https://github.com/cloudnative-pg/charts/tree/main/charts/cloudnative-pg))
+[![GitHub Release](https://img.shields.io/github/v/release/cloudnative-pg/charts?filter=cluster-*)]([https://github.com/cloudnative-pg/charts/releases](https://github.com/cloudnative-pg/charts/tree/main/charts/cluster))
+
+
 ## Operator chart
 
 Helm chart to install the
@@ -40,3 +48,6 @@ Please read the [code of conduct](CODE-OF-CONDUCT.md) and the
 ## Copyright
 
 Helm charts for CloudNativePG are distributed under [Apache License 2.0](LICENSE).
+
+[stackoverflow]: https://stackoverflow.com/questions/tagged/cloudnative-pg
+[license]: https://github.com/cloudnative-pg/charts?tab=Apache-2.0-1-ov-file
