@@ -35,7 +35,7 @@ recovery:
   backupName: ""  # Name of the backup to recover from. Required if method is `backup`.
 
   ##
-  # -- Object Store Recovery Method
+  # -- The original cluster name when used in backups. Also known as serverName.
   clusterName: ""
   # -- Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
@@ -50,7 +50,7 @@ recovery:
     value: ""
   # -- Overrides the provider specific default path. Defaults to:
   # S3: s3://<bucket><path>
-  # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path>
+  # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
   # Google: gs://<bucket><path>
   destinationPath: ""
   # -- One of `s3`, `azure` or `google`
@@ -204,7 +204,7 @@ backups:
 
   # -- Overrides the provider specific default path. Defaults to:
   # S3: s3://<bucket><path>
-  # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<clusterName><path>
+  # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
   # Google: gs://<bucket><path>
   destinationPath: ""
   # -- One of `s3`, `azure` or `google`

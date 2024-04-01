@@ -37,7 +37,7 @@ bootstrap:
 externalClusters:
   - name: objectStoreRecoveryCluster
     barmanObjectStore:
-      serverName: {{ .Values.recovery.serverName }}
+      serverName: {{ .Values.recovery.clusterName }}
       {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretSuffix" "-recovery" -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
 {{-  else }}
