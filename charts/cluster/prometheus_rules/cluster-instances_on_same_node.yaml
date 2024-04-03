@@ -4,7 +4,7 @@ alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster instances are located on the same node.
   description: |-
-    CloudNativePG Cluster "{{ .cluster }}" has {{ .value }}
+    CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" has {{ .value }}
     instances on the same node {{ .labels.node }}.
 
     A failure or scheduled downtime of a single node will lead to a potential service disruption and/or data loss.
@@ -14,4 +14,6 @@ expr: |
 for: 5m
 labels:
   severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
 {{- end -}}

@@ -4,7 +4,7 @@ alert: {{ $alert }}
 annotations:
   summary: CNPG Instance is approaching the maximum number of connections.
   description: |-
-    CloudNativePG Cluster "{{ .cluster }}" instance {{ .labels.pod }} is using {{ .value }}% of
+    CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" instance {{ .labels.pod }} is using {{ .value }}% of
     the maximum number of connections.
   runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterHighConnectionsWarning.md
 expr: |
@@ -12,4 +12,6 @@ expr: |
 for: 5m
 labels:
   severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
 {{- end -}}
