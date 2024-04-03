@@ -139,11 +139,9 @@ affinity: {}
 monitoring:
 
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
-  podMonitor:
-    enabled: false
-
-    # -- Additional labels for the podMonitor
-    additionalLabels: {}
+  podMonitorEnabled: false
+  # -- Additional labels for the podMonitor
+  podMonitorAdditionalLabels: {}
 
   grafanaDashboard:
     create: false
