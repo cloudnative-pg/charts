@@ -7,9 +7,15 @@ spec:
   cluster:
     name: {{ include "cluster.fullname" . }}
   instances: {{ .Values.pooler.instances }}
-  type: rw
+  type: {{ .Values.pooler.type }}
   pgbouncer:
     poolMode: {{ .Values.pooler.poolMode }}
     parameters:
       {{- .Values.pooler.parameters | toYaml | nindent 6 }}
+  monitoring:
+    enablePodMonitor: {{ and .Values.pooler.monitoring.enabled .Values.pooler.monitoring.podMonitor.enabled }}
+  {{- with .Values.pooler.template }}
+  template:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
 {{ end }}

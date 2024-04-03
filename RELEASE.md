@@ -12,7 +12,12 @@ release of the CloudNativePG operator. I.e. even if we have several release
 branches in CNPG, we will only target the most advanced point
 release (e.g. 1.17.1)
 
-## How to release the `cloudnative-pg` chart
+## Charts
+
+1. [Releasing the `cloudnative-pg` chart](#releasing-the-cloudnative-pg-chart)
+2. [Releasing `cluster` chart](#releasing-the-cluster-chart)
+
+## Releasing the `cloudnative-pg` chart
 
 In order to create a new release of the `cloudnative-pg` chart, follow these steps:
 
@@ -27,7 +32,7 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
     ```
 3. Create a branch named `release/cloudnative-pg-vX.Y.Z` and switch to it:
     ```bash
-    git checkout -b release/cloudnative-pg-v$NEW_VERSION
+    git switch --create release/cloudnative-pg-v$NEW_VERSION
     ```
 4. Update the `.version` in the [Chart.yaml](./charts/cloudnative-pg/Chart.yaml) file to `"X.Y.Z"`
     ```bash
@@ -93,7 +98,7 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
     ```
     and be able to see the new version `X.Y.Z` as `CHART VERSION` for `cloudnative-pg`
 
-## How to release the `cluster` chart
+## Releasing the `cluster` chart
 
 In order to create a new release of the `cluster` chart, follow these steps:
 
@@ -108,7 +113,7 @@ In order to create a new release of the `cluster` chart, follow these steps:
     ```
 3. Create a branch: named `release/cluster-vX.Y.Z` and switch to it
     ```bash
-    git checkout -b release/cluster-v$NEW_VERSION
+    git switch --create release/cluster-v$NEW_VERSION
     ```
 4. Update the `.version` in the [Chart.yaml](./charts/cluster/Chart.yaml) file to `"X.Y.Z"`
     ```bash

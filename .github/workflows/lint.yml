@@ -20,7 +20,7 @@ jobs:
         with:
           version: v3.4.0
 
-      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
         with:
           python-version: 3.7
 
@@ -37,4 +37,4 @@ jobs:
 
       - name: Run chart-testing (lint)
         run: |
-          ct lint --target-branch=main --check-version-increment=false
+          ct lint --chart-repos cnpg-grafana=https://cloudnative-pg.github.io/grafana-dashboards --target-branch=main --check-version-increment=false

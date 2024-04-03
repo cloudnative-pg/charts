@@ -98,11 +98,17 @@
                 "grafanaDashboard": {
                     "type": "object",
                     "properties": {
+                        "annotations": {
+                            "type": "object"
+                        },
                         "configMapName": {
                             "type": "string"
                         },
                         "create": {
                             "type": "boolean"
+                        },
+                        "labels": {
+                            "type": "object"
                         },
                         "namespace": {
                             "type": "string"

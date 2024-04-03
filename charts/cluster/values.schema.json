@@ -34,11 +34,42 @@
                         }
                     }
                 },
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "compression": {
+                            "type": "string"
+                        },
+                        "encryption": {
+                            "type": "string"
+                        },
+                        "jobs": {
+                            "type": "integer"
+                        }
+                    }
+                },
                 "destinationPath": {
                     "type": "string"
                 },
                 "enabled": {
                     "type": "boolean"
+                },
+                "endpointCA": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "endpointURL": {
                     "type": "string"
@@ -100,6 +131,20 @@
                             "schedule": {
                                 "type": "string"
                             }
+                        }
+                    }
+                },
+                "wal": {
+                    "type": "object",
+                    "properties": {
+                        "compression": {
+                            "type": "string"
+                        },
+                        "encryption": {
+                            "type": "string"
+                        },
+                        "maxParallel": {
+                            "type": "integer"
                         }
                     }
                 }
@@ -168,10 +213,19 @@
                             "properties": {
                                 "enabled": {
                                     "type": "boolean"
+                                },
+                                "excludeRules": {
+                                    "type": "array"
                                 }
                             }
                         }
                     }
+                },
+                "postgresGID": {
+                    "type": "integer"
+                },
+                "postgresUID": {
+                    "type": "integer"
                 },
                 "postgresql": {
                     "type": "object"
@@ -186,7 +240,7 @@
                     "type": "string"
                 },
                 "resources": {
-                    "type": "null"
+                    "type": "object"
                 },
                 "storage": {
                     "type": "object",
@@ -222,6 +276,22 @@
                 "instances": {
                     "type": "integer"
                 },
+                "monitoring": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "podMonitor": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -234,6 +304,12 @@
                     }
                 },
                 "poolMode": {
+                    "type": "string"
+                },
+                "template": {
+                    "type": "object"
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -278,6 +354,23 @@
                 },
                 "destinationPath": {
                     "type": "string"
+                },
+                "endpointCA": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "endpointURL": {
                     "type": "string"

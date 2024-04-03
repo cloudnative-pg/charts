@@ -1,6 +1,6 @@
 # cloudnative-pg
 
-![Version: 0.20.1](https://img.shields.io/badge/Version-0.20.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.22.1](https://img.shields.io/badge/AppVersion-1.22.1-informational?style=flat-square)
+![Version: 0.20.2](https://img.shields.io/badge/Version-0.20.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.22.2](https://img.shields.io/badge/AppVersion-1.22.2-informational?style=flat-square)
 
 CloudNativePG Operator Helm Chart
 
@@ -15,6 +15,12 @@ CloudNativePG Operator Helm Chart
 ## Source Code
 
 * <https://github.com/cloudnative-pg/charts>
+
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| https://cloudnative-pg.github.io/grafana-dashboards | monitoring(cluster) | 0.0 |
 
 ## Values
 
@@ -35,8 +41,10 @@ CloudNativePG Operator Helm Chart
 | image.repository | string | `"ghcr.io/cloudnative-pg/cloudnative-pg"` |  |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` |  |
+| monitoring.grafanaDashboard.annotations | object | `{}` | Annotations that ConfigMaps can have to get configured in Grafana. |
 | monitoring.grafanaDashboard.configMapName | string | `"cnpg-grafana-dashboard"` | The name of the ConfigMap containing the dashboard. |
 | monitoring.grafanaDashboard.create | bool | `false` |  |
+| monitoring.grafanaDashboard.labels | object | `{}` | Labels that ConfigMaps should have to get configured in Grafana. |
 | monitoring.grafanaDashboard.namespace | string | `""` | Allows overriding the namespace where the ConfigMap will be created, defaulting to the same one as the Release. |
 | monitoring.grafanaDashboard.sidecarLabel | string | `"grafana_dashboard"` | Label that ConfigMaps should have to be loaded as dashboards. |
 | monitoring.grafanaDashboard.sidecarLabelValue | string | `""` | Label value that ConfigMaps should have to be loaded as dashboards. |

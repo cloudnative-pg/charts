@@ -1,8 +1,8 @@
 name: Verifies that a CNPG cluster has a certain amount of ready instances
 description: Verifies that a CNPG cluster has a certain amount of ready instances
 inputs:
-  cluster-name:
-    description: The name of the cluster to verify
+  pooler-name:
+    description: The name of the pooler to verify
     required: true
     default: database-cluster
   ready-instances:
@@ -13,18 +13,18 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Wait for cluster to become ready
+    - name: Wait for the pooler to become ready
       shell: bash
       run: |
         ITER=0
         while true; do
           if [[ $ITER -ge 300 ]]; then
-            echo "Cluster not ready"
+            echo "Pooler not ready"
             exit 1
           fi
-          READY_INSTANCES=$(kubectl get cluster ${INPUT_CLUSTER_NAME} -o jsonpath='{.status.readyInstances}')
+          READY_INSTANCES=$(kubectl get deployments.apps ${INPUT_POOLER_NAME} -o jsonpath='{.status.readyReplicas}')
           if [[ "$READY_INSTANCES" == ${INPUT_READY_INSTANCES} ]]; then
-            echo "Cluster up and running"
+            echo "Pooler up and running"
             break
           fi
           sleep 1
