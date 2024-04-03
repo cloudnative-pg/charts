@@ -123,6 +123,9 @@
                 },
                 "podMonitorEnabled": {
                     "type": "boolean"
+                },
+                "podMonitorAdditionalLabels": {
+                    "type": "object"
                 }
             }
         },

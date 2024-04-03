@@ -137,8 +137,12 @@ tolerations: []
 affinity: {}
 
 monitoring:
+
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
   podMonitorEnabled: false
+  # -- Additional labels for the podMonitor
+  podMonitorAdditionalLabels: {}
+
   grafanaDashboard:
     create: false
     # -- Allows overriding the namespace where the ConfigMap will be created, defaulting to the same one as the Release.
