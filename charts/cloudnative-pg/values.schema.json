@@ -121,16 +121,11 @@
                         }
                     }
                 },
-                "podMonitor": {
+                "podMonitorEnabled": {
+                    "type": "boolean"
+                },
+                "podMonitorAdditionalLabels": {
                     "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean"
-                        },
-                        "additionalLabels": {
-                            "type": "object"
-                        }
-                    }
                 }
             }
         },
