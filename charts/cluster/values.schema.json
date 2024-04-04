@@ -242,6 +242,9 @@
                 "resources": {
                     "type": "object"
                 },
+                "roles": {
+                    "type": "array"
+                },
                 "storage": {
                     "type": "object",
                     "properties": {
