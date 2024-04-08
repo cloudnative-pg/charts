@@ -35,7 +35,7 @@
   azureCredentials:
   {{- if .scope.azure.inheritFromAzureAD }}
     inheritFromAzureAD: true
-  {{- else if .scope.azure.inheritFromAzureAD }}
+  {{- else if .scope.azure.connectionString }}
     connectionString:
       name: {{ .chartFullname }}-backup-azure{{ .secretSuffix }}-creds
       key: AZURE_CONNECTION_STRING
