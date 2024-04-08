@@ -33,7 +33,9 @@
   destinationPath: "https://{{ required "You need to specify Azure storageAccount if destinationPath is not specified." .scope.azure.storageAccount }}.{{ .scope.azure.serviceName }}.core.windows.net/{{ .scope.azure.containerName }}{{ .scope.azure.path }}"
   {{- end }}
   azureCredentials:
-  {{- if .scope.azure.connectionString }}
+  {{- if .scope.azure.inheritFromAzureAD }}
+    inheritFromAzureAD: true
+  {{- else if .scope.azure.connectionString }}
     connectionString:
       name: {{ .chartFullname }}-backup-azure{{ .secretSuffix }}-creds
       key: AZURE_CONNECTION_STRING
