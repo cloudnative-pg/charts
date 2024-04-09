@@ -22,6 +22,41 @@ bootstrap:
           {{- end -}}
       {{- end -}}
 {{- else if eq .Values.mode "recovery" }}
+{{- if eq .Values.recovery.method "pg_basebackup" }}
+  pg_basebackup:
+    source: {{ .Values.recovery.pgBaseBackup.sourceName }}
+
+  externalClusters:
+  - name: {{ .Values.recovery.pgBaseBackup.sourceName }}
+    connectionParameters:
+      host: {{ .Values.recovery.pgBaseBackup.sourceHost }}
+      user: {{ .Values.recovery.pgBaseBackup.sourceUsername }}
+      {{- if .Values.recovery.pgBaseBackup.TLS.enabled }}
+      sslmode: verify-full
+      {{- end }}
+    {{- if or .Values.recovery.pgBaseBackup.sourcePassword .Values.recovery.pgBaseBackup.existingPasswordSecret }}
+    password:
+      {{- if .Values.recovery.pgBaseBackup.sourcePassword }}
+      name: {{ include "cluster.fullname" . }}-source-db-password
+      {{- else }}
+      name: {{ .Values.recovery.pgBaseBackup.existingPasswordSecret }}
+      {{- end }}
+      key: password
+    {{- else if .Values.recovery.pgBaseBackup.TLS.enabled }}
+    sslKey:
+      name: {{ .Values.recovery.pgBaseBackup.TLS.sslKey.secretName }}
+      key: {{ .Values.recovery.pgBaseBackup.TLS.sslKey.key }}
+    sslCert:
+      name: {{ .Values.recovery.pgBaseBackup.TLS.sslCert.secretName }}
+      key: {{ .Values.recovery.pgBaseBackup.TLS.sslCert.key }}
+    sslRootCert:
+      name: {{ .Values.recovery.pgBaseBackup.TLS.sslRootCert.secretName }}
+      key: {{ .Values.recovery.pgBaseBackup.TLS.sslRootCert.key }}
+    {{- else }}
+    {{ fail "No password or TLS secret defined for pg_basebackup" }}
+    {{- end }}
+
+{{- else }}
   recovery:
     {{- with .Values.recovery.pitrTarget.time }}
     recoveryTarget:
@@ -40,6 +75,7 @@ externalClusters:
       serverName: {{ .Values.recovery.clusterName }}
       {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretSuffix" "-recovery" -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
+{{- end }}
 {{-  else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}

@@ -76,6 +76,28 @@ recovery:
     gkeEnvironment: false
     applicationCredentials: ""
 
+  # Please see https://cloudnative-pg.io/documentation/1.22/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
+  pgBaseBackup:
+    sourceName: "source-db"
+    sourceHost: ""
+    sourceUsername: "streaming_replica"
+    sourcePassword: ""
+    # -- The name of an existing secret with the password (must contain key `password`).
+    # When it's set, the `recovery.pg_basebackup.sourcePassword` parameter is ignored
+    existingPasswordSecret: ""
+    TLS:
+      enabled: false
+      sslKey:
+        secretName: ""
+        key: ""
+      sslCert:
+        secretName: ""
+        key: ""
+      sslRootCert:
+        secretName: ""
+        key: ""
+
+
 
 cluster:
   # -- Number of instances
