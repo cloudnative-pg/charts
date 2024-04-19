@@ -135,7 +135,7 @@ cluster:
 
   # -- The configuration for the CA and related certificates.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration
-  certificates:
+  certificates: {}
 
   # -- When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password.
   # If the secret is not present, the operator will automatically create one.
