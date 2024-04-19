@@ -168,7 +168,7 @@
                     "type": "object"
                 },
                 "certificates": {
-                    "type": "null"
+                    "type": "object"
                 },
                 "enableSuperuserAccess": {
                     "type": "boolean"
