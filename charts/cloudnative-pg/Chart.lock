@@ -1,6 +1,6 @@
 dependencies:
 - name: cluster
   repository: https://cloudnative-pg.github.io/grafana-dashboards
-  version: 0.0.1
-digest: sha256:f2055d3b9f52be6989a8285cb736ec555f91f133791382787f4beb4387175ca0
-generated: "2024-03-23T16:27:46.965208992+02:00"
+  version: 0.0.2
+digest: sha256:d8da4792f46d5275b574bb5ad4cc97caf8431376ea5399233c5254e107e0aad6
+generated: "2024-04-25T12:28:06.139907917-04:00"
