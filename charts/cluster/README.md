@@ -140,6 +140,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.s3.region | string | `""` |  |
 | backups.s3.secretKey | string | `""` |  |
 | backups.scheduledBackups[0].backupOwnerReference | string | `"self"` | Backup owner reference |
+| backups.scheduledBackups[0].method | string | `"barmanObjectStore"` | Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot` |
 | backups.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
 | backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
