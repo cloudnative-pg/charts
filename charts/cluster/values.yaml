@@ -266,6 +266,8 @@ backups:
       schedule: "0 0 0 * * *"
       # -- Backup owner reference
       backupOwnerReference: self
+      # -- Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`
+      method: barmanObjectStore
 
   # -- Retention policy for backups
   retentionPolicy: "30d"
