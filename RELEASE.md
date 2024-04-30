@@ -36,7 +36,7 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
     ```
 4. Update the `.version` in the [Chart.yaml](./charts/cloudnative-pg/Chart.yaml) file to `"X.Y.Z"`
     ```bash
-    sed -i -E "s/^version: ([0-9]+.?)+/version: $NEW_VERSION/" charts/cloudnative-pg/Chart.yaml
+    sed -i -E "s/^version: \"([0-9]+.?)+\"/version: \"$NEW_VERSION\"/" charts/cloudnative-pg/Chart.yaml
     ```
 5. Update everything else as required, e.g. if releasing due to a new `cloudnative-pg` version being released, you might
     want to update the following:
