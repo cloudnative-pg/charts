@@ -1,6 +1,6 @@
 # Getting Started
 
-The CNPG cluster chart follows a convention over configuration approach. This means that the chart will create a reasonable 
+The CNPG cluster chart follows a convention over configuration approach. This means that the chart will create a reasonable
 CNPG setup with sensible defaults. However, you can override these defaults to create a more customized setup. Note that
 you still need to configure backups and monitoring separately. The chart will not install a Prometheus stack for you.
 
@@ -44,7 +44,7 @@ are likely looking for the `standalone` option.
 
 ### Backup configuration
 
-Most importantly you should configure your backup storage. 
+Most importantly you should configure your backup storage.
 
 CNPG implements disaster recovery via [Barman](https://pgbarman.org/). The following section configures the barman object
 store where backups will be stored. Barman performs backups of the cluster filesystem base backup and WALs. Both are
@@ -76,10 +76,11 @@ There are several important cluster options. Here are the most important ones:
 
 `cluster.instances` - The number of instances in the cluster. Defaults to `1`, but you should set this to `3` for production.
 `cluster.imageName` - This allows you to override the Docker image used for the cluster. The chart will choose a default
-  for you based on the setting you chose for `type`. If you need to run a configuration that is not supported, you can 
+  for you based on the setting you chose for `type`. If you need to run a configuration that is not supported, you can
   create your own Docker image. You can use the [postgres-containers](https://github.com/cloudnative-pg/postgres-containers)
   repository for a starting point.
   You will likely need to set your own repository access credentials via: `cluster.imagePullPolicy` and `cluster.imagePullSecrets`.
+`cluster.imageCatalogRef` - This allows you to specify version from ImageCatalog or ClusterImageCatalog. If both `cluster.imageName` and `cluster.imageCatalogRef`, later takes precedence.
 `cluster.storage.size` - The size of the persistent volume claim for the cluster. Defaults to `8Gi`. Every instance will
   have it's own persistent volume claim.
 `cluster.storage.storageClass` - The storage class to use for the persistent volume claim.
@@ -93,7 +94,7 @@ There are several important cluster options. Here are the most important ones:
   cluster:
     postgresql:
       max_connections: "200"
-      shared_buffers: "2GB"  
+      shared_buffers: "2GB"
   ```
 `cluster.initSQL` - Allows you to run custom SQL queries during the cluster initialization. This is useful for creating
 extensions, schemas and databases. Note that these are as a superuser.

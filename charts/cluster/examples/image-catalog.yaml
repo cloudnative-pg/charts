@@ -1,0 +1,10 @@
+mode: standalone
+cluster:
+  instances: 1
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: postgresql
+    major: 16
+backups:
+  enabled: false

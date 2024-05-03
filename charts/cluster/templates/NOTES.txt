@@ -47,7 +47,11 @@ Configuration
 ┝━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
 │ Cluster mode      │ {{ (printf "%-54s" .Values.mode) }} │
 │ Type              │ {{ (printf "%-54s" .Values.type) }} │
+{{- if .Values.cluster.imageCatalogRef }}
+| Image             | {{ include "cluster.color-info" (printf "%-54s" (printf "%s/%s:%v" .Values.cluster.imageCatalogRef.kind .Values.cluster.imageCatalogRef.name .Values.cluster.imageCatalogRef.major)) }} │
+{{- else }}
 │ Image             │ {{ include "cluster.color-info" (printf "%-54s" (include "cluster.imageName" .)) }} │
+{{- end }}
 │ Instances         │ {{ include (printf "%s%s" "cluster.color-" $redundancyColor) (printf "%-54s" (toString .Values.cluster.instances)) }} │
 │ Backups           │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.backups.enabled)) (printf "%-54s" (ternary "Enabled" "Disabled" .Values.backups.enabled)) }} │
 │ Backup Provider   │ {{ (printf "%-54s" (title .Values.backups.provider)) }} │

@@ -68,3 +68,19 @@ If a custom imageName is available, use it, otherwise use the defaults based on 
         {{ fail "Invalid cluster type!" }}
     {{- end }}
 {{- end -}}
+
+{{/*
+Cluster Image
+If imageCatalogRef defined, use it, otherwice calculate ordinary imageName.
+*/}}
+{{- define "cluster.image" }}
+{{- if .Values.cluster.imageCatalogRef }}
+  {{- with .Values.cluster.imageCatalogRef }}
+imageCatalogRef:
+  {{- toYaml . | nindent 2 -}}
+  {{- end }}
+{{- else }}
+imageName: {{ include "cluster.imageName" . }}
+{{- end }}
+{{- end }}
+
