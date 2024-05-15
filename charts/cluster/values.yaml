@@ -135,7 +135,7 @@ cluster:
 
   # -- The configuration for the CA and related certificates.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration
-  certificates:
+  certificates: {}
 
   # -- When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password.
   # If the secret is not present, the operator will automatically create one.
@@ -143,6 +143,19 @@ cluster:
   # and then blank the password of the postgres user by setting it to NULL.
   enableSuperuserAccess: true
   superuserSecret: ""
+
+  # -- This feature enables declarative management of existing roles, as well as the creation of new roles if they are not
+  # already present in the database.
+  # See: https://cloudnative-pg.io/documentation/current/declarative_role_management/
+  roles: []
+    # - name: dante
+    #   ensure: present
+    #   comment: Dante Alighieri
+    #   login: true
+    #   superuser: false
+    #   inRoles:
+    #     - pg_monitor
+    #     - pg_signal_backend
 
   monitoring:
     # -- Whether to enable monitoring
@@ -253,6 +266,8 @@ backups:
       schedule: "0 0 0 * * *"
       # -- Backup owner reference
       backupOwnerReference: self
+      # -- Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`
+      method: barmanObjectStore
 
   # -- Retention policy for backups
   retentionPolicy: "30d"

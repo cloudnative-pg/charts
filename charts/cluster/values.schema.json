@@ -125,6 +125,9 @@
                             "backupOwnerReference": {
                                 "type": "string"
                             },
+                            "method": {
+                                "type": "string"
+                            },
                             "name": {
                                 "type": "string"
                             },
@@ -168,7 +171,7 @@
                     "type": "object"
                 },
                 "certificates": {
-                    "type": "null"
+                    "type": "object"
                 },
                 "enableSuperuserAccess": {
                     "type": "boolean"
@@ -241,6 +244,9 @@
                 },
                 "resources": {
                     "type": "object"
+                },
+                "roles": {
+                    "type": "array"
                 },
                 "storage": {
                     "type": "object",
