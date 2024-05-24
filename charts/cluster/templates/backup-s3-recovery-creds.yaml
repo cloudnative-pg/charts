@@ -1,4 +1,4 @@
-{{- if and (eq .Values.mode "recovery" ) (eq .Values.recovery.method "object_store") (eq .Values.recovery.provider "s3") }}
+{{- if and (eq .Values.mode "recovery" ) (eq .Values.recovery.method "object_store") (eq .Values.recovery.provider "s3") (empty .Values.recovery.existingSecret) }}
 apiVersion: v1
 kind: Secret
 metadata:

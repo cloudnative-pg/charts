@@ -55,6 +55,13 @@ recovery:
   destinationPath: ""
   # -- One of `s3`, `azure` or `google`
   provider: s3
+  # -- Uses an existing secret for the recovery cloud credentials. If set then the credentials in the
+  # following cloud block are ignored. Depending on the cloud that should be
+  # used different parameters need to be set in the secret
+  # S3: ACCESS_KEY_ID and ACCESS_SECRET_KEY
+  # Azure: AZURE_CONNECTION_STRING, AZURE_STORAGE_ACCOUNT, AZURE_STORAGE_KEY and AZURE_STORAGE_SAS_TOKEN
+  # Google: APPLICATION_CREDENTIALS
+  existingSecret: ""
   s3:
     region: ""
     bucket: ""
@@ -222,6 +229,13 @@ backups:
   destinationPath: ""
   # -- One of `s3`, `azure` or `google`
   provider: s3
+  # -- Uses an existing secret for the backup cloud credentials. If set then the credentials in the
+  # following cloud block are ignored. Depending on the cloud that should be
+  # used different parameters need to be set in the secret
+  # S3: ACCESS_KEY_ID and ACCESS_SECRET_KEY
+  # Azure: AZURE_CONNECTION_STRING, AZURE_STORAGE_ACCOUNT, AZURE_STORAGE_KEY and AZURE_STORAGE_SAS_TOKEN
+  # Google: APPLICATION_CREDENTIALS
+  existingSecret: ""
   s3:
     region: ""
     bucket: ""

@@ -1,4 +1,4 @@
-{{- if and .Values.backups.enabled (eq .Values.backups.provider "s3") }}
+{{- if and .Values.backups.enabled (eq .Values.backups.provider "s3") (empty .Values.backups.existingSecret) }}
 apiVersion: v1
 kind: Secret
 metadata:

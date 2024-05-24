@@ -23,10 +23,10 @@
   {{- end }}
   s3Credentials:
     accessKeyId:
-      name: {{ .chartFullname }}-backup-s3{{ .secretSuffix }}-creds
+      name: {{ default (printf "%s-backup-s3%s-creds" .chartFullname (default "" .secretSuffix)) .scope.existingSecret }}
       key: ACCESS_KEY_ID
     secretAccessKey:
-      name: {{ .chartFullname }}-backup-s3{{ .secretSuffix }}-creds
+      name: {{ default (printf "%s-backup-s3%s-creds" .chartFullname (default "" .secretSuffix)) .scope.existingSecret }}
       key: ACCESS_SECRET_KEY
 {{- else if eq .scope.provider "azure" }}
   {{- if empty .scope.destinationPath }}
@@ -37,19 +37,19 @@
     inheritFromAzureAD: true
   {{- else if .scope.azure.connectionString }}
     connectionString:
-      name: {{ .chartFullname }}-backup-azure{{ .secretSuffix }}-creds
+      name: {{ default (printf "%s-backup-azure%s-creds" .chartFullname (default "" .secretSuffix)) .scope.existingSecret }}
       key: AZURE_CONNECTION_STRING
   {{- else }}
     storageAccount:
-      name: {{ .chartFullname }}-backup-azure{{ .secretSuffix }}-creds
+      name: {{ default (printf "%s-backup-azure%s-creds" .chartFullname (default "" .secretSuffix)) .scope.existingSecret }}
       key: AZURE_STORAGE_ACCOUNT
     {{- if .scope.azure.storageKey }}
     storageKey:
-      name: {{ .chartFullname }}-backup-azure{{ .secretSuffix }}-creds
+      name: {{ default (printf "%s-backup-azure%s-creds" .chartFullname (default "" .secretSuffix)) .scope.existingSecret }}
       key: AZURE_STORAGE_KEY
     {{- else }}
     storageSasToken:
-      name: {{ .chartFullname }}-backup-azure{{ .secretSuffix }}-creds
+      name: {{ default (printf "%s-backup-azure%s-creds" .chartFullname (default "" .secretSuffix)) .scope.existingSecret }}
       key: AZURE_STORAGE_SAS_TOKEN
     {{- end }}
   {{- end }}
@@ -60,7 +60,7 @@
   googleCredentials:
     gkeEnvironment: {{ .scope.google.gkeEnvironment }}
     applicationCredentials:
-      name: {{ .chartFullname }}-backup-google{{ .secretSuffix }}-creds
+      name: {{ default (printf "%s-backup-google%s-creds" .chartFullname (default "" .secretSuffix)) .scope.existingSecret }}
       key: APPLICATION_CREDENTIALS
 {{- end -}}
 {{- end -}}
