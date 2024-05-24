@@ -21,7 +21,7 @@
   {{- if empty .scope.destinationPath }}
   destinationPath: "s3://{{ required "You need to specify S3 bucket if destinationPath is not specified." .scope.s3.bucket }}{{ .scope.s3.path }}"
   {{- end }}
-  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-s3-creds" .chartFullname .secretSuffix) -}}
+  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-s3-creds" .chartFullname .secretPrefix) -}}
   s3Credentials:
     accessKeyId:
       name: {{ $secretName }}
@@ -33,7 +33,7 @@
   {{- if empty .scope.destinationPath }}
   destinationPath: "https://{{ required "You need to specify Azure storageAccount if destinationPath is not specified." .scope.azure.storageAccount }}.{{ .scope.azure.serviceName }}.core.windows.net/{{ .scope.azure.containerName }}{{ .scope.azure.path }}"
   {{- end }}
-  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-azure-creds" .chartFullname .secretSuffix) }}
+  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-azure-creds" .chartFullname .secretPrefix) }}
   azureCredentials:
   {{- if .scope.azure.inheritFromAzureAD }}
     inheritFromAzureAD: true
@@ -59,7 +59,7 @@
   {{- if empty .scope.destinationPath }}
   destinationPath: "gs://{{ required "You need to specify Google storage bucket if destinationPath is not specified." .scope.google.bucket }}{{ .scope.google.path }}"
   {{- end }}
-  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-google-creds" .chartFullname .secretSuffix) }}
+  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-google-creds" .chartFullname .secretPrefix) }}
   googleCredentials:
     gkeEnvironment: {{ .scope.google.gkeEnvironment }}
     applicationCredentials:
