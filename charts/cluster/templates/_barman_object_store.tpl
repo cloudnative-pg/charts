@@ -21,7 +21,7 @@
   {{- if empty .scope.destinationPath }}
   destinationPath: "s3://{{ required "You need to specify S3 bucket if destinationPath is not specified." .scope.s3.bucket }}{{ .scope.s3.path }}"
   {{- end }}
-  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-s3-creds" .chartFullname .secretPrefix) -}}
+  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-s3-creds" .chartFullname .secretPrefix) }}
   s3Credentials:
     accessKeyId:
       name: {{ $secretName }}
