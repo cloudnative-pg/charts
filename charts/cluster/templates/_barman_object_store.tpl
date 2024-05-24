@@ -47,11 +47,11 @@
       key: AZURE_STORAGE_ACCOUNT
     {{- if .scope.azure.storageKey }}
     storageKey:
-      name: {{ .chartFullname }}-{{ .secretPrefix }}-azure-creds
+      name: {{ $secretName }}
       key: AZURE_STORAGE_KEY
     {{- else }}
     storageSasToken:
-      name: {{ .chartFullname }}-{{ .secretPrefix }}-azure-creds
+      name: {{ $secretName }}
       key: AZURE_STORAGE_SAS_TOKEN
     {{- end }}
   {{- end }}
