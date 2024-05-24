@@ -35,7 +35,9 @@
   {{- end }}
   {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-azure-creds" .chartFullname .secretSuffix) }}
   azureCredentials:
-  {{- if .scope.azure.connectionString }}
+  {{- if .scope.azure.inheritFromAzureAD }}
+    inheritFromAzureAD: true
+  {{- else if .scope.azure.connectionString }}
     connectionString:
       name: {{ $secretName }}
       key: AZURE_CONNECTION_STRING

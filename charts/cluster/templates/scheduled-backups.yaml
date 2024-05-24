@@ -10,6 +10,7 @@ metadata:
 spec:
   immediate: true
   schedule: {{ .schedule }}
+  method: {{ .method }}
   backupOwnerReference: {{ .backupOwnerReference }}
   cluster:
     name: {{ include "cluster.fullname" $context }}

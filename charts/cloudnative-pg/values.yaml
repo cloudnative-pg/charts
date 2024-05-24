@@ -137,8 +137,12 @@ tolerations: []
 affinity: {}
 
 monitoring:
+
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
   podMonitorEnabled: false
+  # -- Additional labels for the podMonitor
+  podMonitorAdditionalLabels: {}
+
   grafanaDashboard:
     create: false
     # -- Allows overriding the namespace where the ConfigMap will be created, defaulting to the same one as the Release.
@@ -355,6 +359,7 @@ monitoringQueriesConfigMap:
             description: "Time at which these statistics were last reset"
 
     pg_stat_bgwriter:
+      runonserver: "<17.0.0"
       query: |
         SELECT checkpoints_timed
           , checkpoints_req
