@@ -1,7 +1,7 @@
 {{- define "cluster.barmanObjectStoreConfig" -}}
 
-{{- if .scope.endpointURL }}
-  endpointURL: {{ .scope.endpointURL }}
+{{- with .scope.endpointURL }}
+  endpointURL: {{ . }}
 {{- end }}
 
 {{- if or (.scope.endpointCA.create) (.scope.endpointCA.name) }}
@@ -12,6 +12,10 @@
 
 {{- if .scope.destinationPath }}
   destinationPath: {{ .scope.destinationPath }}
+{{- end }}
+
+{{- with .scope.destinationPath }}
+  destinationPath: {{ . }}
 {{- end }}
 
 {{- if eq .scope.provider "s3" }}

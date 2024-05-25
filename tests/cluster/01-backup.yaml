@@ -1,0 +1,8 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: post-init-backup
+spec:
+  method: barmanObjectStore
+  cluster:
+    name: standalone-cluster

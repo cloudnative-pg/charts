@@ -1,0 +1,35 @@
+name: Setup KUTTL
+description: Installs Krew and KUTTL
+outputs:
+  kubectl-krew-path:
+    description: The path to the kubectl-krew binary
+    value: ${{ steps.krew.outputs.path }}
+  kubectl-kuttl-path:
+    description: The path to the kubectl-kuttl binary
+    value: ${{ steps.kuttl.outputs.path }}
+runs:
+  using: composite
+  steps:
+    - id: krew
+      name: Install Krew
+      shell: bash
+      run: |
+        set -x; cd "$(mktemp -d)"
+        OS="$(uname | tr '[:upper:]' '[:lower:]')"
+        ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
+        KREW="krew-${OS}_${ARCH}"
+        curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
+        tar zxvf "${KREW}.tar.gz"
+        ./"${KREW}" install krew
+        echo "${KREW_ROOT:-$HOME/.krew}/bin/" >> $GITHUB_PATH
+        echo "path=${KREW_ROOT:-$HOME/.krew}/bin/kubectl-krew" >> "$GITHUB_OUTPUT"
+
+    - id: kuttl
+      name: Install KUTTL
+      shell: bash
+      env:
+        KREW_PATH: ${{steps.krew.outputs.path}}
+      run: |
+        export PATH="$(dirname $KREW_PATH):$PATH"
+        kubectl krew install kuttl
+        echo "path=$(which kubectl-kuttl)" >> "$GITHUB_OUTPUT"
