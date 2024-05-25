@@ -1,8 +1,8 @@
-{{- if and (eq .Values.mode "recovery" ) (eq .Values.recovery.method "object_store") (eq .Values.recovery.provider "azure") }}
+{{- if and (eq .Values.mode "recovery" ) (eq .Values.recovery.method "object_store") (eq .Values.recovery.provider "azure") .Values.recovery.secret.create }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ include "cluster.fullname" . }}-backup-azure-recovery-creds
+  name: {{ default (printf "%s-recovery-azure-creds" (include "cluster.fullname" .)) .Values.recovery.secret.name }}
 data:
   AZURE_CONNECTION_STRING: {{ .Values.recovery.azure.connectionString | b64enc | quote }}
   AZURE_STORAGE_ACCOUNT: {{ .Values.recovery.azure.storageAccount | b64enc | quote }}
