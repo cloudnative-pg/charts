@@ -10,7 +10,7 @@ annotations:
     potential service disruption and/or data loss.
   runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterOffline.md
 expr: |
-  ({{ .Values.cluster.instances }} - count(cnpg_collector_up{namespace=~"{{ .namespace }}",pod=~"{{ .podSelector }}"}) OR vector(0)) > 0
+  (count(cnpg_collector_up{namespace="{{ .namespace }}",pod=~"{{ .podSelector }}"}) OR on() vector(0)) == 0
 for: 5m
 labels:
   severity: critical
