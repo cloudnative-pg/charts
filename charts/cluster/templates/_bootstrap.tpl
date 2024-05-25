@@ -1,6 +1,6 @@
 {{- define "cluster.bootstrap" -}}
-bootstrap:
 {{- if eq .Values.mode "standalone" }}
+bootstrap:
   initdb:
     {{- with .Values.cluster.initdb }}
         {{- with (omit . "postInitApplicationSQL") }}
@@ -21,7 +21,8 @@ bootstrap:
             {{- printf "- %s" . | nindent 6 }}
           {{- end -}}
       {{- end -}}
-{{- else if eq .Values.mode "recovery" }}
+{{- else if eq .Values.mode "recovery" -}}
+bootstrap:
   recovery:
     {{- with .Values.recovery.pitrTarget.time }}
     recoveryTarget:
@@ -38,7 +39,7 @@ externalClusters:
   - name: objectStoreRecoveryCluster
     barmanObjectStore:
       serverName: {{ default (include "cluster.fullname" .) .Values.recovery.clusterName }}
-      {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretSuffix" "-recovery" -}}
+      {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
 {{-  else }}
   {{ fail "Invalid cluster mode!" }}
