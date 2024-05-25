@@ -137,6 +137,17 @@
                         }
                     }
                 },
+                "secret": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                },
                 "wal": {
                     "type": "object",
                     "properties": {
@@ -428,6 +439,17 @@
                             "type": "string"
                         },
                         "secretKey": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "secret": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
                             "type": "string"
                         }
                     }

@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.0.8](https://img.shields.io/badge/Version-0.0.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.0.9](https://img.shields.io/badge/Version-0.0.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -143,6 +143,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.scheduledBackups[0].method | string | `"barmanObjectStore"` | Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot` |
 | backups.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
+| backups.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
+| backups.secret.name | string | `""` | Name of the backup credentials secret |
 | backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backups.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
@@ -210,6 +212,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.s3.path | string | `"/"` |  |
 | recovery.s3.region | string | `""` |  |
 | recovery.s3.secretKey | string | `""` |  |
+| recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
+| recovery.secret.name | string | `""` | Name of the backup credentials secret |
 | type | string | `"postgresql"` | Type of the CNPG database. Available types: * `postgresql` * `postgis` |
 
 ## Maintainers
