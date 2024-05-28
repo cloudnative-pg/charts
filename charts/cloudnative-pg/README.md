@@ -68,5 +68,6 @@ CloudNativePG Operator Helm Chart
 | serviceAccount.create | bool | `true` | Specifies whether the service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template. |
 | tolerations | list | `[]` | Tolerations for the operator to be installed. |
+| watchNamespace | string | `""` | Namespaces to watch as comma separated list i.e namespace-a,namespace-b. Empty will default to all namespaces. |
 | webhook | object | `{"livenessProbe":{"initialDelaySeconds":3},"mutating":{"create":true,"failurePolicy":"Fail"},"port":9443,"readinessProbe":{"initialDelaySeconds":3},"validating":{"create":true,"failurePolicy":"Fail"}}` | The webhook configuration. |
 
