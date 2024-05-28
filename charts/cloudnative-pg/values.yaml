@@ -47,6 +47,9 @@ webhook:
   readinessProbe:
     initialDelaySeconds: 3
 
+# -- Namespaces to watch as comma separated list i.e namespace-a,namespace-b. Empty will default to all namespaces.
+watchNamespace: ""
+
 # -- Operator configuration.
 config:
   # -- Specifies whether the secret should be created.
@@ -61,7 +64,6 @@ config:
   data: {}
   # INHERITED_ANNOTATIONS: categories
   # INHERITED_LABELS: environment, workload, app
-  # WATCH_NAMESPACE: namespace-a,namespace-b
 
 # -- Additinal arguments to be added to the operator's args list.
 additionalArgs: []
