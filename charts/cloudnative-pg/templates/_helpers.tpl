@@ -60,13 +60,3 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
-
-{{/*
-Renders a value that contains template
-Usage:
-{{ include "cloudnative-pg.extraEnv" ( dict "value" .Values.example.value "context" $ ) }}
-*/}}
-{{- define "cloudnative-pg.extraEnv" -}}
-{{- $value := typeIs "string" .value | ternary .value (.value | toYaml) }}
-{{- tpl $value .context }}
-{{- end -}}

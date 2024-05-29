@@ -73,7 +73,7 @@ spec:
         - name: MONITORING_QUERIES_CONFIGMAP
           value: "{{ .Values.monitoringQueriesConfigMap.name }}"
         {{- if .Values.additionalEnv }}
-        {{- include "cloudnative-pg.extraEnv" (dict "value" .Values.additionalEnv "context" . ) | nindent 8 }}
+        {{- tpl (.Values.additionalEnvVars | toYaml) . | nindent 8 }}
         {{- end }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
