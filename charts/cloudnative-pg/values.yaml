@@ -68,11 +68,11 @@ additionalArgs: []
 
 # -- Array containing extra environment variables which can be templated.
 # For example:
-#  - name: WATCH_NAMESPACE
-#    value: "{{ .Release.Namespace }}"
+#  - name: RELEASE_NAME
+#    value: "{{ .Release.Name }}"
 #  - name: MY_VAR
 #    value: "mySpecialKey"
-additionalEnvVars: []
+additionalEnv: []
 
 serviceAccount:
   # -- Specifies whether the service account should be created.
