@@ -66,6 +66,14 @@ config:
 # -- Additinal arguments to be added to the operator's args list.
 additionalArgs: []
 
+# -- Array containing extra environment variables which can be templated.
+# For example:
+#  - name: WATCH_NAMESPACE
+#    value: "{{ .Release.Namespace }}"
+#  - name: MY_VAR
+#    value: "mySpecialKey"
+additionalEnvVars: []
+
 serviceAccount:
   # -- Specifies whether the service account should be created.
   create: true

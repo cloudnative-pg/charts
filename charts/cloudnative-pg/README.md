@@ -27,6 +27,7 @@ CloudNativePG Operator Helm Chart
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | additionalArgs | list | `[]` | Additinal arguments to be added to the operator's args list. |
+| additionalEnvVars | list | `[]` | Array containing extra environment variables which can be templated. See [values.yaml](./values.yaml) for examples.
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
 | config | object | `{"create":true,"data":{},"name":"cnpg-controller-manager-config","secret":false}` | Operator configuration. |
