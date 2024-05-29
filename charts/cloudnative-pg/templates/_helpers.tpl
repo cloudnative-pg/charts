@@ -68,9 +68,5 @@ Usage:
 */}}
 {{- define "cloudnative-pg.extraEnv" -}}
 {{- $value := typeIs "string" .value | ternary .value (.value | toYaml) }}
-{{- if contains "{{" (toJson .value) }}
-    {{- tpl $value .context }}
-{{- else }}
-    {{- $value }}
-{{- end }}
+{{- tpl $value .context }}
 {{- end -}}
