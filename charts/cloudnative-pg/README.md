@@ -1,6 +1,6 @@
 # cloudnative-pg
 
-![Version: 0.21.2](https://img.shields.io/badge/Version-0.21.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.1](https://img.shields.io/badge/AppVersion-1.23.1-informational?style=flat-square)
+![Version: 0.21.3](https://img.shields.io/badge/Version-0.21.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.1](https://img.shields.io/badge/AppVersion-1.23.1-informational?style=flat-square)
 
 CloudNativePG Operator Helm Chart
 
@@ -27,7 +27,7 @@ CloudNativePG Operator Helm Chart
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | additionalArgs | list | `[]` | Additinal arguments to be added to the operator's args list. |
-| additionalEnv | list | `[]` | Array containing extra environment variables which can be templated. See [values.yaml](./values.yaml) for examples.
+| additionalEnv | list | `[]` | Array containing extra environment variables which can be templated. For example:  - name: RELEASE_NAME    value: "{{ .Release.Name }}"  - name: MY_VAR    value: "mySpecialKey" |
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
 | config | object | `{"create":true,"data":{},"name":"cnpg-controller-manager-config","secret":false}` | Operator configuration. |
