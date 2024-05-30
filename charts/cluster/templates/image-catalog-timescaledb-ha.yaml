@@ -1,4 +1,4 @@
-{{- if and .Values.imageCatalog.create (not .Values.imageCatalog.images) (not .Values.cluster.imageCatalogRef.name) (eq .Values.type "timescaledb") -}}
+{{- if eq (include "cluster.useTimescaleDBDefaults" .) "true" -}}
 apiVersion: postgresql.cnpg.io/v1
 kind: ImageCatalog
 metadata:

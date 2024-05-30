@@ -44,7 +44,7 @@ Configuration
 
 {{- $image := (include "cluster.image" .) | fromYaml -}}
 {{- if $image.imageCatalogRef -}}
-  {{- $image = printf "%s: %s(%d)" $image.imageCatalogRef.kind $image.imageCatalogRef.name (int .Values.version.major) -}}
+  {{- $image = printf "%s: %s(%s)" $image.imageCatalogRef.kind $image.imageCatalogRef.name (include "cluster.postgresqlMajor" .) -}}
 {{- else if $image.imageName -}}
   {{- $image = $image.imageName -}}
 {{- end }}

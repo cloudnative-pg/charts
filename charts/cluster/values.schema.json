@@ -476,14 +476,14 @@
         "version": {
             "type": "object",
             "properties": {
-                "major": {
-                    "type": "integer"
-                },
                 "postgis": {
-                    "type": "number"
+                    "type": "string"
+                },
+                "postgresql": {
+                    "type": "string"
                 },
                 "timescaledb": {
-                    "type": "number"
+                    "type": "string"
                 }
             }
         }

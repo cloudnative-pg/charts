@@ -12,11 +12,11 @@ type: postgresql
 
 version:
   # -- PostgreSQL major version to use
-  major: 16
+  postgresql: "16"
   # -- If using TimescaleDB, specify the version
-  timescaledb: 2.15
+  timescaledb: "2.15"
   # -- If using PostGIS, specify the version
-  postgis: 3.4
+  postgis: "3.4"
 
 ###
 # -- Cluster mode of operation. Available modes:

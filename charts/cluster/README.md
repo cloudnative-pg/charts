@@ -218,9 +218,9 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | recovery.secret.name | string | `""` | Name of the backup credentials secret |
 | type | string | `"postgresql"` | Type of the CNPG database. Available types: * `postgresql` * `postgis` * `timescaledb` |
-| version.major | int | `16` | PostgreSQL major version to use |
-| version.postgis | float | `3.4` | If using PostGIS, specify the version |
-| version.timescaledb | float | `2.15` | If using TimescaleDB, specify the version |
+| version.postgis | string | `"3.4"` | If using PostGIS, specify the version |
+| version.postgresql | string | `"16"` | PostgreSQL major version to use |
+| version.timescaledb | string | `"2.15"` | If using TimescaleDB, specify the version |
 
 ## Maintainers
 
