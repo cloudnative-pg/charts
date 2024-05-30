@@ -90,6 +90,11 @@ cluster:
   # <image>:<tag>@sha256:<digestValue>
   imageName: ""  # Default value depends on type (postgresql/postgis/timescaledb)
 
+  # -- Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName`
+  imageCatalogRef: {}
+    #kind: ImageCatalog
+    #name: postgresql
+
   # -- Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated.
   # More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
   imagePullPolicy: IfNotPresent

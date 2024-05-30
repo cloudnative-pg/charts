@@ -68,3 +68,34 @@ If a custom imageName is available, use it, otherwise use the defaults based on 
         {{ fail "Invalid cluster type!" }}
     {{- end }}
 {{- end -}}
+
+{{/*
+Cluster Image
+If imageCatalogRef defined, use it, otherwice calculate ordinary imageName.
+*/}}
+{{- define "cluster.image" }}
+{{- if .Values.cluster.imageCatalogRef.name }}
+imageCatalogRef:
+  apiGroup: postgresql.cnpg.io
+  {{- toYaml .Values.cluster.imageCatalogRef | nindent 2 }}
+  major: {{ .Values.version.major }}
+{{- else if and .Values.imageCatalog.create (not (empty .Values.imageCatalog.images )) }}
+imageCatalogRef:
+  apiGroup: postgresql.cnpg.io
+  kind: ImageCatalog
+  name: {{ include "cluster.fullname" . }}
+  major: {{ .Values.version.major }}
+{{- else }}
+  {{- if empty .Values.cluster.imageName -}}
+    {{- if and .Values.imageCatalog.create (eq .Values.type "timescaledb") -}}
+imageCatalogRef:
+  apiGroup: postgresql.cnpg.io
+  kind: ImageCatalog
+  name: {{ include "cluster.fullname" . }}-timescaledb-ha
+  major: {{ .Values.version.major }}
+    {{- end }}
+  {{- else }}
+imageName: {{ include "cluster.imageName" . }}
+  {{- end }}
+{{- end }}
+{{- end }}
