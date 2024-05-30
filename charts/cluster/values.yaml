@@ -9,6 +9,10 @@ fullnameOverride: ""
 # * `postgis`
 type: postgresql
 
+version:
+  # -- PostgreSQL major version to use
+  major: 16
+
 ###
 # -- Cluster mode of operation. Available modes:
 # * `standalone` - default mode. Creates new or updates an existing CNPG cluster.
@@ -287,6 +291,13 @@ backups:
   # -- Retention policy for backups
   retentionPolicy: "30d"
 
+imageCatalog:
+  # -- Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored.
+  create: true
+  # -- List of images to be provisioned in an image catalog.
+  images: []
+    #- image: ghcr.io/your_repo/your_image:your_tag
+    #  major: 16
 
 pooler:
   # -- Whether to enable PgBouncer
