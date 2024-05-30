@@ -5,6 +5,9 @@
         "additionalArgs": {
             "type": "array"
         },
+        "additionalEnv": {
+            "type": "array"
+        },
         "affinity": {
             "type": "object"
         },
