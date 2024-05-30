@@ -101,8 +101,8 @@ cluster:
 
   # -- Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName`
   imageCatalogRef: {}
-    #kind: ImageCatalog
-    #name: postgresql
+    # kind: ImageCatalog
+    # name: postgresql
 
   # -- Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated.
   # More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
@@ -301,8 +301,8 @@ imageCatalog:
   create: true
   # -- List of images to be provisioned in an image catalog.
   images: []
-    #- image: ghcr.io/your_repo/your_image:your_tag
-    #  major: 16
+    # - image: ghcr.io/your_repo/your_image:your_tag
+    #   major: 16
 
 pooler:
   # -- Whether to enable PgBouncer
