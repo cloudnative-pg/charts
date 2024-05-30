@@ -7,11 +7,16 @@ fullnameOverride: ""
 # -- Type of the CNPG database. Available types:
 # * `postgresql`
 # * `postgis`
+# * `timescaledb`
 type: postgresql
 
 version:
   # -- PostgreSQL major version to use
   major: 16
+  # -- If using TimescaleDB, specify the version
+  timescaledb: 2.15
+  # -- If using PostGIS, specify the version
+  postgis: 3.4
 
 ###
 # -- Cluster mode of operation. Available modes:
@@ -112,10 +117,10 @@ cluster:
     storageClass: ""
 
   # -- The UID of the postgres user inside the image, defaults to 26
-  postgresUID: 26
+  postgresUID: -1
 
   # -- The GID of the postgres user inside the image, defaults to 26
-  postgresGID: 26
+  postgresGID: -1
 
   # -- Resources requirements of every generated Pod.
   # Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.

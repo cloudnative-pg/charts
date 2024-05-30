@@ -143,6 +143,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.scheduledBackups[0].method | string | `"barmanObjectStore"` | Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot` |
 | backups.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
+| backups.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
+| backups.secret.name | string | `""` | Name of the backup credentials secret |
 | backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backups.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
@@ -163,8 +165,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
 | cluster.monitoring.prometheusRule.enabled | bool | `true` | Whether to enable the PrometheusRule automated alerts |
 | cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
-| cluster.postgresGID | int | `26` | The GID of the postgres user inside the image, defaults to 26 |
-| cluster.postgresUID | int | `26` | The UID of the postgres user inside the image, defaults to 26 |
+| cluster.postgresGID | int | `-1` | The GID of the postgres user inside the image, defaults to 26 |
+| cluster.postgresUID | int | `-1` | The UID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresql | object | `{}` | Configuration of the PostgreSQL server. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration |
 | cluster.primaryUpdateMethod | string | `"switchover"` | Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated. It can be switchover (default) or in-place (restart). |
 | cluster.primaryUpdateStrategy | string | `"unsupervised"` | Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated: it can be automated (unsupervised - default) or manual (supervised) |
@@ -175,6 +177,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
 | fullnameOverride | string | `""` | Override the full name of the chart |
+| imageCatalog.create | bool | `true` | Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored. |
+| imageCatalog.images | list | `[]` | List of images to be provisioned in an image catalog. |
 | mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - default mode. Creates new or updates an existing CNPG cluster. * `replica` - Creates a replica cluster from an existing CNPG cluster. # TODO * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup. |
 | nameOverride | string | `""` | Override the name of the chart |
 | pooler.enabled | bool | `false` | Whether to enable PgBouncer |
@@ -211,7 +215,12 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.s3.path | string | `"/"` |  |
 | recovery.s3.region | string | `""` |  |
 | recovery.s3.secretKey | string | `""` |  |
-| type | string | `"postgresql"` | Type of the CNPG database. Available types: * `postgresql` * `postgis` |
+| recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
+| recovery.secret.name | string | `""` | Name of the backup credentials secret |
+| type | string | `"postgresql"` | Type of the CNPG database. Available types: * `postgresql` * `postgis` * `timescaledb` |
+| version.major | int | `16` | PostgreSQL major version to use |
+| version.postgis | float | `3.4` | If using PostGIS, specify the version |
+| version.timescaledb | float | `2.15` | If using TimescaleDB, specify the version |
 
 ## Maintainers
 

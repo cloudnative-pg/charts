@@ -1,0 +1,9 @@
+type: timescaledb
+mode: standalone
+version:
+  major: 15
+  timescaledb: 2.15
+cluster:
+  instances: 1
+backups:
+  enabled: false

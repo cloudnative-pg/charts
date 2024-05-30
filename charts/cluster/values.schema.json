@@ -137,6 +137,17 @@
                         }
                     }
                 },
+                "secret": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                },
                 "wal": {
                     "type": "object",
                     "properties": {
@@ -175,6 +186,9 @@
                 },
                 "enableSuperuserAccess": {
                     "type": "boolean"
+                },
+                "imageCatalogRef": {
+                    "type": "object"
                 },
                 "imageName": {
                     "type": "string"
@@ -266,6 +280,17 @@
         },
         "fullnameOverride": {
             "type": "string"
+        },
+        "imageCatalog": {
+            "type": "object",
+            "properties": {
+                "create": {
+                    "type": "boolean"
+                },
+                "images": {
+                    "type": "array"
+                }
+            }
         },
         "mode": {
             "type": "string"
@@ -431,11 +456,36 @@
                             "type": "string"
                         }
                     }
+                },
+                "secret": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         },
         "type": {
             "type": "string"
+        },
+        "version": {
+            "type": "object",
+            "properties": {
+                "major": {
+                    "type": "integer"
+                },
+                "postgis": {
+                    "type": "number"
+                },
+                "timescaledb": {
+                    "type": "number"
+                }
+            }
         }
     }
 }
