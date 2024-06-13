@@ -101,6 +101,10 @@ cluster:
   storage:
     size: 8Gi
     storageClass: ""
+    
+  walStorage:
+    size: 1Gi
+    storageClass: ""
 
   # -- The UID of the postgres user inside the image, defaults to 26
   postgresUID: 26
