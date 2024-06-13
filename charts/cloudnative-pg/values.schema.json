@@ -5,6 +5,9 @@
         "additionalArgs": {
             "type": "array"
         },
+        "additionalEnv": {
+            "type": "array"
+        },
         "affinity": {
             "type": "object"
         },
@@ -121,11 +124,11 @@
                         }
                     }
                 },
-                "podMonitorEnabled": {
-                    "type": "boolean"
-                },
                 "podMonitorAdditionalLabels": {
                     "type": "object"
+                },
+                "podMonitorEnabled": {
+                    "type": "boolean"
                 }
             }
         },
