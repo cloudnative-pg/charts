@@ -270,6 +270,17 @@
                         }
                     }
                 },
+                "walStorage": {
+                    "type": "object",
+                    "properties": {
+                        "size": {
+                            "type": "string"
+                        },
+                        "storageClass": {
+                            "type": "string"
+                        }
+                    }
+                },
                 "superuserSecret": {
                     "type": "string"
                 }
