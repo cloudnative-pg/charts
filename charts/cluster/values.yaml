@@ -101,7 +101,7 @@ cluster:
   storage:
     size: 8Gi
     storageClass: ""
-    
+
   walStorage:
     size: 1Gi
     storageClass: ""
