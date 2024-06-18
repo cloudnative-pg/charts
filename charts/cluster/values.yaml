@@ -192,8 +192,12 @@ cluster:
 
   # -- Configuration of the PostgreSQL server.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration
-  postgresql: {}
-    # max_connections: 300
+  postgresql:
+    # PostgreSQL configuration options (postgresql.conf)
+    parameters: {}
+      # max_connections: 300
+    # PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
+    pg_hba: {}
 
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
