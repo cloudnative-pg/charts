@@ -242,7 +242,15 @@
                     "type": "integer"
                 },
                 "postgresql": {
-                    "type": "object"
+                    "type": "object",
+                    "properties": {
+                        "parameters": {
+                            "type": "object"
+                        },
+                        "pg_hba": {
+                            "type": "object"
+                        }
+                    }
                 },
                 "primaryUpdateMethod": {
                     "type": "string"
@@ -270,6 +278,9 @@
                         }
                     }
                 },
+                "superuserSecret": {
+                    "type": "string"
+                },
                 "walStorage": {
                     "type": "object",
                     "properties": {
@@ -280,9 +291,6 @@
                             "type": "string"
                         }
                     }
-                },
-                "superuserSecret": {
-                    "type": "string"
                 }
             }
         },
