@@ -248,7 +248,7 @@
                             "type": "object"
                         },
                         "pg_hba": {
-                            "type": "object"
+                            "type": "array"
                         }
                     }
                 },

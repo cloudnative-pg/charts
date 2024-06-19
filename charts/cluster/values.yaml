@@ -197,7 +197,8 @@ cluster:
     parameters: {}
       # max_connections: 300
     # PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
-    pg_hba: {}
+    pg_hba: []
+      # - host all all 10.244.0.0/16 md5
 
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
