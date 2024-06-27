@@ -29,6 +29,9 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+hostNetwork: false
+dnsPolicy: "ClusterFirst"
+
 crds:
   # -- Specifies whether the CRDs should be created when installing the chart.
   create: true
