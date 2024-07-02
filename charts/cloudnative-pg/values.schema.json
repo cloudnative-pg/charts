@@ -95,6 +95,12 @@
         "imagePullSecrets": {
             "type": "array"
         },
+        "hostNetwork": {
+            "type": "boolean"
+        },
+        "dnsPolicy": {
+            "type": "string"
+        },
         "monitoring": {
             "type": "object",
             "properties": {
