@@ -166,7 +166,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
 | cluster.postgresGID | int | `26` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `26` | The UID of the postgres user inside the image, defaults to 26 |
-| cluster.postgresql | object | `{}` | Configuration of the PostgreSQL server. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration |
+| cluster.postgresql.parameters | object | `{}` | PostgreSQL configuration options (postgresql.conf) |
+| cluster.postgresql.pg_hba | list | `[]` | PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file) |
 | cluster.primaryUpdateMethod | string | `"switchover"` | Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated. It can be switchover (default) or in-place (restart). |
 | cluster.primaryUpdateStrategy | string | `"unsupervised"` | Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated: it can be automated (unsupervised - default) or manual (supervised) |
 | cluster.priorityClassName | string | `""` |  |
@@ -175,6 +176,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
+| cluster.walStorage.size | string | `"1Gi"` |  |
+| cluster.walStorage.storageClass | string | `""` |  |
 | fullnameOverride | string | `""` | Override the full name of the chart |
 | mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - default mode. Creates new or updates an existing CNPG cluster. * `replica` - Creates a replica cluster from an existing CNPG cluster. # TODO * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup. |
 | nameOverride | string | `""` | Override the name of the chart |
