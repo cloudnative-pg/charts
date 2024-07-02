@@ -30,7 +30,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 hostNetwork: false
-dnsPolicy: "ClusterFirst"
+dnsPolicy: ""
 
 crds:
   # -- Specifies whether the CRDs should be created when installing the chart.
