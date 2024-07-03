@@ -24,7 +24,11 @@ spec:
   storage:
     size: {{ .Values.cluster.storage.size }}
     storageClass: {{ .Values.cluster.storage.storageClass }}
-
+{{- if .Values.cluster.walStorage }}
+  walStorage:
+    size: {{ .Values.cluster.walStorage.size }}
+    storageClass: {{ .Values.cluster.walStorage.storageClass }}
+{{- end }}  
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}

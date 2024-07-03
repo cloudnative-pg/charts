@@ -62,8 +62,10 @@
   {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-google-creds" .chartFullname .secretPrefix) }}
   googleCredentials:
     gkeEnvironment: {{ .scope.google.gkeEnvironment }}
+{{- if not .scope.google.gkeEnvironment }}
     applicationCredentials:
       name: {{ $secretName }}
       key: APPLICATION_CREDENTIALS
+{{- end }}
 {{- end -}}
 {{- end -}}
