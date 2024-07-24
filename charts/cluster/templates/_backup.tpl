@@ -3,6 +3,7 @@
 backup:
   target: "prefer-standby"
   retentionPolicy: {{ .Values.backups.retentionPolicy }}
+  {{- if has .Values.backups.provider (list "s3" "azure" "google") }}
   barmanObjectStore:
     wal:
       compression: {{ .Values.backups.wal.compression }}
@@ -15,5 +16,10 @@ backup:
 
     {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.backups "secretPrefix" "backup" }}
     {{- include "cluster.barmanObjectStoreConfig" $d | nindent 2 }}
+  {{- else if eq .Values.backups.provider "volumeSnapshot" }}
+  volumeSnapshot:
+    online: true
+    className: {{ .Values.backups.volumeSnapshot.className }}
+    {{- end }}
 {{- end }}
 {{- end }}

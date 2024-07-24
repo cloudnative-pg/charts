@@ -229,7 +229,7 @@ backups:
   # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
   # Google: gs://<bucket><path>
   destinationPath: ""
-  # -- One of `s3`, `azure` or `google`
+  # -- One of `s3`, `azure`, `google`, or `volumeSnapshot`
   provider: s3
   s3:
     region: ""
@@ -251,6 +251,8 @@ backups:
     bucket: ""
     gkeEnvironment: false
     applicationCredentials: ""
+  volumeSnapshot:
+    className: ""
   secret:
     # -- Whether to create a secret for the backup credentials
     create: true
@@ -280,8 +282,6 @@ backups:
       schedule: "0 0 0 * * *"
       # -- Backup owner reference
       backupOwnerReference: self
-      # -- Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`
-      method: barmanObjectStore
 
   # -- Retention policy for backups
   retentionPolicy: "30d"
