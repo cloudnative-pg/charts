@@ -1,0 +1,14 @@
+cluster:
+  instances: 1
+
+backups:
+  enabled: true
+  provider: volumeSnapshot
+  volumeSnapshot:
+    # Points to our snapshot class, see https://kubernetes.io/docs/concepts/storage/volume-snapshot-classes/
+    className: "my-custom-snapshot-class"
+  scheduledBackups:
+    - name: daily-backup # Daily at midnight
+      schedule: "0 0 0 * * *" # Daily at midnight
+      backupOwnerReference: self
+  retentionPolicy: "30d"
