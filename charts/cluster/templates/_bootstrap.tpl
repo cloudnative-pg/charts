@@ -33,14 +33,27 @@ bootstrap:
       name: {{ .Values.recovery.backupName }}
     {{- else if eq .Values.recovery.method "object_store" }}
     source: objectStoreRecoveryCluster
+    {{- else if eq .Values.recovery.method "volumeSnapshot" }}
+    volumeSnapshots:
+      storage:
+        apiGroup: snapshot.storage.k8s.io
+        kind: VolumeSnapshot
+        name: {{ .Values.recovery.volumeSnapshot.storageSnapshotName }}
+      walStorage:
+        apiGroup: snapshot.storage.k8s.io
+        kind: VolumeSnapshot
+        name: {{ .Values.recovery.volumeSnapshot.walSnapshotName }}
     {{- end }}
 
+{{- if eq .Values.recovery.method "object_store" }}
 externalClusters:
   - name: objectStoreRecoveryCluster
     barmanObjectStore:
       serverName: {{ default (include "cluster.fullname" .) .Values.recovery.clusterName }}
       {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
+{{- end }}
+
 {{-  else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}

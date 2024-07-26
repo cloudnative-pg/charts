@@ -469,6 +469,17 @@
                             "type": "string"
                         }
                     }
+                },
+                "volumeSnapshot": {
+                    "type": "object",
+                    "properties": {
+                        "storageSnapshotName": {
+                            "type": "string"
+                        },
+                        "walSnapshotName": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         },
