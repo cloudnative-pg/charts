@@ -20,14 +20,8 @@ jobs:
       - name: Deploy the operator
         uses: ./.github/actions/deploy-operator
 
-
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v3.1.1
-
       - name: Install Chainsaw
         uses: kyverno/action-install-chainsaw@v0.2.7
-        with:
-          verify: true
 
       - name: Run Kyverno/Chainsaw
         run: chainsaw test
