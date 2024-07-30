@@ -1,0 +1,35 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: postgresql-standalone-cluster
+spec:
+  timeouts:
+    apply: 1s
+    assert: 1m
+  skipDelete: true
+  steps:
+    - try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./standalone.yaml \
+                --wait \
+                standalone ../../
+        - assert:
+            resource:
+              apiVersion: postgresql.cnpg.io/v1
+              kind: Cluster
+              metadata:
+                name: standalone-cluster
+              status:
+                readyInstances: 2
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+      finally:
+        - script:
+            content: |
+              kubectl delete namespace $NAMESPACE --wait=false

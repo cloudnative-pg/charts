@@ -1,0 +1,33 @@
+name: tests-cluster-chainsaw
+
+on:
+  pull_request:
+    branches-ignore:
+      - 'gh-pages'
+
+jobs:
+  test-cluster-standalone:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 0
+
+      - name: Setup kind
+        uses: ./.github/actions/setup-kind
+
+      - name: Deploy the operator
+        uses: ./.github/actions/deploy-operator
+
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.1.1
+
+      - name: Install Chainsaw
+        uses: kyverno/action-install-chainsaw@v0.2.7
+        with:
+          verify: true
+
+      - name: Run Kyverno/Chainsaw
+        run: chainsaw test
