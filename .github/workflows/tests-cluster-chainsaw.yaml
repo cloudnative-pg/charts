@@ -32,12 +32,12 @@ jobs:
             --create-namespace \
             --wait \
             operator minio-operator/operator
-          helm upgrade
-            --install
-            --namespace minio
-            --create-namespace
-            --wait
-            --values ./.github/minio.yaml
+          helm upgrade \
+            --install \
+            --namespace minio \
+            --create-namespace \
+            --wait \
+            --values ./.github/minio.yaml \
             tenant minio-operator/tenant
 
       - name: Run Kyverno/Chainsaw
