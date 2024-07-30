@@ -206,6 +206,12 @@
         "service": {
             "type": "object",
             "properties": {
+                "ipFamilies": {
+                    "type": "array"
+                },
+                "ipFamilyPolicy": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },

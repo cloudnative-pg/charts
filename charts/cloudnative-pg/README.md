@@ -67,6 +67,8 @@ CloudNativePG Operator Helm Chart
 | rbac.create | bool | `true` | Specifies whether ClusterRole and ClusterRoleBinding should be created. |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
+| service.ipFamilies | list | `[]` | Sets the families that should be supported and the order in which they should be applied to ClusterIP as well. Can be IPv4 and/or IPv6. |
+| service.ipFamilyPolicy | string | `""` | Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services) |
 | service.name | string | `"cnpg-webhook-service"` | DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate and can not be configured |
 | service.port | int | `443` |  |
 | service.type | string | `"ClusterIP"` |  |
