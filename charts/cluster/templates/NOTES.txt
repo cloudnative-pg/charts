@@ -1,0 +1,69 @@
+{{ if .Release.IsInstall }}
+The {{ include "cluster.color-info" (include "cluster.fullname" .) }} has been installed successfully.
+{{ else if .Release.IsUpgrade }}
+The {{ include "cluster.color-info" (include "cluster.fullname" .) }} has been upgraded successfully.
+{{ end }}
+
+   ██████   ██                       ██ ████     ██             ██   ██                  ███████    ████████
+  ██░░░░██ ░██                      ░██░██░██   ░██            ░██  ░░                  ░██░░░░██  ██░░░░░░██
+ ██    ░░  ░██  ██████  ██   ██     ░██░██░░██  ░██  ██████   ██████ ██ ██    ██  █████ ░██   ░██ ██      ░░
+░██        ░██ ██░░░░██░██  ░██  ██████░██ ░░██ ░██ ░░░░░░██ ░░░██░ ░██░██   ░██ ██░░░██░███████ ░██
+░██        ░██░██   ░██░██  ░██ ██░░░██░██  ░░██░██  ███████   ░██  ░██░░██ ░██ ░███████░██░░░░  ░██    █████
+░░██    ██ ░██░██   ░██░██  ░██░██  ░██░██   ░░████ ██░░░░██   ░██  ░██ ░░████  ░██░░░░ ░██      ░░██  ░░░░██
+ ░░██████  ███░░██████ ░░██████░░██████░██    ░░███░░████████  ░░██ ░██  ░░██   ░░██████░██       ░░████████
+  ░░░░░░  ░░░  ░░░░░░   ░░░░░░  ░░░░░░ ░░      ░░░  ░░░░░░░░    ░░  ░░    ░░     ░░░░░░ ░░         ░░░░░░░░
+
+Cheatsheet
+----------
+
+Run Helm Tests:
+{{ include "cluster.color-info" (printf "helm test --namespace %s %s" .Release.Namespace .Release.Name) }}
+
+Get a list of all base backups:
+{{ include "cluster.color-info" (printf "kubectl --namespace %s get backups --selector cnpg.io/cluster=%s" .Release.Namespace (include "cluster.fullname" .)) }}
+
+Connect to the cluster's primary instance:
+{{ include "cluster.color-info" (printf "kubectl --namespace %s exec --stdin --tty services/%s-rw -- bash" .Release.Namespace (include "cluster.fullname" .)) }}
+
+Configuration
+-------------
+
+{{- $redundancyColor := "" -}}
+{{- if lt (int .Values.cluster.instances) 2 }}
+  {{- $redundancyColor = "error" -}}
+{{- else if lt (int .Values.cluster.instances) 3 -}}
+  {{- $redundancyColor = "warning" -}}
+{{- else -}}
+  {{- $redundancyColor = "ok" -}}
+{{- end }}
+
+{{ $scheduledBackups := (first .Values.backups.scheduledBackups).name }}
+{{- range (rest .Values.backups.scheduledBackups) -}}
+  {{ $scheduledBackups = printf "%s, %s" $scheduledBackups .name }}
+{{- end -}}
+
+╭───────────────────┬────────────────────────────────────────────────────────╮
+│ Configuration     │ Value                                                  │
+┝━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
+│ Cluster mode      │ {{ (printf "%-54s" .Values.mode) }} │
+│ Type              │ {{ (printf "%-54s" .Values.type) }} │
+│ Image             │ {{ include "cluster.color-info" (printf "%-54s" (include "cluster.imageName" .)) }} │
+│ Instances         │ {{ include (printf "%s%s" "cluster.color-" $redundancyColor) (printf "%-54s" (toString .Values.cluster.instances)) }} │
+│ Backups           │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.backups.enabled)) (printf "%-54s" (ternary "Enabled" "Disabled" .Values.backups.enabled)) }} │
+│ Backup Provider   │ {{ (printf "%-54s" (title .Values.backups.provider)) }} │
+│ Scheduled Backups │ {{ (printf "%-54s" $scheduledBackups) }} │
+│ Storage           │ {{ (printf "%-54s" .Values.cluster.storage.size) }} │
+│ Storage Class     │ {{ (printf "%-54s" (default "Default" .Values.cluster.storage.storageClass)) }} │
+│ PGBouncer         │ {{ (printf "%-54s" (ternary "Enabled" "Disabled" .Values.pooler.enabled)) }} │
+│ Monitoring        │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.cluster.monitoring.enabled)) (printf "%-54s" (ternary "Enabled" "Disabled" .Values.cluster.monitoring.enabled)) }} │
+╰───────────────────┴────────────────────────────────────────────────────────╯
+
+{{ if not .Values.backups.enabled }}
+  {{- include "cluster.color-error" "Warning! Backups not enabled. Recovery will not be possible! Do not use this configuration in production.\n" }}
+{{ end -}}
+
+{{ if lt (int .Values.cluster.instances) 2 }}
+  {{- include "cluster.color-error" "Warning! Instance failure will lead to downtime and/or data loss!\n" }}
+{{- else if lt (int .Values.cluster.instances) 3 -}}
+  {{- include "cluster.color-warning" "Warning! Single instance redundancy available only. Instance failure will put the cluster at risk.\n" }}
+{{ end -}}

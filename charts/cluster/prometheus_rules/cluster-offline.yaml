@@ -1,0 +1,19 @@
+{{- $alert := "CNPGClusterOffline" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: CNPG Cluster has no running instances!
+  description: |-
+    CloudNativePG Cluster "{{ .labels.job }}" has no ready instances.
+
+    Having an offline cluster means your applications will not be able to access the database, leading to
+    potential service disruption and/or data loss.
+  runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterOffline.md
+expr: |
+  (count(cnpg_collector_up{namespace="{{ .namespace }}",pod=~"{{ .podSelector }}"}) OR on() vector(0)) == 0
+for: 5m
+labels:
+  severity: critical
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}

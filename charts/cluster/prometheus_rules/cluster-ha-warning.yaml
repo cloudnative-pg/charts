@@ -1,0 +1,24 @@
+{{- $alert := "CNPGClusterHAWarning" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: CNPG Cluster less than 2 standby replicas.
+  description: |-
+    CloudNativePG Cluster "{{ .labels.job }}" has only {{ .value }} standby replicas, putting
+    your cluster at risk if another instance fails. The cluster is still able to operate normally, although
+    the `-ro` and `-r` endpoints operate at reduced capacity.
+
+    This can happen during a normal fail-over or automated minor version upgrades. The replaced instance may
+    need some time to catch-up with the cluster primary instance.
+
+    This alarm will be constantly triggered if your cluster is configured to run with less than 3 instances.
+    In this case you may want to silence it.
+  runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterHAWarning.md
+expr: |
+  max by (job) (cnpg_pg_replication_streaming_replicas{namespace="{{ .namespace }}"} - cnpg_pg_replication_is_wal_receiver_up{namespace="{{ .namespace }}"}) < 2
+for: 5m
+labels:
+  severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}

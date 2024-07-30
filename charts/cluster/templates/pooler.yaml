@@ -1,0 +1,21 @@
+{{ if .Values.pooler.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: {{ include "cluster.fullname" . }}-pooler-rw
+spec:
+  cluster:
+    name: {{ include "cluster.fullname" . }}
+  instances: {{ .Values.pooler.instances }}
+  type: {{ .Values.pooler.type }}
+  pgbouncer:
+    poolMode: {{ .Values.pooler.poolMode }}
+    parameters:
+      {{- .Values.pooler.parameters | toYaml | nindent 6 }}
+  monitoring:
+    enablePodMonitor: {{ and .Values.pooler.monitoring.enabled .Values.pooler.monitoring.podMonitor.enabled }}
+  {{- with .Values.pooler.template }}
+  template:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
+{{ end }}

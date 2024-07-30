@@ -1,0 +1,5 @@
+mode: standalone
+cluster:
+  instances: 1
+backups:
+  enabled: false

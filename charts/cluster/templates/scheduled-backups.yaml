@@ -1,0 +1,18 @@
+{{ if .Values.backups.enabled }}
+{{ $context := . -}}
+{{ range .Values.backups.scheduledBackups -}}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: {{ include "cluster.fullname" $context  }}-{{ .name }}
+  labels: {{ include "cluster.labels" $context | nindent 4 }}
+spec:
+  immediate: true
+  schedule: {{ .schedule | quote }}
+  method: {{ .method }}
+  backupOwnerReference: {{ .backupOwnerReference }}
+  cluster:
+    name: {{ include "cluster.fullname" $context }}
+{{ end -}}
+{{ end }}

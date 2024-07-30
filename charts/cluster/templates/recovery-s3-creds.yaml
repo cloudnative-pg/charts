@@ -1,0 +1,9 @@
+{{- if and (eq .Values.mode "recovery" ) (eq .Values.recovery.method "object_store") (eq .Values.recovery.provider "s3") .Values.recovery.secret.create }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ default (printf "%s-recovery-s3-creds" (include "cluster.fullname" .)) .Values.recovery.secret.name }}
+data:
+  ACCESS_KEY_ID: {{ required ".Values.recovery.s3.accessKey is required, but not specified." .Values.recovery.s3.accessKey | b64enc | quote }}
+  ACCESS_SECRET_KEY: {{ required ".Values.recovery.s3.secretKey is required, but not specified." .Values.recovery.s3.secretKey | b64enc | quote }}
+{{- end }}

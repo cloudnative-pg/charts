@@ -5,6 +5,9 @@
         "additionalArgs": {
             "type": "array"
         },
+        "additionalEnv": {
+            "type": "array"
+        },
         "affinity": {
             "type": "object"
         },
@@ -53,6 +56,14 @@
                 },
                 "runAsUser": {
                     "type": "integer"
+                },
+                "seccompProfile": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         },
@@ -84,9 +95,44 @@
         "imagePullSecrets": {
             "type": "array"
         },
+        "hostNetwork": {
+            "type": "boolean"
+        },
+        "dnsPolicy": {
+            "type": "string"
+        },
         "monitoring": {
             "type": "object",
             "properties": {
+                "grafanaDashboard": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object"
+                        },
+                        "configMapName": {
+                            "type": "string"
+                        },
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "labels": {
+                            "type": "object"
+                        },
+                        "namespace": {
+                            "type": "string"
+                        },
+                        "sidecarLabel": {
+                            "type": "string"
+                        },
+                        "sidecarLabelValue": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "podMonitorAdditionalLabels": {
+                    "type": "object"
+                },
                 "podMonitorEnabled": {
                     "type": "boolean"
                 },
@@ -143,10 +189,10 @@
         "rbac": {
             "type": "object",
             "properties": {
-                "create": {
+                "aggregateClusterRoles": {
                     "type": "boolean"
                 },
-                "aggregateClusterRoles": {
+                "create": {
                     "type": "boolean"
                 }
             }

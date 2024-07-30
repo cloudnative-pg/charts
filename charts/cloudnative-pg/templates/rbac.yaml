@@ -70,14 +70,6 @@ rules:
 - apiGroups:
   - ""
   resources:
-  - namespaces
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
   - nodes
   verbs:
   - get
@@ -135,13 +127,13 @@ rules:
   - update
   - watch
 - apiGroups:
-    - ""
+  - ""
   resources:
-    - secrets/status
+  - secrets/status
   verbs:
-    - get
-    - patch
-    - update
+  - get
+  - patch
+  - update
 - apiGroups:
   - ""
   resources:
@@ -192,17 +184,17 @@ rules:
   - list
   - update
 - apiGroups:
-    - apps
+  - apps
   resources:
-    - deployments
+  - deployments
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
   - batch
   resources:
@@ -268,6 +260,14 @@ rules:
 - apiGroups:
   - postgresql.cnpg.io
   resources:
+  - clusterimagecatalogs
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - postgresql.cnpg.io
+  resources:
   - clusters
   verbs:
   - create
@@ -288,32 +288,40 @@ rules:
   resources:
   - clusters/status
   verbs:
-    - get
-    - patch
-    - update
-    - watch
+  - get
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - postgresql.cnpg.io
+  - postgresql.cnpg.io
   resources:
-    - poolers
+  - imagecatalogs
   verbs:
-    - create
-    - delete
-    - get
-    - list
-    - patch
-    - update
-    - watch
+  - get
+  - list
+  - watch
 - apiGroups:
-    - postgresql.cnpg.io
+  - postgresql.cnpg.io
   resources:
-    - poolers/finalizers
+  - poolers
   verbs:
-    - update
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
-    - postgresql.cnpg.io
+  - postgresql.cnpg.io
   resources:
-    - poolers/status
+  - poolers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - postgresql.cnpg.io
+  resources:
+  - poolers/status
   verbs:
   - get
   - patch
@@ -360,6 +368,16 @@ rules:
   - list
   - patch
   - update
+  - watch
+- apiGroups:
+  - snapshot.storage.k8s.io
+  resources:
+  - volumesnapshots
+  verbs:
+  - create
+  - get
+  - list
+  - patch
   - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1

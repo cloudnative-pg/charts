@@ -1,0 +1,474 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "backups": {
+            "type": "object",
+            "properties": {
+                "azure": {
+                    "type": "object",
+                    "properties": {
+                        "connectionString": {
+                            "type": "string"
+                        },
+                        "containerName": {
+                            "type": "string"
+                        },
+                        "inheritFromAzureAD": {
+                            "type": "boolean"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "serviceName": {
+                            "type": "string"
+                        },
+                        "storageAccount": {
+                            "type": "string"
+                        },
+                        "storageKey": {
+                            "type": "string"
+                        },
+                        "storageSasToken": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "compression": {
+                            "type": "string"
+                        },
+                        "encryption": {
+                            "type": "string"
+                        },
+                        "jobs": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "destinationPath": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "endpointCA": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "endpointURL": {
+                    "type": "string"
+                },
+                "google": {
+                    "type": "object",
+                    "properties": {
+                        "applicationCredentials": {
+                            "type": "string"
+                        },
+                        "bucket": {
+                            "type": "string"
+                        },
+                        "gkeEnvironment": {
+                            "type": "boolean"
+                        },
+                        "path": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "retentionPolicy": {
+                    "type": "string"
+                },
+                "s3": {
+                    "type": "object",
+                    "properties": {
+                        "accessKey": {
+                            "type": "string"
+                        },
+                        "bucket": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "region": {
+                            "type": "string"
+                        },
+                        "secretKey": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "scheduledBackups": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "backupOwnerReference": {
+                                "type": "string"
+                            },
+                            "method": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "schedule": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "secret": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "wal": {
+                    "type": "object",
+                    "properties": {
+                        "compression": {
+                            "type": "string"
+                        },
+                        "encryption": {
+                            "type": "string"
+                        },
+                        "maxParallel": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "cluster": {
+            "type": "object",
+            "properties": {
+                "additionalLabels": {
+                    "type": "object"
+                },
+                "affinity": {
+                    "type": "object",
+                    "properties": {
+                        "topologyKey": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "annotations": {
+                    "type": "object"
+                },
+                "certificates": {
+                    "type": "object"
+                },
+                "enableSuperuserAccess": {
+                    "type": "boolean"
+                },
+                "imageName": {
+                    "type": "string"
+                },
+                "imagePullPolicy": {
+                    "type": "string"
+                },
+                "imagePullSecrets": {
+                    "type": "array"
+                },
+                "initdb": {
+                    "type": "object"
+                },
+                "instances": {
+                    "type": "integer"
+                },
+                "logLevel": {
+                    "type": "string"
+                },
+                "monitoring": {
+                    "type": "object",
+                    "properties": {
+                        "customQueries": {
+                            "type": "array"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "podMonitor": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "prometheusRule": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "excludeRules": {
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    }
+                },
+                "postgresGID": {
+                    "type": "integer"
+                },
+                "postgresUID": {
+                    "type": "integer"
+                },
+                "postgresql": {
+                    "type": "object"
+                },
+                "primaryUpdateMethod": {
+                    "type": "string"
+                },
+                "primaryUpdateStrategy": {
+                    "type": "string"
+                },
+                "priorityClassName": {
+                    "type": "string"
+                },
+                "resources": {
+                    "type": "object"
+                },
+                "roles": {
+                    "type": "array"
+                },
+                "storage": {
+                    "type": "object",
+                    "properties": {
+                        "size": {
+                            "type": "string"
+                        },
+                        "storageClass": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "walStorage": {
+                    "type": "object",
+                    "properties": {
+                        "size": {
+                            "type": "string"
+                        },
+                        "storageClass": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "superuserSecret": {
+                    "type": "string"
+                }
+            }
+        },
+        "fullnameOverride": {
+            "type": "string"
+        },
+        "mode": {
+            "type": "string"
+        },
+        "nameOverride": {
+            "type": "string"
+        },
+        "pooler": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "instances": {
+                    "type": "integer"
+                },
+                "monitoring": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "podMonitor": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "default_pool_size": {
+                            "type": "string"
+                        },
+                        "max_client_conn": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "poolMode": {
+                    "type": "string"
+                },
+                "template": {
+                    "type": "object"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "recovery": {
+            "type": "object",
+            "properties": {
+                "azure": {
+                    "type": "object",
+                    "properties": {
+                        "connectionString": {
+                            "type": "string"
+                        },
+                        "containerName": {
+                            "type": "string"
+                        },
+                        "inheritFromAzureAD": {
+                            "type": "boolean"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "serviceName": {
+                            "type": "string"
+                        },
+                        "storageAccount": {
+                            "type": "string"
+                        },
+                        "storageKey": {
+                            "type": "string"
+                        },
+                        "storageSasToken": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "backupName": {
+                    "type": "string"
+                },
+                "clusterName": {
+                    "type": "string"
+                },
+                "destinationPath": {
+                    "type": "string"
+                },
+                "endpointCA": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "endpointURL": {
+                    "type": "string"
+                },
+                "google": {
+                    "type": "object",
+                    "properties": {
+                        "applicationCredentials": {
+                            "type": "string"
+                        },
+                        "bucket": {
+                            "type": "string"
+                        },
+                        "gkeEnvironment": {
+                            "type": "boolean"
+                        },
+                        "path": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "method": {
+                    "type": "string"
+                },
+                "pitrTarget": {
+                    "type": "object",
+                    "properties": {
+                        "time": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "s3": {
+                    "type": "object",
+                    "properties": {
+                        "accessKey": {
+                            "type": "string"
+                        },
+                        "bucket": {
+                            "type": "string"
+                        },
+                        "path": {
+                            "type": "string"
+                        },
+                        "region": {
+                            "type": "string"
+                        },
+                        "secretKey": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "secret": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "type": {
+            "type": "string"
+        }
+    }
+}

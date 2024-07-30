@@ -1,0 +1,11 @@
+{{- if and (eq .Values.mode "recovery" ) (eq .Values.recovery.method "object_store") (eq .Values.recovery.provider "azure") .Values.recovery.secret.create }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ default (printf "%s-recovery-azure-creds" (include "cluster.fullname" .)) .Values.recovery.secret.name }}
+data:
+  AZURE_CONNECTION_STRING: {{ .Values.recovery.azure.connectionString | b64enc | quote }}
+  AZURE_STORAGE_ACCOUNT: {{ .Values.recovery.azure.storageAccount | b64enc | quote }}
+  AZURE_STORAGE_KEY: {{ .Values.recovery.azure.storageKey | b64enc | quote }}
+  AZURE_STORAGE_SAS_TOKEN: {{ .Values.recovery.azure.storageSasToken | b64enc | quote }}
+{{- end }}

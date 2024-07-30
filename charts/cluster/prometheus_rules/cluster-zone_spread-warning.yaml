@@ -1,0 +1,18 @@
+{{- $alert := "CNPGClusterZoneSpreadWarning" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: CNPG Cluster instances in the same zone.
+  description: |-
+    CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" has instances in the same availability zone.
+
+    A disaster in one availability zone will lead to a potential service disruption and/or data loss.
+  runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterZoneSpreadWarning.md
+expr: |
+  {{ .Values.cluster.instances }} > count(count by (label_topology_kubernetes_io_zone) (kube_pod_info{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"} * on(node,instance) group_left(label_topology_kubernetes_io_zone) kube_node_labels)) < 3
+for: 5m
+labels:
+  severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}

@@ -1,31 +1,31 @@
-# Create a PR for a release when a commit is pushed on a release/v* branch
-
+##
+# Create a PR for a release when a commit is pushed on a release/*-v* branch to support the releases of both the
+# operator and cluster charts
 name: release-pr
 
 on:
   push:
     branches:
-    - release/*-v*
+      - release/*-v*
+
+permissions:
+  pull-requests: write
 
 jobs:
-  pull-request:
+  create-pull-request:
     runs-on: ubuntu-22.04
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
-      -
-        name: Get tag
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Create Pull Request
+        id: create-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
-      -
-        name: Pull Request
-        id: open-pr
-        uses: repo-sync/pull-request@7e79a9f5dc3ad0ce53138f01df2fad14a04831c5 # v2.12.1
-        with:
-          destination_branch: "main"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_body: "Automated PR. Will trigger the ${{ env.TAG }} release when approved."
-          pr_label: release
-          pr_title: "Release ${{ env.TAG }}"
-
+          TAG="${GITHUB_REF##*/}"
+          TITLE="Release ${TAG}"
+          BODY="Automated PR. Will trigger the ${TAG} release when approved."
+          LABEL=release
+          ASSIGNEE=${{ github.actor }}
+          gh pr create --title "${TITLE}" --body "${BODY}" --label "${LABEL}" --assignee "${ASSIGNEE}" ||
+          gh pr edit --title "${TITLE}" --body "${BODY}" --add-label "${LABEL}"

@@ -29,6 +29,9 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+hostNetwork: false
+dnsPolicy: ""
+
 crds:
   # -- Specifies whether the CRDs should be created when installing the chart.
   create: true
@@ -66,6 +69,14 @@ config:
 # -- Additinal arguments to be added to the operator's args list.
 additionalArgs: []
 
+# -- Array containing extra environment variables which can be templated.
+# For example:
+#  - name: RELEASE_NAME
+#    value: "{{ .Release.Name }}"
+#  - name: MY_VAR
+#    value: "mySpecialKey"
+additionalEnv: []
+
 serviceAccount:
   # -- Specifies whether the service account should be created.
   create: true
@@ -93,6 +104,8 @@ containerSecurityContext:
   readOnlyRootFilesystem: true
   runAsUser: 10001
   runAsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
   capabilities:
     drop:
       - "ALL"
@@ -135,12 +148,30 @@ tolerations: []
 affinity: {}
 
 monitoring:
+
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
   podMonitorEnabled: false
   # -- Metrics relabel configurations to apply to samples before ingestion.
   podMonitorMetricRelabelings: []
   # -- Relabel configurations to apply to samples before scraping.
   podMonitorRelabelings: []
+  # -- Additional labels for the podMonitor
+  podMonitorAdditionalLabels: {}
+
+  grafanaDashboard:
+    create: false
+    # -- Allows overriding the namespace where the ConfigMap will be created, defaulting to the same one as the Release.
+    namespace: ""
+    # -- The name of the ConfigMap containing the dashboard.
+    configMapName: "cnpg-grafana-dashboard"
+    # -- Label that ConfigMaps should have to be loaded as dashboards.  DEPRECATED: Use labels instead.
+    sidecarLabel: "grafana_dashboard"
+    # -- Label value that ConfigMaps should have to be loaded as dashboards.  DEPRECATED: Use labels instead.
+    sidecarLabelValue: "1"
+    # -- Labels that ConfigMaps should have to get configured in Grafana.
+    labels: {}
+    # -- Annotations that ConfigMaps can have to get configured in Grafana.
+    annotations: {}
 
 # Default monitoring queries
 monitoringQueriesConfigMap:
@@ -248,14 +279,16 @@ monitoringQueriesConfigMap:
             description: "Time at which postgres started (based on epoch)"
 
     pg_replication:
-      query: "SELECT CASE WHEN NOT pg_catalog.pg_is_in_recovery()
+      query: "SELECT CASE WHEN (
+                NOT pg_catalog.pg_is_in_recovery()
+                OR pg_catalog.pg_last_wal_receive_lsn() = pg_catalog.pg_last_wal_replay_lsn())
               THEN 0
               ELSE GREATEST (0,
                 EXTRACT(EPOCH FROM (now() - pg_catalog.pg_last_xact_replay_timestamp())))
               END AS lag,
               pg_catalog.pg_is_in_recovery() AS in_recovery,
               EXISTS (TABLE pg_stat_wal_receiver) AS is_wal_receiver_up,
-              (SELECT count(*) FROM pg_stat_replication) AS streaming_replicas"
+              (SELECT count(*) FROM pg_catalog.pg_stat_replication) AS streaming_replicas"
       metrics:
         - lag:
             usage: "GAUGE"
@@ -276,7 +309,10 @@ monitoringQueriesConfigMap:
           slot_type,
           database,
           active,
-          pg_catalog.pg_wal_lsn_diff(pg_catalog.pg_current_wal_lsn(), restart_lsn)
+          (CASE pg_catalog.pg_is_in_recovery()
+            WHEN TRUE THEN pg_catalog.pg_wal_lsn_diff(pg_catalog.pg_last_wal_receive_lsn(), restart_lsn)
+            ELSE pg_catalog.pg_wal_lsn_diff(pg_catalog.pg_current_wal_lsn(), restart_lsn)
+          END) as pg_wal_lsn_diff
         FROM pg_catalog.pg_replication_slots
         WHERE NOT temporary
       metrics:
@@ -338,6 +374,7 @@ monitoringQueriesConfigMap:
             description: "Time at which these statistics were last reset"
 
     pg_stat_bgwriter:
+      runonserver: "<17.0.0"
       query: |
         SELECT checkpoints_timed
           , checkpoints_req
@@ -457,6 +494,7 @@ monitoringQueriesConfigMap:
        SELECT usename
          , COALESCE(application_name, '') AS application_name
          , COALESCE(client_addr::text, '') AS client_addr
+         , COALESCE(client_port::text, '') AS client_port
          , EXTRACT(EPOCH FROM backend_start) AS backend_start
          , COALESCE(pg_catalog.age(backend_xmin), 0) AS backend_xmin_age
          , pg_catalog.pg_wal_lsn_diff(pg_catalog.pg_current_wal_lsn(), sent_lsn) AS sent_diff_bytes
@@ -477,6 +515,9 @@ monitoringQueriesConfigMap:
         - client_addr:
             usage: "LABEL"
             description: "Client IP address"
+        - client_port:
+            usage: "LABEL"
+            description: "Client TCP port"
         - backend_start:
             usage: "COUNTER"
             description: "Time when this process was started"

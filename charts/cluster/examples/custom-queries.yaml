@@ -1,0 +1,24 @@
+type: postgresql
+mode: standalone
+
+cluster:
+  instances: 1
+  monitoring:
+    enabled: true
+    customQueries:
+      - name: "pg_cache_hit"
+        query: |
+          SELECT 
+            current_database() as datname,
+            sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio
+          FROM pg_statio_user_tables;
+        metrics:
+          - datname:
+              usage: "LABEL"
+              description: "Name of the database database"
+          - ratio:
+              usage: GAUGE
+              description: "Cache hit ratio"
+
+backups:
+  enabled: false

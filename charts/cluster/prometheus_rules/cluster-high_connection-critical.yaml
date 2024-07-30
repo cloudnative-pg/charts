@@ -1,0 +1,17 @@
+{{- $alert := "CNPGClusterHighConnectionsCritical" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: CNPG Instance maximum number of connections critical!
+  description: |-
+    CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" instance {{ .labels.pod }} is using {{ .value }}% of
+    the maximum number of connections.
+  runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterHighConnectionsCritical.md
+expr: |
+  sum by (pod) (cnpg_backends_total{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}) / max by (pod) (cnpg_pg_settings_setting{name="max_connections", namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}) * 100 > 95
+for: 5m
+labels:
+  severity: critical
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}

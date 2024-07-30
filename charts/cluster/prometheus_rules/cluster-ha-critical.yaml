@@ -1,0 +1,26 @@
+{{- $alert := "CNPGClusterHACritical" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: CNPG Cluster has no standby replicas!
+  description: |-
+    CloudNativePG Cluster "{{ .labels.job }}" has no ready standby replicas. Your cluster at a severe
+    risk of data loss and downtime if the primary instance fails.
+
+    The primary instance is still online and able to serve queries, although connections to the `-ro` endpoint
+    will fail. The `-r` endpoint os operating at reduced capacity and all traffic is being served by the main.
+
+    This can happen during a normal fail-over or automated minor version upgrades in a cluster with 2 or less
+    instances. The replaced instance may need some time to catch-up with the cluster primary instance.
+
+    This alarm will be always trigger if your cluster is configured to run with only 1 instance. In this
+    case you may want to silence it.
+  runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterHACritical.md
+expr: |
+  max by (job) (cnpg_pg_replication_streaming_replicas{namespace="{{ .namespace }}"} - cnpg_pg_replication_is_wal_receiver_up{namespace="{{ .namespace }}"}) < 1
+for: 5m
+labels:
+  severity: critical
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}

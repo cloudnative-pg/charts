@@ -1,0 +1,78 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "cluster.fullname" . }}
+  {{- with .Values.cluster.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+  {{- include "cluster.labels" . | nindent 4 }}
+  {{- with .Values.cluster.additionalLabels }}
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  instances: {{ .Values.cluster.instances }}
+  imageName: {{ include "cluster.imageName" . }}
+  imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
+  {{- with .Values.cluster.imagePullSecrets}}
+  imagePullSecrets:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
+  postgresUID: {{ .Values.cluster.postgresUID }}
+  postgresGID: {{ .Values.cluster.postgresGID }}
+  storage:
+    size: {{ .Values.cluster.storage.size }}
+    storageClass: {{ .Values.cluster.storage.storageClass }}
+{{- if .Values.cluster.walStorage }}
+  walStorage:
+    size: {{ .Values.cluster.walStorage.size }}
+    storageClass: {{ .Values.cluster.walStorage.storageClass }}
+{{- end }}  
+  {{- with .Values.cluster.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+  {{- with .Values.cluster.affinity }}
+  affinity:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  priorityClassName: {{ .Values.cluster.priorityClassName }}
+
+  primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
+  primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
+  logLevel: {{ .Values.cluster.logLevel }}
+  {{- with .Values.cluster.certificates }}
+  certificates:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+  enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
+  {{- with .Values.cluster.superuserSecret }}
+  superuserSecret:
+    name: {{ . }}
+  {{ end }}
+  postgresql:
+    shared_preload_libraries:
+      {{- if eq .Values.type "timescaledb" }}
+      - timescaledb
+      {{- end }}
+    {{- with .Values.cluster.postgresql }}
+    parameters:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+
+  managed:
+    {{- with .Values.cluster.roles }}
+    roles:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+
+  monitoring:
+    enablePodMonitor: {{ and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
+    {{- if not (empty .Values.cluster.monitoring.customQueries) }}
+    customQueriesConfigMap:
+      - name: {{ include "cluster.fullname" . }}-monitoring
+        key: custom-queries
+    {{- end }}
+  {{ include "cluster.bootstrap" . | nindent 2 }}
+  {{ include "cluster.backup" . | nindent 2 }}

@@ -1,0 +1,19 @@
+{{- $alert := "CNPGClusterInstancesOnSameNode" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: CNPG Cluster instances are located on the same node.
+  description: |-
+    CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" has {{ .value }}
+    instances on the same node {{ .labels.node }}.
+
+    A failure or scheduled downtime of a single node will lead to a potential service disruption and/or data loss.
+  runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterInstancesOnSameNode.md
+expr: |
+  count by (node) (kube_pod_info{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}) > 1
+for: 5m
+labels:
+  severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}
