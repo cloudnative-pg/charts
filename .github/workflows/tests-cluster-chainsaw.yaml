@@ -23,5 +23,22 @@ jobs:
       - name: Install Chainsaw
         uses: kyverno/action-install-chainsaw@v0.2.7
 
+      - name: Setup MinIO
+        run: |
+          helm repo add minio-operator https://operator.min.io
+          helm upgrade \
+            --install \
+            --namespace minio-system \
+            --create-namespace \
+            --wait \
+            operator minio-operator/operator
+          helm upgrade
+            --install
+            --namespace minio
+            --create-namespace
+            --wait
+            --values ./.github/minio.yaml
+            tenant minio-operator/tenant
+
       - name: Run Kyverno/Chainsaw
         run: chainsaw test
