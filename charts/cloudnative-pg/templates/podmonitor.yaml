@@ -18,4 +18,12 @@ spec:
       {{- include "cloudnative-pg.selectorLabels" . | nindent 6 }}
   podMetricsEndpoints:
     - port: metrics
+      {{- with .Values.monitoring.podMonitorMetricRelabelings }}
+      metricRelabelings:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.monitoring.podMonitorRelabelings }}
+      relabelings:
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
 {{- end }}
