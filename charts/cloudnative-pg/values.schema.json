@@ -75,8 +75,14 @@
                 }
             }
         },
+        "dnsPolicy": {
+            "type": "string"
+        },
         "fullnameOverride": {
             "type": "string"
+        },
+        "hostNetwork": {
+            "type": "boolean"
         },
         "image": {
             "type": "object",
@@ -94,12 +100,6 @@
         },
         "imagePullSecrets": {
             "type": "array"
-        },
-        "hostNetwork": {
-            "type": "boolean"
-        },
-        "dnsPolicy": {
-            "type": "string"
         },
         "monitoring": {
             "type": "object",
