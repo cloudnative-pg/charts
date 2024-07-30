@@ -1,6 +1,6 @@
 # cloudnative-pg
 
-![Version: 0.21.5](https://img.shields.io/badge/Version-0.21.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.2](https://img.shields.io/badge/AppVersion-1.23.2-informational?style=flat-square)
+![Version: 0.21.6](https://img.shields.io/badge/Version-0.21.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.23.3](https://img.shields.io/badge/AppVersion-1.23.3-informational?style=flat-square)
 
 CloudNativePG Operator Helm Chart
 
@@ -37,7 +37,9 @@ CloudNativePG Operator Helm Chart
 | config.secret | bool | `false` | Specifies whether it should be stored in a secret, instead of a configmap. |
 | containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container Security Context. |
 | crds.create | bool | `true` | Specifies whether the CRDs should be created when installing the chart. |
+| dnsPolicy | string | `""` |  |
 | fullnameOverride | string | `""` |  |
+| hostNetwork | bool | `false` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"ghcr.io/cloudnative-pg/cloudnative-pg"` |  |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
