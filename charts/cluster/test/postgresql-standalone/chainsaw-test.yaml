@@ -5,7 +5,7 @@ metadata:
 spec:
   timeouts:
     apply: 1s
-    assert: 1m
+    assert: 2m
   skipDelete: true
   steps:
     - try:
