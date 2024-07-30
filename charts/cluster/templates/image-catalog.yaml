@@ -1,0 +1,12 @@
+{{ if and .Values.imageCatalog.create (not (empty .Values.imageCatalog.images )) }}
+apiVersion: postgresql.cnpg.io/v1
+kind: ImageCatalog
+metadata:
+  name: {{ include "cluster.fullname" . }}
+spec:
+  images:
+    {{- range $image := .Values.imageCatalog.images }}
+    - image: {{ $image.image }}
+      major: {{ $image.major }}
+    {{- end }}
+{{- end }}
