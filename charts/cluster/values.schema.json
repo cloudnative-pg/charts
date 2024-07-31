@@ -275,6 +275,9 @@
                         }
                     }
                 },
+                "superuserSecret": {
+                    "type": "string"
+                },
                 "walStorage": {
                     "type": "object",
                     "properties": {
@@ -285,9 +288,6 @@
                             "type": "string"
                         }
                     }
-                },
-                "superuserSecret": {
-                    "type": "string"
                 }
             }
         },
