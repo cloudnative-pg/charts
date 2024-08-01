@@ -6,6 +6,7 @@ spec:
   timeouts:
     apply: 1s
     assert: 2m
+    cleanup: 1m
   steps:
     - name: Clear the MinIO bucket
       try:
