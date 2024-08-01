@@ -60,7 +60,7 @@ spec:
         - describe:
             apiVersion: postgresql.cnpg.io/v1
             kind: Backup
-    - name: Create a recovery cluster from that backup
+    - name: Create a recovery cluster from backup
       try:
         - script:
             content: |
@@ -78,8 +78,28 @@ spec:
             file: 05-data_test.yaml
         - assert:
             file: 05-data_test-assert.yaml
+    - name: Create a recovery cluster from object store
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./06-recovery_object_store_cluster.yaml \
+                --wait \
+                recovery-object-store ../../
+        - assert:
+            file: ./06-recovery_object_store_cluster-assert.yaml
+    - name: Verify the table exists
+      try:
+        - apply:
+            file: 07-data_test.yaml
+        - assert:
+            file: 07-data_test-assert.yaml
     - name: Cleanup
       try:
         - script:
             content: |
               helm uninstall --namespace $NAMESPACE standalone
+              helm uninstall --namespace $NAMESPACE recovery-backup
+              helm uninstall --namespace $NAMESPACE recovery-object-store
