@@ -34,7 +34,7 @@ spec:
               helm upgrade \
                 --install \
                 --namespace $NAMESPACE \
-                --values ./cluster.yaml \
+                --values ./standalone.yaml \
                 --wait \
                 standalone ../../
         - assert:
@@ -49,6 +49,18 @@ spec:
         - describe:
             apiVersion: postgresql.cnpg.io/v1
             kind: Cluster
+    - name: Crate a table
+      try:
+        - apply:
+            file: ./data-write.yaml
+        - assert:
+            resource:
+              apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: data-write
+              status:
+                succeeded: 1
     - name: Create a backup
       try:
         - apply:
@@ -86,6 +98,34 @@ spec:
         - describe:
             apiVersion: postgresql.cnpg.io/v1
             kind: Backup
+    - name: Create a recovery cluster from that backup
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./recovery-backup.yaml \
+                --wait \
+                recovery-backup ../../
+        - assert:
+            resource:
+              apiVersion: postgresql.cnpg.io/v1
+              kind: Cluster
+              metadata:
+                name: standalone-cluster
+              status:
+                readyInstances: 2
+        - apply:
+            file: data-test.yaml
+        - assert:
+            resource:
+              apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: data-test
+              status:
+                succeeded: 1
     - name: Cleanup
       try:
         - script:

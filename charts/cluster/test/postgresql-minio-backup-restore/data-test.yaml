@@ -1,13 +1,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: backup-checkpoint
+  name: data-test
 spec:
   template:
     spec:
       restartPolicy: OnFailure
       containers:
-      - name: create-checkpoint
+      - name: data-test
         env:
           - name: DB_URI
             valueFrom:
@@ -20,8 +20,4 @@ spec:
          - |
            apk --no-cache add postgresql-client
            DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
-           END_TIME=$(( $(date +%s) + 30 ))
-           while [ $(date +%s) -lt $END_TIME ]; do
-             psql "$DB_URI" -c "SELECT pg_switch_wal();CHECKPOINT;"
-             sleep 5
-           done
+           test "$(psql $DB_URI -t -c 'SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $$mytesttable$$)' --csv -q 2>/dev/null)" = "t"

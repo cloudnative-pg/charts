@@ -1,13 +1,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: backup-checkpoint
+  name: data-write
 spec:
   template:
     spec:
       restartPolicy: OnFailure
       containers:
-      - name: create-checkpoint
+      - name: data-write
         env:
           - name: DB_URI
             valueFrom:
@@ -20,8 +20,4 @@ spec:
          - |
            apk --no-cache add postgresql-client
            DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
-           END_TIME=$(( $(date +%s) + 30 ))
-           while [ $(date +%s) -lt $END_TIME ]; do
-             psql "$DB_URI" -c "SELECT pg_switch_wal();CHECKPOINT;"
-             sleep 5
-           done
+           psql "$DB_URI" -c "CREATE TABLE mytesttable (id serial PRIMARY KEY);"
