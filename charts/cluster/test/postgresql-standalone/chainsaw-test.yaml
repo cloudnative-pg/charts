@@ -7,6 +7,24 @@ spec:
     apply: 1s
     assert: 2m
   steps:
+    - name: Clear the MinIO bucket
+      try:
+        - apply:
+            file: ./minio-cleanup.yaml
+        - assert:
+            resource:
+              apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: minio-cleanup
+              status:
+                succeeded: 1
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            name: minio-cleanup
     - name: Install the standalone cluster
       try:
         - script:
@@ -68,16 +86,7 @@ spec:
             apiVersion: postgresql.cnpg.io/v1
             kind: Backup
     - try:
-        - apply:
-            file: ./minio-cleanup.yaml
-        - assert:
-            resource:
-              apiVersion: v1
-              kind: Job
-              metadata:
-                name: minio-cleanup
-              status:
-                succeeded: 1
         - script:
             content: |
+              helm uninstall --namespace $NAMESPACE standalone
               kubectl delete namespace --grace-period=1 --wait=false $NAMESPACE
