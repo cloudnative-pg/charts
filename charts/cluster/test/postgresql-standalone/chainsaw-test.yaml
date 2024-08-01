@@ -85,8 +85,8 @@ spec:
         - describe:
             apiVersion: postgresql.cnpg.io/v1
             kind: Backup
-    - try:
+    - name: Cleanup
+      try:
         - script:
             content: |
               helm uninstall --namespace $NAMESPACE standalone
-              kubectl delete namespace --grace-period=1 --wait=false $NAMESPACE
