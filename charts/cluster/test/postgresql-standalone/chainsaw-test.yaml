@@ -6,15 +6,16 @@ spec:
   timeouts:
     apply: 1s
     assert: 2m
-  skipDelete: true
   steps:
-    - try:
+    - name: Install the standalone cluster
+      try:
         - script:
             content: |
+              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n kube-system get configmaps kube-root-ca.crt -o jsonpath='{.data.ca\.crt}')" --dry-run=client -o yaml | kubectl apply -f -
               helm upgrade \
                 --install \
                 --namespace $NAMESPACE \
-                --values ./standalone.yaml \
+                --values ./cluster.yaml \
                 --wait \
                 standalone ../../
         - assert:
@@ -29,7 +30,54 @@ spec:
         - describe:
             apiVersion: postgresql.cnpg.io/v1
             kind: Cluster
-      finally:
+    - name: Create a backup
+      try:
+        - apply:
+            file: ./backup.yaml
+        - assert:
+            resource:
+              apiVersion: postgresql.cnpg.io/v1
+              kind: Backup
+              metadata:
+                name: post-init-backup
+              spec:
+                cluster:
+                  name: standalone-cluster
+                method: barmanObjectStore
+              status:
+                phase: running
+        - apply:
+            file: ./checkpoint.yaml
+        - assert:
+            resource:
+              apiVersion: postgresql.cnpg.io/v1
+              kind: Backup
+              metadata:
+                name: post-init-backup
+              spec:
+                cluster:
+                  name: standalone-cluster
+                method: barmanObjectStore
+              status:
+                phase: completed
+      timeouts:
+        apply: 1s
+        assert: 10m
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Backup
+    - try:
+        - apply:
+            file: ./minio-cleanup.yaml
+        - assert:
+            resource:
+              apiVersion: v1
+              kind: Job
+              metadata:
+                name: minio-cleanup
+              status:
+                succeeded: 1
         - script:
             content: |
-              kubectl delete namespace $NAMESPACE --wait=false
+              kubectl delete namespace --grace-period=1 --wait=false $NAMESPACE
