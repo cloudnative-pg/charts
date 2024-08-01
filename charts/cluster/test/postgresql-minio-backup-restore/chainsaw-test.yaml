@@ -11,21 +11,15 @@ spec:
     - name: Clear the MinIO bucket
       try:
         - apply:
-            file: ./minio-cleanup.yaml
+            file: ./00-minio_cleanup.yaml
         - assert:
-            resource:
-              apiVersion: batch/v1
-              kind: Job
-              metadata:
-                name: minio-cleanup
-              status:
-                succeeded: 1
+            file: ./00-minio_cleanup-assert.yaml
       catch:
         - describe:
             apiVersion: batch/v1
             kind: Job
         - podLogs:
-            name: minio-cleanup
+            name: minio_cleanup
     - name: Install the standalone cluster
       try:
         - script:
@@ -34,17 +28,11 @@ spec:
               helm upgrade \
                 --install \
                 --namespace $NAMESPACE \
-                --values ./standalone.yaml \
+                --values ./01-standalone_cluster.yaml \
                 --wait \
                 standalone ../../
         - assert:
-            resource:
-              apiVersion: postgresql.cnpg.io/v1
-              kind: Cluster
-              metadata:
-                name: standalone-cluster
-              status:
-                readyInstances: 2
+            file: 01-standalone_cluster-assert.yaml
       catch:
         - describe:
             apiVersion: postgresql.cnpg.io/v1
@@ -52,45 +40,19 @@ spec:
     - name: Crate a table
       try:
         - apply:
-            file: ./data-write.yaml
+            file: ./02-data_write.yaml
         - assert:
-            resource:
-              apiVersion: batch/v1
-              kind: Job
-              metadata:
-                name: data-write
-              status:
-                succeeded: 1
+            file: ./02-data_write-assert.yaml
     - name: Create a backup
       try:
         - apply:
-            file: ./backup.yaml
+            file: ./03-backup.yaml
         - assert:
-            resource:
-              apiVersion: postgresql.cnpg.io/v1
-              kind: Backup
-              metadata:
-                name: post-init-backup
-              spec:
-                cluster:
-                  name: standalone-cluster
-                method: barmanObjectStore
-              status:
-                phase: running
+            file: ./03-backup_running-assert.yaml
         - apply:
-            file: ./checkpoint.yaml
+            file: ./03-checkpoint.yaml
         - assert:
-            resource:
-              apiVersion: postgresql.cnpg.io/v1
-              kind: Backup
-              metadata:
-                name: post-init-backup
-              spec:
-                cluster:
-                  name: standalone-cluster
-                method: barmanObjectStore
-              status:
-                phase: completed
+            file: ./03-backup_running-assert.yaml
       timeouts:
         apply: 1s
         assert: 10m
@@ -105,27 +67,17 @@ spec:
               helm upgrade \
                 --install \
                 --namespace $NAMESPACE \
-                --values ./recovery-backup.yaml \
+                --values ./04-recovery_backup_cluster.yaml \
                 --wait \
                 recovery-backup ../../
         - assert:
-            resource:
-              apiVersion: postgresql.cnpg.io/v1
-              kind: Cluster
-              metadata:
-                name: standalone-cluster
-              status:
-                readyInstances: 2
+            file: ./04-recovery_backup_cluster-assert.yaml
+    - name: Verify the table exists
+      try:
         - apply:
-            file: data-test.yaml
+            file: 05-data_test.yaml
         - assert:
-            resource:
-              apiVersion: batch/v1
-              kind: Job
-              metadata:
-                name: data-test
-              status:
-                succeeded: 1
+            file: 05-data_test-assert.yaml
     - name: Cleanup
       try:
         - script:
