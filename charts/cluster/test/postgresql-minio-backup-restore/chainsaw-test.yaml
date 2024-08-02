@@ -37,7 +37,7 @@ spec:
         - describe:
             apiVersion: postgresql.cnpg.io/v1
             kind: Cluster
-    - name: Write some data to the database
+    - name: Write some data to the cluster
       try:
         - apply:
             file: ./02-data_write.yaml
@@ -84,7 +84,7 @@ spec:
                 recovery-backup ../../
         - assert:
             file: ./05-recovery_backup_cluster-assert.yaml
-    - name: Verify the table exists
+    - name: Verify the data on the backup recovery cluster exists
       try:
         - apply:
             file: 06-data_test.yaml
@@ -102,7 +102,7 @@ spec:
                 recovery-object-store ../../
         - assert:
             file: ./07-recovery_object_store_cluster-assert.yaml
-    - name: Verify the table exists
+    - name: Verify the data on the object store recovery cluster exists
       try:
         - apply:
             file: 08-data_test.yaml
@@ -122,7 +122,7 @@ spec:
                 recovery-backup-pitr ../../
         - assert:
             file: ./09-recovery_backup_pitr_cluster-assert.yaml
-    - name: Verify the table exists but the second one does not
+    - name: Verify the pre-backup data on the recovery cluster exists but not the post-backup data
       try:
         - apply:
             file: 10-data_test.yaml
