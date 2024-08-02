@@ -117,8 +117,8 @@ spec:
                 --install \
                 --namespace $NAMESPACE \
                 --values ./09-recovery_backup_pitr_cluster.yaml \
-                --wait \
                 --set recovery.pitrTarget.time="$DATE_NO_BAD_TABLE" \
+                --wait \
                 recovery-backup-pitr ../../
         - assert:
             file: ./09-recovery_backup_pitr_cluster-assert.yaml
