@@ -18,6 +18,6 @@ spec:
         command: ['sh', '-c']
         args:
          - |
-           apk --no-cache add postgresql-client
+           apk --no-cache add postgresql-client kubectl
            DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
-           psql "$DB_URI" -c "CREATE TABLE mytesttable (id serial PRIMARY KEY);"
+           psql "$DB_URI" -c "CREATE TABLE mygoodtable (id serial PRIMARY KEY);"

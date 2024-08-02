@@ -6,8 +6,8 @@ cluster:
     size: 256Mi
 
 recovery:
-  method: object_store
-  clusterName: "standalone-cluster"
+  method: backup
+  backupName: "post-init-backup"
   provider: s3
   endpointURL: "https://minio.minio.svc.cluster.local"
   endpointCA:
@@ -39,7 +39,7 @@ backups:
     encryption: ""
   s3:
     bucket: "mybucket"
-    path: "/v2"
+    path: "/v1"
     accessKey: "minio"
     secretKey: "minio123"
     region: "local"
