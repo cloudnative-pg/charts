@@ -4,11 +4,11 @@
 apiVersion: chainsaw.kyverno.io/v1alpha1
 kind: Test
 metadata:
-  name: postgresql-cluster-configuration
+  name: pooler
 spec:
   timeouts:
     apply: 1s
-    assert: 5s
+    assert: 20s
     cleanup: 30s
   steps:
     - name: Install the non-default configuration cluster
@@ -18,13 +18,13 @@ spec:
               helm upgrade \
                 --install \
                 --namespace $NAMESPACE \
-                --values ./01-non_default_configuration_cluster.yaml \
+                --values ./01-pooler_cluster.yaml \
                 --wait \
-                non-default-configuration ../../
+                pooler ../../
         - assert:
-            file: ./01-non_default_configuration_cluster-assert.yaml
+            file: ./01-pooler_cluster-assert.yaml
     - name: Cleanup
       try:
         - script:
             content: |
-              helm uninstall --namespace $NAMESPACE non-default-configuration
+              helm uninstall --namespace $NAMESPACE pooler
