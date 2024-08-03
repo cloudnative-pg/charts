@@ -180,15 +180,15 @@ cluster:
         # - CNPGClusterZoneSpreadWarning
     # -- Custom Prometheus metrics
     customQueries: []
-      # - name: "pg_cache_hit_ratio"
-      #   query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
-      #   metrics:
-      #     - datname:
-      #         usage: "LABEL"
-      #         description: "Name of the database"
-      #     - ratio:
-      #         usage: GAUGE
-      #         description: "Cache hit ratio"
+      #- name: "pg_cache_hit_ratio"
+      #  query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
+      #  metrics:
+      #    - datname:
+      #        usage: "LABEL"
+      #        description: "Name of the database"
+      #    - ratio:
+      #        usage: GAUGE
+      #        description: "Cache hit ratio"
 
   # -- Configuration of the PostgreSQL server.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration
