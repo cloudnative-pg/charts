@@ -20,6 +20,11 @@ jobs:
       - name: Deploy the operator
         uses: ./.github/actions/deploy-operator
 
+      - name: Install Prometheus CRDs
+        run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm install prometheus-crds prometheus-community/prometheus-operator-crds
+
       - name: Install Chainsaw
         uses: kyverno/action-install-chainsaw@v0.2.7
 
