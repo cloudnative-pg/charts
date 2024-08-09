@@ -125,9 +125,6 @@
                             "backupOwnerReference": {
                                 "type": "string"
                             },
-                            "method": {
-                                "type": "string"
-                            },
                             "name": {
                                 "type": "string"
                             },
@@ -144,6 +141,14 @@
                             "type": "boolean"
                         },
                         "name": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "volumeSnapshot": {
+                    "type": "object",
+                    "properties": {
+                        "classname": {
                             "type": "string"
                         }
                     }
@@ -461,6 +466,17 @@
                             "type": "boolean"
                         },
                         "name": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "volumeSnapshot": {
+                    "type": "object",
+                    "properties": {
+                        "storageSnapshotName": {
+                            "type": "string"
+                        },
+                        "walSnapshotName": {
                             "type": "string"
                         }
                     }

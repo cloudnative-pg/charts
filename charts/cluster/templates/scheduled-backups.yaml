@@ -1,4 +1,5 @@
 {{ if .Values.backups.enabled }}
+{{ $provider := .Values.backups.provider }}
 {{ $context := . -}}
 {{ range .Values.backups.scheduledBackups -}}
 ---
@@ -10,7 +11,11 @@ metadata:
 spec:
   immediate: true
   schedule: {{ .schedule | quote }}
-  method: {{ .method }}
+  {{- if eq $provider "volumeSnapshot" }}
+  method: volumeSnapshot
+  {{- else }}
+  method: barmanObjectStore
+  {{- end }}
   backupOwnerReference: {{ .backupOwnerReference }}
   cluster:
     name: {{ include "cluster.fullname" $context }}

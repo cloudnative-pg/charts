@@ -1,0 +1,14 @@
+mode: recovery
+
+cluster:
+  instances: 1
+  storage:
+    # This storage class uses the CSI driver which allows for volume snapshots
+    storageClass: "my-storage-class"
+
+recovery:
+  method: volumeSnapshot
+  volumeSnapshot:
+    storageSnapshotName: "example-cluster-daily-backup-20240726021627"
+    # Note the `-wal` suffix
+    walSnapshotName: "example-cluster-daily-backup-20240726021627-wal"

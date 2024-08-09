@@ -132,7 +132,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.google.bucket | string | `""` |  |
 | backups.google.gkeEnvironment | bool | `false` |  |
 | backups.google.path | string | `"/"` |  |
-| backups.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
+| backups.provider | string | `"s3"` | One of `s3`, `azure`, `google`, or `volumeSnapshot` |
 | backups.retentionPolicy | string | `"30d"` | Retention policy for backups |
 | backups.s3.accessKey | string | `""` |  |
 | backups.s3.bucket | string | `""` |  |
@@ -140,11 +140,11 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.s3.region | string | `""` |  |
 | backups.s3.secretKey | string | `""` |  |
 | backups.scheduledBackups[0].backupOwnerReference | string | `"self"` | Backup owner reference |
-| backups.scheduledBackups[0].method | string | `"barmanObjectStore"` | Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot` |
 | backups.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
 | backups.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | backups.secret.name | string | `""` | Name of the backup credentials secret |
+| backups.volumeSnapshot.className | string | `""` | The VolumeSnapshotClass to use for backups if provider is `volumeSnapshot` |
 | backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backups.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
@@ -206,7 +206,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.google.bucket | string | `""` |  |
 | recovery.google.gkeEnvironment | bool | `false` |  |
 | recovery.google.path | string | `"/"` |  |
-| recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO |
+| recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. * `volumeSnapshot` - Recovers a CNPG cluster from a volume snapshot. |
 | recovery.pitrTarget.time | string | `""` | Time in RFC3339 format |
 | recovery.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | recovery.s3.accessKey | string | `""` |  |
@@ -216,6 +216,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.s3.secretKey | string | `""` |  |
 | recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | recovery.secret.name | string | `""` | Name of the backup credentials secret |
+| recovery.volumeSnapsnot.storageSnapshotName | string | "" | The name of the snapshot to recover from |
+| recovery.volumeSnapsnot.walSnapshotName | string | "" | The name of the snapshot that holds the Write Ahead Log |
 | type | string | `"postgresql"` | Type of the CNPG database. Available types: * `postgresql` * `postgis` |
 
 ## Maintainers

@@ -22,7 +22,8 @@ recovery:
   # * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.
   # * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported).
   # * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to
-  #        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO
+  #        migrate databases to CloudNativePG, even from outside Kubernetes.
+  # * `volumeSnapshot` - Recovers a CNPG cluster from a volume snapshot.
   method: backup
 
   ## -- Point in time recovery target. Specify one of the following:
@@ -80,6 +81,10 @@ recovery:
     create: true
     # -- Name of the backup credentials secret
     name: ""
+
+  volumeSnapshot:
+    storageSnapshotName: ""
+    walSnapshotName: ""
 
 
 cluster:
@@ -229,7 +234,7 @@ backups:
   # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
   # Google: gs://<bucket><path>
   destinationPath: ""
-  # -- One of `s3`, `azure` or `google`
+  # -- One of `s3`, `azure`, `google`, or `volumeSnapshot`
   provider: s3
   s3:
     region: ""
@@ -251,6 +256,8 @@ backups:
     bucket: ""
     gkeEnvironment: false
     applicationCredentials: ""
+  volumeSnapshot:
+    className: ""
   secret:
     # -- Whether to create a secret for the backup credentials
     create: true
@@ -280,8 +287,6 @@ backups:
       schedule: "0 0 0 * * *"
       # -- Backup owner reference
       backupOwnerReference: self
-      # -- Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`
-      method: barmanObjectStore
 
   # -- Retention policy for backups
   retentionPolicy: "30d"
