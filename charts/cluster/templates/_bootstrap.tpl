@@ -7,6 +7,9 @@ bootstrap:
             {{- . | toYaml | nindent 4 }}
         {{- end }}
     {{- end }}
+    {{- if .Values.cluster.initdb.owner }}
+    owner: {{ tpl .Values.cluster.initdb.owner . }}
+    {{- end }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
       - CREATE EXTENSION IF NOT EXISTS postgis;
