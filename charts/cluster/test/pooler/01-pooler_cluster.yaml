@@ -1,0 +1,11 @@
+mode: standalone
+cluster:
+  instances: 2
+  storage:
+    size: 256Mi
+    storageClass: standard
+backups:
+  enabled: false
+pooler:
+  enabled: true
+  instances: 2

@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-test-backup
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-test
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: recovery-backup-cluster-superuser
+                key: uri
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+         - |
+           apk --no-cache add postgresql-client
+           DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
+           test "$(psql $DB_URI -t -c 'SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $$mygoodtable$$)' --csv -q 2>/dev/null)" = "t"
