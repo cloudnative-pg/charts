@@ -1,6 +1,6 @@
 {{- define "cluster.bootstrap" -}}
-bootstrap:
 {{- if eq .Values.mode "standalone" }}
+bootstrap:
   initdb:
     {{- with .Values.cluster.initdb }}
         {{- with (omit . "postInitApplicationSQL") }}
@@ -21,7 +21,8 @@ bootstrap:
             {{- printf "- %s" . | nindent 6 }}
           {{- end -}}
       {{- end -}}
-{{- else if eq .Values.mode "recovery" }}
+{{- else if eq .Values.mode "recovery" -}}
+bootstrap:
 {{- if eq .Values.recovery.method "pg_basebackup" }}
   pg_basebackup:
     source: {{ .Values.recovery.pgBaseBackup.sourceName }}

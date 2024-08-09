@@ -11,7 +11,7 @@ Before reporting a new issue, please make sure you have:
 
 ## How to contribute
 
-You can contribute to cnp-bench by submitting a new pull request.
+You can contribute to charts by submitting a new pull request.
 
 Please:
 

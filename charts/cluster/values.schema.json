@@ -125,12 +125,26 @@
                             "backupOwnerReference": {
                                 "type": "string"
                             },
+                            "method": {
+                                "type": "string"
+                            },
                             "name": {
                                 "type": "string"
                             },
                             "schedule": {
                                 "type": "string"
                             }
+                        }
+                    }
+                },
+                "secret": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
                         }
                     }
                 },
@@ -168,7 +182,7 @@
                     "type": "object"
                 },
                 "certificates": {
-                    "type": "null"
+                    "type": "object"
                 },
                 "enableSuperuserAccess": {
                     "type": "boolean"
@@ -242,6 +256,9 @@
                 "resources": {
                     "type": "object"
                 },
+                "roles": {
+                    "type": "array"
+                },
                 "storage": {
                     "type": "object",
                     "properties": {
@@ -255,6 +272,17 @@
                 },
                 "superuserSecret": {
                     "type": "string"
+                },
+                "walStorage": {
+                    "type": "object",
+                    "properties": {
+                        "size": {
+                            "type": "string"
+                        },
+                        "storageClass": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         },
@@ -422,6 +450,17 @@
                             "type": "string"
                         },
                         "secretKey": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "secret": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "name": {
                             "type": "string"
                         }
                     }

@@ -1,8 +1,0 @@
-{{- if and (eq .Values.mode "recovery" ) (eq .Values.recovery.method "object_store") (eq .Values.recovery.provider "google") }}
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{ include "cluster.fullname" . }}-backup-google-recovery-creds
-data:
-  APPLICATION_CREDENTIALS: {{ .Values.recovery.google.applicationCredentials | b64enc | quote }}
-{{- end }}
