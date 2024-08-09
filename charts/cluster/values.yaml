@@ -127,7 +127,7 @@ cluster:
   priorityClassName: ""
 
   # -- Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been
-  # successfully updated. It can be switchover (default) or in-place (restart).
+  # successfully updated. It can be switchover (default) or restart.
   primaryUpdateMethod: switchover
 
   # -- Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been
@@ -180,15 +180,15 @@ cluster:
         # - CNPGClusterZoneSpreadWarning
     # -- Custom Prometheus metrics
     customQueries: []
-      # - name: "pg_cache_hit_ratio"
-      #   query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
-      #   metrics:
-      #     - datname:
-      #         usage: "LABEL"
-      #         description: "Name of the database"
-      #     - ratio:
-      #         usage: GAUGE
-      #         description: "Cache hit ratio"
+    #  - name: "pg_cache_hit_ratio"
+    #    query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
+    #    metrics:
+    #      - datname:
+    #          usage: "LABEL"
+    #          description: "Name of the database"
+    #      - ratio:
+    #          usage: GAUGE
+    #          description: "Cache hit ratio"
 
   postgresql:
     # -- PostgreSQL configuration options (postgresql.conf)
