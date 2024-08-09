@@ -26,7 +26,7 @@ jobs:
           helm install prometheus-crds prometheus-community/prometheus-operator-crds
 
       - name: Install Chainsaw
-        uses: kyverno/action-install-chainsaw@v0.2.7
+        uses: kyverno/action-install-chainsaw@82d8e747037f840e0ef9bdd97ecdc617f5535bdc # v0.2.8
 
       - name: Setup MinIO
         run: |
