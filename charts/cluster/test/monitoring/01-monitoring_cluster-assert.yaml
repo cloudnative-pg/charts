@@ -17,6 +17,15 @@ spec:
       cnpg.io/poolerName: monitoring-cluster-pooler-rw
 ---
 apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: monitoring-cluster-pooler-ro
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/poolerName: monitoring-cluster-pooler-ro
+---
+apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: monitoring-cluster-alert-rules

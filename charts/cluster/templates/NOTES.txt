@@ -54,7 +54,7 @@ Configuration
 │ Scheduled Backups │ {{ (printf "%-54s" $scheduledBackups) }} │
 │ Storage           │ {{ (printf "%-54s" .Values.cluster.storage.size) }} │
 │ Storage Class     │ {{ (printf "%-54s" (default "Default" .Values.cluster.storage.storageClass)) }} │
-│ PGBouncer         │ {{ (printf "%-54s" (ternary "Enabled" "Disabled" .Values.pooler.enabled)) }} │
+│ PGBouncer         │ {{ (printf "%-54s" (ternary "Enabled" "Disabled" (gt (len .Values.poolers) 0))) }} │
 │ Monitoring        │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.cluster.monitoring.enabled)) (printf "%-54s" (ternary "Enabled" "Disabled" .Values.cluster.monitoring.enabled)) }} │
 ╰───────────────────┴────────────────────────────────────────────────────────╯
 

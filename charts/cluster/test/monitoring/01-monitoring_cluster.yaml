@@ -18,8 +18,14 @@ cluster:
               description: "Cache hit ratio"
 backups:
   enabled: false
-pooler:
-  enabled: true
-  instances: 1
-  monitoring:
-    enabled: true
+poolers:
+  - name: rw
+    type: rw
+    instances: 1
+    monitoring:
+      enabled: true
+  - name: ro
+    type: ro
+    instances: 1
+    monitoring:
+      enabled: true

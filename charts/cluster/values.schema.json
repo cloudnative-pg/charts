@@ -295,50 +295,53 @@
         "nameOverride": {
             "type": "string"
         },
-        "pooler": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                },
-                "instances": {
-                    "type": "integer"
-                },
-                "monitoring": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean"
-                        },
-                        "podMonitor": {
-                            "type": "object",
-                            "properties": {
-                                "enabled": {
-                                    "type": "boolean"
+        "poolers": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "instances": {
+                        "type": "integer"
+                    },
+                    "monitoring": {
+                        "type": "object",
+                        "properties": {
+                            "enabled": {
+                                "type": "boolean"
+                            },
+                            "podMonitor": {
+                                "type": "object",
+                                "properties": {
+                                    "enabled": {
+                                        "type": "boolean"
+                                    }
                                 }
                             }
                         }
-                    }
-                },
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "default_pool_size": {
-                            "type": "string"
-                        },
-                        "max_client_conn": {
-                            "type": "string"
+                    },
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "default_pool_size": {
+                                "type": "string"
+                            },
+                            "max_client_conn": {
+                                "type": "string"
+                            }
                         }
+                    },
+                    "poolMode": {
+                        "type": "string"
+                    },
+                    "template": {
+                        "type": "object"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
                     }
-                },
-                "poolMode": {
-                    "type": "string"
-                },
-                "template": {
-                    "type": "object"
-                },
-                "type": {
-                    "type": "string"
                 }
             }
         },

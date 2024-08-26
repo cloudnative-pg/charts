@@ -287,27 +287,48 @@ backups:
   retentionPolicy: "30d"
 
 
-pooler:
-  # -- Whether to enable PgBouncer
-  enabled: false
-  # -- PgBouncer type of service to forward traffic to.
-  type: rw
-  # -- PgBouncer pooling mode
-  poolMode: transaction
-  # -- Number of PgBouncer instances
-  instances: 3
-  # -- PgBouncer configuration parameters
-  parameters:
-    max_client_conn: "1000"
-    default_pool_size: "25"
-
-  monitoring:
-    # -- Whether to enable monitoring
-    enabled: false
-    podMonitor:
-        # -- Whether to enable the PodMonitor
-      enabled: true
-
-  # -- Custom PgBouncer deployment template.
-  # Use to override image, specify resources, etc.
-  template: {}
+poolers: []
+  # -
+  #   # -- Pooler name
+  #   name: rw
+  #   # -- PgBouncer type of service to forward traffic to.
+  #   type: rw
+  #   # -- PgBouncer pooling mode
+  #   poolMode: transaction
+  #   # -- Number of PgBouncer instances
+  #   instances: 3
+  #   # -- PgBouncer configuration parameters
+  #   parameters:
+  #     max_client_conn: "1000"
+  #     default_pool_size: "25"
+  #   monitoring:
+  #     # -- Whether to enable monitoring
+  #     enabled: false
+  #     podMonitor:
+  #         # -- Whether to enable the PodMonitor
+  #       enabled: true
+  #   # -- Custom PgBouncer deployment template.
+  #   # Use to override image, specify resources, etc.
+  #   template: {}
+  # -
+  #   # -- Pooler name
+  #   name: ro
+  #   # -- PgBouncer type of service to forward traffic to.
+  #   type: ro
+  #   # -- PgBouncer pooling mode
+  #   poolMode: transaction
+  #   # -- Number of PgBouncer instances
+  #   instances: 3
+  #   # -- PgBouncer configuration parameters
+  #   parameters:
+  #     max_client_conn: "1000"
+  #     default_pool_size: "25"
+  #   monitoring:
+  #     # -- Whether to enable monitoring
+  #     enabled: false
+  #     podMonitor:
+  #         # -- Whether to enable the PodMonitor
+  #       enabled: true
+  #   # -- Custom PgBouncer deployment template.
+  #   # Use to override image, specify resources, etc.
+  #   template: {}
