@@ -14,6 +14,18 @@ spec:
       {{- .Values.pooler.parameters | toYaml | nindent 6 }}
   monitoring:
     enablePodMonitor: {{ and .Values.pooler.monitoring.enabled .Values.pooler.monitoring.podMonitor.enabled }}
+    {{- if not (empty .Values.pooler.monitoring.podMonitor.relabelings) }}
+    {{- with .Values.pooler.monitoring.podMonitor.relabelings }}
+    podMonitorRelabelings:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+    {{- end }}
+    {{- if not (empty .Values.pooler.monitoring.podMonitor.metricRelabelings) }}
+    {{- with .Values.pooler.monitoring.podMonitor.metricRelabelings }}
+    podMonitorMetricRelabelings:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+    {{- end }}
   {{- with .Values.pooler.template }}
   template:
     {{- . | toYaml | nindent 4 }}
