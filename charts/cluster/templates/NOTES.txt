@@ -41,6 +41,9 @@ Configuration
 {{- range (rest .Values.backups.scheduledBackups) -}}
   {{ $scheduledBackups = printf "%s, %s" $scheduledBackups .name }}
 {{- end -}}
+{{- if eq (len .Values.backups.scheduledBackups) 0 }}
+  {{- $scheduledBackups = "None" -}}
+{{- end -}}
 
 {{- $mode := .Values.mode -}}
 {{- $source := "" -}}
