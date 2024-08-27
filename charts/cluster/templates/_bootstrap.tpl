@@ -25,36 +25,45 @@ bootstrap:
 bootstrap:
 {{- if eq .Values.recovery.method "pg_basebackup" }}
   pg_basebackup:
-    source: {{ .Values.recovery.pgBaseBackup.sourceName }}
+    source: pgBaseBackupSource
+    {{ with .Values.recovery.pgBaseBackup.database }}
+    database: {{ . }}
+    {{- end }}
+    {{ with .Values.recovery.pgBaseBackup.owner }}
+    owner: {{ . }}
+    {{- end }}
+    {{ with .Values.recovery.pgBaseBackup.secret }}
+    secret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
 
 externalClusters:
-- name: {{ .Values.recovery.pgBaseBackup.sourceName }}
+- name: pgBaseBackupSource
   connectionParameters:
-    host: {{ .Values.recovery.pgBaseBackup.sourceHost }}
-    user: {{ .Values.recovery.pgBaseBackup.sourceUsername }}
-    {{- if .Values.recovery.pgBaseBackup.TLS.enabled }}
-    sslmode: verify-full
-    {{- end }}
-  {{- if or .Values.recovery.pgBaseBackup.sourcePassword .Values.recovery.pgBaseBackup.existingPasswordSecret }}
+    host: {{ .Values.recovery.pgBaseBackup.source.host | quote }}
+    port: {{ .Values.recovery.pgBaseBackup.source.port | quote }}
+    user: {{ .Values.recovery.pgBaseBackup.source.username | quote }}
+    dbname: {{ .Values.recovery.pgBaseBackup.source.database | quote }}
+    sslmode: {{ .Values.recovery.pgBaseBackup.source.sslMode | quote }}
+  {{- if .Values.recovery.pgBaseBackup.source.passwordSecret.name }}
   password:
-    {{- if .Values.recovery.pgBaseBackup.sourcePassword }}
-    name: {{ include "cluster.fullname" . }}-source-db-password
-    {{- else }}
-    name: {{ .Values.recovery.pgBaseBackup.existingPasswordSecret }}
-    {{- end }}
-    key: password
-  {{- else if .Values.recovery.pgBaseBackup.TLS.enabled }}
+    name: {{ default (printf "%s-pg-basebackup-password" (include "cluster.fullname" .)) .Values.recovery.pgBaseBackup.source.passwordSecret.name }}
+    key: {{ .Values.recovery.pgBaseBackup.source.passwordSecret.key }}
+  {{- end }}
+  {{- if .Values.recovery.pgBaseBackup.source.sslKeySecret.name }}
   sslKey:
-    name: {{ .Values.recovery.pgBaseBackup.TLS.sslKey.secretName }}
-    key: {{ .Values.recovery.pgBaseBackup.TLS.sslKey.key }}
+    name: {{ .Values.recovery.pgBaseBackup.source.sslKeySecret.name }}
+    key: {{ .Values.recovery.pgBaseBackup.source.sslKeySecret.key }}
+  {{- end }}
+  {{- if .Values.recovery.pgBaseBackup.source.sslCertSecret.name }}
   sslCert:
-    name: {{ .Values.recovery.pgBaseBackup.TLS.sslCert.secretName }}
-    key: {{ .Values.recovery.pgBaseBackup.TLS.sslCert.key }}
+    name: {{ .Values.recovery.pgBaseBackup.source.sslCertSecret.name }}
+    key: {{ .Values.recovery.pgBaseBackup.source.sslCertSecret.key }}
+  {{- end }}
+  {{- if .Values.recovery.pgBaseBackup.source.sslRootCertSecret.name }}
   sslRootCert:
-    name: {{ .Values.recovery.pgBaseBackup.TLS.sslRootCert.secretName }}
-    key: {{ .Values.recovery.pgBaseBackup.TLS.sslRootCert.key }}
-  {{- else }}
-  {{ fail "No password or TLS secret defined for pg_basebackup" }}
+    name: {{ .Values.recovery.pgBaseBackup.source.sslRootCertSecret.name }}
+    key: {{ .Values.recovery.pgBaseBackup.source.sslRootCertSecret.key }}
   {{- end }}
 
 {{- else }}

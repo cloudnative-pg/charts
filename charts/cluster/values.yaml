@@ -81,27 +81,35 @@ recovery:
     # -- Name of the backup credentials secret
     name: ""
 
-  # Please see https://cloudnative-pg.io/documentation/1.22/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
+  # See https://cloudnative-pg.io/documentation/1.22/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
   pgBaseBackup:
-    sourceName: "source-db"
-    sourceHost: ""
-    sourceUsername: "streaming_replica"
-    sourcePassword: ""
-    # -- The name of an existing secret with the password (must contain key `password`).
-    # When it's set, the `recovery.pg_basebackup.sourcePassword` parameter is ignored
-    existingPasswordSecret: ""
-    TLS:
-      enabled: false
-      sslKey:
-        secretName: ""
+    database: app
+    owner: "" # Defaults to the database name
+    secret: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
+    source:
+      host: ""
+      port: 5432
+      username: ""
+      database: "app"
+      sslMode: "verify-full"
+      passwordSecret:
+        # -- Whether to create a secret for the password
+        create: false
+        # -- Name of the secret containing the password
+        name: ""
+        # -- The key in the secret containing the password
+        key: "password"
+        # -- The password value to use when creating the secret
+        value: ""
+      sslKeySecret:
+        name: ""
         key: ""
-      sslCert:
-        secretName: ""
+      sslCertSecret:
+        name: ""
         key: ""
-      sslRootCert:
-        secretName: ""
+      sslRootCertSecret:
+        name: ""
         key: ""
-
 
 
 cluster:
