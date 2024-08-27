@@ -35,13 +35,30 @@ spec:
               helm upgrade \
                 --install \
                 --namespace $NAMESPACE \
-                --values ./01-pg_basebackup-cluster.yaml \
+                --values ./02-pg_basebackup-cluster.yaml \
                 --wait \
                 pg-basebackup ../../
         - assert:
-            file: ./01-pg_basebackup-cluster-assert.yaml
+            file: ./02-pg_basebackup-cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+    - name: Verify the data from step 1 exists
+      try:
+        - apply:
+            file: ./03-data_test.yaml
+        - assert:
+            file: ./03-data_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test
     - name: Cleanup
       try:
         - script:
             content: |
+              helm uninstall --namespace $NAMESPACE source
               helm uninstall --namespace $NAMESPACE pg-basebackup
