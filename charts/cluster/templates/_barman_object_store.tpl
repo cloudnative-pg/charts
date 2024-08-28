@@ -6,8 +6,8 @@
 
 {{- if or (.scope.endpointCA.create) (.scope.endpointCA.name) }}
   endpointCA:
-    name: {{ .chartFullname }}-ca-bundle
-    key: ca-bundle.crt
+    name: {{.scope.endpointCA.name }}
+    key: {{ .scope.endpointCA.key }}
 {{- end }}
 
 {{- if .scope.destinationPath }}

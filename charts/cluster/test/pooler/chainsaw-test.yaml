@@ -1,0 +1,30 @@
+##
+# This is a test that verifies that non-default configuration options are correctly propagated to the CNPG cluster.
+# P.S. This test is not designed to have a good running configuration, it is designed to test the configuration propagation!
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: pooler
+spec:
+  timeouts:
+    apply: 1s
+    assert: 20s
+    cleanup: 30s
+  steps:
+    - name: Install the non-default configuration cluster
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-pooler_cluster.yaml \
+                --wait \
+                pooler ../../
+        - assert:
+            file: ./01-pooler_cluster-assert.yaml
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE pooler
