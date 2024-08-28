@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: backup-checkpoint
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: create-checkpoint
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: standalone-cluster-superuser
+                key: uri
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+         - |
+           apk --no-cache add postgresql-client
+           DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
+           END_TIME=$(( $(date +%s) + 30 ))
+           while [ $(date +%s) -lt $END_TIME ]; do
+             psql "$DB_URI" -c "SELECT pg_switch_wal();CHECKPOINT;"
+             sleep 5
+           done
