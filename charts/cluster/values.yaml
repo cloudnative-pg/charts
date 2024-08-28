@@ -203,8 +203,12 @@ cluster:
     # owner: "" # Defaults to the database name
     # secret:
     #   name: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
+    # options: []
+    # encoding: UTF8
     # postInitSQL:
     #   - CREATE EXTENSION IF NOT EXISTS vector;
+    # postInitApplicationSQL: []
+    # postInitTemplateSQL: []
 
   additionalLabels: {}
   annotations: {}
