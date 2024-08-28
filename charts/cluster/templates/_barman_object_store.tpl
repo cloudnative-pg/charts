@@ -6,8 +6,8 @@
 
 {{- if or (.scope.endpointCA.create) (.scope.endpointCA.name) }}
   endpointCA:
-    name: {{ .chartFullname }}-ca-bundle
-    key: ca-bundle.crt
+    name: {{.scope.endpointCA.name }}
+    key: {{ .scope.endpointCA.key }}
 {{- end }}
 
 {{- if .scope.destinationPath }}
@@ -62,8 +62,10 @@
   {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-google-creds" .chartFullname .secretPrefix) }}
   googleCredentials:
     gkeEnvironment: {{ .scope.google.gkeEnvironment }}
+{{- if not .scope.google.gkeEnvironment }}
     applicationCredentials:
       name: {{ $secretName }}
       key: APPLICATION_CREDENTIALS
+{{- end }}
 {{- end -}}
 {{- end -}}
