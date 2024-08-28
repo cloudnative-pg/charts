@@ -1,0 +1,148 @@
+##
+# This test sets up a CNPG cluster with MinIO backups and then restores the cluster from the backup using backup,
+# object store, and object store with PITR recovery.
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: postgresql-minio-backup-restore
+spec:
+  timeouts:
+    apply: 1s
+    assert: 2m
+    cleanup: 1m
+  steps:
+    - name: Clear the MinIO bucket
+      try:
+        - apply:
+            file: ./00-minio_cleanup.yaml
+        - assert:
+            file: ./00-minio_cleanup-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=minio_cleanup
+    - name: Install the standalone cluster
+      try:
+        - script:
+            content: |
+              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n kube-system get configmaps kube-root-ca.crt -o jsonpath='{.data.ca\.crt}')" --dry-run=client -o yaml | kubectl apply -f -
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-standalone_cluster.yaml \
+                --wait \
+                standalone ../../
+        - assert:
+            file: 01-standalone_cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+    - name: Write some data to the cluster
+      try:
+        - apply:
+            file: ./02-data_write.yaml
+        - assert:
+            file: ./02-data_write-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-write
+    - name: Create a backup
+      try:
+        - apply:
+            file: ./03-backup.yaml
+        - assert:
+            file: ./03-backup_running-assert.yaml
+        - apply:
+            file: ./03-checkpoint.yaml
+        - assert:
+            file: ./03-backup_completed-assert.yaml
+    - name: Write more data to the database after the backup
+      try:
+        - apply:
+            file: ./04-post_backup_data_write.yaml
+        - assert:
+            file: ./04-post_backup_data_write-assert.yaml
+      timeouts:
+        apply: 1s
+        assert: 10m
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Backup
+    - name: Create a recovery cluster from backup
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./05-recovery_backup_cluster.yaml \
+                --wait \
+                recovery-backup ../../
+        - assert:
+            file: ./05-recovery_backup_cluster-assert.yaml
+    - name: Verify the data on the backup recovery cluster exists
+      try:
+        - apply:
+            file: 06-data_test.yaml
+        - assert:
+            file: 06-data_test-assert.yaml
+    - name: Create a recovery cluster from object store
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./07-recovery_object_store_cluster.yaml \
+                --wait \
+                recovery-object-store ../../
+        - assert:
+            file: ./07-recovery_object_store_cluster-assert.yaml
+    - name: Verify the data on the object store recovery cluster exists
+      try:
+        - apply:
+            file: 08-data_test.yaml
+        - assert:
+            file: 08-data_test-assert.yaml
+    - name: Create a recovery cluster from backup with a PITR target
+      try:
+        - script:
+            content: |
+              DATE_NO_BAD_TABLE=$(kubectl -n $NAMESPACE get configmap date-no-bad-table -o 'jsonpath={.data.date}')
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./09-recovery_backup_pitr_cluster.yaml \
+                --set recovery.pitrTarget.time="$DATE_NO_BAD_TABLE" \
+                --wait \
+                recovery-backup-pitr ../../
+        - assert:
+            file: ./09-recovery_backup_pitr_cluster-assert.yaml
+    - name: Verify the pre-backup data on the recovery cluster exists but not the post-backup data
+      try:
+        - apply:
+            file: 10-data_test.yaml
+        - assert:
+            file: 10-data_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+            selector: batch.kubernetes.io/job-name=data-test-backup-pitr
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test-backup-pitr
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE standalone
+              helm uninstall --namespace $NAMESPACE recovery-backup
+              helm uninstall --namespace $NAMESPACE recovery-object-store
+              helm uninstall --namespace $NAMESPACE recovery-backup-pitr
