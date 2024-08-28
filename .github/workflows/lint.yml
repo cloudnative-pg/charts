@@ -5,6 +5,9 @@ on:
     branches:
       - '**'
       - '!gh-pages'
+  pull_request:
+    branches-ignore:
+      - 'gh-pages'
 
 jobs:
   linter:
