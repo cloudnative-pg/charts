@@ -207,6 +207,24 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.google.gkeEnvironment | bool | `false` |  |
 | recovery.google.path | string | `"/"` |  |
 | recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO |
+| recovery.pgBaseBackup.database | string | `"app"` |  |
+| recovery.pgBaseBackup.owner | string | `""` |  |
+| recovery.pgBaseBackup.secret | string | `""` |  |
+| recovery.pgBaseBackup.source.database | string | `"app"` |  |
+| recovery.pgBaseBackup.source.host | string | `""` |  |
+| recovery.pgBaseBackup.source.passwordSecret.create | bool | `false` | Whether to create a secret for the password |
+| recovery.pgBaseBackup.source.passwordSecret.key | string | `"password"` | The key in the secret containing the password |
+| recovery.pgBaseBackup.source.passwordSecret.name | string | `""` | Name of the secret containing the password |
+| recovery.pgBaseBackup.source.passwordSecret.value | string | `""` | The password value to use when creating the secret |
+| recovery.pgBaseBackup.source.port | int | `5432` |  |
+| recovery.pgBaseBackup.source.sslCertSecret.key | string | `""` |  |
+| recovery.pgBaseBackup.source.sslCertSecret.name | string | `""` |  |
+| recovery.pgBaseBackup.source.sslKeySecret.key | string | `""` |  |
+| recovery.pgBaseBackup.source.sslKeySecret.name | string | `""` |  |
+| recovery.pgBaseBackup.source.sslMode | string | `"verify-full"` |  |
+| recovery.pgBaseBackup.source.sslRootCertSecret.key | string | `""` |  |
+| recovery.pgBaseBackup.source.sslRootCertSecret.name | string | `""` |  |
+| recovery.pgBaseBackup.source.username | string | `""` |  |
 | recovery.pitrTarget.time | string | `""` | Time in RFC3339 format |
 | recovery.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | recovery.s3.accessKey | string | `""` |  |
