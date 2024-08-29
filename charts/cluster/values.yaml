@@ -136,6 +136,7 @@ cluster:
     storageClass: ""
 
   walStorage:
+    enabled: false
     size: 1Gi
     storageClass: ""
 
