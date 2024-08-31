@@ -1,4 +1,5 @@
 type: postgresql
+
 mode: standalone
 
 cluster:
@@ -8,7 +9,7 @@ cluster:
     customQueries:
       - name: "pg_cache_hit"
         query: |
-          SELECT 
+          SELECT
             current_database() as datname,
             sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio
           FROM pg_statio_user_tables;
@@ -19,6 +20,3 @@ cluster:
           - ratio:
               usage: GAUGE
               description: "Cache hit ratio"
-
-backups:
-  enabled: false

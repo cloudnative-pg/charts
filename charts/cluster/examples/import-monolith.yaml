@@ -1,0 +1,29 @@
+mode: import
+
+cluster:
+  instances: 1
+
+import:
+  type: monolith
+  typeSettings:
+    monolith:
+      databases:
+        - db1
+        - db2
+        - db3
+      roles:
+        - role1
+        - role2
+
+recovery:
+  method: pgBasebackup
+  methodSettings:
+    pgBasebackup:
+      connectionParameters:
+        host: source-db.foo.com
+        user: postgres
+        sslMode: require
+      auth: password
+      authDetails:
+        password: |-
+          superuser-password

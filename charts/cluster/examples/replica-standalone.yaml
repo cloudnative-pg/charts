@@ -1,0 +1,20 @@
+mode: replica
+
+cluster:
+  instances: 1
+
+replica:
+  topology: standalone
+
+recovery:
+  method: pgBasebackup
+  methodSettings:
+    pgBasebackup:
+      connectionParameters:
+        host: source-db.foo.com
+        user: streaming_replica
+        sslMode: require
+      auth: password
+      authDetails:
+        password: |-
+          replication-password

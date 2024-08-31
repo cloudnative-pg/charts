@@ -1,8 +1,12 @@
 mode: standalone
+
 cluster:
   instances: 1
-backups:
-  enabled: false
-pooler:
-  enabled: true
-  instances: 1
+
+poolers:
+  - name: rw
+    type: rw
+    instances: 1
+  - name: ro
+    type: ro
+    instances: 1

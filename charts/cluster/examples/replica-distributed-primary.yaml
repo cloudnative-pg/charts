@@ -1,13 +1,24 @@
-mode: recovery
+mode: replica
 
 cluster:
   instances: 1
 
+replica:
+  topology: distributed
+  topologySettings:
+    distributed:
+      primary: true
+
 recovery:
-  method: backup
-  methodSettings:
-    backup:
-      name: database-clustermarket-database-daily-backup-1683244800
+  method: objectStorage
+  clusterName: database-clustermarket-euc1
+  provider: s3
+  s3:
+    region: eu-central-1
+    bucket: euc1-db-backups
+    path: /v1-restore
+    accessKey: "AWS_S3_ACCESS_KEY"
+    secretKey: "AWS_S3_SECRET_KEY"
 
 backups:
   objectStorage:
@@ -15,7 +26,7 @@ backups:
     providerSettings:
       s3:
         region: eu-west-1
-        bucket: db-backups
+        bucket: euw1-db-backups
         path: /v1-restore
         accessKey: "AWS_S3_ACCESS_KEY"
         secretKey: "AWS_S3_SECRET_KEY"

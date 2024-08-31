@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "cluster.labels" . | nindent 4 }}
     {{- with .Values.cluster.additionalLabels }}
-      {{ toYaml . | nindent 4 }}
+      {{- toYaml . | nindent 4 }}
     {{- end }}
   name: {{ include "cluster.fullname" . }}-alert-rules
 spec:

@@ -1,0 +1,23 @@
+mode: import
+
+cluster:
+  instances: 1
+
+import:
+  type: microservice
+  typeSettings:
+    microservice:
+      database: source-db
+
+recovery:
+  method: pgBasebackup
+  methodSettings:
+    pgBasebackup:
+      connectionParameters:
+        host: source-db.foo.com
+        user: postgres
+        sslMode: require
+      auth: password
+      authDetails:
+        password: |-
+          superuser-password
