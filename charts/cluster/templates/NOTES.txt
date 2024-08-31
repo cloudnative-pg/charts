@@ -45,37 +45,31 @@ Configuration
   {{- $scheduledBackups = "None" -}}
 {{- end -}}
 
-{{- $mode := .Values.mode -}}
 {{- $source := "" -}}
-{{- if eq .Values.mode "recovery" }}
-{{- $mode = printf "%s (%s)" .Values.mode .Values.recovery.method -}}
-  {{- if eq .Values.recovery.method "pg_basebackup" }}
-    {{- $source = printf "postgresql://%s@%s:%.0f/%s" .Values.recovery.pgBaseBackup.source.username .Values.recovery.pgBaseBackup.source.host .Values.recovery.pgBaseBackup.source.port .Values.recovery.pgBaseBackup.source.database -}}
-  {{- end -}}
+{{- if (eq (include "cluster.recovery.method.pgBasebackup.enabled" .) "true") }}
+  {{- $source = printf "postgresql://%s@%s:%.0f/%s" .Values.recovery.methodSettings.pgBasebackup.connectionParameters.username .Values.recovery.methodSettings.pgBasebackup.connectionParameters.host .Values.recovery.methodSettings.pgBasebackup.connectionParameters.port .Values.recovery.methodSettings.pgBasebackup.connectionParameters.database -}}
 {{- end -}}
 
 ╭───────────────────┬──────────────────────────────────────────────────────────╮
 │ Configuration     │ Value                                                    │
 ┝━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
-│ Cluster mode      │ {{ printf "%-56s" $mode }} │
-│ Type              │ {{ printf "%-56s" .Values.type }} │
+│ Cluster mode      │ {{ (printf "%-56s" .Values.mode) }} │
+│ Type              │ {{ (printf "%-56s" .Values.type) }} │
 │ Image             │ {{ include "cluster.color-info" (printf "%-56s" (include "cluster.imageName" .)) }} │
-{{- if eq .Values.mode "recovery" }}
+{{- if (eq (include "cluster.recovery.method.pgBasebackup.enabled" .) "true") }}
 │ Source            │ {{ printf "%-56s" $source }} │
 {{- end }}
-│ Instances         │ {{ include (printf "%s%s" "cluster.color-" $redundancyColor) (printf "%-56s" (toString .Values.cluster.instances)) }} │
-│ Backups           │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.backups.enabled)) (printf "%-56s" (ternary "Enabled" "Disabled" .Values.backups.enabled)) }} │
-{{- if .Values.backups.enabled }}
-│ Backup Provider   │ {{ printf "%-56s" (title .Values.backups.provider) }} │
-│ Scheduled Backups │ {{ printf "%-56s" $scheduledBackups }} │
-{{- end }}
-│ Storage           │ {{ printf "%-56s" .Values.cluster.storage.size }} │
-│ Storage Class     │ {{ printf "%-56s" (default "Default" .Values.cluster.storage.storageClass) }} │
-│ PGBouncer         │ {{ printf "%-56s" (ternary "Enabled" "Disabled" .Values.pooler.enabled) }} │
-│ Monitoring        │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.cluster.monitoring.enabled)) (printf "%-56s" (ternary "Enabled" "Disabled" .Values.cluster.monitoring.enabled)) }} │
-╰───────────────────┴──────────────────────────────────────────────────────────╯
+│ Instances         │ {{ include (printf "%s%s" "cluster.color-" $redundancyColor) (printf "%-54s" (toString .Values.cluster.instances)) }} │
+│ Backups           │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" (eq (include "cluster.backups.enabled" .) "true"))) (printf "%-54s" (ternary "Enabled" "Disabled" (eq (include "cluster.backups.enabled" .) "true"))) }} │
+│ Backup Provider   │ {{ (printf "%-56s" (title .Values.backups.objectStorage.provider)) }} │
+│ Scheduled Backups │ {{ (printf "%-56s" $scheduledBackups) }} │
+│ Storage           │ {{ (printf "%-56s" .Values.cluster.storage.size) }} │
+│ Storage Class     │ {{ (printf "%-56s" (default "Default" .Values.cluster.storage.storageClass)) }} │
+│ PGBouncer         │ {{ (printf "%-56s" (ternary "Enabled" "Disabled" .Values.pooler.enabled)) }} │
+│ Monitoring        │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.cluster.monitoring.enabled)) (printf "%-54s" (ternary "Enabled" "Disabled" .Values.cluster.monitoring.enabled)) }} │
+╰───────────────────┴────────────────────────────────────────────────────────╯
 
-{{ if not .Values.backups.enabled }}
+{{ if ne (include "cluster.backups.enabled" .) "true" }}
   {{- include "cluster.color-error" "Warning! Backups not enabled. Recovery will not be possible! Do not use this configuration in production.\n" }}
 {{ end -}}
 
@@ -83,4 +77,8 @@ Configuration
   {{- include "cluster.color-error" "Warning! Instance failure will lead to downtime and/or data loss!\n" }}
 {{- else if lt (int .Values.cluster.instances) 3 -}}
   {{- include "cluster.color-warning" "Warning! Single instance redundancy available only. Instance failure will put the cluster at risk.\n" }}
+{{ end -}}
+
+{{ if or (and (eq (include "cluster.recovery.enabled" .) "true") (not (empty .Values.recovery.existingSecret))) (and (eq (include "cluster.backups.enabled" .) "true") (not (empty .Values.backups.existingSecret))) }}
+  {{- include "cluster.color-info" "Existing secrets are used, make sure they have been created with all the necessary keys\n" }}
 {{ end -}}

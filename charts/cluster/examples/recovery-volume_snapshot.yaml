@@ -1,0 +1,21 @@
+mode: recovery
+
+cluster:
+  instances: 1
+
+recovery:
+  method: volumeSnapshot
+  methodSettings:
+    volumeSnapshot:
+      storageSnapshotName: database-clustermarket-database-snapshot
+      walSnapshotName: wal-clustermarket-database-snapshot
+
+backups:
+  volumeSnapshot:
+    className: csi-snapshot-class
+    walSnapshotName: csi-snapshot-class
+  scheduledBackups:
+    - name: hourly-snapshot
+      schedule: "0 0 * * * *"
+      backupOwnerReference: self
+      method: volumeSnapshot

@@ -1,4 +1,5 @@
 mode: standalone
+
 cluster:
   instances: 2
   storage:
@@ -16,8 +17,7 @@ cluster:
           - ratio:
               usage: GAUGE
               description: "Cache hit ratio"
-backups:
-  enabled: false
+
 pooler:
   enabled: true
   instances: 1

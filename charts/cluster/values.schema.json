@@ -5,117 +5,146 @@
         "backups": {
             "type": "object",
             "properties": {
-                "azure": {
+                "existingSecret": {
                     "type": "object",
                     "properties": {
-                        "connectionString": {
-                            "type": "string"
-                        },
-                        "containerName": {
-                            "type": "string"
-                        },
-                        "inheritFromAzureAD": {
-                            "type": "boolean"
-                        },
-                        "path": {
-                            "type": "string"
-                        },
-                        "serviceName": {
-                            "type": "string"
-                        },
-                        "storageAccount": {
-                            "type": "string"
-                        },
-                        "storageKey": {
-                            "type": "string"
-                        },
-                        "storageSasToken": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "data": {
-                    "type": "object",
-                    "properties": {
-                        "compression": {
-                            "type": "string"
-                        },
-                        "encryption": {
-                            "type": "string"
-                        },
-                        "jobs": {
-                            "type": "integer"
-                        }
-                    }
-                },
-                "destinationPath": {
-                    "type": "string"
-                },
-                "enabled": {
-                    "type": "boolean"
-                },
-                "endpointCA": {
-                    "type": "object",
-                    "properties": {
-                        "create": {
-                            "type": "boolean"
-                        },
-                        "key": {
-                            "type": "string"
-                        },
                         "name": {
                             "type": "string"
-                        },
-                        "value": {
-                            "type": "string"
                         }
                     }
                 },
-                "endpointURL": {
-                    "type": "string"
-                },
-                "google": {
+                "objectStorage": {
                     "type": "object",
                     "properties": {
-                        "applicationCredentials": {
+                        "data": {
+                            "type": "object",
+                            "properties": {
+                                "compression": {
+                                    "type": "string"
+                                },
+                                "encryption": {
+                                    "type": "string"
+                                },
+                                "jobs": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "destinationPath": {
                             "type": "string"
                         },
-                        "bucket": {
+                        "endpointCA": {
+                            "type": "object",
+                            "properties": {
+                                "create": {
+                                    "type": "boolean"
+                                },
+                                "key": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "endpointURL": {
                             "type": "string"
                         },
-                        "gkeEnvironment": {
-                            "type": "boolean"
-                        },
-                        "path": {
+                        "provider": {
                             "type": "string"
+                        },
+                        "providerSettings": {
+                            "type": "object",
+                            "properties": {
+                                "azure": {
+                                    "type": "object",
+                                    "properties": {
+                                        "connectionString": {
+                                            "type": "string"
+                                        },
+                                        "containerName": {
+                                            "type": "string"
+                                        },
+                                        "inheritFromAzureAD": {
+                                            "type": "boolean"
+                                        },
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "serviceName": {
+                                            "type": "string"
+                                        },
+                                        "storageAccount": {
+                                            "type": "string"
+                                        },
+                                        "storageKey": {
+                                            "type": "string"
+                                        },
+                                        "storageSasToken": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "google": {
+                                    "type": "object",
+                                    "properties": {
+                                        "applicationCredentials": {
+                                            "type": "string"
+                                        },
+                                        "bucket": {
+                                            "type": "string"
+                                        },
+                                        "gkeEnvironment": {
+                                            "type": "boolean"
+                                        },
+                                        "path": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "s3": {
+                                    "type": "object",
+                                    "properties": {
+                                        "accessKey": {
+                                            "type": "string"
+                                        },
+                                        "bucket": {
+                                            "type": "string"
+                                        },
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "region": {
+                                            "type": "string"
+                                        },
+                                        "secretKey": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "wal": {
+                            "type": "object",
+                            "properties": {
+                                "compression": {
+                                    "type": "string"
+                                },
+                                "encryption": {
+                                    "type": "string"
+                                },
+                                "maxParallel": {
+                                    "type": "integer"
+                                }
+                            }
                         }
                     }
-                },
-                "provider": {
-                    "type": "string"
                 },
                 "retentionPolicy": {
                     "type": "string"
-                },
-                "s3": {
-                    "type": "object",
-                    "properties": {
-                        "accessKey": {
-                            "type": "string"
-                        },
-                        "bucket": {
-                            "type": "string"
-                        },
-                        "path": {
-                            "type": "string"
-                        },
-                        "region": {
-                            "type": "string"
-                        },
-                        "secretKey": {
-                            "type": "string"
-                        }
-                    }
                 },
                 "scheduledBackups": {
                     "type": "array",
@@ -137,28 +166,34 @@
                         }
                     }
                 },
-                "secret": {
+                "target": {
+                    "type": "string"
+                },
+                "volumeSnapshot": {
                     "type": "object",
                     "properties": {
-                        "create": {
+                        "className": {
+                            "type": "string"
+                        },
+                        "online": {
                             "type": "boolean"
                         },
-                        "name": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "wal": {
-                    "type": "object",
-                    "properties": {
-                        "compression": {
+                        "onlineConfiguration": {
+                            "type": "object",
+                            "properties": {
+                                "immediateCheckpoint": {
+                                    "type": "boolean"
+                                },
+                                "waitForArchive": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "snapshotOwnerReference": {
                             "type": "string"
                         },
-                        "encryption": {
+                        "walClassName": {
                             "type": "string"
-                        },
-                        "maxParallel": {
-                            "type": "integer"
                         }
                     }
                 }
@@ -289,6 +324,44 @@
         "fullnameOverride": {
             "type": "string"
         },
+        "import": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "typeSettings": {
+                    "type": "object",
+                    "properties": {
+                        "microservice": {
+                            "type": "object",
+                            "properties": {
+                                "database": {
+                                    "type": "string"
+                                },
+                                "owner": {
+                                    "type": "string"
+                                },
+                                "postImportApplicationSQL": {
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "monolith": {
+                            "type": "object",
+                            "properties": {
+                                "databases": {
+                                    "type": "array"
+                                },
+                                "roles": {
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "mode": {
             "type": "string"
         },
@@ -345,77 +418,10 @@
         "recovery": {
             "type": "object",
             "properties": {
-                "azure": {
+                "existingSecret": {
                     "type": "object",
                     "properties": {
-                        "connectionString": {
-                            "type": "string"
-                        },
-                        "containerName": {
-                            "type": "string"
-                        },
-                        "inheritFromAzureAD": {
-                            "type": "boolean"
-                        },
-                        "path": {
-                            "type": "string"
-                        },
-                        "serviceName": {
-                            "type": "string"
-                        },
-                        "storageAccount": {
-                            "type": "string"
-                        },
-                        "storageKey": {
-                            "type": "string"
-                        },
-                        "storageSasToken": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "backupName": {
-                    "type": "string"
-                },
-                "clusterName": {
-                    "type": "string"
-                },
-                "destinationPath": {
-                    "type": "string"
-                },
-                "endpointCA": {
-                    "type": "object",
-                    "properties": {
-                        "create": {
-                            "type": "boolean"
-                        },
-                        "key": {
-                            "type": "string"
-                        },
                         "name": {
-                            "type": "string"
-                        },
-                        "value": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "endpointURL": {
-                    "type": "string"
-                },
-                "google": {
-                    "type": "object",
-                    "properties": {
-                        "applicationCredentials": {
-                            "type": "string"
-                        },
-                        "bucket": {
-                            "type": "string"
-                        },
-                        "gkeEnvironment": {
-                            "type": "boolean"
-                        },
-                        "path": {
                             "type": "string"
                         }
                     }
@@ -423,28 +429,27 @@
                 "method": {
                     "type": "string"
                 },
-                "pgBaseBackup": {
+                "methodSettings": {
                     "type": "object",
                     "properties": {
-                        "database": {
-                            "type": "string"
-                        },
-                        "owner": {
-                            "type": "string"
-                        },
-                        "secret": {
-                            "type": "string"
-                        },
-                        "source": {
+                        "backup": {
                             "type": "object",
                             "properties": {
-                                "database": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "objectStorage": {
+                            "type": "object",
+                            "properties": {
+                                "clusterName": {
                                     "type": "string"
                                 },
-                                "host": {
+                                "destinationPath": {
                                     "type": "string"
                                 },
-                                "passwordSecret": {
+                                "endpointCA": {
                                     "type": "object",
                                     "properties": {
                                         "create": {
@@ -461,46 +466,151 @@
                                         }
                                     }
                                 },
-                                "port": {
-                                    "type": "integer"
-                                },
-                                "sslCertSecret": {
-                                    "type": "object",
-                                    "properties": {
-                                        "key": {
-                                            "type": "string"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "sslKeySecret": {
-                                    "type": "object",
-                                    "properties": {
-                                        "key": {
-                                            "type": "string"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "sslMode": {
+                                "endpointURL": {
                                     "type": "string"
                                 },
-                                "sslRootCertSecret": {
+                                "provider": {
+                                    "type": "string"
+                                },
+                                "providerSettings": {
                                     "type": "object",
                                     "properties": {
-                                        "key": {
+                                        "azure": {
+                                            "type": "object",
+                                            "properties": {
+                                                "connectionString": {
+                                                    "type": "string"
+                                                },
+                                                "containerName": {
+                                                    "type": "string"
+                                                },
+                                                "inheritFromAzureAD": {
+                                                    "type": "boolean"
+                                                },
+                                                "path": {
+                                                    "type": "string"
+                                                },
+                                                "serviceName": {
+                                                    "type": "string"
+                                                },
+                                                "storageAccount": {
+                                                    "type": "string"
+                                                },
+                                                "storageKey": {
+                                                    "type": "string"
+                                                },
+                                                "storageSasToken": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "google": {
+                                            "type": "object",
+                                            "properties": {
+                                                "applicationCredentials": {
+                                                    "type": "string"
+                                                },
+                                                "bucket": {
+                                                    "type": "string"
+                                                },
+                                                "gkeEnvironment": {
+                                                    "type": "boolean"
+                                                },
+                                                "path": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "s3": {
+                                            "type": "object",
+                                            "properties": {
+                                                "accessKey": {
+                                                    "type": "string"
+                                                },
+                                                "bucket": {
+                                                    "type": "string"
+                                                },
+                                                "path": {
+                                                    "type": "string"
+                                                },
+                                                "region": {
+                                                    "type": "string"
+                                                },
+                                                "secretKey": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "pgBasebackup": {
+                            "type": "object",
+                            "properties": {
+                                "auth": {
+                                    "type": "string"
+                                },
+                                "authDetails": {
+                                    "type": "object",
+                                    "properties": {
+                                        "password": {
                                             "type": "string"
                                         },
-                                        "name": {
+                                        "tls": {
+                                            "type": "object",
+                                            "properties": {
+                                                "ca": {
+                                                    "type": "string"
+                                                },
+                                                "crt": {
+                                                    "type": "string"
+                                                },
+                                                "key": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "connectionParameters": {
+                                    "type": "object",
+                                    "properties": {
+                                        "database": {
+                                            "type": "string"
+                                        },
+                                        "host": {
+                                            "type": "string"
+                                        },
+                                        "port": {
+                                            "type": "integer"
+                                        },
+                                        "sslMode": {
+                                            "type": "string"
+                                        },
+                                        "user": {
                                             "type": "string"
                                         }
                                     }
                                 },
-                                "username": {
+                                "database": {
+                                    "type": "string"
+                                },
+                                "owner": {
+                                    "type": "string"
+                                },
+                                "ownerSecret": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "volumeSnapshot": {
+                            "type": "object",
+                            "properties": {
+                                "storageSnapshotName": {
+                                    "type": "string"
+                                },
+                                "walSnapshotName": {
                                     "type": "string"
                                 }
                             }
@@ -514,38 +624,36 @@
                             "type": "string"
                         }
                     }
-                },
-                "provider": {
+                }
+            }
+        },
+        "replica": {
+            "type": "object",
+            "properties": {
+                "topology": {
                     "type": "string"
                 },
-                "s3": {
+                "topologySettings": {
                     "type": "object",
                     "properties": {
-                        "accessKey": {
-                            "type": "string"
+                        "distributed": {
+                            "type": "object",
+                            "properties": {
+                                "primary": {
+                                    "type": "boolean"
+                                },
+                                "promotionToken": {
+                                    "type": "string"
+                                }
+                            }
                         },
-                        "bucket": {
-                            "type": "string"
-                        },
-                        "path": {
-                            "type": "string"
-                        },
-                        "region": {
-                            "type": "string"
-                        },
-                        "secretKey": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "secret": {
-                    "type": "object",
-                    "properties": {
-                        "create": {
-                            "type": "boolean"
-                        },
-                        "name": {
-                            "type": "string"
+                        "standalone": {
+                            "type": "object",
+                            "properties": {
+                                "minApplyDelay": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
                 }

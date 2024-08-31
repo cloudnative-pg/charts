@@ -1,0 +1,14 @@
+{{- if and (eq (include "cluster.recovery.method.pgBasebackup.enabled" .) "true") (empty .Values.recovery.existingSecret.name) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ printf "%s-recovery-pgbb-creds" (include "cluster.fullname" .) }}
+data:
+{{- if eq .Values.recovery.methodSettings.pgBasebackup.auth "password" }}
+  password: {{ required ".Values.recovery.methodSettings.pgBasebackup.authDetails.password is required, but not specified." .Values.recovery.methodSettings.pgBasebackup.authDetails.password | b64enc | quote }}
+{{- end }}
+{{- else if eq .Values.recovery.methodSettings.pgBasebackup.auth "tls" }}
+  tls.key: {{ required ".Values.recovery.methodSettings.pgBasebackup.authDetails.tls.key is required, but not specified." .Values.recovery.methodSettings.pgBasebackup.authDetails.tls.key | b64enc | quote }}
+  tls.crt: {{ required ".Values.recovery.methodSettings.pgBasebackup.authDetails.tls.crt is required, but not specified." .Values.recovery.methodSettings.pgBasebackup.authDetails.tls.crt | b64enc | quote }}
+  ca.crt: {{ required ".Values.recovery.methodSettings.pgBasebackup.authDetails.ca.crt is required, but not specified." .Values.recovery.methodSettings.pgBasebackup.authDetails.ca.crt | b64enc | quote }}
+{{- end }}
