@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.0.10](https://img.shields.io/badge/Version-0.0.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.0.11](https://img.shields.io/badge/Version-0.0.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -175,6 +175,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
+| cluster.walStorage.enabled | bool | `false` |  |
 | cluster.walStorage.size | string | `"1Gi"` |  |
 | cluster.walStorage.storageClass | string | `""` |  |
 | fullnameOverride | string | `""` | Override the full name of the chart |
