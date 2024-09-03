@@ -8,6 +8,7 @@ fullnameOverride: ""
 # * `postgresql`
 # * `postgis`
 # * `timescaledb`
+# * `paradedb`
 type: postgresql
 
 version:
@@ -17,6 +18,8 @@ version:
   timescaledb: "2.15"
   # -- If using PostGIS, specify the version
   postgis: "3.4"
+  # -- If using ParadeDB, specify the version
+  paradedb: "0.9.3"
 
 ###
 # -- Cluster mode of operation. Available modes:
