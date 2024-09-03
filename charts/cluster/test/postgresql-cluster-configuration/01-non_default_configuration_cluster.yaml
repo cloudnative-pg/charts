@@ -9,6 +9,7 @@ cluster:
     size: 256Mi
     storageClass: standard
   walStorage:
+    enabled: true
     size: 256Mi
     storageClass: standard
   postgresUID: 1001
