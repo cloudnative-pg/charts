@@ -1,4 +1,4 @@
-{{ range .Values.poolers -}}
+{{- range .Values.poolers }}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
@@ -12,11 +12,11 @@ spec:
   pgbouncer:
     poolMode: {{ .poolMode }}
     parameters:
-      {{- .parameters | toYaml | nindent 6 }}
+      {{- toYaml .parameters | nindent 6 }}
   monitoring:
     enablePodMonitor: {{ and .monitoring.enabled .monitoring.podMonitor.enabled }}
   {{- with .template }}
   template:
     {{- . | toYaml | nindent 4 }}
   {{- end }}
-{{ end -}}
+{{- end }}
