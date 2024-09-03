@@ -51,7 +51,10 @@ cluster:
          - pg_monitor
          - pg_signal_backend
   postgresql:
-    max_connections: "42"
+    parameters:
+      max_connections: "42"
+    pg_hba:
+      - host all 1.2.3.4/32 trust
   initdb:
     database: mydb
     owner: dante
