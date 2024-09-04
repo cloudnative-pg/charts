@@ -52,7 +52,7 @@ app.kubernetes.io/part-of: cloudnative-pg
 {{- end }}
 
 {{/*
-Whether we need to use TimescaleDB defualts
+Whether we need to use TimescaleDB defaults
 */}}
 {{- define "cluster.useTimescaleDBDefaults" -}}
 {{ and (eq .Values.type "timescaledb") .Values.imageCatalog.create (empty .Values.cluster.imageCatalogRef.name) (empty .Values.imageCatalog.images) (empty .Values.cluster.imageName) }}
