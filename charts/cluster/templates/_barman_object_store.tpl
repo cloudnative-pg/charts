@@ -16,12 +16,12 @@
 
 {{- if eq .scope.provider "s3" }}
   {{- if empty .scope.endpointURL }}
-  endpointURL: "https://s3.{{ required "You need to specify S3 region if endpointURL is not specified." .scope.s3.region }}.amazonaws.com"
+  endpointURL: "https://s3.{{ required "You need to specify S3 region if endpointURL is not specified." .scope.providerSettings.s3.region }}.amazonaws.com"
   {{- end }}
   {{- if empty .scope.destinationPath }}
-  destinationPath: "s3://{{ required "You need to specify S3 bucket if destinationPath is not specified." .scope.s3.bucket }}{{ .scope.s3.path }}"
+  destinationPath: "s3://{{ required "You need to specify S3 bucket if destinationPath is not specified." .scope.providerSettings.s3.bucket }}{{ .scope.providerSettings.s3.path }}"
   {{- end }}
-  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-s3-creds" .chartFullname .secretPrefix) }}
+  {{- $secretName := coalesce .existingSecret.name (printf "%s-%s-s3-creds" .chartFullname .secretPrefix) }}
   s3Credentials:
     accessKeyId:
       name: {{ $secretName }}
@@ -31,13 +31,13 @@
       key: ACCESS_SECRET_KEY
 {{- else if eq .scope.provider "azure" }}
   {{- if empty .scope.destinationPath }}
-  destinationPath: "https://{{ required "You need to specify Azure storageAccount if destinationPath is not specified." .scope.azure.storageAccount }}.{{ .scope.azure.serviceName }}.core.windows.net/{{ .scope.azure.containerName }}{{ .scope.azure.path }}"
+  destinationPath: "https://{{ required "You need to specify Azure storageAccount if destinationPath is not specified." .scope.providerSettings.azure.storageAccount }}.{{ .scope.providerSettings.azure.serviceName }}.core.windows.net/{{ .scope.providerSettings.azure.containerName }}{{ .scope.providerSettings.azure.path }}"
   {{- end }}
-  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-azure-creds" .chartFullname .secretPrefix) }}
+  {{- $secretName := coalesce .existingSecret.name (printf "%s-%s-azure-creds" .chartFullname .secretPrefix) }}
   azureCredentials:
-  {{- if .scope.azure.inheritFromAzureAD }}
+  {{- if .scope.providerSettings.azure.inheritFromAzureAD }}
     inheritFromAzureAD: true
-  {{- else if .scope.azure.connectionString }}
+  {{- else if .scope.providerSettings.azure.connectionString }}
     connectionString:
       name: {{ $secretName }}
       key: AZURE_CONNECTION_STRING
@@ -45,7 +45,7 @@
     storageAccount:
       name: {{ $secretName }}
       key: AZURE_STORAGE_ACCOUNT
-    {{- if .scope.azure.storageKey }}
+    {{- if .scope.providerSettings.azure.storageKey }}
     storageKey:
       name: {{ $secretName }}
       key: AZURE_STORAGE_KEY
@@ -57,15 +57,15 @@
   {{- end }}
 {{- else if eq .scope.provider "google" }}
   {{- if empty .scope.destinationPath }}
-  destinationPath: "gs://{{ required "You need to specify Google storage bucket if destinationPath is not specified." .scope.google.bucket }}{{ .scope.google.path }}"
+  destinationPath: "gs://{{ required "You need to specify Google storage bucket if destinationPath is not specified." .scope.providerSettings.google.bucket }}{{ .scope.providerSettings.google.path }}"
   {{- end }}
-  {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-google-creds" .chartFullname .secretPrefix) }}
+  {{- $secretName := coalesce .existingSecret.name (printf "%s-%s-google-creds" .chartFullname .secretPrefix) }}
   googleCredentials:
-    gkeEnvironment: {{ .scope.google.gkeEnvironment }}
-{{- if not .scope.google.gkeEnvironment }}
+    gkeEnvironment: {{ .scope.providerSettings.google.gkeEnvironment }}
+{{- if not .scope.providerSettings.google.gkeEnvironment }}
     applicationCredentials:
       name: {{ $secretName }}
       key: APPLICATION_CREDENTIALS
 {{- end }}
-{{- end -}}
+{{- end }}
 {{- end -}}

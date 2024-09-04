@@ -1,9 +1,8 @@
-{{- if .Values.backups.endpointCA.create }}
+{{- if .Values.backups.objectStorage.endpointCA.create }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Values.backups.endpointCA.name | default (printf "%s-ca-bundle" (include "cluster.fullname" .)) | quote }}
+  name: {{ .Values.backups.objectStorage.endpointCA.name | default (printf "%s-ca-bundle" (include "cluster.fullname" .)) | quote }}
 data:
-  {{ .Values.backups.endpointCA.key | default "ca-bundle.crt" | quote }}: {{ .Values.backups.endpointCA.value }}
-  
+  {{ .Values.backups.objectStorage.endpointCA.key | default "ca-bundle.crt" | quote }}: {{ .Values.backups.objectStorage.endpointCA.value }}
 {{- end }}

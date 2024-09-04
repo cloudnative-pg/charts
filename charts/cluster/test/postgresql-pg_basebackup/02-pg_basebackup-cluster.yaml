@@ -1,21 +1,17 @@
-mode: "recovery"
-recovery:
-  method: "pg_basebackup"
-  pgBaseBackup:
-    source:
-      host: "source-cluster-rw"
-      database: "mygooddb"
-      username: "streaming_replica"
-      sslMode: "require"
-      sslKeySecret:
-        name: source-cluster-replication
-        key: tls.key
-      sslCertSecret:
-        name: source-cluster-replication
-        key: tls.crt
+mode: recovery
 
 cluster:
   instances: 2
 
-backups:
-  enabled: false
+recovery:
+  existingSecret:
+    name: source-cluster-replication
+  method: pgBasebackup
+  methodSettings:
+    pgBasebackup:
+      connectionParameters:
+        host: source-cluster-rw
+        database: mygooddb
+        username: streaming_replica
+        sslMode: require
+      auth: tls

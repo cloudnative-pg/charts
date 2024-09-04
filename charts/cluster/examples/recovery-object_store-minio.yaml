@@ -1,15 +1,23 @@
 mode: recovery
 
 cluster:
-  instances: 2
-  storage:
-    size: 256Mi
+  instances: 1
 
 recovery:
-  method: backup
+  method: objectStorage
   methodSettings:
-    backup:
-      name: post-init-backup
+    objectStorage:
+      clusterName: standalone-cluster
+      endpointURL: https://minio.minio.svc.cluster.local
+      endpointCA:
+        name: kube-root-ca.crt
+        key: ca.crt
+      provider: s3
+      s3:
+        bucket: mybucket
+        path: /v1
+        accessKey: minio
+        secretKey: minio123
 
 backups:
   objectStorage:
@@ -21,7 +29,7 @@ backups:
         key: ca.crt
       s3:
         bucket: mybucket
-        path: /v2
+        path: /v1
         accessKey: minio
         secretKey: minio123
     wal:

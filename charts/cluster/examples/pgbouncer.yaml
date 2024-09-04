@@ -1,8 +1,30 @@
 mode: standalone
+
 cluster:
   instances: 1
-backups:
-  enabled: false
-pooler:
-  enabled: true
-  instances: 1
+  monitoring:
+    enabled: true
+    podMonitor:
+      enabled: true
+
+poolers:
+  - name: rw
+    type: rw
+    instances: 1
+    monitoring:
+      enabled: true
+      podMonitor:
+        enabled: true
+        relabelings:
+          - targetLabel: type
+            replacement: rw
+  - name: ro
+    type: ro
+    instances: 1
+    monitoring:
+      enabled: true
+      podMonitor:
+        enabled: true
+        relabelings:
+          - targetLabel: type
+            replacement: ro

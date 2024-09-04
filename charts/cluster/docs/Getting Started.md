@@ -1,6 +1,6 @@
 # Getting Started
 
-The CNPG cluster chart follows a convention over configuration approach. This means that the chart will create a reasonable 
+The CNPG cluster chart follows a convention over configuration approach. This means that the chart will create a reasonable
 CNPG setup with sensible defaults. However, you can override these defaults to create a more customized setup. Note that
 you still need to configure backups and monitoring separately. The chart will not install a Prometheus stack for you.
 
@@ -44,14 +44,14 @@ are likely looking for the `standalone` option.
 
 ### Backup configuration
 
-Most importantly you should configure your backup storage. 
+Most importantly you should configure your backup storage.
 
 CNPG implements disaster recovery via [Barman](https://pgbarman.org/). The following section configures the barman object
 store where backups will be stored. Barman performs backups of the cluster filesystem base backup and WALs. Both are
-stored in the specified location. The backup provider is configured via the `backups.provider` parameter. The following
-providers are supported:
+stored in the specified location. The backup provider is configured via the `backups.objectStorage.provider` parameter.
+The following providers are supported:
 
-* S3 or S3-compatible stores, like MinIO
+* S3 or S3-compatible stores, like MinIO or Ceph Rados
 * Microsoft Azure Blob Storage
 * Google Cloud Storage
 
@@ -67,8 +67,8 @@ Additionally you can specify the following parameters:
   ```
 
 Each backup adapter takes it's own set of parameters, listed in the [Configuration options](../README.md#Configuration-options) section
-below. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backup.s3`,
-`backup.azure`, or `backup.google`.
+below. Refer to the table for the full list of parameters and place the configuration under the appropriate key:
+`backups.objectStorage.providerSettings.s3`, `backups.objectStorage.providerSettings.azure` or `backups.objectStorage.providerSettings.google`.
 
 ### Cluster configuration
 
@@ -76,7 +76,7 @@ There are several important cluster options. Here are the most important ones:
 
 `cluster.instances` - The number of instances in the cluster. Defaults to `1`, but you should set this to `3` for production.
 `cluster.imageName` - This allows you to override the Docker image used for the cluster. The chart will choose a default
-  for you based on the setting you chose for `type`. If you need to run a configuration that is not supported, you can 
+  for you based on the setting you chose for `type`. If you need to run a configuration that is not supported, you can
   create your own Docker image. You can use the [postgres-containers](https://github.com/cloudnative-pg/postgres-containers)
   repository for a starting point.
   You will likely need to set your own repository access credentials via: `cluster.imagePullPolicy` and `cluster.imagePullSecrets`.
@@ -93,7 +93,7 @@ There are several important cluster options. Here are the most important ones:
   cluster:
     postgresql:
       max_connections: "200"
-      shared_buffers: "2GB"  
+      shared_buffers: "2GB"
   ```
 `cluster.initSQL` - Allows you to run custom SQL queries during the cluster initialization. This is useful for creating
 extensions, schemas and databases. Note that these are as a superuser.
