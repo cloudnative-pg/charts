@@ -277,7 +277,15 @@
                     "type": "integer"
                 },
                 "postgresql": {
-                    "type": "object"
+                    "type": "object",
+                    "properties": {
+                        "parameters": {
+                            "type": "object"
+                        },
+                        "pg_hba": {
+                            "type": "array"
+                        }
+                    }
                 },
                 "primaryUpdateMethod": {
                     "type": "string"
@@ -311,6 +319,9 @@
                 "walStorage": {
                     "type": "object",
                     "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
                         "size": {
                             "type": "string"
                         },
