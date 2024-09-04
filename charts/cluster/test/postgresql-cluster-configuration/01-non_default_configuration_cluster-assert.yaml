@@ -15,6 +15,8 @@ spec:
   postgresql:
     parameters:
       max_connections: "42"
+    pg_hba:
+      - host all 1.2.3.4/32 trust
   bootstrap:
     initdb:
       database: mydb
