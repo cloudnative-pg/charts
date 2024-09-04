@@ -1,4 +1,5 @@
 type: postgresql
+
 mode: standalone
 
 cluster:
@@ -19,6 +20,3 @@ cluster:
           - ratio:
               usage: GAUGE
               description: "Cache hit ratio"
-
-backups:
-  enabled: false

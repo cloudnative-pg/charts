@@ -1,11 +1,11 @@
-{{- if and (eq .Values.mode "recovery" ) (eq .Values.recovery.method "object_store") (eq .Values.recovery.provider "azure") .Values.recovery.secret.create }}
+{{- if and (eq (include "cluster.recovery.method.objectStorage.enabled" .) "true") (eq .Values.recovery.methodSettings.objectStorage.provider "azure") (empty .Values.recovery.existingSecret.name) }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ default (printf "%s-recovery-azure-creds" (include "cluster.fullname" .)) .Values.recovery.secret.name }}
+  name: {{ printf "%s-recovery-azure-creds" (include "cluster.fullname" .) }}
 data:
-  AZURE_CONNECTION_STRING: {{ .Values.recovery.azure.connectionString | b64enc | quote }}
-  AZURE_STORAGE_ACCOUNT: {{ .Values.recovery.azure.storageAccount | b64enc | quote }}
-  AZURE_STORAGE_KEY: {{ .Values.recovery.azure.storageKey | b64enc | quote }}
-  AZURE_STORAGE_SAS_TOKEN: {{ .Values.recovery.azure.storageSasToken | b64enc | quote }}
+  AZURE_CONNECTION_STRING: {{ .Values.recovery.methodSettings.objectStorage.providerSettings.azure.connectionString | b64enc | quote }}
+  AZURE_STORAGE_ACCOUNT: {{ .Values.recovery.methodSettings.objectStorage.providerSettings.azure.storageAccount | b64enc | quote }}
+  AZURE_STORAGE_KEY: {{ .Values.recovery.methodSettings.objectStorage.providerSettings.azure.storageKey | b64enc | quote }}
+  AZURE_STORAGE_SAS_TOKEN: {{ .Values.recovery.methodSettings.objectStorage.providerSettings.azure.storageSasToken | b64enc | quote }}
 {{- end }}

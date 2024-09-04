@@ -1,0 +1,25 @@
+mode: recovery
+
+cluster:
+  instances: 1
+
+recovery:
+  method: pgBasebackup
+  methodSettings:
+    pgBasebackup:
+      connectionParameters:
+        host: source-db.foo.com
+        user: streaming_replica
+        sslMode: verify-ca
+      auth: tls
+      authDetails:
+        tls:
+          key: |-
+            -----BEGIN PRIVATE KEY-----
+            -----END PRIVATE KEY-----
+          crt: |-
+            -----BEGIN CERTIFICATE-----
+            -----END CERTIFICATE-----
+          ca: |-
+            -----BEGIN CERTIFICATE-----
+            -----END CERTIFICATE-----

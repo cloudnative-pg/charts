@@ -16,6 +16,6 @@ spec:
     enablePodMonitor: {{ and .Values.pooler.monitoring.enabled .Values.pooler.monitoring.podMonitor.enabled }}
   {{- with .Values.pooler.template }}
   template:
-    {{- . | toYaml | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 {{ end }}

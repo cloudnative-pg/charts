@@ -1,4 +1,5 @@
 mode: standalone
+
 cluster:
   instances: 2
   imageName: ghcr.io/cloudnative-pg/crazycustomimage:99.99
@@ -71,6 +72,3 @@ cluster:
     foo: bar
   annotations:
     foo: bar
-
-backups:
-  enabled: false

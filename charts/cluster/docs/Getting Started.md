@@ -48,10 +48,10 @@ Most importantly you should configure your backup storage.
 
 CNPG implements disaster recovery via [Barman](https://pgbarman.org/). The following section configures the barman object
 store where backups will be stored. Barman performs backups of the cluster filesystem base backup and WALs. Both are
-stored in the specified location. The backup provider is configured via the `backups.provider` parameter. The following
-providers are supported:
+stored in the specified location. The backup provider is configured via the `backups.objectStorage.provider` parameter.
+The following providers are supported:
 
-* S3 or S3-compatible stores, like MinIO
+* S3 or S3-compatible stores, like MinIO or Ceph Rados
 * Microsoft Azure Blob Storage
 * Google Cloud Storage
 
@@ -67,8 +67,8 @@ Additionally you can specify the following parameters:
   ```
 
 Each backup adapter takes it's own set of parameters, listed in the [Configuration options](../README.md#Configuration-options) section
-below. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backup.s3`,
-`backup.azure`, or `backup.google`.
+below. Refer to the table for the full list of parameters and place the configuration under the appropriate key:
+`backups.objectStorage.providerSettings.s3`, `backups.objectStorage.providerSettings.azure` or `backups.objectStorage.providerSettings.google`.
 
 ### Cluster configuration
 

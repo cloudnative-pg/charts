@@ -1,8 +1,8 @@
-{{- if and .Values.backups.enabled (eq .Values.backups.provider "google") .Values.backups.secret.create }}
+{{- if and (eq .Values.backups.objectStorage.provider "google") (empty .Values.backups.existingSecret.name) }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ default (printf "%s-backup-google-creds" (include "cluster.fullname" .)) .Values.backups.secret.name }}
+  name: {{ printf "%s-backup-google-creds" (include "cluster.fullname" .) }}
 data:
-  APPLICATION_CREDENTIALS: {{ .Values.backups.google.applicationCredentials | b64enc | quote }}
+  APPLICATION_CREDENTIALS: {{ .Values.backups.objectStorage.providerSettings.google.applicationCredentials | b64enc | quote }}
 {{- end }}
