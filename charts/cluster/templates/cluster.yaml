@@ -68,7 +68,7 @@ spec:
       {{- toYaml .parameters | nindent 6 }}
     pg_hba:
       {{- toYaml .pg_hba | nindent 6 }}
-    {{ end }}
+    {{- end }}
 
   {{- with .Values.cluster.roles }}
   managed:

@@ -39,6 +39,7 @@ poolers:
     monitoring:
       enabled: true
       podMonitor:
+        enabled: true
         relabelings:
           - targetLabel: type
             replacement: rw
@@ -57,6 +58,7 @@ poolers:
     monitoring:
       enabled: true
       podMonitor:
+        enabled: true
         relabelings:
           - targetLabel: type
             replacement: ro
