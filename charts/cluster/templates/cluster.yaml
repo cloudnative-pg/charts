@@ -58,7 +58,9 @@ spec:
       {{- end }}
     {{- with .Values.cluster.postgresql }}
     parameters:
-      {{- toYaml . | nindent 6 }}
+      {{- toYaml .parameters | nindent 6 }}
+    pg_hba:
+      {{- toYaml .pg_hba | nindent 6 }}
     {{ end }}
 
   managed:
