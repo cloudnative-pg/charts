@@ -61,6 +61,10 @@ spec:
       {{- toYaml .parameters | nindent 6 }}
     pg_hba:
       {{- toYaml .pg_hba | nindent 6 }}
+    pg_ident:
+      {{- toYaml .pg_ident | nindent 6 }}
+    shared_preload_libraries:
+      {{- toYaml .shared_preload_libraries | nindent 6 }}
     {{ end }}
 
   managed:

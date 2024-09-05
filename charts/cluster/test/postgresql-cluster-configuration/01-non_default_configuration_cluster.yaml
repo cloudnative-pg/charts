@@ -56,6 +56,10 @@ cluster:
       max_connections: "42"
     pg_hba:
       - host all 1.2.3.4/32 trust
+    pg_ident:
+      - mymap   /^(.*)@mydomain\.com$      \1
+    shared_preload_libraries:
+      - pgaudit
   initdb:
     database: mydb
     owner: dante

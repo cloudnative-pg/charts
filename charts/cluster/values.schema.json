@@ -249,6 +249,12 @@
                         },
                         "pg_hba": {
                             "type": "array"
+                        },
+                        "pg_ident": {
+                            "type": "array"
+                        },
+                        "shared_preload_libraries": {
+                            "type": "array"
                         }
                     }
                 },
