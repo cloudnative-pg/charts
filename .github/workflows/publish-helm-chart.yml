@@ -1,0 +1,105 @@
+# workflows/publish-helm-chart.yml
+#
+# Publish Helm Chart
+# Publish the ParadeDB Helm chart to paradedb.github.io via GitHub Pages. This workflow also
+# triggers the creation of a GitHub Release and only happens once we trigger a workflow_dispatch
+# event, either manually or via creating a release in the `paradedb/paradedb` repository.
+
+name: Publish Helm Charts
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      appVersion:
+        description: "The ParadeDB version to publish in the Helm Chart (e.g. 0.1.0)"
+        required: true
+        default: ""
+
+concurrency:
+  group: publish-helm-chart-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish-helm-chart:
+    name: Publish ParadeDB Helm Charts to GitHub Pages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Set Helm Chart Release Versions
+        id: set_versions
+        working-directory: charts/paradedb/
+        env:
+          GH_TOKEN: ${{ secrets.GHA_CREATE_RELEASE_PAT }}
+        run: |
+          # Increment the Helm Chart version patch number by one
+          NEW_CHART_VERSION_PATCH=$(( ${{ vars.CHART_VERSION_PATCH }} + 1 ))
+
+          # If no appVersion is provided, we use the latest ParadeDB version
+          if [ -z "${{ github.event.inputs.appVersion }}" ]; then
+            LATEST_TAG=$(curl -s https://api.github.com/repos/paradedb/paradedb/tags | jq -r '.[0].name')
+            APP_VERSION=${LATEST_TAG#v}
+          else
+            APP_VERSION=${{ github.event.inputs.appVersion }}
+          fi
+          # Update appVersion to the GitHub Release version and version to the Helm Chart version
+          sed -i "s/^appVersion: .*/appVersion: $APP_VERSION/" Chart.yaml
+          sed -i "s/^version: .*/version: ${{ vars.CHART_VERSION_MAJOR }}.${{ vars.CHART_VERSION_MINOR }}.${NEW_CHART_VERSION_PATCH}/" Chart.yaml
+          cat Chart.yaml
+
+          # Set output to update post-release
+          echo "new_chart_version_patch=${NEW_CHART_VERSION_PATCH}" >> $GITHUB_OUTPUT
+
+      # The README needs to be in the same directory as the Chart.yaml file for ArtifactHub to display it
+      - name: Copy README.md for Packaging
+        run: cp README.md charts/paradedb/README.md
+
+      # The GitHub repository secret `PARADEDB_PGP_PRIVATE_KEY` contains the private key
+      # in ASCII-armored format. To export a (new) key, run this command:
+      # `gpg --armor --export-secret-key <my key>`
+      - name: Prepare ParadeDB PGP Key
+        env:
+          PGP_PRIVATE_KEY: "${{ secrets.PARADEDB_PGP_PRIVATE_KEY }}"
+          PGP_PASSPHRASE: "${{ secrets.PARADEDB_PGP_PASSPHRASE }}"
+        run: |
+          IFS=""
+          echo "$PGP_PRIVATE_KEY" | gpg --dearmor --verbose > $HOME/secring.gpg
+          echo "$PGP_PASSPHRASE" > $HOME/passphrase.txt
+
+          # Tell chart-releaser-action where to find the key and its passphrase
+          echo "CR_KEYRING=$HOME/secring.gpg" >> "$GITHUB_ENV"
+          echo "CR_PASSPHRASE_FILE=$HOME/passphrase.txt" >> "$GITHUB_ENV"
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        with:
+          config: "./.github/config/cr.yaml"
+        env:
+          CR_TOKEN: "${{ secrets.GHA_CREATE_RELEASE_PAT }}"
+
+      # We have a separate version for our Helm Chart, since it needs to always increment by
+      # one for every production release, independently of the ParadeDB version. Any non-patch
+      # version increment should be done manually in GitHub Actions Variables.
+      - name: Increment Helm Chart Version Number in GitHub Actions Variables
+        env:
+          GH_TOKEN: ${{ secrets.GHA_CREATE_RELEASE_PAT }}
+        run: |
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/paradedb/helm-charts/actions/variables/CHART_VERSION_PATCH \
+            -f name='CHART_VERSION_PATCH' \
+            -f value='${{ steps.set_versions.outputs.new_chart_version_patch }}'
