@@ -1,16 +1,13 @@
-CNPGClusterHAWarning
-====================
+# CNPGClusterHAWarning
 
-Meaning
--------
+## Meaning
 
 The `CNPGClusterHAWarning` alert is triggered when the CloudNativePG cluster ready standby replicas are less than `2`.
 
 This alarm will be always triggered if your cluster is configured to run with less than `3` instances. In this case you
 may want to silence it.
 
-Impact
-------
+## Impact
 
 Having less than two available replicas puts your cluster at risk if another instance fails. The cluster is still able
 to operate normally, although the `-ro` and `-r` endpoints operate at reduced capacity.
@@ -20,8 +17,7 @@ to catch-up with the cluster primary instance which will trigger the alert if th
 
 At `0` available ready replicas, a `CNPGClusterHACritical` alert will be triggered.
 
-Diagnosis
----------
+## Diagnosis
 
 Use the [CloudNativePG Grafana Dashboard](https://grafana.com/grafana/dashboards/20417-cloudnativepg/).
 
@@ -43,8 +39,7 @@ Check the CloudNativePG operator logs:
 kubectl logs --namespace cnpg-system -l "app.kubernetes.io/name=cloudnative-pg"
 ```
 
-Mitigation
-----------
+## Mitigation
 
 Refer to the [CloudNativePG Failure Modes](https://cloudnative-pg.io/documentation/current/failure_modes/)
 and [CloudNativePG Troubleshooting](https://cloudnative-pg.io/documentation/current/troubleshooting/) documentation for

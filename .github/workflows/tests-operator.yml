@@ -3,7 +3,7 @@ name: tests-operator
 on:
   pull_request:
     branches-ignore:
-      - 'gh-pages'
+      - "gh-pages"
 
 jobs:
   deploy_operator:

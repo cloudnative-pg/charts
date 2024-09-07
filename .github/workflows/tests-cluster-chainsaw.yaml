@@ -3,7 +3,7 @@ name: tests-cluster-chainsaw
 on:
   pull_request:
     branches-ignore:
-      - 'gh-pages'
+      - "gh-pages"
 
 jobs:
   test-cluster-standalone:

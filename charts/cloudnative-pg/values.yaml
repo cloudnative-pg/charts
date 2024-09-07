@@ -127,7 +127,8 @@ service:
   name: cnpg-webhook-service
   port: 443
 
-resources: {}
+resources:
+  {}
   # If you want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   #
@@ -148,7 +149,6 @@ tolerations: []
 affinity: {}
 
 monitoring:
-
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
   podMonitorEnabled: false
   # -- Metrics relabel configurations to apply to samples before ingestion.

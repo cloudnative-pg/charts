@@ -3,11 +3,11 @@ name: linter
 on:
   push:
     branches:
-      - '**'
-      - '!gh-pages'
+      - "**"
+      - "!gh-pages"
   pull_request:
     branches-ignore:
-      - 'gh-pages'
+      - "gh-pages"
 
 jobs:
   linter:

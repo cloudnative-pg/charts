@@ -5,11 +5,10 @@ runs:
   steps:
     - name: Deploy the operator
       shell: bash
-      run:
-        helm dependency update charts/cloudnative-pg
+      run: helm dependency update charts/cloudnative-pg
 
         helm upgrade
-        --install 
+        --install
         --namespace cnpg-system
         --create-namespace
         --wait

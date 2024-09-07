@@ -5,7 +5,7 @@ metadata:
   labels:
     foo: bar
   annotations:
-      foo: bar
+    foo: bar
 spec:
   imageName: ghcr.io/cloudnative-pg/crazycustomimage:99.99
   imagePullPolicy: Always
@@ -50,12 +50,12 @@ spec:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.io/hostname
-            operator: In
-            values:
-            - node1
-            - node2
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - node1
+                  - node2
   resources:
     requests:
       cpu: 100m

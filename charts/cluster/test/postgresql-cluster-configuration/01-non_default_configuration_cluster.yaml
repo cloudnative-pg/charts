@@ -4,7 +4,7 @@ cluster:
   imageName: ghcr.io/cloudnative-pg/crazycustomimage:99.99
   imagePullPolicy: Always
   imagePullSecrets:
-   - name: "image-pull-secret"
+    - name: "image-pull-secret"
   storage:
     size: 256Mi
     storageClass: standard
@@ -30,12 +30,12 @@ cluster:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.io/hostname
-            operator: In
-            values:
-            - node1
-            - node2
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - node1
+                  - node2
   certificates:
     serverCASecret: ca-secret
     serverTLSSecret: tls-secret
@@ -44,13 +44,13 @@ cluster:
   enableSuperuserAccess: true
   superuserSecret: supersecret-secret
   roles:
-     - name: dante
-       ensure: present
-       comment: Dante Alighieri
-       login: true
-       inRoles:
-         - pg_monitor
-         - pg_signal_backend
+    - name: dante
+      ensure: present
+      comment: Dante Alighieri
+      login: true
+      inRoles:
+        - pg_monitor
+        - pg_signal_backend
   postgresql:
     parameters:
       max_connections: "42"

@@ -1,8 +1,6 @@
-CNPGClusterHACritical
-=====================
+# CNPGClusterHACritical
 
-Meaning
--------
+## Meaning
 
 The `CNPGClusterHACritical` alert is triggered when the CloudNativePG cluster has no ready standby replicas.
 
@@ -12,14 +10,12 @@ instances. The replaced instance may need some time to catch-up with the cluster
 This alarm will be always triggered if your cluster is configured to run with only 1 instance. In this case you
 may want to silence it.
 
-Impact
-------
+## Impact
 
 Having no available replicas puts your cluster at a severe risk if the primary instance fails. The primary instance is
 still online and able to serve queries, although connections to the `-ro` endpoint will fail.
 
-Diagnosis
----------
+## Diagnosis
 
 Use the [CloudNativePG Grafana Dashboard](https://grafana.com/grafana/dashboards/20417-cloudnativepg/).
 
@@ -41,8 +37,7 @@ Check the CloudNativePG operator logs:
 kubectl logs --namespace cnpg-system -l "app.kubernetes.io/name=cloudnative-pg"
 ```
 
-Mitigation
-----------
+## Mitigation
 
 Refer to the [CloudNativePG Failure Modes](https://cloudnative-pg.io/documentation/current/failure_modes/)
 and [CloudNativePG Troubleshooting](https://cloudnative-pg.io/documentation/current/troubleshooting/) documentation for

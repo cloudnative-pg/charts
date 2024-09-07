@@ -1,18 +1,14 @@
-CNPGClusterInstancesOnSameNode
-============================
+# CNPGClusterInstancesOnSameNode
 
-Meaning
--------
+## Meaning
 
 The `CNPGClusterInstancesOnSameNode` alert is raised when two or more database pods are scheduled on the same node.
 
-Impact
-------
+## Impact
 
 A failure or scheduled downtime of a single node will lead to a potential service disruption and/or data loss.
 
-Diagnosis
----------
+## Diagnosis
 
 Use the [CloudNativePG Grafana Dashboard](https://grafana.com/grafana/dashboards/20417-cloudnativepg/).
 
@@ -20,8 +16,7 @@ Use the [CloudNativePG Grafana Dashboard](https://grafana.com/grafana/dashboards
 kubectl get pods -A -l "cnpg.io/podRole=instance" -o wide
 ```
 
-Mitigation
-----------
+## Mitigation
 
 1. Verify you have more than a single node with no taints, preventing pods to be scheduled there.
 2. Verify your [affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/) configuration.

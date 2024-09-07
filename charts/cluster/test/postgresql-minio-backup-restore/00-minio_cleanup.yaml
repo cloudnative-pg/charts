@@ -7,10 +7,10 @@ spec:
     spec:
       restartPolicy: OnFailure
       containers:
-      - name: minio-cleanup
-        image: minio/mc
-        command: ['sh', '-c']
-        args:
-         - |
-           mc alias set myminio https://minio.minio.svc.cluster.local minio minio123
-           mc rm --recursive --force myminio/mybucket
+        - name: minio-cleanup
+          image: minio/mc
+          command: ["sh", "-c"]
+          args:
+            - |
+              mc alias set myminio https://minio.minio.svc.cluster.local minio minio123
+              mc rm --recursive --force myminio/mybucket
