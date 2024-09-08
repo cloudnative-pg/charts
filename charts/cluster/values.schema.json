@@ -187,6 +187,9 @@
                 "enableSuperuserAccess": {
                     "type": "boolean"
                 },
+                "imageCatalogRef": {
+                    "type": "object"
+                },
                 "imageName": {
                     "type": "string"
                 },
@@ -299,6 +302,17 @@
         },
         "fullnameOverride": {
             "type": "string"
+        },
+        "imageCatalog": {
+            "type": "object",
+            "properties": {
+                "create": {
+                    "type": "boolean"
+                },
+                "images": {
+                    "type": "array"
+                }
+            }
         },
         "mode": {
             "type": "string"
@@ -564,6 +578,20 @@
         },
         "type": {
             "type": "string"
+        },
+        "version": {
+            "type": "object",
+            "properties": {
+                "postgis": {
+                    "type": "string"
+                },
+                "postgresql": {
+                    "type": "string"
+                },
+                "timescaledb": {
+                    "type": "string"
+                }
+            }
         }
     }
 }
