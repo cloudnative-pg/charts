@@ -19,4 +19,4 @@ spec:
         args:
           - |
             apk --no-cache add postgresql-client
-            test "$(psql $DB_URI -t -c 'SELECT EXISTS (SELECT FROM pg_extension WHERE extname = \'timescaledb\')' --csv -q 2>/dev/null)" = "t"
+            test "$(psql $DB_URI -t -c 'SELECT EXISTS (SELECT FROM pg_extension WHERE extname = '\''timescaledb'\'')' --csv -q 2>/dev/null)" = "t"
