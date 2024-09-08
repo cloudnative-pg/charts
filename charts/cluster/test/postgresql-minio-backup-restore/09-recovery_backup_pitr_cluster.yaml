@@ -19,7 +19,7 @@ recovery:
     encryption: ""
   s3:
     bucket: "mybucket"
-    path: "/v1"
+    path: "/postgresql-minio-backup-restore/v1"
     accessKey: "minio"
     secretKey: "minio123"
     region: "local"
@@ -39,7 +39,7 @@ backups:
     encryption: ""
   s3:
     bucket: "mybucket"
-    path: "/v2"
+    path: "/postgresql-minio-backup-restore/v2"
     accessKey: "minio"
     secretKey: "minio123"
     region: "local"

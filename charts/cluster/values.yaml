@@ -7,7 +7,16 @@ fullnameOverride: ""
 # -- Type of the CNPG database. Available types:
 # * `postgresql`
 # * `postgis`
+# * `timescaledb`
 type: postgresql
+
+version:
+  # -- PostgreSQL major version to use
+  postgresql: "16"
+  # -- If using TimescaleDB, specify the version
+  timescaledb: "2.15"
+  # -- If using PostGIS, specify the version
+  postgis: "3.4"
 
 ###
 # -- Cluster mode of operation. Available modes:
@@ -123,6 +132,11 @@ cluster:
   # <image>:<tag>@sha256:<digestValue>
   imageName: ""  # Default value depends on type (postgresql/postgis/timescaledb)
 
+  # -- Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName`
+  imageCatalogRef: {}
+    # kind: ImageCatalog
+    # name: postgresql
+
   # -- Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated.
   # More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
   imagePullPolicy: IfNotPresent
@@ -141,10 +155,10 @@ cluster:
     storageClass: ""
 
   # -- The UID of the postgres user inside the image, defaults to 26
-  postgresUID: 26
+  postgresUID: -1
 
   # -- The GID of the postgres user inside the image, defaults to 26
-  postgresGID: 26
+  postgresGID: -1
 
   # -- Resources requirements of every generated Pod.
   # Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.
@@ -332,6 +346,13 @@ backups:
   # -- Retention policy for backups
   retentionPolicy: "30d"
 
+imageCatalog:
+  # -- Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored.
+  create: true
+  # -- List of images to be provisioned in an image catalog.
+  images: []
+    # - image: ghcr.io/your_repo/your_image:your_tag
+    #   major: 16
 
 pooler:
   # -- Whether to enable PgBouncer

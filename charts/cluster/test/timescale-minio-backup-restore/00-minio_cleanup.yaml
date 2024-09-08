@@ -13,4 +13,4 @@ spec:
         args:
          - |
            mc alias set myminio https://minio.minio.svc.cluster.local minio minio123
-           mc rm --recursive --force myminio/mybucket/postgresql-minio-backup-restore
+           mc rm --recursive --force myminio/mybucket/timescale

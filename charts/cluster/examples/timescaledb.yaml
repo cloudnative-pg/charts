@@ -1,8 +1,8 @@
-type: postgis
+type: timescaledb
 mode: standalone
 version:
-  postgresql: "16"
-  postgis: "3.4"
+  postgresql: "15.7"
+  timescaledb: "2.15"
 cluster:
   instances: 1
 backups:
