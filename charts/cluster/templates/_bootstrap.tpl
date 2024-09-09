@@ -15,13 +15,6 @@ bootstrap:
       - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
       {{- else if eq .Values.type "timescaledb" }}
       - CREATE EXTENSION IF NOT EXISTS timescaledb;
-      {{- else if eq .Values.type "paradedb" }}
-      - CREATE EXTENSION IF NOT EXISTS pg_search;
-      - CREATE EXTENSION IF NOT EXISTS pg_analytics;
-      - CREATE EXTENSION IF NOT EXISTS pg_ivm;
-      - CREATE EXTENSION IF NOT EXISTS vector;
-      - CREATE EXTENSION IF NOT EXISTS vectorscale;
-      - ALTER DATABASE "{{ default "app" .Values.cluster.initdb.database }}" SET search_path TO public,paradedb;
       {{- end }}
       {{- with .Values.cluster.initdb }}
         {{- range .postInitApplicationSQL }}
@@ -30,6 +23,11 @@ bootstrap:
       {{- end }}
     postInitTemplateSQL:
       {{- if eq .Values.type "paradedb" }}
+      - CREATE EXTENSION IF NOT EXISTS pg_search;
+      - CREATE EXTENSION IF NOT EXISTS pg_analytics;
+      - CREATE EXTENSION IF NOT EXISTS pg_ivm;
+      - CREATE EXTENSION IF NOT EXISTS vector;
+      - CREATE EXTENSION IF NOT EXISTS vectorscale;
       - ALTER DATABASE template1 SET search_path TO public,paradedb;
       {{- end }}
       {{- with .Values.cluster.initdb }}

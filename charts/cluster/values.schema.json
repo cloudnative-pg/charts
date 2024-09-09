@@ -588,6 +588,9 @@
         "version": {
             "type": "object",
             "properties": {
+                "paradedb": {
+                    "type": "string"
+                },
                 "postgis": {
                     "type": "string"
                 },
