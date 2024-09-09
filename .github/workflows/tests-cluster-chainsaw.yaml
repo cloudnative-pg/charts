@@ -6,7 +6,7 @@ on:
       - 'gh-pages'
 
 jobs:
-  test-cluster-standalone:
+  test-cluster-chainsaw:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -16,6 +16,21 @@ jobs:
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3.6.0
+
+      - name: Set ParadeDB Version to Latest
+        working-directory: charts/paradedb/
+        env:
+          GH_TOKEN: ${{ secrets.GHA_CREATE_RELEASE_PAT }}
+        run: |
+          LATEST_TAG=$(curl -s https://api.github.com/repos/paradedb/paradedb/tags | jq -r '.[0].name')
+          APP_VERSION=${LATEST_TAG#v}
+          sed -i "s/^[[:space:]]*paradedb: .*/  paradedb: \"$APP_VERSION\"/" values.yaml
+          sed -i "s/^version: .*/version: ${{ vars.CHART_VERSION_MAJOR }}.${{ vars.CHART_VERSION_MINOR }}.${{ vars.CHART_VERSION_PATCH }}/" Chart.yaml
+          echo "values.yaml:"
+          cat values.yaml
+          echo "----------------------------------------"
+          echo "Chart.yaml:"
+          cat Chart.yaml
 
       - name: Setup kind
         uses: ./.github/actions/setup-kind
