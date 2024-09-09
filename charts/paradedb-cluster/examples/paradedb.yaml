@@ -1,0 +1,9 @@
+type: paradedb
+mode: standalone
+version:
+  postgresql: "16.3"
+  paradedb: "0.9.4"
+cluster:
+  instances: 1
+backups:
+  enabled: false
