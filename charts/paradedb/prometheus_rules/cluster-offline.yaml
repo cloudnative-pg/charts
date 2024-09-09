@@ -1,0 +1,19 @@
+{{- $alert := "CNPGClusterOffline" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: ParadeDB CNPG Cluster has no running instances!
+  description: |-
+    ParadeDB CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" has no ready instances.
+
+    Having an offline cluster means your applications will not be able to access the database, leading to
+    potential service disruption and/or data loss.
+  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterOffline.md
+expr: |
+  (count(cnpg_collector_up{namespace="{{ .namespace }}",pod=~"{{ .podSelector }}"}) OR on() vector(0)) == 0
+for: 5m
+labels:
+  severity: critical
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}
