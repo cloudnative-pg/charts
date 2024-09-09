@@ -1,0 +1,12 @@
+type: postgresql
+mode: standalone
+version:
+  major: "16"
+  paradedb: "0.11.0"
+cluster:
+  instances: 1
+  imageCatalogRef:
+    kind: ImageCatalog
+    name: my-image-catalog
+backups:
+  enabled: false

@@ -1,0 +1,5 @@
+/.github/actions/
+/.github/workflows/lint.yml
+/.github/workflows/tests-*.yml
+.github/workflows/tests-*.yaml
+/charts/

@@ -1,0 +1,17 @@
+{{- $alert := "CNPGClusterHighConnectionsCritical" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: ParadeDB Instance maximum number of connections critical!
+  description: |-
+    ParadeDB CNPG Cluster "{{ .namespace }}/{{ .cluster }}" instance {{ .labels.pod }} is using {{ .value }}% of
+    the maximum number of connections.
+  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterHighConnectionsCritical.md
+expr: |
+  sum by (pod) (cnpg_backends_total{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}) / max by (pod) (cnpg_pg_settings_setting{name="max_connections", namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}) * 100 > 95
+for: 5m
+labels:
+  severity: critical
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}
