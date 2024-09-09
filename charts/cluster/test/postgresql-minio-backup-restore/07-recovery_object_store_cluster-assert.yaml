@@ -1,6 +1,0 @@
-apiVersion: postgresql.cnpg.io/v1
-kind: Cluster
-metadata:
-  name: recovery-object-store-cluster
-status:
-  readyInstances: 2

@@ -1,0 +1,101 @@
+name: Test ParadeDB Helm Chart
+
+on:
+  pull_request:
+    branches-ignore:
+      - "gh-pages"
+
+permissions: read-all
+
+jobs:
+  test-list:
+    runs-on: ubuntu-latest
+    outputs:
+      tests: ${{ steps.listTests.outputs.tests }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - id: listTests
+        run: |
+          echo "tests=$(ls charts/paradedb/test -1 | jq -cRn '{ include: [inputs | { test: "\(.)" }]}')" >> $GITHUB_OUTPUT
+
+  test:
+    needs: test-list
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.test-list.outputs.tests) }}
+    name: ${{ matrix.test }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      # Added by ParadeDB: Authenticate to Docker Hub to avoid rate limits
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      # Added by ParadeDB: Always pull the latest version of paradedb/paradedb
+      - name: Set ParadeDB Version to Latest
+        working-directory: charts/paradedb/
+        env:
+          GH_TOKEN: ${{ secrets.PARADEDB_BOT_GITHUB_TOKEN }}
+        run: |
+          LATEST_TAG=$(gh api repos/paradedb/paradedb/tags --jq '.[0].name')
+          APP_VERSION=${LATEST_TAG#v}
+          sed -i "s/^[[:space:]]*paradedb: .*/  paradedb: \"$APP_VERSION\"/" values.yaml
+          sed -i "s/^version: .*/version: ${{ vars.CHART_VERSION_MAJOR }}.${{ vars.CHART_VERSION_MINOR }}.${{ vars.CHART_VERSION_PATCH }}/" Chart.yaml
+          echo "values.yaml:"
+          cat values.yaml
+          echo "----------------------------------------"
+          echo "Chart.yaml:"
+          cat Chart.yaml
+
+      - name: Setup kind
+        uses: ./.github/actions/setup-kind
+
+      - name: Deploy the operator
+        uses: ./.github/actions/deploy-operator
+
+      - name: Install Prometheus CRDs
+        run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm install prometheus-crds prometheus-community/prometheus-operator-crds
+
+      - name: Install Chainsaw
+        uses: kyverno/action-install-chainsaw@v0.2.12
+        with:
+          verify: true
+
+      - name: Setup MinIO
+        run: |
+          helm repo add minio-operator https://operator.min.io
+          helm upgrade \
+            --install \
+            --namespace minio-system \
+            --create-namespace \
+            --wait \
+            operator minio-operator/operator
+          helm upgrade \
+            --install \
+            --namespace minio \
+            --create-namespace \
+            --wait \
+            --values ./.github/minio.yaml \
+            tenant minio-operator/tenant
+
+      # The Docker Hub tokens are required for the ParadeDB Enterprise tests
+      - name: Run Kyverno/Chainsaw
+        run: chainsaw test charts/paradedb/test/${{ matrix.test }}
+        env:
+          PARADEDB_ENTERPRISE_DOCKER_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+          PARADEDB_ENTERPRISE_DOCKER_PAT: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}

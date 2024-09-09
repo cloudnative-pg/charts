@@ -1,0 +1,174 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: non-default-configuration-paradedb
+  labels:
+    foo: bar
+  annotations:
+      foo: bar
+spec:
+  imageName: ghcr.io/cloudnative-pg/crazycustomimage:99.99
+  imagePullPolicy: Always
+  postgresUID: 1001
+  postgresGID: 1002
+  instances: 2
+  postgresql:
+    ldap:
+      server: 'openldap.default.svc.cluster.local'
+      bindSearchAuth:
+        baseDN: 'ou=org,dc=example,dc=com'
+        bindDN: 'cn=admin,dc=example,dc=com'
+        bindPassword:
+          name: 'ldapBindPassword'
+          key: 'data'
+        searchAttribute: 'uid'
+    parameters:
+      max_connections: "42"
+      cron.database_name: "postgres"
+    pg_hba:
+      - host all 1.2.3.4/32 trust
+    pg_ident:
+      - mymap   /^(.*)@mydomain\.com$      \1
+    shared_preload_libraries:
+      - pg_search
+      - pg_cron
+      - pg_stat_statements
+      - pgaudit
+    synchronous:
+      method: any
+      number: 1
+  bootstrap:
+    initdb:
+      database: mydb
+      owner: dante
+      secret:
+        name: mydb-secret
+      postInitApplicationSQL:
+        - CREATE EXTENSION IF NOT EXISTS pg_search;
+        - CREATE EXTENSION IF NOT EXISTS pg_ivm;
+        - CREATE EXTENSION IF NOT EXISTS vector;
+        - CREATE EXTENSION IF NOT EXISTS postgis;
+        - CREATE EXTENSION IF NOT EXISTS postgis_topology;
+        - CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+        - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
+        - CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+        - ALTER DATABASE "mydb" SET search_path TO public,paradedb;
+        - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
+      postInitTemplateSQL:
+        - CREATE EXTENSION IF NOT EXISTS pg_search;
+        - CREATE EXTENSION IF NOT EXISTS pg_ivm;
+        - CREATE EXTENSION IF NOT EXISTS vector;
+        - CREATE EXTENSION IF NOT EXISTS postgis;
+        - CREATE EXTENSION IF NOT EXISTS postgis_topology;
+        - CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+        - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
+        - CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+        - ALTER DATABASE template1 SET search_path TO public,paradedb;
+        - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
+      postInitSQL:
+        - CREATE EXTENSION IF NOT EXISTS pg_cron;
+        - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
+  superuserSecret:
+    name: supersecret-secret
+  enableSuperuserAccess: true
+  enablePDB: false
+  certificates:
+    serverCASecret: ca-secret
+    serverTLSSecret: tls-secret
+    replicationTLSSecret: replication-tls-secret
+    clientCASecret: client-ca-secret
+  imagePullSecrets:
+    - name: image-pull-secret
+  storage:
+    size: 256Mi
+    storageClass: standard
+  walStorage:
+    size: 256Mi
+    storageClass: standard
+  affinity:
+    topologyKey: kubernetes.io/hostname
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - node1
+            - node2
+  env:
+    - name: MY_CUSTOM_FLAG
+      value: enabled
+    - name: MY_CUSTOM_ENV
+      valueFrom:
+        configMapKeyRef:
+          name: my-custom-env
+          key: env
+          optional: true
+    - name: MY_CUSTOM_SECRET_ENV
+      valueFrom:
+        secretKeyRef:
+          name: my-custom-secret
+          key: secret
+          optional: true
+  envFrom:
+    - configMapRef:
+        name: global-envs
+        optional: true
+    - secretRef:
+        name: db-credentials
+        optional: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 100m
+      memory: 256Mi
+  priorityClassName: mega-high
+  primaryUpdateStrategy: supervised
+  primaryUpdateMethod: restart
+  logLevel: warning
+  managed:
+    roles:
+      - name: dante
+        ensure: present
+        comment: Dante Alighieri
+        login: true
+        inherit: true
+        inRoles:
+          - pg_monitor
+          - pg_signal_backend
+        connectionLimit: -1
+    services:
+      additional:
+        - selectorType: rw
+          serviceTemplate:
+            metadata:
+              name: "test-lb"
+              labels:
+                test-label: "true"
+              annotations:
+                test-annotation: "true"
+            spec:
+              type: LoadBalancer
+          updateStrategy: patch
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        my-annotation: my-service-account
+  podSecurityContext:
+    runAsUser: 26
+    runAsGroup: 26
+    fsGroup: 26
+    supplementalGroups: [2000, 3000]
+    fsGroupChangePolicy: "OnRootMismatch"
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+      add:
+        - NET_BIND_SERVICE
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true

@@ -1,0 +1,14 @@
+type: paradedb
+mode: standalone
+version:
+  major: "18"
+  paradedb: "0.23.0"
+cluster:
+  instances: 1
+backups:
+  enabled: false
+imageCatalog:
+  create: true
+  images:
+    - major: 18
+      image: my-custom-postgres-image:mytag

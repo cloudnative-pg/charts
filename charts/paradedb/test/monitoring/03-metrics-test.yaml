@@ -1,0 +1,90 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-reader
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get","list","watch"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pod-reader-binding
+subjects:
+  - kind: ServiceAccount
+    name: pod-reader
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: metrics-test
+spec:
+  template:
+    spec:
+      serviceAccountName: pod-reader
+      restartPolicy: OnFailure
+      containers:
+      - name: metrics-test
+        image: alpine:3.19
+        command: ['sh', '-c']
+        env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        args:
+          - |
+            apk --no-cache add curl kubectl
+            set -e
+            POD_URL="http://$(kubectl -n $NAMESPACE get pods -l cnpg.io/podRole=instance -o jsonpath="{.items[0].status.podIP}"):9187/metrics"
+            echo "POD_URL: $POD_URL"
+
+            echo "pg_stat_subscription_received_lsn"
+            curl $POD_URL | grep pg_stat_subscription_received_lsn
+            echo "pg_stat_subscription_last_msg_send_time"
+            curl $POD_URL | grep pg_stat_subscription_last_msg_send_time
+            echo "pg_stat_subscription_last_msg_receipt_time"
+            curl $POD_URL | grep pg_stat_subscription_last_msg_receipt_time
+            echo "pg_stat_subscription_latest_end_lsn"
+            curl $POD_URL | grep pg_stat_subscription_latest_end_lsn
+            echo "pg_stat_subscription_latest_end_time"
+            curl $POD_URL | grep pg_stat_subscription_latest_end_time
+            echo "pg_stat_subscription_enabled"
+            curl $POD_URL | grep pg_stat_subscription_enabled
+            echo "pg_stat_subscription_apply_error_count"
+            curl $POD_URL | grep pg_stat_subscription_apply_error_count
+            echo "pg_stat_subscription_sync_error_count"
+            curl $POD_URL | grep pg_stat_subscription_sync_error_count
+            echo "pg_stat_subscription_stats_reset"
+            curl $POD_URL | grep pg_stat_subscription_stats_reset
+            echo "pg_stat_subscription_pid"
+            curl $POD_URL | grep pg_stat_subscription_pid
+
+            echo "paradedb_index_relation_size"
+            curl $POD_URL | grep paradedb_index_relation_size
+            echo "paradedb_index_segments_count"
+            curl $POD_URL | grep paradedb_index_segments_count
+            echo "paradedb_index_segments_min_size"
+            curl $POD_URL | grep paradedb_index_segments_min_size
+            echo "paradedb_index_segments_max_size"
+            curl $POD_URL | grep paradedb_index_segments_max_size
+            echo "paradedb_index_segments_avg_size"
+            curl $POD_URL | grep paradedb_index_segments_avg_size
+
+            echo "paradedb_index_layer_segments_bucket"
+            curl $POD_URL | grep paradedb_index_layer_segments_bucket
+            echo "paradedb_index_layer_segments_count"
+            curl $POD_URL | grep paradedb_index_layer_segments_count
+            echo "paradedb_index_layer_segments_sum"
+            curl $POD_URL | grep paradedb_index_layer_segments_sum

@@ -1,0 +1,25 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: extension-upgrade-paradedb
+status:
+  readyInstances: 2
+  phase: Cluster in healthy state
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: extension-upgrade-paradedb-paradedb
+spec:
+  name: paradedb
+  cluster:
+    name: extension-upgrade-paradedb
+  ensure: present
+  owner: paradedb
+  template: template1
+  encoding: UTF8
+  databaseReclaimPolicy: retain
+  extensions:
+    - name: pg_search
+      ensure: present
+      version: "0.19.11"

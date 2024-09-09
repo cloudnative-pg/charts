@@ -1,0 +1,173 @@
+##
+# This test creates a source CNPG cluster with ParadeDB Enterprise (required for WALs) and with MinIO backups
+# and then creates a replica cluster bootstrapped with pg_basebackup, object store, and a hybrid one, using both.
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: replica
+spec:
+  timeouts:
+    apply: 1s
+    assert: 3m
+    cleanup: 1m
+  steps:
+    - name: Clear the MinIO bucket
+      try:
+        - apply:
+            file: ./00-minio_cleanup.yaml
+        - assert:
+            file: ./00-minio_cleanup-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=minio-cleanup
+    - name: Install a source cluster with Enterprise
+      try:
+        - script:
+            content: |
+              # Create Docker registry secret for ParadeDB Enterprise
+              kubectl -n $NAMESPACE create secret docker-registry paradedb-enterprise-registry-cred --docker-server="https://index.docker.io/v1/" --docker-username="$PARADEDB_ENTERPRISE_DOCKER_USERNAME" --docker-password="$PARADEDB_ENTERPRISE_DOCKER_PAT"
+
+              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n kube-system get configmaps kube-root-ca.crt -o jsonpath='{.data.ca\.crt}')" --dry-run=client -o yaml | kubectl apply -f -
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-source_cluster_enterprise.yaml \
+                --wait \
+                source ../../
+        - assert:
+            file: 01-source_cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+    - name: Write some data to the cluster
+      try:
+        - apply:
+            file: ./02-data_write.yaml
+        - assert:
+            file: ./02-data_write-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-write
+    - name: Create a backup
+      try:
+        - apply:
+            file: ./03-backup.yaml
+        - assert:
+            file: ./03-backup_running-assert.yaml
+        - apply:
+            file: ./03-checkpoint.yaml
+        - assert:
+            file: ./03-backup_completed-assert.yaml
+    - name: Create a replica cluster from pg_basebackup
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./04-replica_cluster_enterprise.yaml \
+                --wait \
+                replica ../../
+        - assert:
+            file: ./04-replica_cluster-assert.yaml
+    - name: Verify the data on the replica cluster exists
+      timeouts:
+        apply: 1s
+        assert: 4m
+      try:
+        - script:
+            content: |
+              # Wait for replica cluster to be ready and verify it's streaming
+              echo "Waiting for replica cluster to be ready..."
+              kubectl wait --for=condition=ready cluster/replica-paradedb -n $NAMESPACE --timeout=5m || true
+              echo "Checking replica cluster status..."
+              kubectl get cluster replica-paradedb -n $NAMESPACE -o yaml
+              echo "Checking replica pods..."
+              kubectl get pods -n $NAMESPACE -l cnpg.io/cluster=replica-paradedb
+        - apply:
+            file: 05-data_test.yaml
+        - assert:
+            file: 05-data_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+            name: replica-paradedb
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+            name: data-test-replica
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test-replica
+        - podLogs:
+            selector: cnpg.io/cluster=replica-paradedb
+        - script:
+            content: |
+              echo "=== Replica Cluster Conditions ==="
+              kubectl get cluster replica-paradedb -n $NAMESPACE -o jsonpath='{.status.conditions}' | jq '.' || kubectl get cluster replica-paradedb -n $NAMESPACE -o yaml | grep -A 20 "conditions:"
+
+              echo "=== Replica Cluster Status ==="
+              kubectl get cluster replica-paradedb -n $NAMESPACE -o jsonpath='{.status}' | jq '.' || kubectl get cluster replica-paradedb -n $NAMESPACE -o yaml | grep -A 30 "status:"
+
+              echo "=== Replica Pod Status ==="
+              REPLICA_POD=$(kubectl get pods -n $NAMESPACE -l cnpg.io/cluster=replica-paradedb -o jsonpath='{.items[0].metadata.name}' 2>/dev/null)
+              if [ -n "$REPLICA_POD" ]; then
+                echo "Replica pod: $REPLICA_POD"
+                kubectl get pod $REPLICA_POD -n $NAMESPACE -o jsonpath='{.status.conditions}' | jq '.' || kubectl get pod $REPLICA_POD -n $NAMESPACE -o yaml | grep -A 15 "conditions:"
+                echo "=== Replica Pod Events ==="
+                kubectl get events -n $NAMESPACE --field-selector involvedObject.name=$REPLICA_POD --sort-by='.lastTimestamp' | tail -20
+              fi
+
+              echo "=== Cluster Events (last 30) ==="
+              kubectl get events -n $NAMESPACE --field-selector involvedObject.kind=Cluster --sort-by='.lastTimestamp' | tail -30
+    - name: Create a replica cluster from object store
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./06-replica_object_store_cluster.yaml \
+                --wait \
+                replica-object-store ../../
+        - assert:
+            file: ./06-replica_object_store_cluster-assert.yaml
+    - name: Verify the data on the object store replica cluster exists
+      try:
+        - apply:
+            file: 07-data_test.yaml
+        - assert:
+            file: 07-data_test-assert.yaml
+    - name: Create a hybrid replica cluster
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./08-replica_hybrid_cluster.yaml \
+                --wait \
+                replica-hybrid ../../
+        - assert:
+            file: ./08-replica_hybrid_cluster-assert.yaml
+    - name: Verify the data on the hybrid replica cluster exists
+      try:
+        - apply:
+            file: 09-data_test.yaml
+        - assert:
+            file: 09-data_test-assert.yaml
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE source
+              helm uninstall --namespace $NAMESPACE replica
+              helm uninstall --namespace $NAMESPACE replica-object-store
+              helm uninstall --namespace $NAMESPACE replica-hybrid

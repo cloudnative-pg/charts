@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: paradedb-write
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-write
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: paradedb-app
+                key: uri
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+          - |
+            apk --no-cache add postgresql-client
+            psql "$DB_URI" <<-EOSQL
+              CALL paradedb.create_bm25_test_table(
+                schema_name => 'public',
+                table_name => 'mock_items_paradedb_minio_backup_restore'
+              );
+              CREATE INDEX search_idx_paradedb_minio_backup_restore ON mock_items_paradedb_minio_backup_restore
+              USING bm25 (id, description, category, rating, in_stock, created_at, metadata, weight_range)
+              WITH (key_field='id');
+            EOSQL

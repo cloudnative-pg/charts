@@ -1,0 +1,27 @@
+type: paradedb
+mode: replica
+
+cluster:
+  instances: 1
+  storage:
+    size: 256Mi
+
+replica:
+  self: "replica-cluster"
+  primary: "source-cluster"
+  bootstrap:
+    source: object_store
+  origin:
+    objectStore:
+      clusterName: source-paradedb
+      provider: azure
+      destinationPath: "https://myaccount.blob.core.windows.net/mycontainer"
+      azure:
+        connectionString: "myconnstring"
+        storageAccount: "myaccount"
+        storageKey: "mystoragekey"
+        storageSasToken: "mysastoken"
+        containerName: "mycontainer"
+
+backups:
+  enabled: false
