@@ -69,6 +69,8 @@ Cluster Configuration
 Currently the chart supports two database types. These are configured via the `type` parameter. These are:
 * `postgresql` - A standard PostgreSQL database.
 * `postgis` - A PostgreSQL database with the PostGIS extension installed.
+* `timescaledb` - A PostgreSQL database with the TimescaleDB extension installed.
+* `paradedb` - A PostgreSQL database with the ParadeDB extension installed.
 
 Depending on the type the chart will use a different Docker image and fill in some initial setup, like extension installation.
 
