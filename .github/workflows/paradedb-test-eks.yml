@@ -1,0 +1,118 @@
+# workflows/paradedb-test-eks.yml
+#
+# ParadeDB Test EKS
+# Test the ParadeDB Helm chart against a local AWS EKS cluster via LocalStack. This test workflow is
+# specific to the ParadeDB cloudnative-pg/charts fork.
+
+name: ParadeDB Test EKS
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "charts/paradedb/**"
+      - ".github/workflows/paradedb-test-eks.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: paradedb-test-eks-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  paradedb-test-eks:
+    name: Test ParadeDB Helm Chart on AWS EKS via LocalStack
+    runs-on: ubuntu-22.04 # As of October 2024, the LocalStack GitHub Action is not compatible with Ubuntu 24.04
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout Git Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Start LocalStack
+        uses: LocalStack/setup-localstack@v0.2.3
+        with:
+          image-tag: "latest"
+          install-awslocal: "true"
+          configuration: DEBUG=1
+          use-pro: "true"
+        env:
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+
+      - name: Configure AWS CLI for LocalStack
+        run: |
+          awslocal configure set aws_secret_access_key test
+          awslocal configure set aws_access_key_id test
+          awslocal configure set region us-east-1
+
+      # As of writing, the latest Kubernetes version available on LocalStack EKS
+      # is 1.29. CloudNativePG requires version 1.25+
+      - name: Create the LocalStack AWS EKS Cluster
+        run: |
+          awslocal --endpoint-url=http://localhost:4566 eks create-cluster \
+            --name paradedb-eks \
+            --role-arn arn:aws:iam::000000000000:role/eks-service-role \
+            --resources-vpc-config subnetIds=subnet-12345 \
+            --kubernetes-version 1.29
+
+      - name: Wait for LocalStack AWS EKS Cluster to be Active
+        run: |
+          for i in {1..10}; do
+            STATUS=$(awslocal --endpoint-url=http://localhost:4566 --region us-east-1 eks describe-cluster --name paradedb-eks --query 'cluster.status' --output text)
+            if [ "$STATUS" == "ACTIVE" ]; then
+              echo "Cluster is ACTIVE"
+              break
+            else
+              echo "Cluster status is $STATUS. Waiting..."
+              sleep 10
+            fi
+          done
+
+      - name: Update Kubeconfig to Use the LocalStack AWS EKS Cluster
+        run: awslocal --endpoint-url=http://localhost:4566 eks update-kubeconfig --name paradedb-eks
+
+      - name: Wait for the LocalStack AWS EKS Cluster to be Ready
+        run: |
+          nodes=$(kubectl get nodes --no-headers -o custom-columns=NAME:.metadata.name)
+          for node in $nodes; do
+            kubectl wait --for=condition=ready node/$node --timeout=120s
+          done
+
+      - name: Install the CloudNativePG Operator
+        run: |
+          helm repo add cnpg https://cloudnative-pg.github.io/charts
+          helm upgrade --atomic --install cnpg --namespace cnpg-system --create-namespace cnpg/cloudnative-pg
+
+      - name: Install the Prometheus Operator
+        run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm upgrade --atomic --install prometheus-community --namespace prometheus-community --create-namespace prometheus-community/prometheus-operator-crds
+
+      - name: Test Helm Dependency Update
+        working-directory: charts/paradedb/
+        run: helm dependency update . --debug
+
+      - name: Fetch the latest ParadeDB release tag
+        id: paradedb-version
+        run: |
+          # Fetch the latest release tag and strip the 'v' prefix
+          LATEST_TAG=$(curl -s https://api.github.com/repos/paradedb/paradedb/releases/latest | jq -r '.tag_name')
+          CLEANED_TAG=${LATEST_TAG#v}
+          echo $CLEANED_TAG
+          echo "version=$CLEANED_TAG" >> $GITHUB_OUTPUT
+
+      - name: Test Helm Install
+        working-directory: charts/paradedb/
+        run: helm install paradedb . --namespace paradedb --create-namespace --set version.paradedb=${{ steps.paradedb-version.outputs.version }} --debug
+
+      - name: Test Helm Upgrade
+        working-directory: charts/paradedb/
+        run: helm upgrade paradedb . --namespace paradedb --reuse-values --wait --debug
+
+      - name: Test PostgreSQL Connection
+        run: helm test paradedb --namespace paradedb
