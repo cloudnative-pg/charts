@@ -1,41 +1,30 @@
-# CloudNativePG Helm Charts
+# ParadeDB Helm Chart
 
-[![Stack Overflow](https://img.shields.io/badge/stackoverflow-cloudnative--pg-blue?logo=stackoverflow&logoColor=%23F48024&link=https%3A%2F%2Fstackoverflow.com%2Fquestions%2Ftagged%2Fcloudnative-pg)][stackoverflow]
 [![GitHub License](https://img.shields.io/github/license/cloudnative-pg/charts)][license]
 
+Getting Started
+---------------
 
-[![GitHub Release](https://img.shields.io/github/v/release/cloudnative-pg/charts?filter=cloudnative-pg-*)](https://github.com/cloudnative-pg/charts/tree/main/charts/cloudnative-pg)
-[![GitHub Release](https://img.shields.io/github/v/release/cloudnative-pg/charts?filter=cluster-*)](https://github.com/cloudnative-pg/charts/tree/main/charts/cluster)
+### Installing the CloudNativePG Operator
+Skip this step if the CNPG operator is already installed in your cluster.
 
-
-## Operator chart
-
-Helm chart to install the
-[CloudNativePG operator](https://cloudnative-pg.io), originally created and sponsored by
-[EDB](https://www.enterprisedb.com/) to manage PostgreSQL workloads on any supported Kubernetes cluster
-running in private, public, or hybrid cloud environments.
-
-**NOTE**: supports only the latest point release of the CloudNativePG operator.
 ```console
 helm repo add cnpg https://cloudnative-pg.github.io/charts
 helm upgrade --install cnpg \
-  --namespace cnpg-system \
-  --create-namespace \
-  cnpg/cloudnative-pg
+--namespace cnpg-system \
+--create-namespace \
+cnpg/cloudnative-pg
 ```
 
-Refer to the [Operator Chart documentation](charts/cloudnative-pg/README.md) for advanced configuration and monitoring.
-
-## Cluster chart
-
-Helm chart to install a CloudNativePG database cluster.
+### Setting up a CNPG Cluster
 
 ```console
-helm repo add cnpg https://cloudnative-pg.github.io/charts
-helm upgrade --install database \
-  --namespace database \
-  --create-namespace \
-  cnpg/cluster
+helm repo add paradedb https://paradedb.github.io/charts
+helm upgrade --install paradedb \
+--namespace paradedb-database \
+--create-namespace \
+--values values.yaml \
+paradedb/cluster
 ```
 
 Refer to the [Cluster Chart documentation](charts/cluster/README.md) for advanced configuration options.
