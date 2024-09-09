@@ -31,5 +31,3 @@ spec:
                 numeric_fields => paradedb.field('rating')
               );
             EOSQL
-
-           
