@@ -1,0 +1,88 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: database-management
+spec:
+  timeouts:
+    apply: 1s
+    assert: 300s
+    cleanup: 60s
+  steps:
+    - name: database-parameters
+      timeouts:
+        apply: 1s
+        assert: 5s
+        cleanup: 30s
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-database-parameters.yaml \
+                --wait \
+                database-parameters ../../
+        - assert:
+            file: ./01-database-parameters-assert.yaml
+
+    - name: Provision a cluster with a database with the ParadeDB extension
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./02-extension-upgrade-init.yaml \
+                --wait \
+                extension-upgrade ../../
+        - assert:
+            file: ./02-extension-upgrade-init-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+            name: extension-upgrade-paradedb
+        - podLogs:
+            selector: cnpg.io/cluster=extension-upgrade-paradedb
+        - script:
+            content: |
+              echo "=== Cluster Status ==="
+              kubectl get cluster extension-upgrade-paradedb -n $NAMESPACE -o yaml | grep -A 50 "status:"
+              echo "=== Pod Status ==="
+              kubectl get pods -n $NAMESPACE -l cnpg.io/cluster=extension-upgrade-paradedb -o wide
+              echo "=== Pod Events ==="
+              kubectl get events -n $NAMESPACE --sort-by='.lastTimestamp' | tail -30
+
+    - name: Verify the ParadeDB extension version before upgrade
+      try:
+        - apply:
+            file: ./03-paradedb_extension_check.yaml
+        - assert:
+            file: ./03-paradedb_extension_check-assert.yaml
+
+    - name: Upgrade the ParadeDB cluster and the extension
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./04-extension-upgrade-post.yaml \
+                --wait \
+                extension-upgrade ../../
+        - assert:
+            file: ./04-extension-upgrade-post-assert.yaml
+
+    - name: Verify the ParadeDB extension version after upgrade
+      try:
+        - apply:
+            file: ./05-paradedb_extension_check.yaml
+        - assert:
+            file: ./05-paradedb_extension_check-assert.yaml
+
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE database-parameters
+              helm uninstall --namespace $NAMESPACE extension-upgrade

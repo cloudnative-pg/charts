@@ -1,0 +1,23 @@
+type: paradedb
+mode: standalone
+
+cluster:
+  instances: 1
+  monitoring:
+    enabled: true
+    customQueries:
+      - name: "pg_database_size_bytes"
+        query: |
+          SELECT
+            current_database() as datname,
+            pg_database_size(current_database()) as size_bytes;
+        metrics:
+          - datname:
+              usage: "LABEL"
+              description: "Name of the database"
+          - size_bytes:
+              usage: GAUGE
+              description: "Size of the database in bytes"
+
+backups:
+  enabled: false

@@ -1,0 +1,89 @@
+{{- if .Values.cluster.monitoring.instrumentation.paradedbIndex }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cluster.fullname" . }}-monitoring-paradedb-index
+  namespace: {{ include "cluster.namespace" . }}
+  labels:
+    cnpg.io/reload: ""
+    {{- include "cluster.labels" . | nindent 4 }}
+data:
+  custom-queries: |
+    paradedb_index:
+      query: |
+        SELECT current_database() as datname
+             , n.nspname AS schema
+             , c.relname AS relname
+             , pg_relation_size(c.oid) AS relation_size
+             , COUNT(info.byte_size) AS segments_count
+             , MIN(info.byte_size) AS segments_min_size
+             , MAX(info.byte_size) AS segments_max_size
+             , AVG(info.byte_size) AS segments_avg_size
+        FROM pg_class c
+        JOIN pg_namespace n ON n.oid = c.relnamespace
+        JOIN pg_index i ON i.indexrelid = c.oid
+        JOIN pg_am am ON am.oid = c.relam
+        JOIN LATERAL paradedb.index_info(c.oid) AS info ON true
+        WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
+          AND am.amname = 'bm25'
+        GROUP BY n.nspname, c.relname, c.oid;
+      target_databases: ["*"]
+      predicate_query: "SELECT 1 FROM pg_extension WHERE extname = 'pg_search' AND extversion = '{{ .Values.version.paradedb }}';"
+      metrics:
+        - datname:
+            description: Name of the database
+            usage: LABEL
+        - schema:
+            description: Schema within the database
+            usage: LABEL
+        - relname:
+            description: Index name
+            usage: LABEL
+        - relation_size:
+            description: Full Relation size
+            usage: GAUGE
+        - segments_count:
+            description: Segment count
+            usage: GAUGE
+        - segments_min_size:
+            description: Minimum segment size in bytes
+            usage: GAUGE
+        - segments_max_size:
+            description: Maximum segment size in bytes
+            usage: GAUGE
+        - segments_avg_size:
+            description: Average segment size in bytes
+            usage: GAUGE
+    paradedb_index_layer:
+      query: |
+        WITH index_layer_histogram AS (
+          SELECT t.relname
+               , t.high
+               , SUM(i.count) AS count
+          FROM paradedb.index_layer_info t
+          LEFT JOIN paradedb.index_layer_info i
+          ON i.relname = t.relname AND i.high <= t.high
+          GROUP BY t.relname, t.high, t.relname
+        )
+        SELECT current_database() as datname
+             , t.relname
+             , SUM(t.byte_size)   AS segments_sum
+             , SUM(t.count)       AS segments_count
+             , ARRAY_AGG(t.high)  AS segments
+             , ARRAY_AGG(i.count) AS segments_bucket
+        FROM paradedb.index_layer_info t
+        LEFT JOIN index_layer_histogram i ON i.relname = t.relname AND i.high = t.high
+        GROUP BY datname, t.relname;
+      target_databases: ["*"]
+      predicate_query: "SELECT 1 FROM pg_extension WHERE extname = 'pg_search' AND extversion = '{{ .Values.version.paradedb }}';"
+      metrics:
+        - datname:
+            description: Name of the database
+            usage: LABEL
+        - relname:
+            description: Index name
+            usage: LABEL
+        - segments:
+            description: Layer segments size distribution
+            usage: HISTOGRAM
+{{- end }}

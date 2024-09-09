@@ -1,9 +1,0 @@
-type: postgis
-mode: standalone
-version:
-  postgresql: "16"
-  postgis: "3.4"
-cluster:
-  instances: 1
-backups:
-  enabled: false

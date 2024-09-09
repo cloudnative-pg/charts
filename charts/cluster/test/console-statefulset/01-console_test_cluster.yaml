@@ -1,8 +1,0 @@
-type: postgresql
-mode: standalone
-cluster:
-  instances: 1
-  console:
-    enabled: true
-backups:
-  enabled: false

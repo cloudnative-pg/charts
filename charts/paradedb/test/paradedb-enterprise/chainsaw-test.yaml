@@ -1,0 +1,82 @@
+##
+# This test sets up a ParadeDB Enterprise Cluster and ensures that ParadeDB extensions are available.
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: paradedb-enterprise
+spec:
+  timeouts:
+    apply: 1s
+    assert: 2m
+    cleanup: 1m
+  steps:
+    - name: Install a standalone ParadeDB Enterprise CNPG Cluster
+      try:
+        - script:
+            content: |
+              kubectl -n $NAMESPACE create secret docker-registry paradedb-enterprise-registry-cred --docker-server="https://index.docker.io/v1/" --docker-username="$PARADEDB_ENTERPRISE_DOCKER_USERNAME" --docker-password="$PARADEDB_ENTERPRISE_DOCKER_PAT"
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-paradedb-NCC-1701-D_cluster.yaml \
+                --wait \
+                paradedb-ncc-1701-d ../../
+        - assert:
+            file: ./01-paradedb-NCC-1701-D_cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: v1
+            kind: Pod
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb-ncc-1701-d
+    - name: Verify ParadeDB Enterprise extensions are installed
+      timeouts:
+        apply: 1s
+        assert: 30s
+      try:
+        - apply:
+            file: 02-paradedb_test.yaml
+        - assert:
+            file: 02-paradedb_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: v1
+            kind: Pod
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb-ncc-1701-d
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=paradedb-enterprise-test
+    - name: Verify index replication
+      timeouts:
+        apply: 1s
+        assert: 30s
+      try:
+        - apply:
+            file: 03-paradedb_replication_test.yaml
+        - assert:
+            file: 03-paradedb_replication_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb-ncc-1701-d
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=paradedb-enterprise-index-test
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE paradedb-ncc-1701-d
+      catch:
+        - describe:
+            apiVersion: v1
+            kind: Pod
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb-ncc-1701-d

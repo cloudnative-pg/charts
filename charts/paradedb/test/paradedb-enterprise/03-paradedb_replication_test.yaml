@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: paradedb-enterprise-index-test
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-test
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: paradedb-ncc-1701-d-app
+                key: uri
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+          - |
+            apk --no-cache add postgresql-client
+            DB_URI="${DB_URI/paradedb-ncc-1701-d-rw/paradedb-ncc-1701-d-ro}"
+            RESULT=$(psql "$DB_URI" -t) <<-EOSQL
+              SELECT description
+              FROM mock_items_paradedb_enterprise
+              WHERE description @@@ '"bluetooth speaker"~1'
+              LIMIT 1;
+            EOSQL
+            echo -$RESULT-
+            if [ "$RESULT" = " Bluetooth-enabled speaker" ]; then
+              echo "Test for description search on replicas passed."
+            else
+              echo "Test for description search on replicas failed."
+              exit 1
+            fi
+
+            SIZE_RESULT=$(psql "$DB_URI" -t) <<-EOSQL
+              SELECT pg_size_pretty(pg_relation_size('search_idx_paradedb_enterprise'));
+            EOSQL
+            echo -$SIZE_RESULT-
+            if [ "$SIZE_RESULT" != " 0 bytes" ]; then
+              echo "Test for index size on replicas passed."
+            else
+              echo "Test for index size on replicas failed."
+              exit 1
+            fi

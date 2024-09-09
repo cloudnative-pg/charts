@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: paradedb-enterprise-test
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-test
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: paradedb-ncc-1701-d-app
+                key: uri
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+          - |
+            apk --no-cache add postgresql-client
+            psql "$DB_URI" <<-EOSQL
+              CALL paradedb.create_bm25_test_table(
+                schema_name => 'public',
+                table_name => 'mock_items_paradedb_enterprise'
+              );
+              CREATE INDEX search_idx_paradedb_enterprise ON mock_items_paradedb_enterprise
+              USING bm25 (id, description, category, rating, in_stock, created_at, metadata, weight_range)
+              WITH (key_field='id');
+            EOSQL
+            RESULT=$(psql "$DB_URI" -t) <<-EOSQL
+              SELECT description
+              FROM mock_items_paradedb_enterprise
+              WHERE description @@@ '"bluetooth speaker"~1'
+              LIMIT 1;
+            EOSQL
+            echo -$RESULT-
+            if [ "$RESULT" = " Bluetooth-enabled speaker" ]; then
+              echo "Test for description search passed."
+            else
+              echo "Test for description search failed."
+              exit 1
+            fi

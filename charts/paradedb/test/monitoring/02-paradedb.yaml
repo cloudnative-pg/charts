@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: paradedb
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: paradedb
+        image: alpine:3.19
+        command: ['sh', '-c']
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: monitoring-paradedb-app
+                key: uri
+        args:
+          - |
+            apk --no-cache add postgresql-client
+            set -e
+            psql $DB_URI -c "CALL paradedb.create_bm25_test_table(schema_name => 'public', table_name => 'mock_items');"
+            psql $DB_URI -c "CREATE INDEX search_idx ON mock_items USING bm25 (id, description, category, rating, in_stock, created_at, metadata, weight_range) WITH (key_field='id');"

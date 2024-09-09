@@ -1,0 +1,33 @@
+type: paradedb
+mode: "recovery"
+recovery:
+  method: "import"
+  import:
+    type: "microservice"
+    databases: [ "mygooddb" ]
+    pgRestoreExtraOptions:
+      - --table=mygoodtable
+    schemaOnly: true
+    source:
+      host: "source-paradedb-rw"
+      username: "postgres"
+      passwordSecret:
+        name: source-paradedb-superuser
+        key: password
+      sslMode: "require"
+      sslKeySecret:
+        name: source-paradedb-replication
+        key: tls.key
+      sslCertSecret:
+        name: source-paradedb-replication
+        key: tls.crt
+
+cluster:
+  instances: 1
+  storage:
+    size: 256Mi
+  initdb:
+    database: mygooddb
+
+backups:
+  enabled: false
