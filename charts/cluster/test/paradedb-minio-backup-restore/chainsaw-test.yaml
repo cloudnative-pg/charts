@@ -1,5 +1,5 @@
 ##
-# This test sets up a ParadeDB cluster with MinIO backups and ensured that ParadeDB extensions are installed and
+# This test sets up a ParadeDB cluster with MinIO backups and ensures that ParadeDB extensions are installed and
 # PITR recovery is enabled and working.
 apiVersion: chainsaw.kyverno.io/v1alpha1
 kind: Test
