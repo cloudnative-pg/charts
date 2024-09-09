@@ -55,6 +55,10 @@ spec:
     shared_preload_libraries:
       {{- if eq .Values.type "timescaledb" }}
       - timescaledb
+      {{- else if eq .Values.type "paradedb" }}
+      - pg_search
+      - pg_analytics
+      - pg_cron
       {{- end }}
       {{- with .Values.cluster.postgresql.shared_preload_libraries }}
       {{- toYaml . | nindent 6 }}
