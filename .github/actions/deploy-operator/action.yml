@@ -6,11 +6,11 @@ runs:
     - name: Deploy the operator
       shell: bash
       run:
-        helm dependency update charts/cloudnative-pg
+        helm repo add cnpg https://cloudnative-pg.github.io/charts
 
         helm upgrade
         --install 
         --namespace cnpg-system
         --create-namespace
         --wait
-        cnpg charts/cloudnative-pg
+        cnpg cnpg/cloudnative-pg
