@@ -1,0 +1,102 @@
+{{- if .Values.pooler -}}
+  {{ fail ".Values.pooler has been deprecated. Use .Values.poolers instead." }}
+{{- end -}}
+
+{{- if gt (omit .Values.cluster.postgresql "parameters" "synchronous" "pg_hba" "pg_ident" "syncReplicaElectionConstraint" "shared_preload_libraries" "ldap" "promotionTimeout" "enableAlterSystem" | keys | len) 0 -}}
+  {{ fail ".Values.cluster.postgresql has been deprecated. Use .Values.cluster.postgresql.parameters instead." }}
+{{- end -}}
+
+
+{{ if .Release.IsInstall }}
+The {{ include "cluster.color-info" (include "cluster.fullname" .) }} cluster has been installed successfully.
+{{ else if .Release.IsUpgrade }}
+The {{ include "cluster.color-info" (include "cluster.fullname" .) }} cluster has been upgraded successfully.
+{{ end }}
+
+   ██████   ██                       ██ ████     ██             ██   ██                  ███████    ████████
+  ██░░░░██ ░██                      ░██░██░██   ░██            ░██  ░░                  ░██░░░░██  ██░░░░░░██
+ ██    ░░  ░██  ██████  ██   ██     ░██░██░░██  ░██  ██████   ██████ ██ ██    ██  █████ ░██   ░██ ██      ░░
+░██        ░██ ██░░░░██░██  ░██  ██████░██ ░░██ ░██ ░░░░░░██ ░░░██░ ░██░██   ░██ ██░░░██░███████ ░██
+░██        ░██░██   ░██░██  ░██ ██░░░██░██  ░░██░██  ███████   ░██  ░██░░██ ░██ ░███████░██░░░░  ░██    █████
+░░██    ██ ░██░██   ░██░██  ░██░██  ░██░██   ░░████ ██░░░░██   ░██  ░██ ░░████  ░██░░░░ ░██      ░░██  ░░░░██
+ ░░██████  ███░░██████ ░░██████░░██████░██    ░░███░░████████  ░░██ ░██  ░░██   ░░██████░██       ░░████████
+  ░░░░░░  ░░░  ░░░░░░   ░░░░░░  ░░░░░░ ░░      ░░░  ░░░░░░░░    ░░  ░░    ░░     ░░░░░░ ░░         ░░░░░░░░
+
+Cheatsheet
+----------
+
+Run Helm Tests:
+{{ include "cluster.color-info" (printf "helm test --namespace %s %s" .Release.Namespace .Release.Name) }}
+
+Get a list of all base backups:
+{{ include "cluster.color-info" (printf "kubectl --namespace %s get backups --selector cnpg.io/cluster=%s" .Release.Namespace (include "cluster.fullname" .)) }}
+
+Connect to the cluster's primary instance:
+{{ include "cluster.color-info" (printf "kubectl --namespace %s exec --stdin --tty services/%s-rw -- bash" .Release.Namespace (include "cluster.fullname" .)) }}
+
+Configuration
+-------------
+
+{{- $redundancyColor := "" -}}
+{{- if lt (int .Values.cluster.instances) 2 }}
+  {{- $redundancyColor = "error" -}}
+{{- else if lt (int .Values.cluster.instances) 3 -}}
+  {{- $redundancyColor = "warning" -}}
+{{- else -}}
+  {{- $redundancyColor = "ok" -}}
+{{- end }}
+
+{{- $scheduledBackups := (first .Values.backups.scheduledBackups).name -}}
+{{- range (rest .Values.backups.scheduledBackups) -}}
+  {{ $scheduledBackups = printf "%s, %s" $scheduledBackups .name }}
+{{- end -}}
+{{- if eq (len .Values.backups.scheduledBackups) 0 }}
+  {{- $scheduledBackups = "None" -}}
+{{- end -}}
+
+{{- $mode := .Values.mode -}}
+{{- $source := "" -}}
+{{- if eq .Values.mode "recovery" }}
+{{- $mode = printf "%s (%s)" .Values.mode .Values.recovery.method -}}
+  {{- if eq .Values.recovery.method "pg_basebackup" }}
+    {{- $source = printf "postgresql://%s@%s:%.0f/%s" .Values.recovery.pgBaseBackup.source.username .Values.recovery.pgBaseBackup.source.host .Values.recovery.pgBaseBackup.source.port .Values.recovery.pgBaseBackup.source.database -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $image := (include "cluster.image" .) | fromYaml -}}
+{{- if $image.imageCatalogRef -}}
+  {{- $image = printf "%s: %s(%s)" $image.imageCatalogRef.kind $image.imageCatalogRef.name (include "cluster.postgresqlMajor" .) -}}
+{{- else if $image.imageName -}}
+  {{- $image = $image.imageName -}}
+{{- end }}
+
+╭───────────────────┬──────────────────────────────────────────────────────────╮
+│ Configuration     │ Value                                                    │
+┝━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
+│ Cluster mode      │ {{ printf "%-56s" $mode }} │
+│ Type              │ {{ printf "%-56s" .Values.type }} │
+│ Image             │ {{ include "cluster.color-info" (printf "%-56s" $image) }} │
+{{- if eq .Values.mode "recovery" }}
+│ Source            │ {{ printf "%-56s" $source }} │
+{{- end }}
+│ Instances         │ {{ include (printf "%s%s" "cluster.color-" $redundancyColor) (printf "%-56s" (toString .Values.cluster.instances)) }} │
+│ Backups           │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.backups.enabled)) (printf "%-56s" (ternary "Enabled" "Disabled" .Values.backups.enabled)) }} │
+{{- if .Values.backups.enabled }}
+│ Backup Provider   │ {{ printf "%-56s" (title .Values.backups.provider) }} │
+│ Scheduled Backups │ {{ printf "%-56s" $scheduledBackups }} │
+{{- end }}
+│ Storage           │ {{ printf "%-56s" .Values.cluster.storage.size }} │
+│ Storage Class     │ {{ printf "%-56s" (default "Default" .Values.cluster.storage.storageClass) }} │
+│ PGBouncer         │ {{ printf "%-56s" (ternary "Enabled" "Disabled" (gt (len .Values.poolers) 0)) }} │
+│ Monitoring        │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.cluster.monitoring.enabled)) (printf "%-56s" (ternary "Enabled" "Disabled" .Values.cluster.monitoring.enabled)) }} │
+╰───────────────────┴──────────────────────────────────────────────────────────╯
+
+{{ if not .Values.backups.enabled }}
+  {{- include "cluster.color-error" "Warning! Backups not enabled. Recovery will not be possible! Do not use this configuration in production.\n" }}
+{{ end -}}
+
+{{ if lt (int .Values.cluster.instances) 2 }}
+  {{- include "cluster.color-error" "Warning! Instance failure will lead to downtime and/or data loss!\n" }}
+{{- else if lt (int .Values.cluster.instances) 3 -}}
+  {{- include "cluster.color-warning" "Warning! Single instance redundancy available only. Instance failure will put the cluster at risk.\n" }}
+{{ end -}}
