@@ -1,0 +1,153 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: monitoring-paradedb
+  labels:
+    foo: bar
+  annotations:
+    foo: bar
+spec:
+  instances: 1
+  storage:
+    size: 256Mi
+    storageClass: standard
+  monitoring:
+      disableDefaultQueries: true
+      customQueriesConfigMap:
+        - name: monitoring-paradedb-monitoring-paradedb-index
+          key: custom-queries
+        - name: monitoring-paradedb-monitoring-logical-replication
+          key: custom-queries
+        - name: monitoring-paradedb-monitoring-pg-stat-statements
+          key: custom-queries
+        - name: monitoring-paradedb-monitoring-pg-stat-activity
+          key: custom-queries
+        - name: monitoring-paradedb-monitoring-user-metrics
+          key: custom-queries
+      enablePodMonitor: false
+status:
+  readyInstances: 1
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  labels:
+    cnpg.io/cluster: monitoring-paradedb
+    team-name: test-team
+    environment: test
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: monitoring-paradedb
+      cnpg.io/podRole: instance
+  podMetricsEndpoints:
+    - relabelings:
+        - targetLabel: environment
+          replacement: test
+        - targetLabel: team
+          replacement: alpha
+      metricRelabelings:
+        - action: replace
+          sourceLabels:
+            - cluster
+          targetLabel: cnpg_cluster
+        - action: labeldrop
+          regex: cluster
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: monitoring-paradedb
+      cnpg.io/poolerName: monitoring-paradedb-pooler-rw
+      cnpg.io/podRole: pooler
+  podMetricsEndpoints:
+    - relabelings:
+        - targetLabel: type
+          replacement: rw
+          action: replace
+        - targetLabel: team
+          replacement: alpha
+          action: replace
+      metricRelabelings:
+        - action: replace
+          sourceLabels:
+            - cluster
+          targetLabel: cnpg_cluster
+        - action: labeldrop
+          regex: cluster
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: monitoring-paradedb
+      cnpg.io/poolerName: monitoring-paradedb-pooler-ro
+      cnpg.io/podRole: pooler
+  podMetricsEndpoints:
+    - relabelings:
+        - targetLabel: type
+          replacement: ro
+          action: replace
+        - targetLabel: team
+          replacement: alpha
+          action: replace
+      metricRelabelings:
+        - action: replace
+          sourceLabels:
+            - cluster
+          targetLabel: cnpg_cluster
+        - action: labeldrop
+          regex: cluster
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: monitoring-paradedb-alert-rules
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-paradedb-monitoring-user-metrics
+data:
+  custom-queries: |
+    pg_database_size_bytes:
+      query: "SELECT current_database() as datname, pg_database_size(current_database()) as size_bytes;"
+      target_databases: ["*"]
+      predicate_query: "SELECT 'paradedb';"
+      metrics:
+        - datname:
+            description: Name of the database
+            usage: LABEL
+        - size_bytes:
+            description: Size of the database in bytes
+            usage: GAUGE
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-paradedb-monitoring-paradedb-index
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-paradedb-monitoring-logical-replication
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-paradedb-monitoring-pg-stat-statements
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-paradedb-monitoring-pg-stat-activity
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: paradedb-grafana-dashboard
+  labels:
+    grafana_dashboard: "1"

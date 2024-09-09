@@ -1,0 +1,9 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: console-test-paradedb
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: console-test-paradedb-console

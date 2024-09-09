@@ -1,0 +1,25 @@
+type: paradedb
+mode: "recovery"
+recovery:
+  method: "pg_basebackup"
+  pgBaseBackup:
+    source:
+      host: "source-paradedb-rw"
+      database: "mygooddb"
+      username: "streaming_replica"
+      sslMode: "require"
+      sslKeySecret:
+        name: source-paradedb-replication
+        key: tls.key
+      sslCertSecret:
+        name: source-paradedb-replication
+        key: tls.crt
+    secretName: "mysecret"
+
+cluster:
+  instances: 2
+  storage:
+    size: 256Mi
+
+backups:
+  enabled: false

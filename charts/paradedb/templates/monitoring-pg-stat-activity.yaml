@@ -1,0 +1,99 @@
+{{- if .Values.cluster.monitoring.instrumentation.pgStatActivity }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cluster.fullname" . }}-monitoring-pg-stat-activity
+  namespace: {{ include "cluster.namespace" . }}
+  labels:
+    cnpg.io/reload: ""
+    {{- include "cluster.labels" . | nindent 4 }}
+data:
+  custom-queries: |
+    pg_stat_activity_long:
+      query: |
+        WITH databases AS (SELECT current_database() AS datname),
+             long_running_stats AS (SELECT datname
+                                       , COUNT(datname) AS count
+                                       , EXTRACT(epoch FROM COALESCE(AVG(now() - query_start), interval '0 seconds')) AS avg_duration
+                                       , EXTRACT(epoch FROM COALESCE(MAX(now() - query_start), interval '0 seconds')) AS max_duration
+                                  FROM pg_stat_activity
+                                  WHERE (now() - query_start) >= interval '30 seconds' AND state = 'active'
+                                  GROUP BY datname)
+        SELECT databases.datname
+             , COALESCE(avg_duration, 0) AS running_avg_duration
+             , COALESCE(max_duration, 0) AS running_max_duration
+             , COALESCE(count, 0) AS running_count
+        FROM databases
+        LEFT JOIN long_running_stats ON databases.datname = long_running_stats.datname;
+      target_databases: ["*"]
+      metrics:
+        - datname:
+            description: Name of the database
+            usage: LABEL
+        - running_avg_duration:
+            description: Average duration of queries running for longer than 30s
+            usage: GAUGE
+        - running_max_duration:
+            description: Maximum duration of queries running for longer than 30s
+            usage: GAUGE
+        - running_count:
+            description: Number of currently running queries for longer than 30s
+            usage: GAUGE
+    pg_stat_activity_long_running:
+      query: |
+        WITH buckets (bucket) AS (
+            VALUES
+                ('[0, 5]'::numrange),
+                ('[0, 60]'::numrange),
+                ('[0, 600]'::numrange),
+                ('[0, 3600]'::numrange),
+                ('[0, 7200]'::numrange),
+                ('[0, 10800]'::numrange),
+                ('[0, 86400]'::numrange),
+                ('[0, 172800]'::numrange),
+                ('[0, infinity]'::numrange)
+        ),
+        databases AS (SELECT current_database() AS datname),
+        db_buckets AS (
+            SELECT d.datname, b.bucket
+            FROM databases d CROSS JOIN buckets b
+        ),
+        bucketed_counts AS (
+            SELECT
+                db_buckets.datname,
+                upper(db_buckets.bucket) AS le,
+                COUNT(a.*) AS bucket_count
+            FROM db_buckets
+            LEFT JOIN pg_stat_activity a
+                ON a.datname = db_buckets.datname
+               AND a.state = 'active'
+               AND EXTRACT(epoch FROM now() - a.query_start) <@ db_buckets.bucket
+            GROUP BY db_buckets.datname, db_buckets.bucket
+        ),
+        totals AS (
+            SELECT
+                datname,
+                COUNT(*) AS total_count,
+                SUM(EXTRACT(epoch FROM now() - query_start)) AS total_duration
+            FROM pg_stat_activity
+            WHERE state = 'active' AND datname IS NOT NULL
+            GROUP BY datname
+        )
+        SELECT bc.datname
+            , ARRAY_AGG(le ORDER BY le) AS queries
+            , ARRAY_AGG(bucket_count ORDER BY le) AS queries_bucket
+            , COALESCE(t.total_count, 0) AS queries_count
+            , COALESCE(t.total_duration, 0) AS queries_sum
+        FROM bucketed_counts bc
+        LEFT JOIN totals t ON bc.datname = t.datname
+        GROUP BY bc.datname, t.total_count, t.total_duration
+        ORDER BY bc.datname;
+      target_databases: ["*"]
+      metrics:
+        - datname:
+            description: Name of the database
+            usage: LABEL
+        - queries:
+            description: Long running queries distribution
+            usage: HISTOGRAM
+{{- end }}

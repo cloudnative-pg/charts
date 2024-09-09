@@ -1,0 +1,61 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: logical-replication
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: logical-replication
+        image: alpine:3.19
+        command: ['sh', '-c']
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: monitoring-paradedb-superuser
+                key: uri
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: monitoring-paradedb-superuser
+                key: user
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: monitoring-paradedb-superuser
+                key: password
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: monitoring-paradedb-superuser
+                key: host
+        args:
+          - |
+            apk --no-cache add postgresql-client
+            set -e
+            DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
+            DB_URI_PUBLISHER=$(echo $DB_URI | sed "s|:5432\/*|:5432/publisher|" )
+            DB_URI_SUBSCRIBER=$(echo $DB_URI | sed "s|:5432\/*|:5432/subscriber|" )
+            echo "DB_URI: $DB_URI"
+            echo "DB_URI_PUBLISHER: $DB_URI_PUBLISHER"
+            echo "DB_URI_SUBSCRIBER: $DB_URI_SUBSCRIBER"
+            echo "Creating publisher and subscriber databases..."
+            # Connect to ParadeDB and create the databases
+            psql $DB_URI -c "CREATE DATABASE publisher;"
+            psql $DB_URI -c "CREATE DATABASE subscriber;"
+
+            # Configure publisher
+            psql $DB_URI_PUBLISHER -c "CREATE TABLE test_table (id SERIAL PRIMARY KEY, data TEXT);"
+            psql $DB_URI_PUBLISHER -c "CREATE PUBLICATION test_pub FOR TABLE test_table;"
+            psql $DB_URI_PUBLISHER -c "SELECT pg_create_logical_replication_slot('test_sub_slot', 'pgoutput');"
+
+            # Configure subscriber
+            psql $DB_URI_SUBSCRIBER -c "CREATE TABLE test_table (id SERIAL PRIMARY KEY, data TEXT);"
+            psql $DB_URI_SUBSCRIBER -c "CREATE SUBSCRIPTION test_sub CONNECTION 'host=monitoring-paradedb-rw user=$DB_USER password=$DB_PASS dbname=publisher' PUBLICATION test_pub WITH (slot_name = 'test_sub_slot', create_slot = false);"
+
+            # Insert test data
+            psql $DB_URI_PUBLISHER -c "INSERT INTO test_table (data) VALUES ('test data');"
+
+            echo "Logical replication setup complete."

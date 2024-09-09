@@ -1,9 +1,0 @@
-apiVersion: postgresql.cnpg.io/v1
-kind: Cluster
-metadata:
-  name: console-test-cluster
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: console-test-cluster-console

@@ -1,0 +1,18 @@
+type: paradedb-enterprise
+mode: standalone
+version:
+  major: "18"
+  paradedb: "0.23.0"
+cluster:
+  instances: 2
+  storage:
+    size: 256Mi
+  imagePullSecrets:
+    - name: paradedb-enterprise-registry-cred
+  postgresql:
+    parameters:
+      cron.database_name: postgres
+      hot_standby_feedback: "1"
+
+backups:
+  enabled: false
