@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: paradedb-test
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-test
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: paradedb-app
+                key: uri
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+          - |
+            apk --no-cache add postgresql-client
+            RESULT=$(psql "$DB_URI" -t) <<-EOSQL
+              SELECT description
+              FROM mock_items
+              WHERE description @@@ '"bluetooth speaker"~1'
+              LIMIT 1;
+            EOSQL
+            echo -$RESULT-
+            test "$RESULT" = " Bluetooth-enabled speaker"
