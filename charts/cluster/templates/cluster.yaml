@@ -56,6 +56,7 @@ spec:
       {{- if eq .Values.type "timescaledb" }}
       - timescaledb
       {{- end }}
+      {{- toYaml .Values.cluster.postgresql.shared_preload_libraries | nindent 6 }}
     {{- with .Values.cluster.postgresql }}
     parameters:
       {{- toYaml .parameters | nindent 6 }}
@@ -63,8 +64,6 @@ spec:
       {{- toYaml .pg_hba | nindent 6 }}
     pg_ident:
       {{- toYaml .pg_ident | nindent 6 }}
-    shared_preload_libraries:
-      {{- toYaml .shared_preload_libraries | nindent 6 }}
     {{ end }}
 
   managed:
