@@ -34,6 +34,8 @@ spec:
         - describe:
             apiVersion: postgresql.cnpg.io/v1
             kind: Cluster
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb-cluster
     - name: Initialize with ParadeDB sample data
       timeouts:
         apply: 1s
@@ -116,6 +118,12 @@ spec:
                 recovery-backup-pitr ../../
         - assert:
             file: ./07-recovery_backup_pitr_cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb-cluster
     - name: Verify the pre-backup data on the recovery cluster exists but not the post-backup data
       try:
         - apply:
