@@ -4,5 +4,5 @@ kind: Secret
 metadata:
   name: {{ default (printf "%s-backup-google-creds" (include "cluster.fullname" .)) .Values.backups.secret.name }}
 data:
-  APPLICATION_CREDENTIALS: {{ .Values.backups.google.applicationCredentials | b64enc | quote }}
+  {{ required ".Values.backups.secret.keyNames.applicationCredentials is required, but not specified" .Values.backups.secret.keyNames.applicationCredentials }}: {{ .Values.backups.google.applicationCredentials | b64enc | quote }}
 {{- end }}
