@@ -5,11 +5,8 @@ fullnameOverride: ""
 
 ###
 # -- Type of the CNPG database. Available types:
-# * `postgresql`
-# * `postgis`
-# * `timescaledb`
 # * `paradedb`
-type: postgresql
+type: paradedb
 
 version:
   # -- PostgreSQL major version to use
@@ -19,7 +16,8 @@ version:
   # -- If using PostGIS, specify the version
   postgis: "3.4"
   # -- If using ParadeDB, specify the version
-  paradedb: "0.9.3"
+  # -- The ParadeDB version, set in the publish CI workflow from the latest paradedb/paradedb GitHub tag
+  paradedb: "0.0.0"
 
 ###
 # -- Cluster mode of operation. Available modes:

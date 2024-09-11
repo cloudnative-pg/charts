@@ -15,17 +15,23 @@
 #
 apiVersion: v2
 name: cluster
-description: Deploys and manages a CloudNativePG cluster and its associated resources.
-icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
+description: Deploys and manages a ParadeDB CloudNativePG cluster and its associated resources.
+icon: https://raw.githubusercontent.com/paradedb/paradedb/main/docs/logo/light.svg
 type: application
-version: 0.0.11
+
+# The Chart version, set in the publish CI workflow from GitHub Actions Variables
+version: 0.0.0
+
 sources:
-  - https://github.com/cloudnative-pg/charts
+  - https://github.com/paradedb/charts
 keywords:
+  - paradedb
+  - pg_search
+  - pg_analytics
   - postgresql
   - postgres
   - database
-home: https://cloudnative-pg.io
+home: https://paradedb.com
 maintainers:
-  - name: itay-grudev
-    email: itay+cloudnativepg-charts+github.com@grudev.com
+  - name: ParadeDB
+    email: support@paradedb.com
