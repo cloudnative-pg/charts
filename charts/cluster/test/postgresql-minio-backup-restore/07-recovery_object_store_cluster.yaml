@@ -1,3 +1,4 @@
+type: postgresql
 mode: recovery
 
 cluster:
