@@ -12,6 +12,7 @@ on:
     paths:
       - "charts/cluster/*"
       - ".github/workflows/paradedb-test-eks.yml"
+  repository_dispatch:
   workflow_dispatch:
 
 concurrency:
