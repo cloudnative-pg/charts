@@ -1689,6 +1689,7 @@ spec:
                             enum:
                             - AES256
                             - aws:kms
+                            - ''
                             type: string
                           immediateCheckpoint:
                             description: |-
@@ -1882,6 +1883,7 @@ spec:
                             enum:
                             - AES256
                             - aws:kms
+                            - ''
                             type: string
                           maxParallel:
                             description: |-
