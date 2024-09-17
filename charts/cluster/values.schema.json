@@ -258,6 +258,13 @@
                         },
                         "shared_preload_libraries": {
                             "type": "array"
+                        },
+                        "synchronous": {
+                            "type": "object",
+                            "properties": {
+                                "method": "string",
+                                "number": "integer"
+                            }
                         }
                     }
                 },

@@ -61,6 +61,9 @@ cluster:
       - mymap   /^(.*)@mydomain\.com$      \1
     shared_preload_libraries:
       - pgaudit
+    syncronous:
+      method: any
+      number: 1
   initdb:
     database: mydb
     owner: dante
