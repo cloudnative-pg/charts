@@ -118,6 +118,8 @@ Postgres UID
     {{- .Values.cluster.postgresUID }}
   {{- else if and (eq (include "cluster.useTimescaleDBDefaults" .) "true") (eq .Values.type "timescaledb") -}}
     {{- 1000 -}}
+  {{- else if eq .Values.type "paradedb" -}}
+    {{- 999 -}}
   {{- else -}}
     {{- 26 -}}
   {{- end -}}
@@ -131,6 +133,8 @@ Postgres GID
     {{- .Values.cluster.postgresGID }}
   {{- else if and (eq (include "cluster.useTimescaleDBDefaults" .) "true") (eq .Values.type "timescaledb") -}}
     {{- 1000 -}}
+  {{- else if eq .Values.type "paradedb" -}}
+    {{- 999 -}}
   {{- else -}}
     {{- 26 -}}
   {{- end -}}
