@@ -3,7 +3,7 @@
 bootstrap:
   initdb:
     {{- with .Values.cluster.initdb }}
-        {{- with (omit . "postInitApplicationSQL") }}
+        {{- with (omit . "postInitApplicationSQL" "owner") }}
             {{- . | toYaml | nindent 4 }}
         {{- end }}
     {{- end }}
