@@ -1,0 +1,82 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: non-default-configuration-cluster
+  labels:
+    foo: bar
+  annotations:
+      foo: bar
+spec:
+  imageName: ghcr.io/cloudnative-pg/crazycustomimage:99.99
+  imagePullPolicy: Always
+  postgresUID: 1001
+  postgresGID: 1002
+  instances: 2
+  postgresql:
+    parameters:
+      max_connections: "42"
+    pg_hba:
+      - host all 1.2.3.4/32 trust
+    pg_ident:
+      - mymap   /^(.*)@mydomain\.com$      \1
+    shared_preload_libraries:
+      - pgaudit
+  bootstrap:
+    initdb:
+      database: mydb
+      owner: dante
+      secret:
+        name: mydb-secret
+      postInitApplicationSQL:
+        - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
+      postInitTemplateSQL:
+        - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
+      postInitSQL:
+        - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
+  superuserSecret:
+    name: supersecret-secret
+  enableSuperuserAccess: true
+  certificates:
+    serverCASecret: ca-secret
+    serverTLSSecret: tls-secret
+    replicationTLSSecret: replication-tls-secret
+    clientCASecret: client-ca-secret
+  imagePullSecrets:
+    - name: image-pull-secret
+  storage:
+    size: 256Mi
+    storageClass: standard
+  walStorage:
+    size: 256Mi
+    storageClass: standard
+  affinity:
+    topologyKey: kubernetes.io/hostname
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - node1
+            - node2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 100m
+      memory: 256Mi
+  priorityClassName: mega-high
+  primaryUpdateStrategy: supervised
+  primaryUpdateMethod: restart
+  logLevel: warning
+  managed:
+    roles:
+      - name: dante
+        ensure: present
+        comment: Dante Alighieri
+        login: true
+        inRoles:
+          - pg_monitor
+          - pg_signal_backend

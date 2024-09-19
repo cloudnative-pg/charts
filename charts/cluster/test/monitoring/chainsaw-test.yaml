@@ -1,0 +1,29 @@
+##
+# This is a test that checks if PodMonitors, ConfigMaps and PrometheusRules are correctly provisioned when requested.
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: monitoring
+spec:
+  timeouts:
+    apply: 1s
+    assert: 20s
+    cleanup: 30s
+  steps:
+    - name: Install the monitoring cluster
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-monitoring_cluster.yaml \
+                --wait \
+                monitoring ../../
+        - assert:
+            file: ./01-monitoring_cluster-assert.yaml
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE monitoring

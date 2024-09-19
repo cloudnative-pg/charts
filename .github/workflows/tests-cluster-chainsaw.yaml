@@ -1,0 +1,49 @@
+name: tests-cluster-chainsaw
+
+on:
+  pull_request:
+    branches-ignore:
+      - 'gh-pages'
+
+jobs:
+  test-cluster-standalone:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 0
+
+      - name: Setup kind
+        uses: ./.github/actions/setup-kind
+
+      - name: Deploy the operator
+        uses: ./.github/actions/deploy-operator
+
+      - name: Install Prometheus CRDs
+        run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm install prometheus-crds prometheus-community/prometheus-operator-crds
+
+      - name: Install Chainsaw
+        uses: kyverno/action-install-chainsaw@b2f61a8d0459a65c476ac802514d88e1612b3396 # v0.2.9
+
+      - name: Setup MinIO
+        run: |
+          helm repo add minio-operator https://operator.min.io
+          helm upgrade \
+            --install \
+            --namespace minio-system \
+            --create-namespace \
+            --wait \
+            operator minio-operator/operator
+          helm upgrade \
+            --install \
+            --namespace minio \
+            --create-namespace \
+            --wait \
+            --values ./.github/minio.yaml \
+            tenant minio-operator/tenant
+
+      - name: Run Kyverno/Chainsaw
+        run: chainsaw test

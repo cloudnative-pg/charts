@@ -7,7 +7,16 @@ fullnameOverride: ""
 # -- Type of the CNPG database. Available types:
 # * `postgresql`
 # * `postgis`
+# * `timescaledb`
 type: postgresql
+
+version:
+  # -- PostgreSQL major version to use
+  postgresql: "16"
+  # -- If using TimescaleDB, specify the version
+  timescaledb: "2.15"
+  # -- If using PostGIS, specify the version
+  postgis: "3.4"
 
 ###
 # -- Cluster mode of operation. Available modes:
@@ -81,6 +90,39 @@ recovery:
     # -- Name of the backup credentials secret
     name: ""
 
+  # See https://cloudnative-pg.io/documentation/1.22/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
+  pgBaseBackup:
+    # -- Name of the database used by the application. Default: `app`.
+    database: app
+    # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
+    secret: ""
+    # -- Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
+    owner: ""
+    source:
+      host: ""
+      port: 5432
+      username: ""
+      database: "app"
+      sslMode: "verify-full"
+      passwordSecret:
+        # -- Whether to create a secret for the password
+        create: false
+        # -- Name of the secret containing the password
+        name: ""
+        # -- The key in the secret containing the password
+        key: "password"
+        # -- The password value to use when creating the secret
+        value: ""
+      sslKeySecret:
+        name: ""
+        key: ""
+      sslCertSecret:
+        name: ""
+        key: ""
+      sslRootCertSecret:
+        name: ""
+        key: ""
+
 
 cluster:
   # -- Number of instances
@@ -89,6 +131,11 @@ cluster:
   # -- Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments:
   # <image>:<tag>@sha256:<digestValue>
   imageName: ""  # Default value depends on type (postgresql/postgis/timescaledb)
+
+  # -- Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName`
+  imageCatalogRef: {}
+    # kind: ImageCatalog
+    # name: postgresql
 
   # -- Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated.
   # More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
@@ -103,14 +150,15 @@ cluster:
     storageClass: ""
 
   walStorage:
+    enabled: false
     size: 1Gi
     storageClass: ""
 
   # -- The UID of the postgres user inside the image, defaults to 26
-  postgresUID: 26
+  postgresUID: -1
 
   # -- The GID of the postgres user inside the image, defaults to 26
-  postgresGID: 26
+  postgresGID: -1
 
   # -- Resources requirements of every generated Pod.
   # Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.
@@ -127,7 +175,7 @@ cluster:
   priorityClassName: ""
 
   # -- Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been
-  # successfully updated. It can be switchover (default) or in-place (restart).
+  # successfully updated. It can be switchover (default) or restart.
   primaryUpdateMethod: switchover
 
   # -- Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been
@@ -180,20 +228,27 @@ cluster:
         # - CNPGClusterZoneSpreadWarning
     # -- Custom Prometheus metrics
     customQueries: []
-      # - name: "pg_cache_hit_ratio"
-      #   query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
-      #   metrics:
-      #     - datname:
-      #         usage: "LABEL"
-      #         description: "Name of the database"
-      #     - ratio:
-      #         usage: GAUGE
-      #         description: "Cache hit ratio"
+    #  - name: "pg_cache_hit_ratio"
+    #    query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
+    #    metrics:
+    #      - datname:
+    #          usage: "LABEL"
+    #          description: "Name of the database"
+    #      - ratio:
+    #          usage: GAUGE
+    #          description: "Cache hit ratio"
 
-  # -- Configuration of the PostgreSQL server.
-  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-PostgresConfiguration
-  postgresql: {}
-    # max_connections: 300
+  postgresql:
+    # -- PostgreSQL configuration options (postgresql.conf)
+    parameters: {}
+      # max_connections: 300
+    # -- PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
+    pg_hba: []
+      # - host all all 10.244.0.0/16 md5
+    pg_ident: []
+      # - mymap   /^(.*)@mydomain\.com$      \1
+    shared_preload_libraries: []
+      # - pgaudit
 
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
@@ -201,9 +256,14 @@ cluster:
   initdb: {}
     # database: app
     # owner: "" # Defaults to the database name
-    # secret: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
+    # secret:
+    #   name: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
+    # options: []
+    # encoding: UTF8
     # postInitSQL:
     #   - CREATE EXTENSION IF NOT EXISTS vector;
+    # postInitApplicationSQL: []
+    # postInitTemplateSQL: []
 
   additionalLabels: {}
   annotations: {}
@@ -286,6 +346,13 @@ backups:
   # -- Retention policy for backups
   retentionPolicy: "30d"
 
+imageCatalog:
+  # -- Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored.
+  create: true
+  # -- List of images to be provisioned in an image catalog.
+  images: []
+    # - image: ghcr.io/your_repo/your_image:your_tag
+    #   major: 16
 
 pooler:
   # -- Whether to enable PgBouncer
