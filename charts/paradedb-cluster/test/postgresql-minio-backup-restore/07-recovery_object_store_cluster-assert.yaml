@@ -1,6 +1,6 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: recovery-object-store-paradedb-cluster
+  name: recovery-object-store-paradedb
 status:
   readyInstances: 2

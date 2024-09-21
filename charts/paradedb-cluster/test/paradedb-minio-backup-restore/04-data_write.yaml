@@ -39,7 +39,7 @@ spec:
           - name: DB_URI
             valueFrom:
               secretKeyRef:
-                name: paradedb-paradedb-cluster-superuser
+                name: paradedb-paradedb-superuser
                 key: uri
         image: alpine:3.19
         command: ['sh', '-c']

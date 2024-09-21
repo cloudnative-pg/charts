@@ -5,4 +5,4 @@ metadata:
 spec:
   method: barmanObjectStore
   cluster:
-    name: paradedb-paradedb-cluster
+    name: paradedb-paradedb

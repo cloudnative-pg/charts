@@ -5,4 +5,4 @@ metadata:
 spec:
   method: barmanObjectStore
   cluster:
-    name: timescale-paradedb-cluster
+    name: timescale-paradedb

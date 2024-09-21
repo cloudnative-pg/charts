@@ -4,7 +4,7 @@ metadata:
   name: post-init-backup
 spec:
   cluster:
-    name: paradedb-paradedb-cluster
+    name: paradedb-paradedb
   method: barmanObjectStore
 status:
   phase: running

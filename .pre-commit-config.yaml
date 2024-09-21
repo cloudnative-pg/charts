@@ -16,7 +16,7 @@ repos:
       - id: check-docstring-first
       - id: check-symlinks
       - id: check-yaml
-        exclude: "charts/paradedb-cluster/" # Exclude all files in the charts/paradedb-cluster/ directory, which aren't standard YAML
+        exclude: "charts/paradedb/" # Exclude all files in the charts/paradedb/ directory, which aren't standard YAML
       - id: check-json
       - id: check-xml
       - id: check-ast
@@ -41,4 +41,4 @@ repos:
     rev: v3.0.3
     hooks:
       - id: prettier
-        exclude: "charts/paradedb-cluster/" # Exclude all files in the charts/paradedb-cluster/ directory, which aren't standard YAML
+        exclude: "charts/paradedb/" # Exclude all files in the charts/paradedb/ directory, which aren't standard YAML

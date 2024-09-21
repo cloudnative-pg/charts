@@ -15,7 +15,7 @@ annotations:
 
     This alarm will be always trigger if your cluster is configured to run with only 1 instance. In this
     case you may want to silence it.
-  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb-cluster/docs/runbooks/CNPGClusterHACritical.md
+  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterHACritical.md
 expr: |
   max by (job) (cnpg_pg_replication_streaming_replicas{namespace="{{ .namespace }}"} - cnpg_pg_replication_is_wal_receiver_up{namespace="{{ .namespace }}"}) < 1
 for: 5m

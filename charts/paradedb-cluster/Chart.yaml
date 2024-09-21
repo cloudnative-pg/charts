@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 apiVersion: v2
-name: paradedb-cluster
+name: paradedb
 description: Deploys and manages a ParadeDB CloudNativePG cluster and its associated resources.
 icon: https://raw.githubusercontent.com/paradedb/paradedb/main/docs/logo/light.svg
 type: application

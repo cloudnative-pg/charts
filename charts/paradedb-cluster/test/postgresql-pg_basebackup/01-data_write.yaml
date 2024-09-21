@@ -12,15 +12,15 @@ spec:
           - name: DB_USER
             valueFrom:
               secretKeyRef:
-                name: source-paradedb-cluster-superuser
+                name: source-paradedb-superuser
                 key: username
           - name: DB_PASS
             valueFrom:
               secretKeyRef:
-                name: source-paradedb-cluster-superuser
+                name: source-paradedb-superuser
                 key: password
           - name: DB_URI
-            value: postgres://$(DB_USER):$(DB_PASS)@source-paradedb-cluster-rw:5432
+            value: postgres://$(DB_USER):$(DB_PASS)@source-paradedb-rw:5432
         image: alpine:3.19
         command: ['sh', '-c']
         args:

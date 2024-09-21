@@ -6,7 +6,7 @@ annotations:
   description: |-
     ParadeDB Cluster "{{ .namespace }}/{{ .cluster }}" instance {{ .labels.pod }} is using {{ .value }}% of
     the maximum number of connections.
-  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb-cluster/docs/runbooks/CNPGClusterHighConnectionsWarning.md
+  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterHighConnectionsWarning.md
 expr: |
   sum by (pod) (cnpg_backends_total{namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}) / max by (pod) (cnpg_pg_settings_setting{name="max_connections", namespace="{{ .namespace }}", pod=~"{{ .podSelector }}"}) * 100 > 80
 for: 5m

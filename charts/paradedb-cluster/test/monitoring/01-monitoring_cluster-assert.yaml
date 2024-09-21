@@ -1,30 +1,30 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: monitoring-paradedb-cluster
+  name: monitoring-paradedb
 spec:
   selector:
     matchLabels:
-      cnpg.io/cluster: monitoring-paradedb-cluster
+      cnpg.io/cluster: monitoring-paradedb
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: monitoring-paradedb-cluster-pooler-rw
+  name: monitoring-paradedb-pooler-rw
 spec:
   selector:
     matchLabels:
-      cnpg.io/poolerName: monitoring-paradedb-cluster-pooler-rw
+      cnpg.io/poolerName: monitoring-paradedb-pooler-rw
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: monitoring-paradedb-cluster-alert-rules
+  name: monitoring-paradedb-alert-rules
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: monitoring-paradedb-cluster-monitoring
+  name: monitoring-paradedb-monitoring
 data:
   custom-queries: |
     pg_cache_hit_ratio:

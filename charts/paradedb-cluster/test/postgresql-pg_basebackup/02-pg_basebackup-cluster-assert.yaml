@@ -1,6 +1,6 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: pg-basebackup-paradedb-cluster
+  name: pg-basebackup-paradedb
 status:
   readyInstances: 2

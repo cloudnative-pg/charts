@@ -10,7 +10,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - "charts/paradedb-cluster/*"
+      - "charts/paradedb/*"
       - ".github/workflows/paradedb-test-eks.yml"
   workflow_dispatch:
 
@@ -94,7 +94,7 @@ jobs:
           kubectl get svc -n cnpg-system cnpg-webhook-service
 
       - name: Test Helm Dependency Update
-        working-directory: charts/paradedb-cluster/
+        working-directory: charts/paradedb/
         run: helm dependency update . --debug
 
       - name: Fetch the latest ParadeDB release tag
@@ -107,11 +107,11 @@ jobs:
           echo "version=$CLEANED_TAG" >> $GITHUB_OUTPUT
 
       - name: Test Helm Install
-        working-directory: charts/paradedb-cluster/
+        working-directory: charts/paradedb/
         run: helm install paradedb . --namespace paradedb --create-namespace --set version.paradedb=${{ steps.paradedb-version.outputs.version }} --debug
 
       - name: Test Helm Upgrade
-        working-directory: charts/paradedb-cluster/
+        working-directory: charts/paradedb/
         run: helm upgrade paradedb . --namespace paradedb --reuse-values --wait --debug
 
       - name: Test PostgreSQL Connection

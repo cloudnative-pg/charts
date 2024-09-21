@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: non-default-configuration-paradedb-cluster
+  name: non-default-configuration-paradedb
   labels:
     foo: bar
   annotations:

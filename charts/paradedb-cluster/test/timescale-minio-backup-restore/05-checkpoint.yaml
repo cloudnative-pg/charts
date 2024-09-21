@@ -12,7 +12,7 @@ spec:
           - name: DB_URI
             valueFrom:
               secretKeyRef:
-                name: timescale-paradedb-cluster-superuser
+                name: timescale-paradedb-superuser
                 key: uri
         image: alpine:3.19
         command: ['sh', '-c']
