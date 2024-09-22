@@ -15,5 +15,5 @@ docs: ## Generate charts' docs using helm-docs
 schema: cluster-schema ## Generate charts' schema using helm-schema-gen
 
 cluster-schema:
-	@helm schema-gen charts/paradedb-cluster/values.yaml | cat > charts/paradedb-cluster/values.schema.json || \
+	@helm schema-gen charts/paradedb/values.yaml | cat > charts/paradedb/values.schema.json || \
 		(echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)

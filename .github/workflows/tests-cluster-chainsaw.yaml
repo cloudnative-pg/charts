@@ -15,7 +15,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set ParadeDB Version to Latest
-        working-directory: charts/paradedb-cluster/
+        working-directory: charts/paradedb/
         env:
           GH_TOKEN: ${{ secrets.GHA_CREATE_RELEASE_PAT }}
         run: |

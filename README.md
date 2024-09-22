@@ -71,7 +71,7 @@ helm upgrade --install paradedb \
 paradedb/cluster
 ```
 
-Refer to the [CloudNativePG Cluster Chart documentation](charts/paradedb-cluster/README.md) for advanced configuration options.
+Refer to the [CloudNativePG Cluster Chart documentation](charts/paradedb/README.md) for advanced configuration options.
 
 ## License
 

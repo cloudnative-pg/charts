@@ -8,7 +8,7 @@ annotations:
 
     Having an offline cluster means your applications will not be able to access the database, leading to
     potential service disruption and/or data loss.
-  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb-cluster/docs/runbooks/CNPGClusterOffline.md
+  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterOffline.md
 expr: |
   (count(cnpg_collector_up{namespace="{{ .namespace }}",pod=~"{{ .podSelector }}"}) OR on() vector(0)) == 0
 for: 5m
