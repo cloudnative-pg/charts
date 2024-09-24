@@ -77,7 +77,7 @@ externalClusters:
     {{- end }}
     {{- with .Values.recovery.pitrTarget.backupID }}
     recoveryTarget:
-      targetTime: {{ . }}
+      backupID: {{ . }}
     {{- end }}    
     {{- if eq .Values.recovery.method "backup" }}
     backup:
