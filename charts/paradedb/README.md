@@ -1,4 +1,4 @@
-# CloudNativePG Cluster
+# ParadeDB CloudNativePG Cluster
 
 This README documents the Helm chart for deploying and managing [ParadeDB](https://github.com/paradedb/paradedb) on Kubernetes via [CloudNativePG](https://cloudnative-pg.io/), including advanced settings.
 
@@ -40,7 +40,7 @@ helm upgrade --install paradedb \
 --namespace paradedb-database \
 --create-namespace \
 --values values.yaml \
-paradedb/cluster
+paradedb/paradedb
 ```
 
 A more detailed guide can be found in the [Getting Started docs](<./docs/Getting Started.md>).
@@ -230,7 +230,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | recovery.secret.name | string | `""` | Name of the backup credentials secret |
 | type | string | `"paradedb"` | Type of the CNPG database. Available types: * `paradedb` |
-| version.paradedb | string | `"0.10.0"` | The ParadeDB version, set in the publish CI workflow from the latest paradedb/paradedb GitHub tag |
+| version.paradedb | string | `"0.10.0"` | ParadeDB defaults to v0.10.0 for testing and local development |
 | version.postgresql | string | `"16"` | PostgreSQL major version to use |
 
 ## Maintainers
