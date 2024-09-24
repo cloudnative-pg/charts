@@ -71,10 +71,14 @@ externalClusters:
 
 {{- else }}
   recovery:
-    {{- with .Values.recovery.pitrTarget.time }}
+    {{- with .Values.recovery.pitrTarget.targetTime }}
     recoveryTarget:
       targetTime: {{ . }}
     {{- end }}
+    {{- with .Values.recovery.pitrTarget.backupID }}
+    recoveryTarget:
+      targetTime: {{ . }}
+    {{- end }}    
     {{- if eq .Values.recovery.method "backup" }}
     backup:
       name: {{ .Values.recovery.backupName }}
