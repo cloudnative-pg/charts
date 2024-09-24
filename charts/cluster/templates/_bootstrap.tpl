@@ -92,6 +92,10 @@ externalClusters:
     {{ with .Values.recovery.owner }}
     owner: {{ . }}
     {{- end }}
+    {{- with .Values.recovery.pitrTarget.backupID }}
+    recoveryTarget:
+      targetTime: {{ . }}
+    {{- end }}
     {{- if eq .Values.recovery.method "backup" }}
     backup:
       name: {{ .Values.recovery.backupName }}

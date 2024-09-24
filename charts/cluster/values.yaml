@@ -40,7 +40,9 @@ recovery:
   ## -- Point in time recovery target. Specify one of the following:
   pitrTarget:
     # -- Time in RFC3339 format
-    time: ""
+    targetTime: ""
+    # -- immediate target given a backup id
+    backupID: ""
 
   ##
   # -- Backup Recovery Method
