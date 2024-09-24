@@ -43,6 +43,14 @@ recovery:
     targetTime: ""
     # -- immediate target given a backup id
     backupID: ""
+    # -- Transaction ID up to which recovery proceeds. (The precise stopping point is also influenced by the exclusive option.) 
+    targetXID: ""
+    # -- Named restore point (created with pg_create_restore_point()) to which recovery proceeds
+    targetName: ""
+    # -- LSN of the write-ahead log location up to which recovery proceeds. (The precise stopping point is also influenced by the exclusive option.)
+    targetLSN: ""
+    # -- Recovery ends as soon as a consistent state is reached, that is, as early as possible
+    targetImmediate: ""
 
   ##
   # -- Backup Recovery Method

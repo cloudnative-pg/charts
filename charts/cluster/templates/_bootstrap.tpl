@@ -82,19 +82,32 @@ externalClusters:
 
 {{- else }}
   recovery:
-    {{- with .Values.recovery.pitrTarget.time }}
+    {{- if or .Values.recovery.pitrTarget.targetTime .Values.recovery.pitrTarget.backupID .Values.recovery.pitrTarget.targetXID .Values.recovery.pitrTarget.targetName .Values.recovery.pitrTarget.targetLSN .Values.recovery.pitrTarget.targetImmediate }}
     recoveryTarget:
+      {{- with .Values.recovery.pitrTarget.targetTime }}
       targetTime: {{ . }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.backupID }}
+      backupID: {{ . }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.targetXID }}
+      targetXID: {{ . }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.targetName }}
+      targetName: {{ . }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.targetLSN }}
+      targetLSN: {{ . }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.targetImmediate }}
+      targetImmediate: {{ . }}
+      {{- end }}
     {{- end }}
     {{ with .Values.recovery.database }}
     database: {{ . }}
     {{- end }}
     {{ with .Values.recovery.owner }}
     owner: {{ . }}
-    {{- end }}
-    {{- with .Values.recovery.pitrTarget.backupID }}
-    recoveryTarget:
-      backupID: {{ . }}
     {{- end }}
     {{- if eq .Values.recovery.method "backup" }}
     backup:
