@@ -267,6 +267,17 @@ cluster:
 
   additionalLabels: {}
   annotations: {}
+  # -- metadata to be inherited by all resources related to a Cluster, annotations and labels defined here will be
+  # added to all cluster resources if they match the operator's INHERITED_ANNOTATIONS or INHERITED_LABELS
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-EmbeddedObjectMetadata
+  # See: https://cloudnative-pg.io/documentation/current/operator_conf/#defining-an-operator-config-map
+  inheritedMetadata: {}
+  #  annotations:
+  #    my.custom: annotation
+  #    another.custom: annotation
+  #  labels:
+  #    my.custom: label
+  #    another.custom: label
 
 
 backups:

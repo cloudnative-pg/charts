@@ -83,3 +83,7 @@ spec:
     {{- end }}
   {{ include "cluster.bootstrap" . | nindent 2 }}
   {{ include "cluster.backup" . | nindent 2 }}
+  {{- with .Values.cluster.inheritedMetadata }}
+  inheritedMetadata:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
