@@ -68,7 +68,7 @@ helm upgrade --install paradedb \
 --namespace paradedb-database \
 --create-namespace \
 --values values.yaml \
-paradedb/cluster
+paradedb/paradedb
 ```
 
 Refer to the [CloudNativePG Cluster Chart documentation](charts/paradedb/README.md) for advanced configuration options.

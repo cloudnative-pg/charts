@@ -1,7 +1,7 @@
 {{ if .Release.IsInstall }}
-The {{ include "cluster.color-info" (include "cluster.fullname" .) }} has been installed successfully.
+The {{ include "cluster.color-info" (include "cluster.fullname" .) }} cluster has been installed successfully.
 {{ else if .Release.IsUpgrade }}
-The {{ include "cluster.color-info" (include "cluster.fullname" .) }} has been upgraded successfully.
+The {{ include "cluster.color-info" (include "cluster.fullname" .) }} cluster has been upgraded successfully.
 {{ end }}
 
    ██████   ██                       ██ ████     ██             ██   ██                  ███████    ████████

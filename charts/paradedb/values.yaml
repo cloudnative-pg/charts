@@ -242,8 +242,10 @@ cluster:
     # -- PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
     pg_hba: []
       # - host all all 10.244.0.0/16 md5
+    # -- PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file)
     pg_ident: []
       # - mymap   /^(.*)@mydomain\.com$      \1
+    # -- Lists of shared preload libraries to add to the default ones
     shared_preload_libraries: []
       # - pgaudit
 
