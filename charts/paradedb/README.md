@@ -202,10 +202,10 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.google.gkeEnvironment | bool | `false` |  |
 | recovery.google.path | string | `"/"` |  |
 | recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO |
-| recovery.pgBaseBackup.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
+| recovery.pgBaseBackup.database | string | `"paradedb"` | Name of the database used by the application. Default: `paradedb`. |
 | recovery.pgBaseBackup.owner | string | `""` | Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch |
 | recovery.pgBaseBackup.secret | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
-| recovery.pgBaseBackup.source.database | string | `"app"` |  |
+| recovery.pgBaseBackup.source.database | string | `"paradedb"` |  |
 | recovery.pgBaseBackup.source.host | string | `""` |  |
 | recovery.pgBaseBackup.source.passwordSecret.create | bool | `false` | Whether to create a secret for the password |
 | recovery.pgBaseBackup.source.passwordSecret.key | string | `"password"` | The key in the secret containing the password |

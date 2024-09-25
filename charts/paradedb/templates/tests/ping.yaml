@@ -23,12 +23,12 @@ spec:
             - name: PGUSER
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "cluster.fullname" . }}-app
+                  name: {{ include "cluster.fullname" . }}-paradedb
                   key: username
             - name: PGPASS
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "cluster.fullname" . }}-app
+                  name: {{ include "cluster.fullname" . }}-paradedb
                   key: password
           args:
             - "-c"
