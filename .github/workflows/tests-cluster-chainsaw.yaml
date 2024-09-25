@@ -14,6 +14,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.6.0
+
       - name: Setup kind
         uses: ./.github/actions/setup-kind
 
@@ -26,7 +29,9 @@ jobs:
           helm install prometheus-crds prometheus-community/prometheus-operator-crds
 
       - name: Install Chainsaw
-        uses: kyverno/action-install-chainsaw@b2f61a8d0459a65c476ac802514d88e1612b3396 # v0.2.9
+        uses: kyverno/action-install-chainsaw@d1a61148c0437a66760d11d8575332305c2234cb # v0.2.10
+        with:
+          verify: true
 
       - name: Setup MinIO
         run: |
