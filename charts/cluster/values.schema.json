@@ -276,6 +276,9 @@
                 "roles": {
                     "type": "array"
                 },
+                "services": {
+                    "type": "object"
+                },
                 "storage": {
                     "type": "object",
                     "properties": {
