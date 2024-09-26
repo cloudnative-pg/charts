@@ -251,6 +251,16 @@ cluster:
       # - mymap   /^(.*)@mydomain\.com$      \1
     shared_preload_libraries: []
       # - pgaudit
+    ldap: {}
+      # https://cloudnative-pg.io/documentation/1.24/postgresql_conf/#ldap-configuration
+      # server: 'openldap.default.svc.cluster.local'
+      # bindSearchAuth:
+        # baseDN: 'ou=org,dc=example,dc=com'
+        # bindDN: 'cn=admin,dc=example,dc=com'
+        # bindPassword:
+          # name: 'ldapBindPassword'
+          # key: 'data'
+        # searchAttribute: 'uid'
 
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/

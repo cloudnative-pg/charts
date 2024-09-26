@@ -258,6 +258,9 @@
                         },
                         "shared_preload_libraries": {
                             "type": "array"
+                        },
+                        "ldap": {
+                            "type": "array"
                         }
                     }
                 },
