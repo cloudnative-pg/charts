@@ -10,7 +10,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - "charts/paradedb/*"
+      - "charts/paradedb/**"
       - ".github/workflows/paradedb-test-eks.yml"
   workflow_dispatch:
 

@@ -16,7 +16,6 @@ bootstrap:
       - CREATE EXTENSION IF NOT EXISTS pg_analytics;
       - CREATE EXTENSION IF NOT EXISTS pg_ivm;
       - CREATE EXTENSION IF NOT EXISTS vector;
-      - CREATE EXTENSION IF NOT EXISTS vectorscale;
       - ALTER DATABASE "{{ default "app" .Values.cluster.initdb.database }}" SET search_path TO public,paradedb;
       {{- end }}
       {{- with .Values.cluster.initdb }}
@@ -30,7 +29,6 @@ bootstrap:
       - CREATE EXTENSION IF NOT EXISTS pg_analytics;
       - CREATE EXTENSION IF NOT EXISTS pg_ivm;
       - CREATE EXTENSION IF NOT EXISTS vector;
-      - CREATE EXTENSION IF NOT EXISTS vectorscale;
       - ALTER DATABASE template1 SET search_path TO public,paradedb;
       {{- end }}
       {{- with .Values.cluster.initdb }}
