@@ -12,7 +12,7 @@ or via [email](support@paradedb.com).
 
 The majority of the development for ParadeDB happens in the [paradedb/paradedb](https://github.com/paradedb/paradedb) monorepo. Pleaser refer to this repository for general development. To develop for this repository, please follow the instructions below.
 
-## Pull Request Worfklow
+## Pull Request Workflow
 
 All changes to ParadeDB happen through GitHub Pull Requests. Here is the recommended
 flow for making a change:
