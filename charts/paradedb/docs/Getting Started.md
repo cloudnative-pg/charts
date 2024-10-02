@@ -1,6 +1,6 @@
 # Getting Started
 
-The CNPG cluster chart follows a convention over configuration approach. This means that the chart will create a reasonable 
+The CNPG cluster chart follows a convention over configuration approach. This means that the chart will create a reasonable
 CNPG setup with sensible defaults. However, you can override these defaults to create a more customized setup. Note that
 you still need to configure backups and monitoring separately. The chart will not install a Prometheus stack for you.
 
@@ -30,7 +30,7 @@ via a GitOps solution or directly via Helm is up to you. The following sections 
 
 Currently the chart supports two database types. These are configured via the `type` parameter. These are:
 * `postgresql` - A standard PostgreSQL database.
-* `paradedb` - Postgres for Search and Analytics
+* `paradedb` - Postgres for Search and Analytics.
 
 Depending on the type the chart will use a different Docker image and fill in some initial setup, like extension installation.
 

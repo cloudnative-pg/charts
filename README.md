@@ -26,13 +26,15 @@
 
 # ParadeDB Helm Chart
 
-This repository contains the Helm chart for deploying and managing [ParadeDB](https://github.com/paradedb/paradedb) on Kubernetes via [CloudNativePG](https://cloudnative-pg.io/).
+The [ParadeDB](https://github.com/paradedb/paradedb) Helm Chart is based on the official [CloudNativePG Helm Chart](https://cloudnative-pg.io/). CloudNativePG is a Kubernetes operator that manages the full lifecycle of a highly available PostgreSQL database cluster with a primary/standby architecture using Postgres streaming replication.
 
-Kubernetes, and specifically the CloudNativePG operator, is the recommended approach for deploying ParadeDB in production. ParadeDB also provides a [Docker image](https://hub.docker.com/r/paradedb/paradedb) and [prebuilt binaries](https://github.com/paradedb/paradedb/releases) for Debian, Ubuntu and Red Hat Enterprise Linux.
+Kubernetes, and specifically the CloudNativePG operator, is the recommended approach for deploying ParadeDB in production, with high availability. ParadeDB also provides a [Docker image](https://hub.docker.com/r/paradedb/paradedb) and [prebuilt binaries](https://github.com/paradedb/paradedb/releases) for Debian, Ubuntu and Red Hat Enterprise Linux.
+
+The chart is also available on [ArtifactHub](https://artifacthub.io/packages/helm/paradedb/paradedb).
 
 ## Getting Started
 
-First, install [Helm](https://helm.sh/docs/intro/install/). The following steps assume you have a Kubernetes cluster running v1.25+. If you are testing locally, we recommend using [Minikube](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fmacos%2Farm64%2Fstable%2Fbinary+download).
+First, install [Helm](https://helm.sh/docs/intro/install/). The following steps assume you have a Kubernetes cluster running v1.25+. If you are testing locally, we recommend using [Minikube](https://minikube.sigs.k8s.io/docs/start/).
 
 ### Installing the CloudNativePG Operator
 
@@ -60,9 +62,9 @@ cluster:
     size: 256Mi
 ```
 
-You can refer to the other examples in the [`charts/paradedb/examples`](https://github.com/paradedb/charts/tree/main/charts/paradedb/examples) directory.
+Then, launch the ParadeDB cluster.
 
-```console
+```bash
 helm repo add paradedb https://paradedb.github.io/charts
 helm upgrade --install paradedb \
 --namespace paradedb-database \
@@ -71,7 +73,9 @@ helm upgrade --install paradedb \
 paradedb/paradedb
 ```
 
-Refer to the [CloudNativePG Cluster Chart documentation](charts/paradedb/README.md) for advanced configuration options.
+If `--values values.yaml` is omitted, the default values will be used. For additional configuration options for the `values.yaml` file, please refer to the [ParadeDB Helm Chart documentation](https://artifacthub.io/packages/helm/paradedb/paradedb#values). For advanced cluster configration options, please refer to the [CloudNativePG Cluster Chart documentation](charts/paradedb/README.md).
+
+A more detailed guide on launching the cluster can be found in the [Getting Started docs](<./charts/paradedb/docs/Getting Started.md>). To get started with ParadeDB, we suggest you follow the [quickstart guide](/documentation/getting-started/quickstart).
 
 ## License
 
