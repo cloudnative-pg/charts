@@ -12,8 +12,8 @@ version:
   # -- PostgreSQL major version to use
   postgresql: "16"
   # -- The ParadeDB version, set in the publish CI workflow from the latest paradedb/paradedb GitHub tag
-  # -- We default to v0.10.0 for testing and local development
-  paradedb: "0.10.0"
+  # -- We default to v0.10.3 for testing and local development
+  paradedb: "0.10.3"
 
 ###
 # -- Cluster mode of operation. Available modes:
@@ -89,8 +89,8 @@ recovery:
 
   # See https://cloudnative-pg.io/documentation/1.22/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
   pgBaseBackup:
-    # -- Name of the database used by the application. Default: `app`.
-    database: app
+    # -- Name of the database used by the application. Default: `paradedb`.
+    database: paradedb
     # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
     secret: ""
     # -- Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
@@ -99,7 +99,7 @@ recovery:
       host: ""
       port: 5432
       username: ""
-      database: "app"
+      database: "paradedb"
       sslMode: "verify-full"
       passwordSecret:
         # -- Whether to create a secret for the password
@@ -252,8 +252,8 @@ cluster:
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb
-  initdb: {}
-    # database: app
+  initdb:
+    database: paradedb
     # owner: "" # Defaults to the database name
     # secret:
     #   name: "" # Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch

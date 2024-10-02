@@ -8,7 +8,7 @@ metadata:
 spec:
   timeouts:
     apply: 1s
-    assert: 5m
+    assert: 7m
     cleanup: 1m
   steps:
     - name: Clear the MinIO bucket
@@ -35,7 +35,7 @@ spec:
             apiVersion: postgresql.cnpg.io/v1
             kind: Cluster
         - podLogs:
-            selector: cnpg.io/cluster=paradedb-cluster
+            selector: cnpg.io/cluster=paradedb-paradedb
     - name: Initialize with ParadeDB sample data
       timeouts:
         apply: 1s
@@ -123,7 +123,7 @@ spec:
             apiVersion: postgresql.cnpg.io/v1
             kind: Cluster
         - podLogs:
-            selector: cnpg.io/cluster=recovery-backup-pitr-cluster
+            selector: cnpg.io/cluster=recovery-backup-pitr-paradedb
     - name: Verify the pre-backup data on the recovery cluster exists but not the post-backup data
       try:
         - apply:

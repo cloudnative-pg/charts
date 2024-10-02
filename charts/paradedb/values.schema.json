@@ -200,7 +200,12 @@
                     "type": "array"
                 },
                 "initdb": {
-                    "type": "object"
+                    "type": "object",
+                    "properties": {
+                        "database": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "instances": {
                     "type": "integer"
