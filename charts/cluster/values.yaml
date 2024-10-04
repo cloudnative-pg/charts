@@ -267,7 +267,11 @@ cluster:
 
   additionalLabels: {}
   annotations: {}
-
+  # -- Enabler maintenance window to upgrade k8s cluster
+  # See: https://cloudnative-pg.io/documentation/1.24/kubernetes_upgrade/
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
 
 backups:
   # -- You need to configure backups manually, so backups are disabled by default.
