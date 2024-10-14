@@ -1,0 +1,6 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: recovery-backup-pitr-cluster
+status:
+  readyInstances: 2

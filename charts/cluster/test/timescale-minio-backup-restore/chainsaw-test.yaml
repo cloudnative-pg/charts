@@ -1,0 +1,129 @@
+##
+# This test sets up a timescale cluster with MinIO backups and ensured that timescale extensions are installed and
+# PITR recovery is enabled and working.
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: timescale
+spec:
+  timeouts:
+    apply: 1s
+    assert: 5m
+    cleanup: 1m
+  steps:
+    - name: Clear the MinIO bucket
+      try:
+        - apply:
+            file: ./00-minio_cleanup.yaml
+        - assert:
+            file: ./00-minio_cleanup-assert.yaml
+    - name: Install a standalone timescale cluster
+      try:
+        - script:
+            content: |
+              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n kube-system get configmaps kube-root-ca.crt -o jsonpath='{.data.ca\.crt}')" --dry-run=client -o yaml | kubectl apply -f -
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-timescale_cluster.yaml \
+                --wait \
+                timescale ../../
+        - assert:
+            file: ./01-timescale_cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+        - podLogs:
+            selector: cnpg.io/cluster=timescale-cluster
+    - name: Verify timescale extensions are installed
+      timeouts:
+        apply: 1s
+        assert: 30s
+      try:
+        - apply:
+            file: 03-timescale_test.yaml
+        - assert:
+            file: 03-timescale_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test
+    - name: Write some data to the cluster
+      timeouts:
+        apply: 1s
+        assert: 30s
+      try:
+        - apply:
+            file: 04-data_write.yaml
+        - assert:
+            file: 04-data_write-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test
+    - name: Create a backup
+      try:
+        - apply:
+            file: ./05-backup.yaml
+        - assert:
+            file: ./05-backup_running-assert.yaml
+        - apply:
+            file: ./05-checkpoint.yaml
+        - assert:
+            file: ./05-backup_completed-assert.yaml
+    - name: Write more data to the database after the backup
+      try:
+        - apply:
+            file: ./06-post_backup_data_write.yaml
+        - assert:
+            file: ./06-post_backup_data_write-assert.yaml
+      timeouts:
+        apply: 1s
+        assert: 10m
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Backup
+    - name: Create a recovery cluster from backup with a PITR target
+      try:
+        - script:
+            content: |
+              DATE_NO_BAD_TABLE=$(kubectl -n $NAMESPACE get configmap date-no-bad-table -o 'jsonpath={.data.date}')
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./07-recovery_backup_pitr_cluster.yaml \
+                --set recovery.pitrTarget.time="$DATE_NO_BAD_TABLE" \
+                --wait \
+                recovery-backup-pitr ../../
+        - assert:
+            file: ./07-recovery_backup_pitr_cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+        - podLogs:
+            selector: cnpg.io/cluster=recovery-backup-pitr-cluster
+    - name: Verify the pre-backup data on the recovery cluster exists but not the post-backup data
+      try:
+        - apply:
+            file: 08-data_test.yaml
+        - assert:
+            file: 08-data_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+            selector: batch.kubernetes.io/job-name=data-test-backup-pitr
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test-backup-pitr
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE timescale

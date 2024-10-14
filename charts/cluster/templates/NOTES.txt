@@ -37,7 +37,7 @@ Configuration
   {{- $redundancyColor = "ok" -}}
 {{- end }}
 
-{{ $scheduledBackups := (first .Values.backups.scheduledBackups).name }}
+{{- $scheduledBackups := (first .Values.backups.scheduledBackups).name -}}
 {{- range (rest .Values.backups.scheduledBackups) -}}
   {{ $scheduledBackups = printf "%s, %s" $scheduledBackups .name }}
 {{- end -}}
@@ -54,12 +54,19 @@ Configuration
   {{- end -}}
 {{- end -}}
 
+{{- $image := (include "cluster.image" .) | fromYaml -}}
+{{- if $image.imageCatalogRef -}}
+  {{- $image = printf "%s: %s(%s)" $image.imageCatalogRef.kind $image.imageCatalogRef.name (include "cluster.postgresqlMajor" .) -}}
+{{- else if $image.imageName -}}
+  {{- $image = $image.imageName -}}
+{{- end }}
+
 ╭───────────────────┬──────────────────────────────────────────────────────────╮
 │ Configuration     │ Value                                                    │
 ┝━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
 │ Cluster mode      │ {{ printf "%-56s" $mode }} │
 │ Type              │ {{ printf "%-56s" .Values.type }} │
-│ Image             │ {{ include "cluster.color-info" (printf "%-56s" (include "cluster.imageName" .)) }} │
+│ Image             │ {{ include "cluster.color-info" (printf "%-56s" $image) }} │
 {{- if eq .Values.mode "recovery" }}
 │ Source            │ {{ printf "%-56s" $source }} │
 {{- end }}

@@ -1,3 +1,4 @@
+type: postgresql
 mode: standalone
 cluster:
   instances: 2
