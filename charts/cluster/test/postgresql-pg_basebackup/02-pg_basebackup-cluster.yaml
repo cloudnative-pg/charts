@@ -1,0 +1,22 @@
+type: postgresql
+mode: "recovery"
+recovery:
+  method: "pg_basebackup"
+  pgBaseBackup:
+    source:
+      host: "source-cluster-rw"
+      database: "mygooddb"
+      username: "streaming_replica"
+      sslMode: "require"
+      sslKeySecret:
+        name: source-cluster-replication
+        key: tls.key
+      sslCertSecret:
+        name: source-cluster-replication
+        key: tls.crt
+
+cluster:
+  instances: 2
+
+backups:
+  enabled: false

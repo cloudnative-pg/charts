@@ -187,6 +187,9 @@
                 "enableSuperuserAccess": {
                     "type": "boolean"
                 },
+                "imageCatalogRef": {
+                    "type": "object"
+                },
                 "imageName": {
                     "type": "string"
                 },
@@ -254,7 +257,21 @@
                     "type": "integer"
                 },
                 "postgresql": {
-                    "type": "object"
+                    "type": "object",
+                    "properties": {
+                        "parameters": {
+                            "type": "object"
+                        },
+                        "pg_hba": {
+                            "type": "array"
+                        },
+                        "pg_ident": {
+                            "type": "array"
+                        },
+                        "shared_preload_libraries": {
+                            "type": "array"
+                        }
+                    }
                 },
                 "primaryUpdateMethod": {
                     "type": "string"
@@ -288,6 +305,9 @@
                 "walStorage": {
                     "type": "object",
                     "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
                         "size": {
                             "type": "string"
                         },
@@ -300,6 +320,17 @@
         },
         "fullnameOverride": {
             "type": "string"
+        },
+        "imageCatalog": {
+            "type": "object",
+            "properties": {
+                "create": {
+                    "type": "boolean"
+                },
+                "images": {
+                    "type": "array"
+                }
+            }
         },
         "mode": {
             "type": "string"
@@ -441,6 +472,90 @@
                 "method": {
                     "type": "string"
                 },
+                "pgBaseBackup": {
+                    "type": "object",
+                    "properties": {
+                        "database": {
+                            "type": "string"
+                        },
+                        "owner": {
+                            "type": "string"
+                        },
+                        "secret": {
+                            "type": "string"
+                        },
+                        "source": {
+                            "type": "object",
+                            "properties": {
+                                "database": {
+                                    "type": "string"
+                                },
+                                "host": {
+                                    "type": "string"
+                                },
+                                "passwordSecret": {
+                                    "type": "object",
+                                    "properties": {
+                                        "create": {
+                                            "type": "boolean"
+                                        },
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "value": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "port": {
+                                    "type": "integer"
+                                },
+                                "sslCertSecret": {
+                                    "type": "object",
+                                    "properties": {
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "sslKeySecret": {
+                                    "type": "object",
+                                    "properties": {
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "sslMode": {
+                                    "type": "string"
+                                },
+                                "sslRootCertSecret": {
+                                    "type": "object",
+                                    "properties": {
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "username": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
                 "pitrTarget": {
                     "type": "object",
                     "properties": {
@@ -487,6 +602,20 @@
         },
         "type": {
             "type": "string"
+        },
+        "version": {
+            "type": "object",
+            "properties": {
+                "postgis": {
+                    "type": "string"
+                },
+                "postgresql": {
+                    "type": "string"
+                },
+                "timescaledb": {
+                    "type": "string"
+                }
+            }
         }
     }
 }

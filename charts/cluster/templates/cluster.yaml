@@ -13,18 +13,18 @@ metadata:
   {{- end }}
 spec:
   instances: {{ .Values.cluster.instances }}
-  imageName: {{ include "cluster.imageName" . }}
+  {{- include "cluster.image" . | nindent 2 }}
   imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
-  {{- with .Values.cluster.imagePullSecrets}}
+  {{- with .Values.cluster.imagePullSecrets }}
   imagePullSecrets:
     {{- . | toYaml | nindent 4 }}
   {{- end }}
-  postgresUID: {{ .Values.cluster.postgresUID }}
-  postgresGID: {{ .Values.cluster.postgresGID }}
+  postgresUID: {{ include "cluster.postgresUID" . }}
+  postgresGID: {{ include "cluster.postgresGID" . }}
   storage:
     size: {{ .Values.cluster.storage.size }}
     storageClass: {{ .Values.cluster.storage.storageClass }}
-{{- if .Values.cluster.walStorage }}
+{{- if .Values.cluster.walStorage.enabled }}
   walStorage:
     size: {{ .Values.cluster.walStorage.size }}
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
@@ -56,9 +56,16 @@ spec:
       {{- if eq .Values.type "timescaledb" }}
       - timescaledb
       {{- end }}
-    {{- with .Values.cluster.postgresql }}
-    parameters:
+      {{- with .Values.cluster.postgresql.shared_preload_libraries }}
       {{- toYaml . | nindent 6 }}
+      {{- end }}
+    {{- with .Values.cluster.postgresql }}
+    pg_hba:
+      {{- toYaml .pg_hba | nindent 6 }}
+    pg_ident:
+      {{- toYaml .pg_ident | nindent 6 }}
+    parameters:
+      {{- toYaml .parameters | nindent 6 }}
     {{ end }}
 
   managed:
