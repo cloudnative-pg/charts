@@ -160,9 +160,13 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.initdb | object | `{}` | BootstrapInitDB is the configuration of the bootstrap process when initdb is used. See: https://cloudnative-pg.io/documentation/current/bootstrap/ See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb |
 | cluster.instances | int | `3` | Number of instances |
 | cluster.logLevel | string | `"info"` | The instances' log level, one of the following values: error, warning, info (default), debug, trace |
-| cluster.monitoring.customQueries | list | `[]` | Custom Prometheus metrics |
+| cluster.monitoring.customQueries | list | `[]` | Custom Prometheus metrics Will be stored in the ConfigMap |
+| cluster.monitoring.customQueriesSecret | list | `[]` | The list of secrets containing the custom queries |
+| cluster.monitoring.disableDefaultQueries | bool | `false` | Whether the default queries should be injected. Set it to true if you don't want to inject default queries into the cluster. |
 | cluster.monitoring.enabled | bool | `false` | Whether to enable monitoring |
 | cluster.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
+| cluster.monitoring.podMonitor.metricRelabelings | list | `[]` | The list of metric relabelings for the PodMonitor. Applied to samples before ingestion. |
+| cluster.monitoring.podMonitor.relabelings | list | `[]` | The list of relabelings for the PodMonitor. Applied to samples before scraping. |
 | cluster.monitoring.prometheusRule.enabled | bool | `true` | Whether to enable the PrometheusRule automated alerts |
 | cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
 | cluster.postgresGID | int | `-1` | The GID of the postgres user inside the image, defaults to 26 |
@@ -191,6 +195,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | pooler.instances | int | `3` | Number of PgBouncer instances |
 | pooler.monitoring.enabled | bool | `false` | Whether to enable monitoring |
 | pooler.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
+| pooler.monitoring.podMonitor.metricRelabelings | list | `[]` | The list of metric relabelings for the PodMonitor. Applied to samples before ingestion. |
+| pooler.monitoring.podMonitor.relabelings | list | `[]` | The list of relabelings for the PodMonitor. Applied to samples before scraping. |
 | pooler.parameters | object | `{"default_pool_size":"25","max_client_conn":"1000"}` | PgBouncer configuration parameters |
 | pooler.poolMode | string | `"transaction"` | PgBouncer pooling mode |
 | pooler.template | object | `{}` | Custom PgBouncer deployment template. Use to override image, specify resources, etc. |

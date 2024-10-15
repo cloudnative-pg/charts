@@ -7,6 +7,7 @@ cluster:
     storageClass: standard
   monitoring:
     enabled: true
+    disableDefaultQueries: true
     customQueries:
       - name: "pg_cache_hit_ratio"
         query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
@@ -17,10 +18,61 @@ cluster:
           - ratio:
               usage: GAUGE
               description: "Cache hit ratio"
+    podMonitor:
+      relabelings:
+        - targetLabel: environment
+          replacement: test
+        - targetLabel: team
+          replacement: alpha
+      metricRelabelings:
+        - action: replace
+          sourceLabels:
+            - cluster
+          targetLabel: cnpg_cluster
+        - action: labeldrop
+          regex: cluster
+  additionalLabels:
+    foo: bar
+  annotations:
+    foo: bar
 backups:
   enabled: false
-pooler:
-  enabled: true
-  instances: 1
-  monitoring:
-    enabled: true
+poolers:
+  - name: rw
+    type: rw
+    instances: 1
+    monitoring:
+      enabled: true
+      podMonitor:
+        enabled: true
+        relabelings:
+          - targetLabel: type
+            replacement: rw
+          - targetLabel: team
+            replacement: alpha
+        metricRelabelings:
+          - action: replace
+            sourceLabels:
+              - cluster
+            targetLabel: cnpg_cluster
+          - action: labeldrop
+            regex: cluster
+  - name: ro
+    type: ro
+    instances: 1
+    monitoring:
+      enabled: true
+      podMonitor:
+        enabled: true
+        relabelings:
+          - targetLabel: type
+            replacement: ro
+          - targetLabel: team
+            replacement: alpha
+        metricRelabelings:
+          - action: replace
+            sourceLabels:
+              - cluster
+            targetLabel: cnpg_cluster
+          - action: labeldrop
+            regex: cluster
