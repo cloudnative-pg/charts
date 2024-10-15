@@ -5,7 +5,7 @@ metadata:
   labels:
     foo: bar
   annotations:
-      foo: bar
+    foo: bar
 spec:
   instances: 2
   storage:
@@ -18,10 +18,12 @@ spec:
           key: custom-queries
       enablePodMonitor: true
       podMonitorRelabelings:
-        - targetLabel: environment
+        - action: replace
           replacement: test
-        - targetLabel: team
+          targetLabel: environment
+        - action: replace
           replacement: alpha
+          targetLabel: team
       podMonitorMetricRelabelings:
         - action: replace
           sourceLabels:

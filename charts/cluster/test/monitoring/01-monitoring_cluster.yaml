@@ -31,6 +31,10 @@ cluster:
           targetLabel: cnpg_cluster
         - action: labeldrop
           regex: cluster
+  additionalLabels:
+    foo: bar
+  annotations:
+    foo: bar
 backups:
   enabled: false
 pooler:
