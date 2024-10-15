@@ -7,6 +7,10 @@ cluster:
     storageClass: standard
 backups:
   enabled: false
-pooler:
-  enabled: true
-  instances: 2
+poolers:
+  - name: rw
+    type: rw
+    instances: 2
+  - name: ro
+    type: ro
+    instances: 2
