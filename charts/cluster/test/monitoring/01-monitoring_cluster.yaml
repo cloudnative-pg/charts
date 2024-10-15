@@ -37,21 +37,42 @@ cluster:
     foo: bar
 backups:
   enabled: false
-pooler:
-  enabled: true
-  instances: 1
-  monitoring:
-    enabled: true
-    podMonitor:
-      relabelings:
-        - targetLabel: environment
-          replacement: test
-        - targetLabel: team
-          replacement: alpha
-      metricRelabelings:
-        - action: replace
-          sourceLabels:
-            - cluster
-          targetLabel: cnpg_cluster
-        - action: labeldrop
-          regex: cluster
+poolers:
+  - name: rw
+    type: rw
+    instances: 1
+    monitoring:
+      enabled: true
+      podMonitor:
+        enabled: true
+        relabelings:
+          - targetLabel: type
+            replacement: rw
+          - targetLabel: team
+            replacement: alpha
+        metricRelabelings:
+          - action: replace
+            sourceLabels:
+              - cluster
+            targetLabel: cnpg_cluster
+          - action: labeldrop
+            regex: cluster
+  - name: ro
+    type: ro
+    instances: 1
+    monitoring:
+      enabled: true
+      podMonitor:
+        enabled: true
+        relabelings:
+          - targetLabel: type
+            replacement: ro
+          - targetLabel: team
+            replacement: alpha
+        metricRelabelings:
+          - action: replace
+            sourceLabels:
+              - cluster
+            targetLabel: cnpg_cluster
+          - action: labeldrop
+            regex: cluster

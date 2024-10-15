@@ -78,7 +78,7 @@ Configuration
 {{- end }}
 │ Storage           │ {{ printf "%-56s" .Values.cluster.storage.size }} │
 │ Storage Class     │ {{ printf "%-56s" (default "Default" .Values.cluster.storage.storageClass) }} │
-│ PGBouncer         │ {{ printf "%-56s" (ternary "Enabled" "Disabled" .Values.pooler.enabled) }} │
+│ PGBouncer         │ {{ printf "%-56s" (ternary "Enabled" "Disabled" (gt (len .Values.poolers) 0)) }} │
 │ Monitoring        │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.cluster.monitoring.enabled)) (printf "%-56s" (ternary "Enabled" "Disabled" .Values.cluster.monitoring.enabled)) }} │
 ╰───────────────────┴──────────────────────────────────────────────────────────╯
 

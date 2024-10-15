@@ -70,10 +70,39 @@ spec:
         key: ''
         name: ''
       relabelings:
-        - targetLabel: environment
-          replacement: test
+        - targetLabel: type
+          replacement: rw
+          action: replace
         - targetLabel: team
           replacement: alpha
+          action: replace
+      metricRelabelings:
+        - action: replace
+          sourceLabels:
+            - cluster
+          targetLabel: cnpg_cluster
+        - action: labeldrop
+          regex: cluster
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: monitoring-cluster-pooler-ro
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/poolerName: monitoring-cluster-pooler-ro
+  podMetricsEndpoints:
+    - bearerTokenSecret:
+        key: ''
+        name: ''
+      relabelings:
+        - targetLabel: type
+          replacement: ro
+          action: replace
+        - targetLabel: team
+          replacement: alpha
+          action: replace
       metricRelabelings:
         - action: replace
           sourceLabels:
