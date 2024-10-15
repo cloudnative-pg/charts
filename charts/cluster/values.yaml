@@ -220,13 +220,23 @@ cluster:
     podMonitor:
       # -- Whether to enable the PodMonitor
       enabled: true
+      # --The list of relabelings for the PodMonitor.
+      # Applied to samples before scraping.
+      relabelings: []
+      # -- The list of metric relabelings for the PodMonitor.
+      # Applied to samples before ingestion.
+      metricRelabelings: []
     prometheusRule:
       # -- Whether to enable the PrometheusRule automated alerts
       enabled: true
       # -- Exclude specified rules
       excludeRules: []
         # - CNPGClusterZoneSpreadWarning
+    # -- Whether the default queries should be injected.
+    # Set it to true if you don't want to inject default queries into the cluster.
+    disableDefaultQueries: false
     # -- Custom Prometheus metrics
+    # Will be stored in the ConfigMap
     customQueries: []
     #  - name: "pg_cache_hit_ratio"
     #    query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
@@ -237,6 +247,10 @@ cluster:
     #      - ratio:
     #          usage: GAUGE
     #          description: "Cache hit ratio"
+    # -- The list of secrets containing the custom queries
+    customQueriesSecret: []
+    #  - name: custom-queries-secret
+    #    key: custom-queries
 
   postgresql:
     # -- PostgreSQL configuration options (postgresql.conf)
@@ -372,8 +386,14 @@ pooler:
     # -- Whether to enable monitoring
     enabled: false
     podMonitor:
-        # -- Whether to enable the PodMonitor
+      # -- Whether to enable the PodMonitor
       enabled: true
+      # --The list of relabelings for the PodMonitor.
+      # Applied to samples before scraping.
+      relabelings: []
+      # -- The list of metric relabelings for the PodMonitor.
+      # Applied to samples before ingestion.
+      metricRelabelings: []
 
   # -- Custom PgBouncer deployment template.
   # Use to override image, specify resources, etc.
