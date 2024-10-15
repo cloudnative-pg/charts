@@ -1,3 +1,4 @@
+type: postgresql
 mode: standalone
 cluster:
   instances: 2
@@ -9,6 +10,7 @@ cluster:
     size: 256Mi
     storageClass: standard
   walStorage:
+    enabled: true
     size: 256Mi
     storageClass: standard
   postgresUID: 1001
@@ -56,7 +58,14 @@ cluster:
          - pg_monitor
          - pg_signal_backend
   postgresql:
-    max_connections: "42"
+    parameters:
+      max_connections: "42"
+    pg_hba:
+      - host all 1.2.3.4/32 trust
+    pg_ident:
+      - mymap   /^(.*)@mydomain\.com$      \1
+    shared_preload_libraries:
+      - pgaudit
   initdb:
     database: mydb
     owner: dante

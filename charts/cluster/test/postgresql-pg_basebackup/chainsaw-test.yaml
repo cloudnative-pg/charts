@@ -1,0 +1,64 @@
+##
+# This is a test that provisions a regular (non CNPG) PostgreSQL cluster and attempts to perform a pg_basebackup recovery.
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: postgresql-pg-basebackup
+spec:
+  timeouts:
+    apply: 1s
+    assert: 2m
+    cleanup: 1m
+  steps:
+    - name: Install the external PostgreSQL cluster
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./00-source-cluster.yaml \
+                --wait \
+                source ../../
+        - assert:
+            file: ./00-source-cluster-assert.yaml
+        - apply:
+            file: ./01-data_write.yaml
+        - assert:
+            file: ./01-data_write-assert.yaml
+    - name: Install the pg_basebackup cluster
+      timeouts:
+        assert: 5m
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./02-pg_basebackup-cluster.yaml \
+                --wait \
+                pg-basebackup ../../
+        - assert:
+            file: ./02-pg_basebackup-cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+    - name: Verify the data from step 1 exists
+      try:
+        - apply:
+            file: ./03-data_test.yaml
+        - assert:
+            file: ./03-data_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE source
+              helm uninstall --namespace $NAMESPACE pg-basebackup
