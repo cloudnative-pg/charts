@@ -15,6 +15,18 @@ spec:
       {{- toYaml .parameters | nindent 6 }}
   monitoring:
     enablePodMonitor: {{ and .monitoring.enabled .monitoring.podMonitor.enabled }}
+    {{- if not (empty .monitoring.podMonitor.relabelings) }}
+    {{- with .monitoring.podMonitor.relabelings }}
+    podMonitorRelabelings:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+    {{- end }}
+    {{- if not (empty .monitoring.podMonitor.metricRelabelings) }}
+    {{- with .monitoring.podMonitor.metricRelabelings }}
+    podMonitorMetricRelabelings:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+    {{- end }}
   {{- with .template }}
   template:
     {{- . | toYaml | nindent 4 }}
