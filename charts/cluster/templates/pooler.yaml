@@ -8,25 +8,27 @@ spec:
   cluster:
     name: {{ include "cluster.fullname" $ }}
   instances: {{ .instances }}
-  type: {{ .type }}
+  type: {{ default "rw" .type }}
   pgbouncer:
-    poolMode: {{ .poolMode }}
+    poolMode: {{ default "session" .poolMode }}
+    {{- with .parameters }}
     parameters:
-      {{- toYaml .parameters | nindent 6 }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{ with .monitoring }}
   monitoring:
+  {{- if not (empty .monitoring.podMonitor) }}
     enablePodMonitor: {{ and .monitoring.enabled .monitoring.podMonitor.enabled }}
-    {{- if not (empty .monitoring.podMonitor.relabelings) }}
     {{- with .monitoring.podMonitor.relabelings }}
     podMonitorRelabelings:
       {{- toYaml . | nindent 6 }}
     {{ end }}
-    {{- end }}
-    {{- if not (empty .monitoring.podMonitor.metricRelabelings) }}
     {{- with .monitoring.podMonitor.metricRelabelings }}
     podMonitorMetricRelabelings:
       {{- toYaml . | nindent 6 }}
     {{ end }}
-    {{- end }}
+  {{- end }}
+  {{- end }}
   {{- with .template }}
   template:
     {{- . | toYaml | nindent 4 }}
