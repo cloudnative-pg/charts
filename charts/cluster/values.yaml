@@ -370,6 +370,7 @@ imageCatalog:
     # - image: ghcr.io/your_repo/your_image:your_tag
     #   major: 16
 
+# -- List of PgBouncer poolers
 poolers: []
   # -
   #   # -- Pooler name

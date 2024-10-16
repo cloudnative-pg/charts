@@ -11,6 +11,7 @@ poolers:
   - name: rw
     type: rw
     instances: 2
+    poolMode: transaction
   - name: ro
     type: ro
     instances: 2

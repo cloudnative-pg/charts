@@ -11,8 +11,20 @@ spec:
   type: {{ default "rw" .type }}
   pgbouncer:
     poolMode: {{ default "session" .poolMode }}
+    {{- with .authQuerySecret }}
+    authQuerySecret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .authQuery }}
+    authQuery:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
     {{- with .parameters }}
     parameters:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .pg_hba }}
+    pg_hba:
       {{- toYaml . | nindent 6 }}
     {{- end }}
   {{ with .monitoring }}
