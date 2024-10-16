@@ -20,14 +20,19 @@ spec:
           - |
             apk --no-cache add postgresql-client
             psql "$DB_URI" <<-EOSQL
-              CALL paradedb.create_bm25_test_table( schema_name => 'public', table_name => 'mock_items' );
+              CALL paradedb.create_bm25_test_table(
+                schema_name => 'public',
+                table_name => 'mock_items'
+              );          
               CALL paradedb.create_bm25(
                 index_name => 'search_idx',
-                schema_name => 'public',
                 table_name => 'mock_items',
                 key_field => 'id',
-                text_fields => paradedb.field('description', tokenizer => paradedb.tokenizer('en_stem')) ||
-                               paradedb.field('category'),
-                numeric_fields => paradedb.field('rating')
+                text_fields => paradedb.field('description') || paradedb.field('category'),
+                numeric_fields => paradedb.field('rating'),
+                boolean_fields => paradedb.field('in_stock'),
+                datetime_fields => paradedb.field('created_at'),
+                json_fields => paradedb.field('metadata'),
+                range_fields => paradedb.field('weight_range')
               );
             EOSQL

@@ -255,7 +255,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | recovery.secret.name | string | `""` | Name of the backup credentials secret |
 | type | string | `"paradedb"` | Type of the CNPG database. Available types: * `paradedb` |
-| version.paradedb | string | `"0.10.3"` | We default to v0.10.3 for testing and local development |
+| version.paradedb | string | `"0.11.0"` | We default to v0.11.0 for testing and local development |
 | version.postgresql | string | `"16"` | PostgreSQL major version to use |
 | poolers[].name | string | `` | Name of the pooler resource |
 | poolers[].instances | number | `1` | The number of replicas we want |
