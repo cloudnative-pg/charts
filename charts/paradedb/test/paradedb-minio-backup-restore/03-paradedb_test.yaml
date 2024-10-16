@@ -21,7 +21,9 @@ spec:
             apk --no-cache add postgresql-client
             RESULT=$(psql "$DB_URI" -t) <<-EOSQL
               SELECT description
-              FROM search_idx.search('description:"bluetooth speaker"~1');
+              FROM mock_items
+              WHERE description @@@ '"bluetooth speaker"~1'
+              LIMIT 1;
             EOSQL
             echo -$RESULT-
             test "$RESULT" = " Bluetooth-enabled speaker"
