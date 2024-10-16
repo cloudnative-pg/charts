@@ -35,6 +35,11 @@ spec:
         - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
   superuserSecret:
     name: supersecret-secret
+  replicationSlots:
+    highAvailability:
+      enabled: false
+      slotPrefix: _cnpg_cust_
+      updateInterval: "60"
   enableSuperuserAccess: true
   certificates:
     serverCASecret: ca-secret

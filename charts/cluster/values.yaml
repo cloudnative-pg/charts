@@ -201,6 +201,15 @@ cluster:
   enableSuperuserAccess: true
   superuserSecret: ""
 
+  # -- This feature automatically manages physical replication slots for each hot standby replica in
+  # the High Availability cluster, both in the primary and the standby.
+  # See: https://cloudnative-pg.io/documentation/current/replication/#replication-slots-for-high-availability
+  replicationSlots:
+    highAvailability:
+      enabled: true
+      slotPrefix: _cnpg_
+    updateInterval: 30
+
   # -- This feature enables declarative management of existing roles, as well as the creation of new roles if they are not
   # already present in the database.
   # See: https://cloudnative-pg.io/documentation/current/declarative_role_management/
