@@ -4,8 +4,8 @@ kind: Secret
 metadata:
   name: {{ default (printf "%s-backup-azure-creds" (include "cluster.fullname" .)) .Values.backups.secret.name }}
 data:
-  AZURE_CONNECTION_STRING: {{ .Values.backups.azure.connectionString | b64enc | quote }}
-  AZURE_STORAGE_ACCOUNT: {{ .Values.backups.azure.storageAccount | b64enc | quote }}
-  AZURE_STORAGE_KEY: {{ .Values.backups.azure.storageKey | b64enc | quote }}
-  AZURE_STORAGE_SAS_TOKEN: {{ .Values.backups.azure.storageSasToken | b64enc | quote }}
+  {{ required ".Values.backups.secret.keyNames.connectionString is required, but not specified" .Values.backups.secret.keyNames.connectionString }}: {{ .Values.backups.azure.connectionString | b64enc | quote }}
+  {{ required ".Values.backups.secret.keyNames.storageAccount is required, but not specified" .Values.backups.secret.keyNames.storageAccount }}: {{ .Values.backups.azure.storageAccount | b64enc | quote }}
+  {{ required ".Values.backups.secret.keyNames.storageKey is required, but not specified" .Values.backups.secret.keyNames.storageKey }}: {{ .Values.backups.azure.storageKey | b64enc | quote }}
+  {{ required ".Values.backups.secret.keyNames.storageSasToken is required, but not specified" .Values.backups.secret.keyNames.storageSasToken }}: {{ .Values.backups.azure.storageSasToken | b64enc | quote }}
 {{- end }}
