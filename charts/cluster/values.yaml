@@ -36,8 +36,29 @@ recovery:
 
   ## -- Point in time recovery target. Specify one of the following:
   pitrTarget:
-    # -- Time in RFC3339 format
+    # -- The ID of the backup from which to start the recovery process. 
+    # If empty (default) the operator will automatically detect the backup based on `pitrTarget.time` or `pitrTarget.lsn` if provided.
+    # Otherwise use the latest available backup in chronological order.
+    backupID: ""
+
+    # -- Recovery ends as soon as a consistent state is reached, that is, as early as possible
+    immediate: ""
+    
+    # -- The target timeline ("latest" or a positive integer)
+    tli: ""
+
+    # -- Set the target to be exclusive. If omitted, defaults to false, so that in Postgres, `recovery_target_inclusive` will be true
+    exclusive: ""
+
+    # Specify EXACTLY ONE of the following options:
+    # -- Point in time recovery Time target in RFC3339 format
     time: ""
+    # -- Point in time recovery Transaction ID up to which recovery proceeds. (The precise stopping point is also influenced by the exclusive option.) 
+    xid: ""
+    # -- Named restore point (created with pg_create_restore_point()) to which recovery proceeds
+    name: ""
+    # -- LSN (Log Sequence Number) of the write-ahead log location up to which recovery proceeds. (The precise stopping point is also influenced by the exclusive option.)
+    lsn: ""
 
   ##
   # -- Backup Recovery Method
