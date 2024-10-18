@@ -282,6 +282,25 @@
                 "priorityClassName": {
                     "type": "string"
                 },
+                "replicationSlots": {
+                    "type": "object",
+                    "properties": {
+                        "highAvailability": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "slotPrefix": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "updateInterval": {
+                            "type": "integer"
+                        }
+                    }
+                },
                 "resources": {
                     "type": "object"
                 },

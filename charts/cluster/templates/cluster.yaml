@@ -51,6 +51,10 @@ spec:
   superuserSecret:
     name: {{ . }}
   {{ end }}
+  {{- with .Values.cluster.replicationSlots }}
+  replicationSlots:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
   postgresql:
     shared_preload_libraries:
       {{- if eq .Values.type "timescaledb" }}
