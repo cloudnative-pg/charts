@@ -6,7 +6,7 @@ on:
       - 'gh-pages'
 
 jobs:
-  test-cluster-chainsaw:
+  test-cluster-standalone:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
