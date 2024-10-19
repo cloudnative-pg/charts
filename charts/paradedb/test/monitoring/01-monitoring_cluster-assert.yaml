@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: monitoring-cluster
+  name: monitoring-paradedb
   labels:
     foo: bar
   annotations:
@@ -14,7 +14,7 @@ spec:
   monitoring:
       disableDefaultQueries: true
       customQueriesConfigMap:
-        - name: monitoring-cluster-monitoring
+        - name: monitoring-paradedb-monitoring
           key: custom-queries
       enablePodMonitor: true
       podMonitorRelabelings:

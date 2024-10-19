@@ -86,12 +86,12 @@ jobs:
       - name: Install the CloudNativePG Operator
         run: |
           helm repo add cnpg https://cloudnative-pg.github.io/charts
-          helm upgrade --install cnpg --namespace cnpg-system --create-namespace cnpg/cloudnative-pg
+          helm upgrade --atomic --install cnpg --namespace cnpg-system --create-namespace cnpg/cloudnative-pg
 
-      - name: Wait for CNPG Webhook Service to be Ready
+      - name: Install the Prometheus Operator
         run: |
-          kubectl wait --namespace cnpg-system --for=condition=available --timeout=120s deployment/cnpg-cloudnative-pg
-          kubectl get svc -n cnpg-system cnpg-webhook-service
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm upgrade --atomic --install prometheus-community --namespace prometheus-community --create-namespace prometheus-community/prometheus-operator-crds
 
       - name: Test Helm Dependency Update
         working-directory: charts/paradedb/
