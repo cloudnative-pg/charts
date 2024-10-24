@@ -4,6 +4,6 @@ kind: Secret
 metadata:
   name: {{ default (printf "%s-backup-s3-creds" (include "cluster.fullname" .)) .Values.backups.secret.name }}
 data:
-  ACCESS_KEY_ID: {{ required ".Values.backups.s3.accessKey is required, but not specified." .Values.backups.s3.accessKey | b64enc | quote }}
-  ACCESS_SECRET_KEY: {{ required ".Values.backups.s3.secretKey is required, but not specified." .Values.backups.s3.secretKey | b64enc | quote }}
+  {{ required ".Values.backups.secret.keyNames.accessKey is required, but not specified" .Values.backups.secret.keyNames.accessKey }}: {{ required ".Values.backups.s3.accessKey is required, but not specified." .Values.backups.s3.accessKey | b64enc | quote }}
+  {{ required ".Values.backups.secret.keyNames.secretKey is required, but not specified" .Values.backups.secret.keyNames.secretKey }}: {{ required ".Values.backups.s3.secretKey is required, but not specified." .Values.backups.s3.secretKey | b64enc | quote }}
 {{- end }}

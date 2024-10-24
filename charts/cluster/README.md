@@ -145,6 +145,13 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
 | backups.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | backups.secret.name | string | `""` | Name of the backup credentials secret |
+| backups.secret.keyNames.accessKey | string | `"ACCESS_KEY_ID"` | Name of the s3 accessKey secret key |
+| backups.secret.keyNames.secretKey | string | `"ACCESS_SECRET_KEY"` | Name of the s3 secretKey secret key |
+| backups.secret.keyNames.applicationCredentials | string | `"APPLICATION_CREDENTIALS"` | Name of the google applicationCredentials secret key |
+| backups.secret.keyNames.connectionString | string | `"AZURE_CONNECTION_STRING"` | Name of the azure connectionString secret key |
+| backups.secret.keyNames.storageAccount | string | `"AZURE_STORAGE_ACCOUNT"` | Name of the azure storageAccount secret key |
+| backups.secret.keyNames.storageKey | string | `"AZURE_STORAGE_KEY"` | Name of the azure storageKey secret key |
+| backups.secret.keyNames.storageSasToken | string | `"AZURE_STORAGE_SAS_TOKEN"` | Name of the azure storageSasToken secret key |
 | backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backups.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
