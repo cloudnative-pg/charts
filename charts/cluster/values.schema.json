@@ -199,6 +199,23 @@
                 "imagePullSecrets": {
                     "type": "array"
                 },
+                "inheritedMetadata": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        },
+                        "labels": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
                 "initdb": {
                     "type": "object"
                 },
