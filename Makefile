@@ -16,8 +16,8 @@ schema: cloudnative-pg-schema cluster-schema ## Generate charts' schema using he
 
 cloudnative-pg-schema:
 	@helm schema-gen charts/cloudnative-pg/values.yaml | cat > charts/cloudnative-pg/values.schema.json || \
-		(echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
+		(echo "Please, run: helm plugin install https://github.com/KnechtionsCoding/helm-schema-gen.git" && exit 1)
 
 cluster-schema:
 	@helm schema-gen charts/cluster/values.yaml | cat > charts/cluster/values.schema.json || \
-		(echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
+		(echo "Please, run: helm plugin install https://github.com/KnechtionsCoding/helm-schema-gen.git" && exit 1)

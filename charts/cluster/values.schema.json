@@ -288,6 +288,17 @@
                 "roles": {
                     "type": "array"
                 },
+                "serviceAccount": {
+                    "type": "object",
+                    "properties": {
+                        "annotations": {
+                            "type": "object"
+                        },
+                        "labels": {
+                            "type": "object"
+                        }
+                    }
+                },
                 "storage": {
                     "type": "object",
                     "properties": {

@@ -180,6 +180,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.priorityClassName | string | `""` |  |
 | cluster.resources | object | `{}` | Resources requirements of every generated Pod. Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information. We strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS. See: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/ |
 | cluster.roles | list | `[]` | This feature enables declarative management of existing roles, as well as the creation of new roles if they are not already present in the database. See: https://cloudnative-pg.io/documentation/current/declarative_role_management/ |
+| cluster.serviceAccount.annotations | object | `{}` | Annotations to be added to the ServiceAccount See: https://cloudnative-pg.io/documentation/current/appendixes/object_stores/#running-inside-google-kubernetes-engine See: https://cloudnative-pg.io/documentation/current/appendixes/object_stores/#iam-role-for-service-account-irsa |
+| cluster.serviceAccount.labels | object | `{}` | Labels to be added to the ServiceAccount |
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
@@ -274,4 +276,3 @@ TODO
 ----
 * IAM Role for S3 Service Account
 * Automatic provisioning of a Alert Manager configuration
-

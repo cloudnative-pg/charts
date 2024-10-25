@@ -60,6 +60,12 @@ spec:
             values:
             - node1
             - node2
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        foo: bar
+      labels:
+        bar: foo
   resources:
     requests:
       cpu: 100m

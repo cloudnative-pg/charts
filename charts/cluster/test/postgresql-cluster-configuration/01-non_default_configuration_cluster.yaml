@@ -52,6 +52,11 @@ cluster:
        inRoles:
          - pg_monitor
          - pg_signal_backend
+  serviceAccount:
+    annotations:
+      foo: bar
+    labels:
+      bar: foo
   postgresql:
     parameters:
       max_connections: "42"

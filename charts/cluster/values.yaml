@@ -284,6 +284,13 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
+  serviceAccount:
+    # -- Annotations to be added to the ServiceAccount
+    # See: https://cloudnative-pg.io/documentation/current/appendixes/object_stores/#running-inside-google-kubernetes-engine
+    # See: https://cloudnative-pg.io/documentation/current/appendixes/object_stores/#iam-role-for-service-account-irsa
+    annotations: {}
+    # -- Labels to be added to the ServiceAccount
+    labels: {}
 
 backups:
   # -- You need to configure backups manually, so backups are disabled by default.

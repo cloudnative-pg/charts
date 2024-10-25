@@ -28,7 +28,7 @@ spec:
   walStorage:
     size: {{ .Values.cluster.walStorage.size }}
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
-{{- end }}  
+{{- end }}
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
@@ -38,6 +38,17 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   priorityClassName: {{ .Values.cluster.priorityClassName }}
+
+  serviceAccountTemplate:
+    metadata:
+      {{- with .Values.cluster.serviceAccount.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.cluster.serviceAccount.labels }}
+      labels:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
 
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
