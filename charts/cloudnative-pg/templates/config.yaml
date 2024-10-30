@@ -26,7 +26,13 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 data:
+  {{- if .Values.config.clusterWide -}}
   {{- toYaml .Values.config.data | nindent 2 }}
+  {{- else -}}
+  {{- $watchNamespaceMap := dict "WATCH_NAMESPACE" .Release.Namespace -}}
+  {{- $fullConfiguration := merge .Values.config.data $watchNamespaceMap -}}
+  {{- toYaml $fullConfiguration | nindent 2 }}
+  {{- end -}}
 {{- else }}
 apiVersion: v1
 kind: Secret
@@ -40,6 +46,12 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 stringData:
+  {{- if .Values.config.clusterWide -}}
   {{- toYaml .Values.config.data | nindent 2 }}
+  {{- else -}}
+  {{- $watchNamespaceMap := dict "WATCH_NAMESPACE" .Release.Namespace -}}
+  {{- $fullConfiguration := merge .Values.config.data $watchNamespaceMap -}}
+  {{- toYaml $fullConfiguration | nindent 2 }}
+  {{- end -}}
 {{- end }}
 {{- end }}

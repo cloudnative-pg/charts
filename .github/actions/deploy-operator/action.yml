@@ -1,16 +1,29 @@
 name: Deploy the CNPG Operator
 description: Deploys the CNPG Operator to a Kubernetes cluster
+inputs:
+  namespace:
+    description: 'The name of the namespace where the operator will be deployed'
+    required: false
+    default: 'cnpg-system'
+  cluster-wide:
+    description: 'If the operator should be deployed cluster-wide or in single-namespace mode'
+    required: false
+    default: 'true'
 runs:
   using: composite
   steps:
     - name: Deploy the operator
       shell: bash
+      env:
+        NAMESPACE: ${{ inputs.namespace }}
+        CLUSTER_WIDE: ${{ inputs.cluster-wide }}
       run:
         helm dependency update charts/cloudnative-pg
 
         helm upgrade
         --install 
-        --namespace cnpg-system
+        --namespace $NAMESPACE
         --create-namespace
+        --set config.clusterWide=$CLUSTER_WIDE
         --wait
         cnpg charts/cloudnative-pg
