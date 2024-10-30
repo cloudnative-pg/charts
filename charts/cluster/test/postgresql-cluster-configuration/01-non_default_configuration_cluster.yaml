@@ -44,6 +44,7 @@ cluster:
     clientCASecret: client-ca-secret
   enableSuperuserAccess: true
   superuserSecret: supersecret-secret
+  enablePDB: false
   roles:
      - name: dante
        ensure: present

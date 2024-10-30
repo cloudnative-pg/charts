@@ -36,6 +36,7 @@ spec:
   superuserSecret:
     name: supersecret-secret
   enableSuperuserAccess: true
+  enablePDB: false
   certificates:
     serverCASecret: ca-secret
     serverTLSSecret: tls-secret
