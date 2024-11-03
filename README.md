@@ -50,13 +50,11 @@ First, install [Helm](https://helm.sh/docs/intro/install/). The following steps 
 
 #### (Optional) Monitoring
 
-The ParadeDB Helm chart supports monitoring via Prometheus and Grafana. To enable this, you need to have the Prometheus CRDs installed before installing the CloudNativePG operator. The Promotheus CRDs can be found [here](https://prometheus-community.github.io/helm-charts).
-
-TODO: Add link to Prometheus/Grafana docs and mention that it needs to be passed in to the cnpg cluster deployment.
+The ParadeDB Helm chart supports monitoring via Prometheus and Grafana. To enable monitoring, you need to have the Prometheus CRDs installed before installing the CloudNativePG operator. The Promotheus CRDs can be found [here](https://prometheus-community.github.io/helm-charts).
 
 #### Installing the CloudNativePG Operator
 
-Skip this step if the CloudNativePG operator is already installed in your cluster. T
+Skip this step if the CloudNativePG operator is already installed in your cluster. For advanced CloudNativePG configuration and monitoring, please refer to the [CloudNativePG Cluster Chart documentation](https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/README.md#values).
 
 ```bash
 helm repo add cnpg https://cloudnative-pg.github.io/charts
@@ -80,7 +78,7 @@ cluster:
     size: 256Mi
 ```
 
-Then, launch the ParadeDB cluster. If you do not wish to monitor your cluster, omit the `--set` command.
+Then, launch the ParadeDB cluster.
 
 ```bash
 helm repo add paradedb https://paradedb.github.io/charts
@@ -91,17 +89,17 @@ helm upgrade --atomic --install paradedb \
 paradedb/paradedb
 ```
 
-If `--values values.yaml` is omitted, the default values will be used. For additional configuration options for the `values.yaml` file, including configuring backups and PgBouncer, please refer to the [ParadeDB Helm Chart documentation](https://artifacthub.io/packages/helm/paradedb/paradedb#values). For advanced cluster configuration options, please refer to the [CloudNativePG Cluster Chart documentation](charts/paradedb/README.md).
+If `--values values.yaml` is omitted, the default values will be used. For advanced ParadeDB configuration and monitoring, please refer to the [ParadeDB Chart documentation](https://github.com/paradedb/charts/tree/dev/charts/paradedb#values).
 
 #### Connecting to a ParadeDB CNPG Cluster
 
-The command to connect to the primary instance of the cluster will be printed in your terminal. You can also connect to a specific pod via:
+The command to connect to the primary instance of the cluster will be printed in your terminal. You can connect to a specific pod via:
 
 ```bash
-kubectl exec --stdin --tty <pod-name> -n <namespace> -- bash
+kubectl exec --stdin --tty <pod-name> -n paradedb -- bash
 ```
 
-The primary is `paradedb-1`, and the replicas are `paradedb-2` onwards depending on the number of replicas you configured. This will launch a Bash shell inside the instance. You can connect to the ParadeDB database via `psql` with:
+The primary is called `paradedb-1`, and the replicas will be called `paradedb-2` onwards depending on the number of replicas you configured. This will launch a Bash shell inside the instance. You can connect to the ParadeDB database via `psql` with:
 
 ```bash
 psql -d paradedb
