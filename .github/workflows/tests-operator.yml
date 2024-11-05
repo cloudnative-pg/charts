@@ -59,3 +59,15 @@ jobs:
           namespace: 'single-install'
           cluster-name: 'cluster-example'
           ready-instances: '3'
+
+      - name: Create a separate namespace
+        run: kubectl create ns test-ignore
+
+      - name: Deploy a cluster in 'test-ignore'
+        uses: ./.github/actions/deploy-cluster
+        with:
+          namespace: 'test-ignore'
+
+      - name: Verify the cluster in 'test-ignore' is being ignored
+        run: |
+          kubectl -n test-ignore get pods 2>&1 >/dev/null | grep 'No resources found'
