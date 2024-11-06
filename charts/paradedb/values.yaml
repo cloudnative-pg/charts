@@ -28,7 +28,8 @@ recovery:
   # * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.
   # * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported).
   # * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to
-  #        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO
+  #        migrate databases to CloudNativePG, even from outside Kubernetes.
+  # * `import` - Import one or more databases from an existing Postgres cluster.
   method: backup
 
   ## -- Point in time recovery target. Specify one of the following:
@@ -120,6 +121,44 @@ recovery:
         name: ""
         key: ""
 
+  # See: https://cloudnative-pg.io/documentation/1.24/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Import
+  import:
+    # -- One of `microservice` or `monolith.`
+    # See: https://cloudnative-pg.io/documentation/1.24/database_import/#how-it-works
+    type: "microservice"
+    # -- Databases to import
+    databases: []
+    # -- Roles to import
+    roles: []
+    # -- List of SQL queries to be executed as a superuser in the application database right after is imported.
+    # To be used with extreme care. Only available in microservice type.
+    postImportApplicationSQL: []
+    # -- When set to true, only the pre-data and post-data sections of pg_restore are invoked, avoiding data import.
+    schemaOnly: false
+    source:
+      host: ""
+      port: 5432
+      username: ""
+      database: "paradedb"
+      sslMode: "verify-full"
+      passwordSecret:
+        # -- Whether to create a secret for the password
+        create: false
+        # -- Name of the secret containing the password
+        name: ""
+        # -- The key in the secret containing the password
+        key: "password"
+        # -- The password value to use when creating the secret
+        value: ""
+      sslKeySecret:
+        name: ""
+        key: ""
+      sslCertSecret:
+        name: ""
+        key: ""
+      sslRootCertSecret:
+        name: ""
+        key: ""
 
 cluster:
   # -- Number of instances

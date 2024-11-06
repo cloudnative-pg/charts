@@ -265,7 +265,12 @@
                     "type": "object",
                     "properties": {
                         "parameters": {
-                            "type": "object"
+                            "type": "object",
+                            "properties": {
+                                "cron.database_name": {
+                                    "type": "string"
+                                }
+                            }
                         },
                         "pg_hba": {
                             "type": "array"
@@ -420,6 +425,96 @@
                             "type": "boolean"
                         },
                         "path": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "import": {
+                    "type": "object",
+                    "properties": {
+                        "databases": {
+                            "type": "array"
+                        },
+                        "postImportApplicationSQL": {
+                            "type": "array"
+                        },
+                        "roles": {
+                            "type": "array"
+                        },
+                        "schemaOnly": {
+                            "type": "boolean"
+                        },
+                        "source": {
+                            "type": "object",
+                            "properties": {
+                                "database": {
+                                    "type": "string"
+                                },
+                                "host": {
+                                    "type": "string"
+                                },
+                                "passwordSecret": {
+                                    "type": "object",
+                                    "properties": {
+                                        "create": {
+                                            "type": "boolean"
+                                        },
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "value": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "port": {
+                                    "type": "integer"
+                                },
+                                "sslCertSecret": {
+                                    "type": "object",
+                                    "properties": {
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "sslKeySecret": {
+                                    "type": "object",
+                                    "properties": {
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "sslMode": {
+                                    "type": "string"
+                                },
+                                "sslRootCertSecret": {
+                                    "type": "object",
+                                    "properties": {
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "username": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "type": {
                             "type": "string"
                         }
                     }

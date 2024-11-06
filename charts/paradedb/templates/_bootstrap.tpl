@@ -3,7 +3,7 @@
 bootstrap:
   initdb:
     {{- with .Values.cluster.initdb }}
-        {{- with (omit . "postInitSQL" "postInitApplicationSQL" "postInitTemplateSQL" "owner") }}
+        {{- with (omit . "postInitSQL" "postInitApplicationSQL" "postInitTemplateSQL" "owner" "import") }}
             {{- . | toYaml | nindent 4 }}
         {{- end }}
     {{- end }}
@@ -70,33 +70,34 @@ bootstrap:
     {{- end }}
 
 externalClusters:
-- name: pgBaseBackupSource
-  connectionParameters:
-    host: {{ .Values.recovery.pgBaseBackup.source.host | quote }}
-    port: {{ .Values.recovery.pgBaseBackup.source.port | quote }}
-    user: {{ .Values.recovery.pgBaseBackup.source.username | quote }}
-    dbname: {{ .Values.recovery.pgBaseBackup.source.database | quote }}
-    sslmode: {{ .Values.recovery.pgBaseBackup.source.sslMode | quote }}
-  {{- if .Values.recovery.pgBaseBackup.source.passwordSecret.name }}
-  password:
-    name: {{ default (printf "%s-pg-basebackup-password" (include "cluster.fullname" .)) .Values.recovery.pgBaseBackup.source.passwordSecret.name }}
-    key: {{ .Values.recovery.pgBaseBackup.source.passwordSecret.key }}
-  {{- end }}
-  {{- if .Values.recovery.pgBaseBackup.source.sslKeySecret.name }}
-  sslKey:
-    name: {{ .Values.recovery.pgBaseBackup.source.sslKeySecret.name }}
-    key: {{ .Values.recovery.pgBaseBackup.source.sslKeySecret.key }}
-  {{- end }}
-  {{- if .Values.recovery.pgBaseBackup.source.sslCertSecret.name }}
-  sslCert:
-    name: {{ .Values.recovery.pgBaseBackup.source.sslCertSecret.name }}
-    key: {{ .Values.recovery.pgBaseBackup.source.sslCertSecret.key }}
-  {{- end }}
-  {{- if .Values.recovery.pgBaseBackup.source.sslRootCertSecret.name }}
-  sslRootCert:
-    name: {{ .Values.recovery.pgBaseBackup.source.sslRootCertSecret.name }}
-    key: {{ .Values.recovery.pgBaseBackup.source.sslRootCertSecret.key }}
-  {{- end }}
+  {{- include "cluster.externalSourceCluster" (list "pgBaseBackupSource" .Values.recovery.pgBaseBackup.source) | nindent 2 }}
+
+{{- else if eq .Values.recovery.method "import" }}
+  initdb:
+    {{- with .Values.cluster.initdb }}
+        {{- with (omit . "owner" "import") }}
+            {{- . | toYaml | nindent 4 }}
+        {{- end }}
+    {{- end }}
+    {{- if .Values.cluster.initdb.owner }}
+    owner: {{ tpl .Values.cluster.initdb.owner . }}
+    {{- end }}
+    import:
+      source:
+        externalCluster: importSource
+      type: {{ .Values.recovery.import.type }}
+      databases: {{ .Values.recovery.import.databases | toJson }}
+      {{ with .Values.recovery.import.roles }}
+      roles: {{ . | toJson }}
+      {{- end }}
+      {{ with .Values.recovery.import.postImportApplicationSQL }}
+      postImportApplicationSQL:
+        {{- . | toYaml | nindent 6 }}
+      {{- end }}
+      schemaOnly: {{ .Values.recovery.import.schemaOnly }}
+
+externalClusters:
+  {{- include "cluster.externalSourceCluster" (list "importSource" .Values.recovery.import.source) | nindent 2 }}
 
 {{- else }}
   recovery:

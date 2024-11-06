@@ -38,6 +38,7 @@ spec:
         - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
   superuserSecret:
     name: supersecret-secret
+    key: password
   enableSuperuserAccess: true
   certificates:
     serverCASecret: ca-secret
