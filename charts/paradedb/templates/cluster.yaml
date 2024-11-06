@@ -76,6 +76,9 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{ end }}
 
+  # -- Configure the generation of the service account
+  serviceAccountTemplate: {}
+
   monitoring:
     enablePodMonitor: {{ and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
     disableDefaultQueries: {{ .Values.cluster.monitoring.disableDefaultQueries }}
