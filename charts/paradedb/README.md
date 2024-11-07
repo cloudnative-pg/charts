@@ -204,7 +204,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.monitoring.customQueries | list | `[]` | Custom Prometheus metrics Will be stored in the ConfigMap |
 | cluster.monitoring.customQueriesSecret | list | `[]` | The list of secrets containing the custom queries |
 | cluster.monitoring.disableDefaultQueries | bool | `false` | Whether the default queries should be injected. Set it to true if you don't want to inject default queries into the cluster. |
-| cluster.monitoring.enabled | bool | `true` | Whether to enable monitoring |
+| cluster.monitoring.enabled | bool | `false` | Whether to enable monitoring |
 | cluster.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
 | cluster.monitoring.podMonitor.metricRelabelings | list | `[]` | The list of metric relabelings for the PodMonitor. Applied to samples before ingestion. |
 | cluster.monitoring.podMonitor.relabelings | list | `[]` | The list of relabelings for the PodMonitor. Applied to samples before scraping. |
@@ -212,7 +212,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
 | cluster.postgresGID | int | `-1` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `-1` | The UID of the postgres user inside the image, defaults to 26 |
-| cluster.postgresql.parameters | object | `{"cron.database_name":"postgres"}` | PostgreSQL configuration options (postgresql.conf) |
+| cluster.postgresql.parameters | object | `{}` | PostgreSQL configuration options (postgresql.conf) |
 | cluster.postgresql.pg_hba | list | `[]` | PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file) |
 | cluster.postgresql.pg_ident | list | `[]` | PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file) |
 | cluster.postgresql.shared_preload_libraries | list | `[]` | Lists of shared preload libraries to add to the default ones |
@@ -251,7 +251,27 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.google.bucket | string | `""` |  |
 | recovery.google.gkeEnvironment | bool | `false` |  |
 | recovery.google.path | string | `"/"` |  |
-| recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO |
+| recovery.import.databases | list | `[]` | Databases to import |
+| recovery.import.postImportApplicationSQL | list | `[]` | List of SQL queries to be executed as a superuser in the application database right after is imported. To be used with extreme care. Only available in microservice type. |
+| recovery.import.roles | list | `[]` | Roles to import |
+| recovery.import.schemaOnly | bool | `false` | When set to true, only the pre-data and post-data sections of pg_restore are invoked, avoiding data import. |
+| recovery.import.source.database | string | `"paradedb"` |  |
+| recovery.import.source.host | string | `""` |  |
+| recovery.import.source.passwordSecret.create | bool | `false` | Whether to create a secret for the password |
+| recovery.import.source.passwordSecret.key | string | `"password"` | The key in the secret containing the password |
+| recovery.import.source.passwordSecret.name | string | `""` | Name of the secret containing the password |
+| recovery.import.source.passwordSecret.value | string | `""` | The password value to use when creating the secret |
+| recovery.import.source.port | int | `5432` |  |
+| recovery.import.source.sslCertSecret.key | string | `""` |  |
+| recovery.import.source.sslCertSecret.name | string | `""` |  |
+| recovery.import.source.sslKeySecret.key | string | `""` |  |
+| recovery.import.source.sslKeySecret.name | string | `""` |  |
+| recovery.import.source.sslMode | string | `"verify-full"` |  |
+| recovery.import.source.sslRootCertSecret.key | string | `""` |  |
+| recovery.import.source.sslRootCertSecret.name | string | `""` |  |
+| recovery.import.source.username | string | `""` |  |
+| recovery.import.type | string | `"microservice"` | One of `microservice` or `monolith.` See: https://cloudnative-pg.io/documentation/1.24/database_import/#how-it-works |
+| recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. * `import` - Import one or more databases from an existing Postgres cluster. |
 | recovery.pgBaseBackup.database | string | `"paradedb"` | Name of the database used by the application. Default: `paradedb`. |
 | recovery.pgBaseBackup.owner | string | `""` | Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch |
 | recovery.pgBaseBackup.secret | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
@@ -282,18 +302,18 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | type | string | `"paradedb"` | Type of the CNPG database. Available types: * `paradedb` |
 | version.paradedb | string | `"0.11.0"` | We default to v0.11.0 for testing and local development |
 | version.postgresql | string | `"16"` | PostgreSQL major version to use |
-| poolers[].name | string | `` | Name of the pooler resource |
-| poolers[].instances | number | `1` | The number of replicas we want |
-| poolers[].type | [PoolerType][PoolerType] | `rw` | Type of service to forward traffic to. Default: `rw`. |
-| poolers[].poolMode | [PgBouncerPoolMode][PgBouncerPoolMode] | `session` | The pool mode. Default: `session`. |
-| poolers[].authQuerySecret | [LocalObjectReference][LocalObjectReference] | `{}` | The credentials of the user that need to be used for the authentication query. |
-| poolers[].authQuery | string | `{}` | The credentials of the user that need to be used for the authentication query. |
-| poolers[].parameters | map[string]string | `{}` | Additional parameters to be passed to PgBouncer - please check the CNPG documentation for a list of options you can configure |
-| poolers[].template | [PodTemplateSpec][PodTemplateSpec] | `{}` | The template of the Pod to be created |
-| poolers[].template | [ServiceTemplateSpec][ServiceTemplateSpec] | `{}` | Template for the Service to be created |
-| poolers[].pg_hba | []string | `{}` | PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file) |
-| poolers[].monitoring.enabled | bool | `false` | Whether to enable monitoring for the Pooler. |
-| poolers[].monitoring.podMonitor.enabled | bool | `true` | Create a podMonitor for the Pooler. |
+| poolers[].name                                      | string                                       | ``                                               | Name of the pooler resource                                                                                                                                                                                                                                                                                                                                                                                                                |
+| poolers[].instances                                 | number                                       | `1`                                              | The number of replicas we want                                                                                                                                                                                                                                                                                                                                                                                                             |
+| poolers[].type                                      | [PoolerType][PoolerType]                     | `rw`                                             | Type of service to forward traffic to. Default: `rw`.                                                                                                                                                                                                                                                                                                                                                                                      |
+| poolers[].poolMode                                  | [PgBouncerPoolMode][PgBouncerPoolMode]       | `session`                                        | The pool mode. Default: `session`.                                                                                                                                                                                                                                                                                                                                                                                                         |
+| poolers[].authQuerySecret                           | [LocalObjectReference][LocalObjectReference] | `{}`                                             | The credentials of the user that need to be used for the authentication query.                                                                                                                                                                                                                                                                                                                                                             |
+| poolers[].authQuery                                 | string                                       | `{}`                                             | The credentials of the user that need to be used for the authentication query.                                                                                                                                                                                                                                                                                                                                                             |
+| poolers[].parameters                                | map[string]string                            | `{}`                                             | Additional parameters to be passed to PgBouncer - please check the CNPG documentation for a list of options you can configure                                                                                                                                                                                                                                                                                                              |
+| poolers[].template                                  | [PodTemplateSpec][PodTemplateSpec]           | `{}`                                             | The template of the Pod to be created                                                                                                                                                                                                                                                                                                                                                                                                      |
+| poolers[].template                                  | [ServiceTemplateSpec][ServiceTemplateSpec]   | `{}`                                             | Template for the Service to be created                                                                                                                                                                                                                                                                                                                                                                                                     |
+| poolers[].pg_hba                                    | []string                                     | `{}`                                             | PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)                                                                                                                                                                                                                                                                                                                                                  |
+| poolers[].monitoring.enabled                        | bool                                         | `false`                                          | Whether to enable monitoring for the Pooler.                                                                                                                                                                                                                                                                                                                                                                                               |
+| poolers[].monitoring.podMonitor.enabled             | bool                                         | `true`                                           | Create a podMonitor for the Pooler.                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ## Maintainers
 
