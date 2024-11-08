@@ -37,7 +37,9 @@ spec:
   affinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- if .Values.cluster.priorityClassName }}
   priorityClassName: {{ .Values.cluster.priorityClassName }}
+  {{- end }}
 
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
