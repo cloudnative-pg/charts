@@ -59,14 +59,18 @@ spec:
       {{- with .Values.cluster.postgresql.shared_preload_libraries }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
-    {{- with .Values.cluster.postgresql }}
+    {{- with .Values.cluster.postgresql.pg_hba }}
     pg_hba:
-      {{- toYaml .pg_hba | nindent 6 }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.cluster.postgresql.pg_ident }}
     pg_ident:
-      {{- toYaml .pg_ident | nindent 6 }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.cluster.postgresql.parameters }}
     parameters:
-      {{- toYaml .parameters | nindent 6 }}
-    {{ end }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
 
   managed:
     {{- with .Values.cluster.roles }}
