@@ -52,6 +52,7 @@ spec:
     name: {{ . }}
   {{ end }}
   postgresql:
+    {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
     shared_preload_libraries:
       {{- if eq .Values.type "timescaledb" }}
       - timescaledb
@@ -59,6 +60,7 @@ spec:
       {{- with .Values.cluster.postgresql.shared_preload_libraries }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
+    {{- end }}
     {{- with .Values.cluster.postgresql.pg_hba }}
     pg_hba:
       {{- toYaml . | nindent 6 }}
