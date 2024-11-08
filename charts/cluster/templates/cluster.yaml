@@ -23,11 +23,15 @@ spec:
   postgresGID: {{ include "cluster.postgresGID" . }}
   storage:
     size: {{ .Values.cluster.storage.size }}
+    {{- if not (empty .Values.cluster.storage.storageClass) }}
     storageClass: {{ .Values.cluster.storage.storageClass }}
+    {{- end }}
 {{- if .Values.cluster.walStorage.enabled }}
   walStorage:
     size: {{ .Values.cluster.walStorage.size }}
+    {{- if not (empty .Values.cluster.walStorage.storageClass) }}
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
+    {{- end }}
 {{- end }}  
   {{- with .Values.cluster.resources }}
   resources:
