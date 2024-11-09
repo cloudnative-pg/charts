@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pooler-cluster-pooler-rw
+status:
+  readyReplicas: 2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pooler-cluster-pooler-ro
+status:
+  readyReplicas: 2
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: pooler-cluster-pooler-rw
+spec:
+  cluster:
+    name: pooler-cluster
+  instances: 2
+  pgbouncer:
+    poolMode: transaction
+  type: rw
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: pooler-cluster-pooler-ro
+spec:
+  cluster:
+    name: pooler-cluster
+  instances: 2
+  pgbouncer:
+    poolMode: session
+  type: ro

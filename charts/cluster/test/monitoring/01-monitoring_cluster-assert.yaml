@@ -1,0 +1,133 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: monitoring-cluster
+  labels:
+    foo: bar
+  annotations:
+    foo: bar
+spec:
+  instances: 2
+  storage:
+    size: 256Mi
+    storageClass: standard
+  monitoring:
+      disableDefaultQueries: true
+      customQueriesConfigMap:
+        - name: monitoring-cluster-monitoring
+          key: custom-queries
+      enablePodMonitor: true
+      podMonitorRelabelings:
+        - action: replace
+          replacement: test
+          targetLabel: environment
+        - action: replace
+          replacement: alpha
+          targetLabel: team
+      podMonitorMetricRelabelings:
+        - action: replace
+          sourceLabels:
+            - cluster
+          targetLabel: cnpg_cluster
+        - action: labeldrop
+          regex: cluster
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: monitoring-cluster
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: monitoring-cluster
+  podMetricsEndpoints:
+    - bearerTokenSecret:
+        key: ''
+        name: ''
+      relabelings:
+        - targetLabel: environment
+          replacement: test
+        - targetLabel: team
+          replacement: alpha
+      metricRelabelings:
+        - action: replace
+          sourceLabels:
+            - cluster
+          targetLabel: cnpg_cluster
+        - action: labeldrop
+          regex: cluster
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: monitoring-cluster-pooler-rw
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/poolerName: monitoring-cluster-pooler-rw
+  podMetricsEndpoints:
+    - bearerTokenSecret:
+        key: ''
+        name: ''
+      relabelings:
+        - targetLabel: type
+          replacement: rw
+          action: replace
+        - targetLabel: team
+          replacement: alpha
+          action: replace
+      metricRelabelings:
+        - action: replace
+          sourceLabels:
+            - cluster
+          targetLabel: cnpg_cluster
+        - action: labeldrop
+          regex: cluster
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: monitoring-cluster-pooler-ro
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/poolerName: monitoring-cluster-pooler-ro
+  podMetricsEndpoints:
+    - bearerTokenSecret:
+        key: ''
+        name: ''
+      relabelings:
+        - targetLabel: type
+          replacement: ro
+          action: replace
+        - targetLabel: team
+          replacement: alpha
+          action: replace
+      metricRelabelings:
+        - action: replace
+          sourceLabels:
+            - cluster
+          targetLabel: cnpg_cluster
+        - action: labeldrop
+          regex: cluster
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: monitoring-cluster-alert-rules
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-cluster-monitoring
+data:
+  custom-queries: |
+    pg_cache_hit_ratio:
+      query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
+      metrics:
+        - datname:
+            description: Name of the database
+            usage: LABEL
+        - ratio:
+            description: Cache hit ratio
+            usage: GAUGE

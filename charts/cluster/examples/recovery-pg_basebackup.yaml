@@ -1,0 +1,15 @@
+type: postgresql
+mode: "recovery"
+
+recovery:
+  method: "pg_basebackup"
+  pgBaseBackup:
+    sourceHost: "source-db.foo.com"
+    sourceUsername: "streaming_replica"
+    existingPasswordSecret: "source-db-replica-password"
+
+cluster:
+  instances: 1
+
+backups:
+  enabled: false

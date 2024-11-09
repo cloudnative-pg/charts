@@ -1,0 +1,27 @@
+type: postgresql
+mode: standalone
+
+cluster:
+  instances: 2
+  storage:
+    size: 256Mi
+
+backups:
+  enabled: true
+  provider: s3
+  endpointURL: "https://minio.minio.svc.cluster.local"
+  endpointCA:
+    name: kube-root-ca.crt
+    key: ca.crt
+  wal:
+    encryption: ""
+  data:
+    encryption: ""
+  s3:
+    bucket: "mybucket"
+    path: "/postgresql-minio-backup-restore/v1"
+    accessKey: "minio"
+    secretKey: "minio123"
+    region: "local"
+  scheduledBackups: []
+  retentionPolicy: "30d"

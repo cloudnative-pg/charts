@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-write
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-write
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: standalone-cluster-superuser
+                key: uri
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+         - |
+           apk --no-cache add postgresql-client
+           DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
+           psql "$DB_URI" -c "CREATE TABLE mygoodtable (id serial PRIMARY KEY);"

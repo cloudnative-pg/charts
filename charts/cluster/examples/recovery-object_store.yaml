@@ -1,8 +1,9 @@
+type: postgresql
 mode: recovery
 
 recovery:
   method: object_store
-  serverName: "cluster-name-to-recover-from"
+  clusterName: "cluster-name-to-recover-from"
   provider: s3
   s3:
     region: "eu-west-1"

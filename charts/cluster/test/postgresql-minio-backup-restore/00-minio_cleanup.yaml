@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-cleanup
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: minio-cleanup
+        image: minio/mc
+        command: ['sh', '-c']
+        args:
+         - |
+           mc alias set myminio https://minio.minio.svc.cluster.local minio minio123
+           mc rm --recursive --force myminio/mybucket/postgresql-minio-backup-restore

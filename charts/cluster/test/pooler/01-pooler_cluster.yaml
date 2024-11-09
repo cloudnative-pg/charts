@@ -1,0 +1,17 @@
+type: postgresql
+mode: standalone
+cluster:
+  instances: 2
+  storage:
+    size: 256Mi
+    storageClass: standard
+backups:
+  enabled: false
+poolers:
+  - name: rw
+    type: rw
+    instances: 2
+    poolMode: transaction
+  - name: ro
+    type: ro
+    instances: 2

@@ -1,3 +1,12 @@
+{{- if .Values.pooler -}}
+  {{ fail ".Values.pooler has been deprecated. Use .Values.poolers instead." }}
+{{- end -}}
+
+{{- if gt (omit .Values.cluster.postgresql "parameters" "synchronous" "pg_hba" "pg_ident" "syncReplicaElectionConstraint" "shared_preload_libraries" "ldap" "promotionTimeout" "enableAlterSystem" | keys | len) 0 -}}
+  {{ fail ".Values.cluster.postgresql has been deprecated. Use .Values.cluster.postgresql.parameters instead." }}
+{{- end -}}
+
+
 {{ if .Release.IsInstall }}
 The {{ include "cluster.color-info" (include "cluster.fullname" .) }} has been installed successfully.
 {{ else if .Release.IsUpgrade }}
@@ -37,26 +46,50 @@ Configuration
   {{- $redundancyColor = "ok" -}}
 {{- end }}
 
-{{ $scheduledBackups := (first .Values.backups.scheduledBackups).name }}
+{{- $scheduledBackups := (first .Values.backups.scheduledBackups).name -}}
 {{- range (rest .Values.backups.scheduledBackups) -}}
   {{ $scheduledBackups = printf "%s, %s" $scheduledBackups .name }}
 {{- end -}}
+{{- if eq (len .Values.backups.scheduledBackups) 0 }}
+  {{- $scheduledBackups = "None" -}}
+{{- end -}}
 
-╭───────────────────┬────────────────────────────────────────────────────────╮
-│ Configuration     │ Value                                                  │
-┝━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
-│ Cluster mode      │ {{ (printf "%-54s" .Values.mode) }} │
-│ Type              │ {{ (printf "%-54s" .Values.type) }} │
-│ Image             │ {{ include "cluster.color-info" (printf "%-54s" (include "cluster.imageName" .)) }} │
-│ Instances         │ {{ include (printf "%s%s" "cluster.color-" $redundancyColor) (printf "%-54s" (toString .Values.cluster.instances)) }} │
-│ Backups           │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.backups.enabled)) (printf "%-54s" (ternary "Enabled" "Disabled" .Values.backups.enabled)) }} │
-│ Backup Provider   │ {{ (printf "%-54s" (title .Values.backups.provider)) }} │
-│ Scheduled Backups │ {{ (printf "%-54s" $scheduledBackups) }} │
-│ Storage           │ {{ (printf "%-54s" .Values.cluster.storage.size) }} │
-│ Storage Class     │ {{ (printf "%-54s" (default "Default" .Values.cluster.storage.storageClass)) }} │
-│ PGBouncer         │ {{ (printf "%-54s" (ternary "Enabled" "Disabled" .Values.pooler.enabled)) }} │
-│ Monitoring        │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.cluster.monitoring.enabled)) (printf "%-54s" (ternary "Enabled" "Disabled" .Values.cluster.monitoring.enabled)) }} │
-╰───────────────────┴────────────────────────────────────────────────────────╯
+{{- $mode := .Values.mode -}}
+{{- $source := "" -}}
+{{- if eq .Values.mode "recovery" }}
+{{- $mode = printf "%s (%s)" .Values.mode .Values.recovery.method -}}
+  {{- if eq .Values.recovery.method "pg_basebackup" }}
+    {{- $source = printf "postgresql://%s@%s:%.0f/%s" .Values.recovery.pgBaseBackup.source.username .Values.recovery.pgBaseBackup.source.host .Values.recovery.pgBaseBackup.source.port .Values.recovery.pgBaseBackup.source.database -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $image := (include "cluster.image" .) | fromYaml -}}
+{{- if $image.imageCatalogRef -}}
+  {{- $image = printf "%s: %s(%s)" $image.imageCatalogRef.kind $image.imageCatalogRef.name (include "cluster.postgresqlMajor" .) -}}
+{{- else if $image.imageName -}}
+  {{- $image = $image.imageName -}}
+{{- end }}
+
+╭───────────────────┬──────────────────────────────────────────────────────────╮
+│ Configuration     │ Value                                                    │
+┝━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
+│ Cluster mode      │ {{ printf "%-56s" $mode }} │
+│ Type              │ {{ printf "%-56s" .Values.type }} │
+│ Image             │ {{ include "cluster.color-info" (printf "%-56s" $image) }} │
+{{- if eq .Values.mode "recovery" }}
+│ Source            │ {{ printf "%-56s" $source }} │
+{{- end }}
+│ Instances         │ {{ include (printf "%s%s" "cluster.color-" $redundancyColor) (printf "%-56s" (toString .Values.cluster.instances)) }} │
+│ Backups           │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.backups.enabled)) (printf "%-56s" (ternary "Enabled" "Disabled" .Values.backups.enabled)) }} │
+{{- if .Values.backups.enabled }}
+│ Backup Provider   │ {{ printf "%-56s" (title .Values.backups.provider) }} │
+│ Scheduled Backups │ {{ printf "%-56s" $scheduledBackups }} │
+{{- end }}
+│ Storage           │ {{ printf "%-56s" .Values.cluster.storage.size }} │
+│ Storage Class     │ {{ printf "%-56s" (default "Default" .Values.cluster.storage.storageClass) }} │
+│ PGBouncer         │ {{ printf "%-56s" (ternary "Enabled" "Disabled" (gt (len .Values.poolers) 0)) }} │
+│ Monitoring        │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.cluster.monitoring.enabled)) (printf "%-56s" (ternary "Enabled" "Disabled" .Values.cluster.monitoring.enabled)) }} │
+╰───────────────────┴──────────────────────────────────────────────────────────╯
 
 {{ if not .Values.backups.enabled }}
   {{- include "cluster.color-error" "Warning! Backups not enabled. Recovery will not be possible! Do not use this configuration in production.\n" }}
