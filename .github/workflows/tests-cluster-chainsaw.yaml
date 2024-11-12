@@ -73,5 +73,9 @@ jobs:
             --values ./.github/minio.yaml \
             tenant minio-operator/tenant
 
+      # The Docker Hub tokens are required for the ParadeDB Enterprise tests
       - name: Run Kyverno/Chainsaw
         run: chainsaw test
+        env:
+          PARADEDB_ENTERPRISE_DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          PARADEDB_ENTERPRISE_DOCKER_PAT: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}

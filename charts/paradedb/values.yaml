@@ -6,6 +6,7 @@ fullnameOverride: ""
 ###
 # -- Type of the CNPG database. Available types:
 # * `paradedb`
+# * `paradedb-enterprise`
 type: paradedb
 
 version:

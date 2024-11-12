@@ -293,6 +293,9 @@
                 "roles": {
                     "type": "array"
                 },
+                "serviceAccountTemplate": {
+                    "type": "object"
+                },
                 "storage": {
                     "type": "object",
                     "properties": {
