@@ -91,7 +91,19 @@ helm upgrade --atomic --install paradedb --namespace paradedb --create-namespace
 
 ### Database Types
 
-To use the ParadeDB Helm Chart, specify `paradedb` via the `type` parameter.
+To create a ParadeDBcluster, you must specify either `paradedb` or `paradedb-enterprise` via the `type` parameter.
+
+> [!IMPORTANT]
+> When using `paradedb-enterprise` you must also specify `cluster.imagePullSecrets` containing the Docker registry credentials.
+> You can create one with:
+> kubectl -n NAMESPACE create secret docker-registry paradedb-enterprise-registry-cred --docker-server="https://index.docker.io/v1/" --docker-username="USERNAME" --docker-password="ACCESS_TOKEN"
+> Then you need to set:
+> ```yaml
+> type: paradedb-enterprise
+> cluster:
+>   imagePullSecrets:
+>    - name: paradedb-enterprise-registry-cred
+> ```
 
 ### Modes of Operation
 
@@ -137,6 +149,8 @@ There is a separate document outlining the recovery procedure here: **[Recovery]
 
 There are several configuration examples in the [examples](examples) directory. Refer to them for a basic setup and
 refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentation/current/) for more advanced configurations.
+
+## Values
 
 ## Values
 
@@ -201,7 +215,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
 | cluster.postgresGID | int | `-1` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `-1` | The UID of the postgres user inside the image, defaults to 26 |
-| cluster.postgresql.parameters | object | `{}` | PostgreSQL configuration options (postgresql.conf) |
+| cluster.postgresql.parameters | object | `{"cron.database_name":"postgres"}` | PostgreSQL configuration options (postgresql.conf) |
 | cluster.postgresql.pg_hba | list | `[]` | PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file) |
 | cluster.postgresql.pg_ident | list | `[]` | PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file) |
 | cluster.postgresql.shared_preload_libraries | list | `[]` | Lists of shared preload libraries to add to the default ones |
@@ -210,6 +224,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.priorityClassName | string | `""` |  |
 | cluster.resources | object | `{}` | Resources requirements of every generated Pod. Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information. We strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS. See: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/ |
 | cluster.roles | list | `[]` | This feature enables declarative management of existing roles, as well as the creation of new roles if they are not already present in the database. See: https://cloudnative-pg.io/documentation/current/declarative_role_management/ |
+| cluster.serviceAccountTemplate | object | `{}` | Configure the generation of the service account |
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
@@ -288,21 +303,9 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.s3.secretKey | string | `""` |  |
 | recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | recovery.secret.name | string | `""` | Name of the backup credentials secret |
-| type | string | `"paradedb"` | Type of the CNPG database. Available types: * `paradedb` |
+| type | string | `"paradedb"` | Type of the CNPG database. Available types: * `paradedb` * `paradedb-enterprise` |
 | version.paradedb | string | `"0.12.0"` | We default to v0.12.0 for testing and local development |
 | version.postgresql | string | `"16"` | PostgreSQL major version to use |
-| poolers[].name | string | `` | Name of the pooler resource |
-| poolers[].instances | number | `1` | The number of replicas we want |
-| poolers[].type | [PoolerType][PoolerType] | `rw` | Type of service to forward traffic to. Default: `rw`. |
-| poolers[].poolMode | [PgBouncerPoolMode][PgBouncerPoolMode] | `session` | The pool mode. Default: `session`. |
-| poolers[].authQuerySecret | [LocalObjectReference][LocalObjectReference] | `{}` | The credentials of the user that need to be used for the authentication query. |
-| poolers[].authQuery | string | `{}` | The credentials of the user that need to be used for the authentication query. |
-| poolers[].parameters | map[string]string | `{}` | Additional parameters to be passed to PgBouncer - please check the CNPG documentation for a list of options you can configure |
-| poolers[].template | [PodTemplateSpec][PodTemplateSpec] | `{}` | The template of the Pod to be created |
-| poolers[].template | [ServiceTemplateSpec][ServiceTemplateSpec] | `{}` | Template for the Service to be created |
-| poolers[].pg_hba | []string | `{}` | PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file) |
-| poolers[].monitoring.enabled | bool | `false` | Whether to enable monitoring for the Pooler. |
-| poolers[].monitoring.podMonitor.enabled | bool | `true` | Create a podMonitor for the Pooler. |
 
 ## Maintainers
 
