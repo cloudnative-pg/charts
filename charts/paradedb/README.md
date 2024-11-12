@@ -91,7 +91,23 @@ helm upgrade --atomic --install paradedb --namespace paradedb --create-namespace
 
 ### Database Types
 
-To use the ParadeDB Helm Chart, specify `paradedb` via the `type` parameter.
+To create a ParadeDB cluster, you must specify either `paradedb` or `paradedb-enterprise` via the `type` parameter.
+
+> [!IMPORTANT]
+> When using `paradedb-enterprise` you must also specify the `cluster.imagePullSecrets` containing the Docker registry credentials. You can create one with:
+>
+> ```bash
+> kubectl -n NAMESPACE create secret docker-registry paradedb-enterprise-registry-cred --docker-server="https://index.docker.io/v1/" --docker-username="USERNAME" --docker-password="ACCESS_TOKEN"
+> ```
+>
+> You then need to set the name of the secret in the `values.yaml` file with:
+>
+> ```yaml
+> type: paradedb-enterprise
+> cluster:
+>   imagePullSecrets:
+>    - name: paradedb-enterprise-registry-cred
+> ```
 
 ### Modes of Operation
 
@@ -298,7 +314,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.s3.secretKey | string | `""` |  |
 | recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | recovery.secret.name | string | `""` | Name of the backup credentials secret |
-| type | string | `"paradedb"` | Type of the CNPG database. Available types: * `paradedb` |
+| type | string | `"paradedb"` | Type of the CNPG database. Available types: * `paradedb` * `paradedb-enterprise` |
 | version.paradedb | string | `"0.12.0"` | We default to v0.12.0 for testing and local development |
 | version.postgresql | string | `"16"` | PostgreSQL major version to use |
 | poolers[].name | string | `` | Name of the pooler resource |

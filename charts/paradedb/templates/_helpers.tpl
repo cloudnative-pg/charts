@@ -80,6 +80,8 @@ If a custom imageName is available, use it, otherwise use the defaults based on 
         {{- printf "ghcr.io/cloudnative-pg/postgresql:%s" .Values.version.postgresql -}}
     {{- else if eq .Values.type "paradedb" -}}
         {{- printf "paradedb/paradedb:%s-v%s" .Values.version.postgresql .Values.version.paradedb -}}
+    {{- else if eq .Values.type "paradedb-enterprise" -}}
+        {{- printf "paradedb/paradedb-enterprise:%s-v%s" .Values.version.postgresql .Values.version.paradedb -}}
     {{- else -}}
         {{ fail "Invalid cluster type!" }}
     {{- end }}
@@ -114,6 +116,8 @@ Postgres UID
     {{- .Values.cluster.postgresUID }}
   {{- else if eq .Values.type "paradedb" -}}
     {{- 999 -}}
+  {{- else if eq .Values.type "paradedb-enterprise" -}}
+    {{- 999 -}}
   {{- else -}}
     {{- 26 -}}
   {{- end -}}
@@ -126,6 +130,8 @@ Postgres GID
   {{- if ge (int .Values.cluster.postgresGID) 0 -}}
     {{- .Values.cluster.postgresGID }}
   {{- else if eq .Values.type "paradedb" -}}
+    {{- 999 -}}
+  {{- else if eq .Values.type "paradedb-enterprise" -}}
     {{- 999 -}}
   {{- else -}}
     {{- 26 -}}
