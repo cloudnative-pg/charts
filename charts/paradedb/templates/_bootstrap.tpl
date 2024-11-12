@@ -11,7 +11,7 @@ bootstrap:
     owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
     postInitSQL:
-      {{- if eq .Values.type "paradedb" }}
+      {{- if or (eq .Values.type "paradedb") (eq .Values.type "paradedb-enterprise") }}
       - CREATE EXTENSION IF NOT EXISTS pg_cron;
       {{- end }}
       {{- with .Values.cluster.initdb }}
@@ -20,7 +20,7 @@ bootstrap:
         {{- end -}}
       {{- end }}
     postInitApplicationSQL:
-      {{- if eq .Values.type "paradedb" }}
+      {{- if or (eq .Values.type "paradedb") (eq .Values.type "paradedb-enterprise") }}
       - CREATE EXTENSION IF NOT EXISTS pg_search;
       - CREATE EXTENSION IF NOT EXISTS pg_analytics;
       - CREATE EXTENSION IF NOT EXISTS pg_ivm;
@@ -37,7 +37,7 @@ bootstrap:
         {{- end -}}
       {{- end }}
     postInitTemplateSQL:
-      {{- if eq .Values.type "paradedb" }}
+      {{- if or (eq .Values.type "paradedb") (eq .Values.type "paradedb-enterprise") }}
       - CREATE EXTENSION IF NOT EXISTS pg_search;
       - CREATE EXTENSION IF NOT EXISTS pg_analytics;
       - CREATE EXTENSION IF NOT EXISTS pg_ivm;
