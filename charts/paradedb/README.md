@@ -4,7 +4,7 @@ The [ParadeDB](https://github.com/paradedb/paradedb) Helm Chart is based on the 
 
 Kubernetes, and specifically the CloudNativePG operator, is the recommended approach for deploying ParadeDB in production, with high availability. ParadeDB also provides a [Docker image](https://hub.docker.com/r/paradedb/paradedb) and [prebuilt binaries](https://github.com/paradedb/paradedb/releases) for Debian, Ubuntu and Red Hat Enterprise Linux.
 
-The ParadeDB Helm Chart supports Postgres 13+ and ships with Postgres 16 by default.
+The ParadeDB Helm Chart supports Postgres 13+ and ships with Postgres 17 by default.
 
 The chart is also available on [Artifact Hub](https://artifacthub.io/packages/helm/paradedb/paradedb).
 
@@ -315,7 +315,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | recovery.secret.name | string | `""` | Name of the backup credentials secret |
 | type | string | `"paradedb"` | Type of the CNPG database. Available types: * `paradedb` * `paradedb-enterprise` |
-| version.paradedb | string | `"0.12.0"` | We default to v0.12.0 for testing and local development |
+| version.paradedb | string | `"0.12.2"` | We default to v0.12.2 for testing and local development |
 | version.postgresql | string | `"16"` | PostgreSQL major version to use |
 | poolers[].name | string | `` | Name of the pooler resource |
 | poolers[].instances | number | `1` | The number of replicas we want |
