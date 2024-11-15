@@ -1,7 +1,7 @@
 type: postgresql
 mode: standalone
 version:
-  postgresql: "16"
+  postgresql: "17"
 cluster:
   instances: 1
 backups:

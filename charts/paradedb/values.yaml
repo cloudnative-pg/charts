@@ -11,10 +11,10 @@ type: paradedb
 
 version:
   # -- PostgreSQL major version to use
-  postgresql: "16"
+  postgresql: "17"
   # -- The ParadeDB version, set in the publish CI workflow from the latest paradedb/paradedb GitHub tag
-  # -- We default to v0.12.0 for testing and local development
-  paradedb: "0.12.0"
+  # -- We default to v0.12.1 for testing and local development
+  paradedb: "0.12.1"
 
 ###
 # -- Cluster mode of operation. Available modes:
@@ -409,7 +409,7 @@ imageCatalog:
   # -- List of images to be provisioned in an image catalog.
   images: []
     # - image: ghcr.io/your_repo/your_image:your_tag
-    #   major: 16
+    #   major: 17
 
 # -- List of PgBouncer poolers
 poolers: []

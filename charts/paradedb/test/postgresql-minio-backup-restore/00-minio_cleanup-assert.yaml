@@ -1,6 +1,0 @@
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: minio-cleanup
-status:
-  succeeded: 1
