@@ -6,16 +6,35 @@ on:
       - 'gh-pages'
 
 jobs:
-  test-cluster-standalone:
+  test-list:
     runs-on: ubuntu-latest
+    outputs:
+      tests: ${{ steps.listTests.outputs.tests }}
+
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - id: listTests
+        run: |
+          echo "tests=$(ls charts/paradedb/test -1 | jq -cRn '{ include: [inputs | { test: "\(.)" }]}')" >> $GITHUB_OUTPUT
+  
+  test:
+    needs: test-list
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.test-list.outputs.tests) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Install Cosign
-        uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da # v3.7.0
+        uses: sigstore/cosign-installer@v3
 
       # Added by ParadeDB: Authenticate to Docker Hub to avoid rate limits
       - name: Login to Docker Hub
@@ -52,7 +71,7 @@ jobs:
           helm install prometheus-crds prometheus-community/prometheus-operator-crds
 
       - name: Install Chainsaw
-        uses: kyverno/action-install-chainsaw@d311eacde764f806c9658574ff64c9c3b21f8397 # v0.2.11
+        uses: kyverno/action-install-chainsaw@v0.2.11
         with:
           verify: true
 
@@ -75,7 +94,7 @@ jobs:
 
       # The Docker Hub tokens are required for the ParadeDB Enterprise tests
       - name: Run Kyverno/Chainsaw
-        run: chainsaw test
+        run: chainsaw test charts/paradedb/test/${{ matrix.test }}
         env:
           PARADEDB_ENTERPRISE_DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           PARADEDB_ENTERPRISE_DOCKER_PAT: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
