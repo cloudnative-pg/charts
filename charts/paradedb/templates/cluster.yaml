@@ -76,6 +76,7 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{- end }}
     {{- with .Values.cluster.postgresql.pg_ident }}
+
     pg_ident:
       {{- toYaml . | nindent 6 }}
     {{- end }}
@@ -89,8 +90,11 @@ spec:
     {{ end }}
     {{- with .Values.cluster.postgresql.parameters }}
     parameters:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
+      {{ with .parameters }}
+        {{- toYaml . | nindent 6 }}
+      {{ end }}
+      cron.database_name: postgres
+    {{ end }}
 
   {{- if not (and (empty .Values.cluster.roles) (empty .Values.cluster.services)) }}
   managed:
