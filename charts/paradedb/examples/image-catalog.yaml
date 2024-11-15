@@ -1,8 +1,8 @@
 type: postgresql
 mode: standalone
 version:
-  major: "16"
-  paradedb: "0.12.0"
+  major: "17"
+  paradedb: "0.12.2"
 cluster:
   instances: 1
 backups:
@@ -10,5 +10,5 @@ backups:
 imageCatalog:
   create: true
   images:
-    - major: 16
+    - major: 17
       image: my-custom-postgres-image:mytag
