@@ -1,6 +1,8 @@
 type: paradedb-enterprise
 mode: standalone
-
+version:
+  major: "16"
+  paradedb: "0.12.2"
 cluster:
   instances: 1
   storage:
