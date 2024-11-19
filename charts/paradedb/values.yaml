@@ -291,9 +291,7 @@ cluster:
 
   postgresql:
     # -- PostgreSQL configuration options (postgresql.conf)
-    parameters:
-      # Required by pg_cron
-      cron.database_name: postgres
+    parameters: {}
       # max_connections: 300
     # -- PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
     pg_hba: []

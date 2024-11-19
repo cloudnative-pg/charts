@@ -308,6 +308,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | type | string | `"paradedb"` | Type of the CNPG database. Available types: * `paradedb` * `paradedb-enterprise` |
 | version.paradedb | string | `"0.12.1"` | We default to v0.12.1 for testing and local development |
 | version.postgresql | string | `"17"` | PostgreSQL major version to use |
+| version.paradedb | string | `"0.12.1"` | We default to v0.12.1 for testing and local development |
+| version.postgresql | string | `"17"` | PostgreSQL major version to use |
 | poolers[].name | string | `` | Name of the pooler resource |
 | poolers[].instances | number | `1` | The number of replicas we want |
 | poolers[].type | [PoolerType][PoolerType] | `rw` | Type of service to forward traffic to. Default: `rw`. |
