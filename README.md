@@ -28,7 +28,7 @@
 
 The [ParadeDB](https://github.com/paradedb/paradedb) Helm Chart is based on the official [CloudNativePG Helm Chart](https://cloudnative-pg.io/). CloudNativePG is a Kubernetes operator that manages the full lifecycle of a highly available PostgreSQL database cluster with a primary/standby architecture using Postgres streaming (physical) replication.
 
-Kubernetes, and specifically the CloudNativePG operator, is the recommended approach for deploying ParadeDB in production, with high availability. ParadeDB also provides a [Docker image](https://hub.docker.com/r/paradedb/paradedb) and [prebuilt binaries](https://github.com/paradedb/paradedb/releases) for Debian, Ubuntu and Red Hat Enterprise Linux.
+Kubernetes, and specifically the CloudNativePG operator, is the recommended approach for deploying ParadeDB in production, with high availability. ParadeDB also provides a [Docker image](https://hub.docker.com/r/paradedb/paradedb) and [prebuilt binaries](https://github.com/paradedb/paradedb/releases) for Debian, Ubuntu, Red Hat Enterprise Linux, and macOS.
 
 The ParadeDB Helm Chart supports Postgres 13+ and ships with Postgres 17 by default.
 
@@ -40,13 +40,13 @@ The chart is also available on [Artifact Hub](https://artifacthub.io/packages/he
 
 The most reliable way to run ParadeDB in production is with ParadeDB BYOC, an end-to-end managed solution that runs in the customer’s cloud account. It deploys on managed Kubernetes services and uses the ParadeDB Helm Chart.
 
-ParadeDB BYOC includes built-in integration with managed PostgreSQL services, such as AWS RDS, via logical replication. It also provides monitoring, logging and alerting through Prometheus and Grafana. The ParadeDB team manages the underlying infrastructure and lifecycle of the cluster.
+ParadeDB BYOC includes built-in integration with managed PostgreSQL services, such as AWS RDS and GCP CloudSQL, via logical replication. It also provides monitoring, logging and alerting through Prometheus and Grafana. The ParadeDB team manages the underlying infrastructure and lifecycle of the cluster.
 
 You can read more about the optimal architecture for running ParadeDB in production [here](https://docs.paradedb.com/deploy/overview) and you can contact sales [here](mailto:sales@paradedb.com).
 
 ### Self-Hosted
 
-First, install [Helm](https://helm.sh/docs/intro/install/). The following steps assume you have a Kubernetes cluster running v1.25+. If you are testing locally, we recommend using [Minikube](https://minikube.sigs.k8s.io/docs/start/).
+First, install [Helm](https://helm.sh/docs/intro/install/). The following steps assume you have a Kubernetes cluster running v1.29+. If you are testing locally, we recommend using [Minikube](https://minikube.sigs.k8s.io/docs/start/).
 
 #### Monitoring
 

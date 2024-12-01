@@ -43,12 +43,21 @@ spec:
             file: 02-paradedb_test-assert.yaml
       catch:
         - describe:
+            apiVersion: v1
+            kind: Pod
+        - describe:
             apiVersion: batch/v1
             kind: Job
         - podLogs:
-            selector: batch.kubernetes.io/job-name=data-test
+            selector: cnpg.io/cluster=paradedb-ncc-1701-d
     - name: Cleanup
       try:
         - script:
             content: |
               helm uninstall --namespace $NAMESPACE paradedb-ncc-1701-d
+      catch:
+        - describe:
+            apiVersion: v1
+            kind: Pod
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb-ncc-1701-d
