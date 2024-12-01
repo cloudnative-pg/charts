@@ -22,17 +22,9 @@ spec:
             psql "$DB_URI" <<-EOSQL
               CALL paradedb.create_bm25_test_table(
                 schema_name => 'public',
-                table_name => 'mock_items'
-              );          
-              CALL paradedb.create_bm25(
-                index_name => 'search_idx',
-                table_name => 'mock_items',
-                key_field => 'id',
-                text_fields => paradedb.field('description') || paradedb.field('category'),
-                numeric_fields => paradedb.field('rating'),
-                boolean_fields => paradedb.field('in_stock'),
-                datetime_fields => paradedb.field('created_at'),
-                json_fields => paradedb.field('metadata'),
-                range_fields => paradedb.field('weight_range')
+                table_name => 'mock_items_paradedb_minio_backup_restore'
               );
+              CREATE INDEX search_idx_paradedb_minio_backup_restore ON mock_items_paradedb_minio_backup_restore
+              USING bm25 (id, description, category, rating, in_stock, created_at, metadata, weight_range)
+              WITH (key_field='id');
             EOSQL
