@@ -60,7 +60,7 @@ spec:
   {{ end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
   postgresql:
-    {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
+    {{- if or (eq .Values.type "paradedb") (eq .Values.type "paradedb-enterprise") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
     shared_preload_libraries:
       {{- if or (eq .Values.type "paradedb") (eq .Values.type "paradedb-enterprise") }}
       - pg_search
@@ -76,7 +76,6 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{- end }}
     {{- with .Values.cluster.postgresql.pg_ident }}
-
     pg_ident:
       {{- toYaml . | nindent 6 }}
     {{- end }}
@@ -90,9 +89,7 @@ spec:
     {{ end }}
     {{- with .Values.cluster.postgresql.parameters }}
     parameters:
-      {{ with .parameters }}
-        {{- toYaml . | nindent 6 }}
-      {{ end }}
+      {{- toYaml . | nindent 6 }}
       cron.database_name: postgres
     {{ end }}
 

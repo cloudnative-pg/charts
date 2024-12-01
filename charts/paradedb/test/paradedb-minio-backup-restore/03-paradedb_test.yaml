@@ -21,7 +21,7 @@ spec:
             apk --no-cache add postgresql-client
             RESULT=$(psql "$DB_URI" -t) <<-EOSQL
               SELECT description
-              FROM mock_items
+              FROM mock_items_paradedb_minio_backup_restore
               WHERE description @@@ '"bluetooth speaker"~1'
               LIMIT 1;
             EOSQL

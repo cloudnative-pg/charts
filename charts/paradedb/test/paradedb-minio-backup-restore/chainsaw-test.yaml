@@ -81,16 +81,40 @@ spec:
             kind: Job
         - podLogs:
             selector: batch.kubernetes.io/job-name=data-test
-    - name: Create a backup
+    - name: Start a backup
       try:
         - apply:
             file: ./05-backup.yaml
         - assert:
             file: ./05-backup_running-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Backup
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb-paradedb
+    - name: Complete a backup
+      try:
         - apply:
             file: ./05-checkpoint.yaml
         - assert:
             file: ./05-backup_completed-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Backup
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb-paradedb
     - name: Write more data to the database after the backup
       try:
         - apply:
