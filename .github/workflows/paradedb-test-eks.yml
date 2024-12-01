@@ -51,7 +51,7 @@ jobs:
           awslocal configure set region us-east-1
 
       # As of writing, the latest Kubernetes version available on LocalStack EKS
-      # is 1.29. CloudNativePG requires version 1.25+
+      # is 1.29. CloudNativePG requires version 1.29+
       - name: Create the LocalStack AWS EKS Cluster
         run: |
           awslocal --endpoint-url=http://localhost:4566 eks create-cluster \
