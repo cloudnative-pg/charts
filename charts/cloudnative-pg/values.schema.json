@@ -17,6 +17,9 @@
         "config": {
             "type": "object",
             "properties": {
+                "clusterWide": {
+                    "type": "boolean"
+                },
                 "create": {
                     "type": "boolean"
                 },
