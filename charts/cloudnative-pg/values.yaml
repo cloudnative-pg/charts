@@ -157,6 +157,8 @@ affinity: {}
 
 monitoring:
 
+  # -- The API version of the PodMonitor.
+  podMonitorApiVersion: monitoring.coreos.com/v1
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
   podMonitorEnabled: false
   # -- Metrics relabel configurations to apply to samples before ingestion.
