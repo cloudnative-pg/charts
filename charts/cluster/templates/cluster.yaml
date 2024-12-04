@@ -38,6 +38,7 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   priorityClassName: {{ .Values.cluster.priorityClassName }}
+  enablePDB: {{ .Values.cluster.enablePDB }}
 
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
