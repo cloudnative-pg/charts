@@ -28,7 +28,7 @@ spec:
   walStorage:
     size: {{ .Values.cluster.walStorage.size }}
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
-{{- end }}  
+{{- end }}
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
@@ -51,6 +51,7 @@ spec:
   superuserSecret:
     name: {{ . }}
   {{ end }}
+  enablePDB: {{ .Values.cluster.enablePDB }}
   postgresql:
     shared_preload_libraries:
       {{- if eq .Values.type "timescaledb" }}
@@ -73,6 +74,11 @@ spec:
     roles:
       {{- toYaml . | nindent 6 }}
     {{ end }}
+
+  {{- with .Values.cluster.serviceAccountTemplate }}
+  serviceAccountTemplate:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 
   monitoring:
     enablePodMonitor: {{ and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
