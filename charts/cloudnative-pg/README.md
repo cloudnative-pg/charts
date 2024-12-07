@@ -20,7 +20,7 @@ CloudNativePG Operator Helm Chart
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://cloudnative-pg.github.io/grafana-dashboards | monitoring(cluster) | 0.0 |
+| <https://github.com/cloudnative-pg/grafana-dashboards> | monitoring(cluster) | 0.0 |
 
 ## Values
 
