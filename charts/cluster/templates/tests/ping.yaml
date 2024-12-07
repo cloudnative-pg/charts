@@ -30,8 +30,14 @@ spec:
                 secretKeyRef:
                   name: {{ include "cluster.fullname" . }}-app
                   key: password
+            - name: PGDBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "cluster.fullname" . }}-app
+                  key: dbname
+                  optional: true
           args:
             - "-c"
             - >-
               apk add postgresql-client &&
-              psql "postgresql://$PGUSER:$PGPASS@{{ include "cluster.fullname" . }}-rw.{{ .Release.Namespace }}.svc.cluster.local:5432" -c 'SELECT 1'
+              psql "postgresql://$PGUSER:$PGPASS@{{ include "cluster.fullname" . }}-rw.{{ .Release.Namespace }}.svc.cluster.local:5432/${PGDBNAME:-$PGUSER}" -c 'SELECT 1'
