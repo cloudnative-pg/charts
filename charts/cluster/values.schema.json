@@ -344,58 +344,8 @@
         "nameOverride": {
             "type": "string"
         },
-        "pooler": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                },
-                "instances": {
-                    "type": "integer"
-                },
-                "monitoring": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean"
-                        },
-                        "podMonitor": {
-                            "type": "object",
-                            "properties": {
-                                "enabled": {
-                                    "type": "boolean"
-                                },
-                                "metricRelabelings": {
-                                    "type": "array"
-                                },
-                                "relabelings": {
-                                    "type": "array"
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "default_pool_size": {
-                            "type": "string"
-                        },
-                        "max_client_conn": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "poolMode": {
-                    "type": "string"
-                },
-                "template": {
-                    "type": "object"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
+        "poolers": {
+            "type": "array"
         },
         "recovery": {
             "type": "object",

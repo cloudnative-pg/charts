@@ -262,8 +262,10 @@ cluster:
     # -- PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
     pg_hba: []
       # - host all all 10.244.0.0/16 md5
+    # -- PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file)
     pg_ident: []
       # - mymap   /^(.*)@mydomain\.com$      \1
+    # -- Lists of shared preload libraries to add to the default ones
     shared_preload_libraries: []
       # - pgaudit
     ldap: {}
@@ -381,33 +383,49 @@ imageCatalog:
     # - image: ghcr.io/your_repo/your_image:your_tag
     #   major: 16
 
-pooler:
-  # -- Whether to enable PgBouncer
-  enabled: false
-  # -- PgBouncer type of service to forward traffic to.
-  type: rw
-  # -- PgBouncer pooling mode
-  poolMode: transaction
-  # -- Number of PgBouncer instances
-  instances: 3
-  # -- PgBouncer configuration parameters
-  parameters:
-    max_client_conn: "1000"
-    default_pool_size: "25"
-
-  monitoring:
-    # -- Whether to enable monitoring
-    enabled: false
-    podMonitor:
-      # -- Whether to enable the PodMonitor
-      enabled: true
-      # --The list of relabelings for the PodMonitor.
-      # Applied to samples before scraping.
-      relabelings: []
-      # -- The list of metric relabelings for the PodMonitor.
-      # Applied to samples before ingestion.
-      metricRelabelings: []
-
-  # -- Custom PgBouncer deployment template.
-  # Use to override image, specify resources, etc.
-  template: {}
+# -- List of PgBouncer poolers
+poolers: []
+  # -
+  #   # -- Pooler name
+  #   name: rw
+  #   # -- PgBouncer type of service to forward traffic to.
+  #   type: rw
+  #   # -- PgBouncer pooling mode
+  #   poolMode: transaction
+  #   # -- Number of PgBouncer instances
+  #   instances: 3
+  #   # -- PgBouncer configuration parameters
+  #   parameters:
+  #     max_client_conn: "1000"
+  #     default_pool_size: "25"
+  #   monitoring:
+  #     # -- Whether to enable monitoring
+  #     enabled: false
+  #     podMonitor:
+  #         # -- Whether to enable the PodMonitor
+  #       enabled: true
+  #   # -- Custom PgBouncer deployment template.
+  #   # Use to override image, specify resources, etc.
+  #   template: {}
+  # -
+  #   # -- Pooler name
+  #   name: ro
+  #   # -- PgBouncer type of service to forward traffic to.
+  #   type: ro
+  #   # -- PgBouncer pooling mode
+  #   poolMode: transaction
+  #   # -- Number of PgBouncer instances
+  #   instances: 3
+  #   # -- PgBouncer configuration parameters
+  #   parameters:
+  #     max_client_conn: "1000"
+  #     default_pool_size: "25"
+  #   monitoring:
+  #     # -- Whether to enable monitoring
+  #     enabled: false
+  #     podMonitor:
+  #         # -- Whether to enable the PodMonitor
+  #       enabled: true
+  #   # -- Custom PgBouncer deployment template.
+  #   # Use to override image, specify resources, etc.
+  #   template: {}
