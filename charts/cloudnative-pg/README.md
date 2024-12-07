@@ -30,7 +30,8 @@ CloudNativePG Operator Helm Chart
 | additionalEnv | list | `[]` | Array containing extra environment variables which can be templated. For example:  - name: RELEASE_NAME    value: "{{ .Release.Name }}"  - name: MY_VAR    value: "mySpecialKey" |
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
-| config | object | `{"create":true,"data":{},"name":"cnpg-controller-manager-config","secret":false}` | Operator configuration. |
+| config | object | `{"clusterWide":true,"create":true,"data":{},"name":"cnpg-controller-manager-config","secret":false}` | Operator configuration. |
+| config.clusterWide | bool | `true` | This option determines if the operator is responsible for observing events across the entire Kubernetes cluster or if its focus should be narrowed down to the specific namespace within which it has been deployed. |
 | config.create | bool | `true` | Specifies whether the secret should be created. |
 | config.data | object | `{}` | The content of the configmap/secret, see https://cloudnative-pg.io/documentation/current/operator_conf/#available-options for all the available options. |
 | config.name | string | `"cnpg-controller-manager-config"` | The name of the configmap/secret to use. |
@@ -67,6 +68,8 @@ CloudNativePG Operator Helm Chart
 | rbac.create | bool | `true` | Specifies whether ClusterRole and ClusterRoleBinding should be created. |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
+| service.ipFamilies | list | `[]` | Sets the families that should be supported and the order in which they should be applied to ClusterIP as well. Can be IPv4 and/or IPv6. |
+| service.ipFamilyPolicy | string | `""` | Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services) |
 | service.name | string | `"cnpg-webhook-service"` | DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate and can not be configured |
 | service.port | int | `443` |  |
 | service.type | string | `"ClusterIP"` |  |
