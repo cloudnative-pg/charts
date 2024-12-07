@@ -281,6 +281,9 @@ cluster:
     # postInitApplicationSQL: []
     # postInitTemplateSQL: []
 
+  # -- Configure the metadata of the generated service account
+  serviceAccountTemplate: {}
+
   additionalLabels: {}
   annotations: {}
 

@@ -76,6 +76,10 @@ cluster:
     foo: bar
   annotations:
     foo: bar
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        my-annotation: my-service-account
 
 backups:
   enabled: false

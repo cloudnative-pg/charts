@@ -80,3 +80,7 @@ spec:
         inRoles:
           - pg_monitor
           - pg_signal_backend
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        my-annotation: my-service-account
