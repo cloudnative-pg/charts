@@ -7,10 +7,11 @@ on:
 
 jobs:
   deploy_operator:
-    runs-on: ubuntu-22.04
+    name: Deploy the operator in cluster-wide mode
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
 
@@ -21,21 +22,52 @@ jobs:
         uses: ./.github/actions/deploy-operator
 
       - name: Deploy a cluster
-        run: |
-          cat <<EOF | kubectl apply -f -
-          # Example of PostgreSQL cluster
-          apiVersion: postgresql.cnpg.io/v1
-          kind: Cluster
-          metadata:
-            name: cluster-example
-          spec:
-            instances: 3
-            storage:
-             size: 1Gi
-          EOF
+        uses: ./.github/actions/deploy-cluster
 
       - name: Verify that the cluster is ready
         uses: ./.github/actions/verify-cluster-ready
         with:
           cluster-name: cluster-example
-          ready-instances: 3
+          ready-instances: '3'
+
+  deploy_operator_single_namespace:
+    name: Deploy the operator in single-namespace mode
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Setup kind
+        uses: ./.github/actions/setup-kind
+
+      - name: Deploy the operator
+        uses: ./.github/actions/deploy-operator
+        with:
+          namespace: 'single-install'
+          cluster-wide: 'false'
+
+      - name: Deploy a cluster
+        uses: ./.github/actions/deploy-cluster
+        with:
+          namespace: 'single-install'
+
+      - name: Verify that the cluster is ready
+        uses: ./.github/actions/verify-cluster-ready
+        with:
+          namespace: 'single-install'
+          cluster-name: 'cluster-example'
+          ready-instances: '3'
+
+      - name: Create a separate namespace
+        run: kubectl create ns test-ignore
+
+      - name: Deploy a cluster in 'test-ignore'
+        uses: ./.github/actions/deploy-cluster
+        with:
+          namespace: 'test-ignore'
+
+      - name: Verify the cluster in 'test-ignore' is being ignored
+        run: |
+          kubectl -n test-ignore get pods 2>&1 >/dev/null | grep 'No resources found'

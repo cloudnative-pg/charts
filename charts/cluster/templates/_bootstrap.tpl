@@ -3,9 +3,12 @@
 bootstrap:
   initdb:
     {{- with .Values.cluster.initdb }}
-        {{- with (omit . "postInitApplicationSQL") }}
+        {{- with (omit . "postInitApplicationSQL" "owner") }}
             {{- . | toYaml | nindent 4 }}
         {{- end }}
+    {{- end }}
+    {{- if .Values.cluster.initdb.owner }}
+    owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
