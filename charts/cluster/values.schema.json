@@ -270,6 +270,9 @@
                         },
                         "shared_preload_libraries": {
                             "type": "array"
+                        },
+                        "ldap": {
+                            "type": "object"
                         }
                     }
                 },
@@ -287,6 +290,9 @@
                 },
                 "roles": {
                     "type": "array"
+                },
+                "services": {
+                    "type": "object"
                 },
                 "storage": {
                     "type": "object",
