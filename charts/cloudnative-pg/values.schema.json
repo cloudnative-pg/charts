@@ -17,6 +17,9 @@
         "config": {
             "type": "object",
             "properties": {
+                "clusterWide": {
+                    "type": "boolean"
+                },
                 "create": {
                     "type": "boolean"
                 },
@@ -206,6 +209,12 @@
         "service": {
             "type": "object",
             "properties": {
+                "ipFamilies": {
+                    "type": "array"
+                },
+                "ipFamilyPolicy": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },

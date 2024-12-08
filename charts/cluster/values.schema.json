@@ -184,6 +184,9 @@
                 "certificates": {
                     "type": "object"
                 },
+                "enablePDB": {
+                    "type": "boolean"
+                },
                 "enableSuperuserAccess": {
                     "type": "boolean"
                 },
@@ -214,6 +217,12 @@
                         "customQueries": {
                             "type": "array"
                         },
+                        "customQueriesSecret": {
+                            "type": "array"
+                        },
+                        "disableDefaultQueries": {
+                            "type": "boolean"
+                        },
                         "enabled": {
                             "type": "boolean"
                         },
@@ -222,6 +231,12 @@
                             "properties": {
                                 "enabled": {
                                     "type": "boolean"
+                                },
+                                "metricRelabelings": {
+                                    "type": "array"
+                                },
+                                "relabelings": {
+                                    "type": "array"
                                 }
                             }
                         },
@@ -283,6 +298,9 @@
                 "roles": {
                     "type": "array"
                 },
+                "serviceAccountTemplate": {
+                    "type": "object"
+                },
                 "storage": {
                     "type": "object",
                     "properties": {
@@ -333,52 +351,8 @@
         "nameOverride": {
             "type": "string"
         },
-        "pooler": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean"
-                },
-                "instances": {
-                    "type": "integer"
-                },
-                "monitoring": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean"
-                        },
-                        "podMonitor": {
-                            "type": "object",
-                            "properties": {
-                                "enabled": {
-                                    "type": "boolean"
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "default_pool_size": {
-                            "type": "string"
-                        },
-                        "max_client_conn": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "poolMode": {
-                    "type": "string"
-                },
-                "template": {
-                    "type": "object"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
+        "poolers": {
+            "type": "array"
         },
         "recovery": {
             "type": "object",

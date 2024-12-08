@@ -44,6 +44,7 @@ cluster:
     clientCASecret: client-ca-secret
   enableSuperuserAccess: true
   superuserSecret: supersecret-secret
+  enablePDB: false
   roles:
      - name: dante
        ensure: present
@@ -79,6 +80,10 @@ cluster:
     foo: bar
   annotations:
     foo: bar
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        my-annotation: my-service-account
 
 backups:
   enabled: false
