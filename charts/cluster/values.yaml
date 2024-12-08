@@ -261,7 +261,7 @@ cluster:
     parameters: {}
       # max_connections: 300
     # -- Quorum-based Synchronous Replication
-    synchronous: # {}
+    synchronous: {}
      # method: any
      # number: 1
     # -- PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
