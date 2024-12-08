@@ -21,6 +21,9 @@ spec:
       - mymap   /^(.*)@mydomain\.com$      \1
     shared_preload_libraries:
       - pgaudit
+    synchronous:
+      method: any
+      number: 1
   bootstrap:
     initdb:
       database: mydb

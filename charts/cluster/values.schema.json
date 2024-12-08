@@ -273,6 +273,9 @@
                         },
                         "shared_preload_libraries": {
                             "type": "array"
+                        },
+                        "synchronous": {
+                            "type": "object"
                         }
                     }
                 },

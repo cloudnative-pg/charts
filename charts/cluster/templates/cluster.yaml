@@ -65,6 +65,10 @@ spec:
       {{- toYaml .pg_hba | nindent 6 }}
     pg_ident:
       {{- toYaml .pg_ident | nindent 6 }}
+    {{- with .synchronous }}
+    synchronous:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
     parameters:
       {{- toYaml .parameters | nindent 6 }}
     {{ end }}
