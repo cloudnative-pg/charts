@@ -36,7 +36,14 @@ CloudNativePG Operator Helm Chart
 | config.data | object | `{}` | The content of the configmap/secret, see https://cloudnative-pg.io/documentation/current/operator_conf/#available-options for all the available options. |
 | config.name | string | `"cnpg-controller-manager-config"` | The name of the configmap/secret to use. |
 | config.secret | bool | `false` | Specifies whether it should be stored in a secret, instead of a configmap. |
-| containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container Security Context. |
+| containerSecurityContext | object | See below | Container Security Context. |
+| containerSecurityContext.enableSecurityContext | bool | `true` | Determines whether the container-level securityContext is included in the Deployment. Set to `false` to disable the container securityContext (useful for OpenShift). |
+| containerSecurityContext.allowPrivilegeEscalation | bool | `false` | Controls whether a process can gain more privileges than its parent process. |
+| containerSecurityContext.readOnlyRootFilesystem | bool | `true` | Whether the container has a read-only root filesystem. |
+| containerSecurityContext.runAsUser | int | `10001` | The user ID to run the container process. |
+| containerSecurityContext.runAsGroup | int | `10001` | The group ID for the container process. |
+| containerSecurityContext.seccompProfile | object | `{"type":"RuntimeDefault"}` | Seccomp profile for the container. |
+| containerSecurityContext.capabilities | object | `{"drop":["ALL"]}` | Linux capabilities to be dropped from the container. |
 | crds.create | bool | `true` | Specifies whether the CRDs should be created when installing the chart. |
 | dnsPolicy | string | `""` |  |
 | fullnameOverride | string | `""` |  |

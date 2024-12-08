@@ -113,8 +113,11 @@ spec:
           {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
+        {{- if .Values.containerSecurityContext.enableSecurityContext }}
+        {{- $containerSecurityContext := omit .Values.containerSecurityContext "enableSecurityContext" }}
         securityContext:
-          {{- toYaml .Values.containerSecurityContext | nindent 10 }}
+          {{- toYaml $containerSecurityContext | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - mountPath: /controller
           name: scratch-data
