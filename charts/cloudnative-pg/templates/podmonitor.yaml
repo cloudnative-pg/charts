@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 {{- if .Values.monitoring.podMonitorEnabled }}
-apiVersion: monitoring.coreos.com/v1
+apiVersion: {{ .Values.monitoring.podMonitorApiVersion }}
 kind: PodMonitor
 metadata:
   name: {{ include "cloudnative-pg.fullname" . }}
