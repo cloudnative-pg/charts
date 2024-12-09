@@ -28,6 +28,7 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+namespaceOverride: ""
 
 hostNetwork: false
 dnsPolicy: ""

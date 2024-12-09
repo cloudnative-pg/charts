@@ -3,6 +3,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: ImageCatalog
 metadata:
   name: {{ include "cluster.fullname" . }}
+  namespace: {{ include "cluster.namespace" . }}
 spec:
   images:
     {{- range $image := .Values.imageCatalog.images }}
