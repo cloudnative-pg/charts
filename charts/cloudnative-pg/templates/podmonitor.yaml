@@ -18,6 +18,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: {{ include "cloudnative-pg.fullname" . }}
+  namespace: {{ include "cloudnative-pg.namespace" . }}
   labels:
     {{- include "cloudnative-pg.labels" . | nindent 4 }}
     {{- with .Values.monitoring.podMonitorAdditionalLabels }}

@@ -2,6 +2,8 @@
 nameOverride: ""
 # -- Override the full name of the chart
 fullnameOverride: ""
+# -- Override the namespace of the chart
+namespaceOverride: ""
 
 ###
 # -- Type of the CNPG database. Available types:

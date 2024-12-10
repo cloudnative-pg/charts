@@ -8,6 +8,7 @@ metadata:
       {{ toYaml . | nindent 4 }}
     {{- end }}
   name: {{ include "cluster.fullname" . }}-alert-rules
+  namespace: {{ include "cluster.namespace" . }}
 spec:
   groups:
     - name: cloudnative-pg/{{ include "cluster.fullname" . }}

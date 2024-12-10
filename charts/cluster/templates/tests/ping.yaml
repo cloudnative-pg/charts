@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ include "cluster.fullname" . }}-ping-test
+  namespace: {{ include "cluster.namespace" . }}
   labels:
     app.kubernetes.io/component: database-ping-test
   annotations:
