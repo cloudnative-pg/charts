@@ -149,6 +149,9 @@ resources: {}
 # -- Nodeselector for the operator to be installed.
 nodeSelector: {}
 
+# -- Topology Spread Constraints for the operator to be installed.
+topologySpreadConstraints: []
+
 # -- Tolerations for the operator to be installed.
 tolerations: []
 
