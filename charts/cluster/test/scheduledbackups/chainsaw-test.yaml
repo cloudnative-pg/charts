@@ -1,17 +1,14 @@
-##
-# This is a test that verifies that non-default configuration options are correctly propagated to the CNPG cluster.
-# P.S. This test is not designed to have a good running configuration, it is designed to test the configuration propagation!
 apiVersion: chainsaw.kyverno.io/v1alpha1
 kind: Test
 metadata:
-  name: postgresql-cluster-configuration
+  name: scheduledbackups
 spec:
   timeouts:
     apply: 1s
     assert: 60s
     cleanup: 30s
   steps:
-    - name: Install the non-default configuration cluster
+    - name: Install the a cluster with ScheduledBackups
       try:
         - script:
             content: |
