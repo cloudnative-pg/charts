@@ -57,6 +57,7 @@ spec:
       - args:
         - controller
         - --leader-elect
+        - --max-concurrent-reconciles={{ .Values.config.maxConcurrentReconciles }}
         {{- if .Values.config.name }}
         {{- if not .Values.config.secret }}
         - --config-map-name={{ .Values.config.name }}
