@@ -62,7 +62,7 @@ cluster:
       - mymap   /^(.*)@mydomain\.com$      \1
     shared_preload_libraries:
       - pgaudit
-    syncronous:
+    synchronous:
       method: any
       number: 1
   initdb:
