@@ -33,7 +33,9 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/rbac: {{ include (print $.Template.BasePath "/rbac.yaml") . | sha256sum }}
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        checksum/monitoring-config: {{ include (print $.Template.BasePath "/monitoring-configmap.yaml") . | sha256sum }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
