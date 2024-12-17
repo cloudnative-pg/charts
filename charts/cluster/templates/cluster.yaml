@@ -24,12 +24,16 @@ spec:
   postgresGID: {{ include "cluster.postgresGID" . }}
   storage:
     size: {{ .Values.cluster.storage.size }}
+    {{- if not (empty .Values.cluster.storage.storageClass) }}
     storageClass: {{ .Values.cluster.storage.storageClass }}
-{{- if .Values.cluster.walStorage.enabled }}
+    {{- end }}
+  {{- if .Values.cluster.walStorage.enabled }}
   walStorage:
     size: {{ .Values.cluster.walStorage.size }}
+    {{- if not (empty .Values.cluster.walStorage.storageClass) }}
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
-{{- end }}
+    {{- end }}
+  {{- end }}
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
@@ -38,7 +42,9 @@ spec:
   affinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- if .Values.cluster.priorityClassName }}
   priorityClassName: {{ .Values.cluster.priorityClassName }}
+  {{- end }}
 
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
@@ -54,6 +60,7 @@ spec:
   {{ end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
   postgresql:
+    {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
     shared_preload_libraries:
       {{- if eq .Values.type "timescaledb" }}
       - timescaledb
@@ -61,24 +68,31 @@ spec:
       {{- with .Values.cluster.postgresql.shared_preload_libraries }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
-    {{- with .Values.cluster.postgresql }}
+    {{- end }}
+    {{- with .Values.cluster.postgresql.pg_hba }}
     pg_hba:
-      {{- toYaml .pg_hba | nindent 6 }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.cluster.postgresql.pg_ident }}
     pg_ident:
-      {{- toYaml .pg_ident | nindent 6 }}
-    {{- with .synchronous }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.cluster.postgresql.synchronous }}
     synchronous:
       {{- toYaml . | nindent 6 }}
     {{ end }}
+    {{- with .Values.cluster.postgresql.parameters }}
     parameters:
-      {{- toYaml .parameters | nindent 6 }}
-    {{ end }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
 
+  {{- if not (empty .Values.cluster.roles) }}
   managed:
     {{- with .Values.cluster.roles }}
     roles:
       {{- toYaml . | nindent 6 }}
     {{ end }}
+  {{- end }}
 
   {{- with .Values.cluster.serviceAccountTemplate }}
   serviceAccountTemplate:
