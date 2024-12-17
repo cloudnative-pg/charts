@@ -128,10 +128,10 @@ rules:
   resources:
   - backups
   - clusters
-  - poolers
-  - scheduledbackups
   - databases
+  - poolers
   - publications
+  - scheduledbackups
   - subscriptions
   verbs:
   - get

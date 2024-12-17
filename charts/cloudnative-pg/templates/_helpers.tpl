@@ -196,8 +196,11 @@ namespace scope or clusterwide
   resources:
   - backups
   - clusters
+  - databases
   - poolers
+  - publications
   - scheduledbackups
+  - subscriptions
   verbs:
   - create
   - delete
@@ -210,7 +213,10 @@ namespace scope or clusterwide
   - postgresql.cnpg.io
   resources:
   - backups/status
+  - databases/status
+  - publications/status
   - scheduledbackups/status
+  - subscriptions/status
   verbs:
   - get
   - patch
