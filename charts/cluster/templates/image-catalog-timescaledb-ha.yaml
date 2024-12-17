@@ -3,6 +3,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: ImageCatalog
 metadata:
   name: {{ include "cluster.fullname" . }}-timescaledb-ha
+  namespace: {{ include "cluster.namespace" . }}
 spec:
   images:
     - major: 12
