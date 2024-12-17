@@ -2,6 +2,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: {{ include "cluster.fullname" . }}
+  namespace: {{ include "cluster.namespace" . }}
   {{- with .Values.cluster.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
