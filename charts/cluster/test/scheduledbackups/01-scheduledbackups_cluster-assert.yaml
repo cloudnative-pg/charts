@@ -28,3 +28,10 @@ spec:
   backupOwnerReference: self
   cluster:
     name: scheduledbackups-cluster
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+spec:
+  method: barmanObjectStore
+  cluster:
+    name: scheduledbackups-cluster
