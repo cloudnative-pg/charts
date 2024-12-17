@@ -201,6 +201,10 @@ cluster:
   enableSuperuserAccess: true
   superuserSecret: ""
 
+  # -- Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes
+  # See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets
+  enablePDB: true
+
   # -- This feature enables declarative management of existing roles, as well as the creation of new roles if they are not
   # already present in the database.
   # See: https://cloudnative-pg.io/documentation/current/declarative_role_management/

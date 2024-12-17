@@ -184,6 +184,9 @@
                 "certificates": {
                     "type": "object"
                 },
+                "enablePDB": {
+                    "type": "boolean"
+                },
                 "enableSuperuserAccess": {
                     "type": "boolean"
                 },

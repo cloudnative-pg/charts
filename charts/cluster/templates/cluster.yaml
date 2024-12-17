@@ -26,13 +26,13 @@ spec:
     {{- if not (empty .Values.cluster.storage.storageClass) }}
     storageClass: {{ .Values.cluster.storage.storageClass }}
     {{- end }}
-{{- if .Values.cluster.walStorage.enabled }}
+  {{- if .Values.cluster.walStorage.enabled }}
   walStorage:
     size: {{ .Values.cluster.walStorage.size }}
     {{- if not (empty .Values.cluster.walStorage.storageClass) }}
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
     {{- end }}
-{{- end }}  
+  {{- end }}
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
@@ -57,6 +57,7 @@ spec:
   superuserSecret:
     name: {{ . }}
   {{ end }}
+  enablePDB: {{ .Values.cluster.enablePDB }}
   postgresql:
     {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
     shared_preload_libraries:
