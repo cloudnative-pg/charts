@@ -107,6 +107,7 @@ podLabels: {}
 
 # -- Container Security Context.
 containerSecurityContext:
+  enableSecurityContext: true
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
   runAsUser: 10001
