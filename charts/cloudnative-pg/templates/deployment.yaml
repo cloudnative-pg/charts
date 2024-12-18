@@ -79,7 +79,7 @@ spec:
               fieldPath: metadata.namespace
         - name: MONITORING_QUERIES_CONFIGMAP
           value: "{{ .Values.monitoringQueriesConfigMap.name }}"
-        {{ if not .Values.config.clusterWide -}}
+        {{- if not .Values.config.clusterWide }}
         - name: WATCH_NAMESPACE
           value: "{{ .Release.Namespace }}"
         {{- end }}
