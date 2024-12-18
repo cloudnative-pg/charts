@@ -26,6 +26,9 @@
                 "data": {
                     "type": "object"
                 },
+                "maxConcurrentReconciles": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 },
