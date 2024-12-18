@@ -130,6 +130,8 @@ rules:
   - clusters
   - poolers
   - scheduledbackups
+  - imagecatalogs
+  - clusterimagecatalogs
   verbs:
   - get
   - list
@@ -153,6 +155,8 @@ rules:
   - clusters
   - poolers
   - scheduledbackups
+  - imagecatalogs
+  - clusterimagecatalogs
   verbs:
   - create
   - delete
