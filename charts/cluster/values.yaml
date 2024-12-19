@@ -144,7 +144,7 @@ recovery:
       host: ""
       port: 5432
       username: ""
-      database: "paradedb"
+      database: ""
       sslMode: "verify-full"
       passwordSecret:
         # -- Whether to create a secret for the password

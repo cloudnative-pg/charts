@@ -1,5 +1,5 @@
 ##
-# This is a test that provisions a regular (non CNPG) PostgreSQL cluster and attempts to perform a pg_basebackup recovery.
+# This test the CNPG PostgreSQL import capability.
 apiVersion: chainsaw.kyverno.io/v1alpha1
 kind: Test
 metadata:

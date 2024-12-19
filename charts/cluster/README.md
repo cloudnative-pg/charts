@@ -218,7 +218,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.import.postImportApplicationSQL | list | `[]` | List of SQL queries to be executed as a superuser in the application database right after is imported. To be used with extreme care. Only available in microservice type. |
 | recovery.import.roles | list | `[]` | Roles to import |
 | recovery.import.schemaOnly | bool | `false` | When set to true, only the pre-data and post-data sections of pg_restore are invoked, avoiding data import. |
-| recovery.import.source.database | string | `"paradedb"` |  |
+| recovery.import.source.database | string | `""` |  |
 | recovery.import.source.host | string | `""` |  |
 | recovery.import.source.passwordSecret.create | bool | `false` | Whether to create a secret for the password |
 | recovery.import.source.passwordSecret.key | string | `"password"` | The key in the secret containing the password |
