@@ -128,8 +128,11 @@ rules:
   resources:
   - backups
   - clusters
+  - databases
   - poolers
+  - publications
   - scheduledbackups
+  - subscriptions
   verbs:
   - get
   - list
@@ -151,8 +154,11 @@ rules:
   resources:
   - backups
   - clusters
+  - databases
   - poolers
+  - publications
   - scheduledbackups
+  - subscriptions
   verbs:
   - create
   - delete
