@@ -26,6 +26,9 @@
                 "data": {
                     "type": "object"
                 },
+                "maxConcurrentReconciles": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -159,6 +162,9 @@
             }
         },
         "nameOverride": {
+            "type": "string"
+        },
+        "namespaceOverride": {
             "type": "string"
         },
         "nodeSelector": {

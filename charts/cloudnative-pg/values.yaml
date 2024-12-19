@@ -28,6 +28,7 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+namespaceOverride: ""
 
 hostNetwork: false
 dnsPolicy: ""
@@ -59,7 +60,7 @@ webhook:
   readinessProbe:
     initialDelaySeconds: 3
 
-# -- Operator configuration.
+# Operator configuration.
 config:
   # -- Specifies whether the secret should be created.
   create: true
@@ -78,6 +79,8 @@ config:
   # INHERITED_ANNOTATIONS: categories
   # INHERITED_LABELS: environment, workload, app
   # WATCH_NAMESPACE: namespace-a,namespace-b
+  # -- The maximum number of concurrent reconciles. Defaults to 10.
+  maxConcurrentReconciles: 10
 
 # -- Additinal arguments to be added to the operator's args list.
 additionalArgs: []
