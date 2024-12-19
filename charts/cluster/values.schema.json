@@ -145,7 +145,27 @@
                         },
                         "name": {
                             "type": "string"
-                        }
+                        },
+			"keyNames": {
+			    "type": "object",
+			    "properties": {
+			      "accessKey": {
+			        "type": "string"
+			      },
+			      "secretKey": {
+			        "type": "string"
+			      },
+			      "applicationCredentials": {
+			        "type": "string"
+			      },
+			      "connectionString": {
+			        "type": "string"
+			      },
+			      "storageAccount": {
+			        "type": "string"
+			      }
+			    }
+			}
                     }
                 },
                 "wal": {

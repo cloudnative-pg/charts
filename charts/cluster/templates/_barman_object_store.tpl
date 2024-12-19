@@ -25,10 +25,10 @@
   s3Credentials:
     accessKeyId:
       name: {{ $secretName }}
-      key: ACCESS_KEY_ID
+      key: {{ required ".Values.backups.secret.keyNames.accessKey is required, but not specified" .scope.secret.keyNames.accessKey }}
     secretAccessKey:
       name: {{ $secretName }}
-      key: ACCESS_SECRET_KEY
+      key: {{ required ".Values.backups.secret.keyNames.secretKey is required, but not specified" .scope.secret.keyNames.secretKey }}
 {{- else if eq .scope.provider "azure" }}
   {{- if empty .scope.destinationPath }}
   destinationPath: "https://{{ required "You need to specify Azure storageAccount if destinationPath is not specified." .scope.azure.storageAccount }}.{{ .scope.azure.serviceName }}.core.windows.net/{{ .scope.azure.containerName }}{{ .scope.azure.path }}"
@@ -40,19 +40,19 @@
   {{- else if .scope.azure.connectionString }}
     connectionString:
       name: {{ $secretName }}
-      key: AZURE_CONNECTION_STRING
+      key: {{ required ".Values.backups.secret.keyNames.connectionString is required, but not specified" .scope.secret.keyNames.connectionString }}
   {{- else }}
     storageAccount:
       name: {{ $secretName }}
-      key: AZURE_STORAGE_ACCOUNT
+      key: {{ required ".Values.backups.secret.keyNames.storageAccount is required, but not specified" .scope.secret.keyNames.storageAccount }}
     {{- if .scope.azure.storageKey }}
     storageKey:
       name: {{ $secretName }}
-      key: AZURE_STORAGE_KEY
+      key: {{ required ".Values.backups.secret.keyNames.storageKey is required, but not specified" .scope.secret.keyNames.storageKey }}
     {{- else }}
     storageSasToken:
       name: {{ $secretName }}
-      key: AZURE_STORAGE_SAS_TOKEN
+      key: {{ required ".Values.backups.secret.keyNames.storageSasToken is required, but not specified" .scope.secret.keyNames.storageSasToken }}
     {{- end }}
   {{- end }}
 {{- else if eq .scope.provider "google" }}
@@ -65,7 +65,7 @@
 {{- if not .scope.google.gkeEnvironment }}
     applicationCredentials:
       name: {{ $secretName }}
-      key: APPLICATION_CREDENTIALS
+      key: {{ required ".Values.backups.secret.keyNames.applicationCredentials is required, but not specified" .scope.secret.keyNames.applicationCredentials }}
 {{- end }}
 {{- end -}}
 {{- end -}}
