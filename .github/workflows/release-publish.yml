@@ -42,6 +42,7 @@ jobs:
           helm repo add cnpg-grafana-dashboard https://cloudnative-pg.github.io/grafana-dashboards
 
       - name: Run chart-releaser
+        id: chart_releaser
         uses: helm/chart-releaser-action@a917fd15b20e8b64b94d9158ad54cd6345335584 # v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
@@ -70,19 +71,23 @@ jobs:
       - name: Push charts to GHCR
         env:
           COSIGN_EXPERIMENTAL: 1
+          CHANGED_CHARTS: ${{ steps.chart_releaser.outputs.changed_charts }}
         # when filling gaps with previously released charts, cr would create
         # nothing in .cr-release-packages/, and the original globbing character
         # would be preserved, causing a non-zero exit. Set nullglob to fix this
         run: |
+          ls .cr-release-packages/
           shopt -s nullglob
-          for pkg in .cr-release-packages/*.tgz; do
-            if [ -z "${pkg:-}" ]; then
-              break
-            fi
-            helm push "${pkg}" oci://ghcr.io/"${GITHUB_REPOSITORY}"
-            file=${pkg##*/}
-            name=${file%-*}
-            version=${file%.*}
-            version=${version##*-}
-            cosign sign --yes ghcr.io/"${GITHUB_REPOSITORY}"/"${name}":"${version}"
+          for chart in $(echo $CHANGED_CHARTS | sed "s/,/ /g" ); do
+            for pkg in .cr-release-packages/$chart*.tgz; do
+              if [ -z "${pkg:-}" ]; then
+                break
+              fi
+              helm push "${pkg}" oci://ghcr.io/"${GITHUB_REPOSITORY}"
+              file=${pkg##*/}
+              name=${file%-*}
+              version=${file%.*}
+              version=${version##*-}
+              cosign sign --yes ghcr.io/"${GITHUB_REPOSITORY}"/"${name}":"${version}"
+            done
           done
