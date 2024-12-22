@@ -76,10 +76,14 @@ jobs:
         # nothing in .cr-release-packages/, and the original globbing character
         # would be preserved, causing a non-zero exit. Set nullglob to fix this
         run: |
+          echo "Changed charts" $CHANGED_CHARTS
           ls .cr-release-packages/
           shopt -s nullglob
           for chart in $(echo $CHANGED_CHARTS | sed "s/,/ /g" ); do
-            for pkg in .cr-release-packages/$chart*.tgz; do
+            chart=${chart#"charts/"}
+            echo "Processing $chart"
+            for pkg in .cr-release-packages/${chart}*.tgz; do
+              echo "Uploading $pkg"
               if [ -z "${pkg:-}" ]; then
                 break
               fi
