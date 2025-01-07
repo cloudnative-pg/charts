@@ -345,6 +345,15 @@ backups:
     create: true
     # -- Name of the backup credentials secret
     name: ""
+    # -- Name of the keys inside the secret
+    keyNames:
+      accessKey: ACCESS_KEY_ID
+      secretKey: ACCESS_SECRET_KEY
+      applicationCredentials: APPLICATION_CREDENTIALS
+      connectionString: AZURE_CONNECTION_STRING
+      storageAccount: AZURE_STORAGE_ACCOUNT
+      storageKey: AZURE_STORAGE_KEY
+      storageSasToken: AZURE_STORAGE_SAS_TOKEN
 
   wal:
     # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
