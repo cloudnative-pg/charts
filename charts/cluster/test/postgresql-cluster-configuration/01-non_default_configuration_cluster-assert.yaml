@@ -84,6 +84,18 @@ spec:
         inRoles:
           - pg_monitor
           - pg_signal_backend
+    services:
+      additional:
+        - selectorType: rw
+          serviceTemplate:
+            metadata:
+              name: "test-lb"
+              labels:
+                test-label: "true"
+              annotations:
+                test-annotation: "true"
+            spec:
+              type: LoadBalancer
   serviceAccountTemplate:
     metadata:
       annotations:
