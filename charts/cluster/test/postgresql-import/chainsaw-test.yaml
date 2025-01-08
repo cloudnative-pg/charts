@@ -1,0 +1,97 @@
+##
+# This test the CNPG PostgreSQL import capability.
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: postgresql-import
+spec:
+  timeouts:
+    apply: 1s
+    assert: 2m
+    cleanup: 1m
+  steps:
+    - name: Install the external PostgreSQL cluster
+      try:
+        - apply:
+            file: ./00-source-superuser-password.yaml
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./00-source-cluster.yaml \
+                --wait \
+                source ../../
+        - assert:
+            file: ./00-source-cluster-assert.yaml
+        - apply:
+            file: ./01-data_write.yaml
+        - assert:
+            file: ./01-data_write-assert.yaml
+    - name: Install the import cluster
+      timeouts:
+        assert: 5m
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./02-import-cluster.yaml \
+                --wait \
+                import ../../
+        - assert:
+            file: ./02-import-cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+    - name: Verify the data exists
+      try:
+        - apply:
+            file: ./03-data_test.yaml
+        - assert:
+            file: ./03-data_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test
+    - name: Install the schema-only import cluster
+      timeouts:
+        assert: 5m
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./04-import-cluster-schema_only.yaml \
+                --wait \
+                import-schemaonly ../../
+        - assert:
+            file: ./04-import-cluster-schema_only-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+    - name: Verify only the schema exists
+      try:
+        - apply:
+            file: ./05-data_test.yaml
+        - assert:
+            file: ./05-data_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test-schemaonly
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE source
+              helm uninstall --namespace $NAMESPACE import
+              helm uninstall --namespace $NAMESPACE import-schemaonly
