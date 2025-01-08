@@ -84,7 +84,7 @@ spec:
           value: "{{ .Values.monitoringQueriesConfigMap.name }}"
         {{- if not .Values.config.clusterWide }}
         - name: WATCH_NAMESPACE
-          value: "{{ .Release.Namespace }}"
+          value: "{{ include "cloudnative-pg.namespace" . }}"
         {{- end }}
         {{- if .Values.additionalEnv }}
         {{- tpl (.Values.additionalEnv | toYaml) . | nindent 8 }}
