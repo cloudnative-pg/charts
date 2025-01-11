@@ -9,7 +9,7 @@ metadata:
   namespace: {{ include "cluster.namespace" $ }}
   labels: {{ include "cluster.labels" $context | nindent 4 }}
 spec:
-  immediate: true
+  immediate: {{ default true .immediate }}
   schedule: {{ .schedule | quote }}
   method: {{ .method }}
   backupOwnerReference: {{ .backupOwnerReference }}
