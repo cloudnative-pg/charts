@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: paradedb-enterprise-test
+  name: paradedb-enterprise-index-test
 spec:
   template:
     spec:
@@ -19,15 +19,7 @@ spec:
         args:
           - |
             apk --no-cache add postgresql-client
-            psql "$DB_URI" <<-EOSQL
-              CALL paradedb.create_bm25_test_table(
-                schema_name => 'public',
-                table_name => 'mock_items_paradedb_enterprise'
-              );
-              CREATE INDEX search_idx_paradedb_enterprise ON mock_items_paradedb_enterprise
-              USING bm25 (id, description, category, rating, in_stock, created_at, metadata, weight_range)
-              WITH (key_field='id');
-            EOSQL
+            DB_URI="${DB_URI/paradedb-ncc-1701-d-rw/paradedb-ncc-1701-d-ro}"
             RESULT=$(psql "$DB_URI" -t) <<-EOSQL
               SELECT description
               FROM mock_items_paradedb_enterprise
@@ -36,8 +28,19 @@ spec:
             EOSQL
             echo -$RESULT-
             if [ "$RESULT" = " Bluetooth-enabled speaker" ]; then
-              echo "Test for description search passed."
+              echo "Test for description search on replicas passed."
             else
-              echo "Test for description search failed."
+              echo "Test for description search on replicas failed."
+              exit 1
+            fi
+            
+            SIZE_RESULT=$(psql "$DB_URI" -t) <<-EOSQL
+              SELECT pg_size_pretty(pg_relation_size('search_idx_paradedb_enterprise'));
+            EOSQL
+            echo -$SIZE_RESULT-
+            if [ "$SIZE_RESULT" != " 0 bytes" ]; then
+              echo "Test for index size on replicas passed."
+            else
+              echo "Test for index size on replicas failed."
               exit 1
             fi

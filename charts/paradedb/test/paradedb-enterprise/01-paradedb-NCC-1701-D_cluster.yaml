@@ -2,9 +2,9 @@ type: paradedb-enterprise
 mode: standalone
 version:
   major: "17"
-  paradedb: "0.13.2"
+  paradedb: "0.15.1"
 cluster:
-  instances: 1
+  instances: 2
   storage:
     size: 256Mi
   imagePullSecrets:
