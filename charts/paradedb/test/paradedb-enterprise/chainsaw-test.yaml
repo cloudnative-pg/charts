@@ -50,6 +50,25 @@ spec:
             kind: Job
         - podLogs:
             selector: cnpg.io/cluster=paradedb-ncc-1701-d
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=paradedb-enterprise-test
+    - name: Verify index replication
+      timeouts:
+        apply: 1s
+        assert: 30s
+      try:
+        - apply:
+            file: 03-paradedb_replication_test.yaml
+        - assert:
+            file: 03-paradedb_replication_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: cnpg.io/cluster=paradedb-ncc-1701-d
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=paradedb-enterprise-index-test
     - name: Cleanup
       try:
         - script:
