@@ -3,4 +3,4 @@ kind: Cluster
 metadata:
   name: paradedb-ncc-1701-d
 status:
-  readyInstances: 1
+  readyInstances: 2
