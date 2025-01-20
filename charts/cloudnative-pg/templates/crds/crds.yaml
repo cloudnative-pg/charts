@@ -3,6 +3,11 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
+    {{- if .Values.crds.annotations }}
+      {{- with .Values.crds.annotations }}
+    {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
     controller-gen.kubebuilder.io/version: v0.16.5
     helm.sh/resource-policy: keep
   name: backups.postgresql.cnpg.io
@@ -447,6 +452,11 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
     helm.sh/resource-policy: keep
+    {{- if .Values.crds.annotations }}
+      {{- with .Values.crds.annotations }}
+    {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
   name: clusterimagecatalogs.postgresql.cnpg.io
 spec:
   group: postgresql.cnpg.io
@@ -529,6 +539,11 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
     helm.sh/resource-policy: keep
+    {{- if .Values.crds.annotations }}
+      {{- with .Values.crds.annotations }}
+    {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
   name: clusters.postgresql.cnpg.io
 spec:
   group: postgresql.cnpg.io
@@ -6945,6 +6960,11 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
     helm.sh/resource-policy: keep
+    {{- if .Values.crds.annotations }}
+      {{- with .Values.crds.annotations }}
+    {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
   name: databases.postgresql.cnpg.io
 spec:
   group: postgresql.cnpg.io
@@ -7208,6 +7228,11 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
     helm.sh/resource-policy: keep
+    {{- if .Values.crds.annotations }}
+      {{- with .Values.crds.annotations }}
+    {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
   name: imagecatalogs.postgresql.cnpg.io
 spec:
   group: postgresql.cnpg.io
@@ -7289,6 +7314,11 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
     helm.sh/resource-policy: keep
+    {{- if .Values.crds.annotations }}
+      {{- with .Values.crds.annotations }}
+    {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
   name: poolers.postgresql.cnpg.io
 spec:
   group: postgresql.cnpg.io
@@ -16344,6 +16374,11 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
     helm.sh/resource-policy: keep
+    {{- if .Values.crds.annotations }}
+      {{- with .Values.crds.annotations }}
+    {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
   name: scheduledbackups.postgresql.cnpg.io
 spec:
   group: postgresql.cnpg.io
@@ -16536,6 +16571,11 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.5
     helm.sh/resource-policy: keep
+    {{- if .Values.crds.annotations }}
+      {{- with .Values.crds.annotations }}
+    {{- toYaml . | nindent 4 }}
+      {{- end }}
+    {{- end }}
   name: subscriptions.postgresql.cnpg.io
 spec:
   group: postgresql.cnpg.io
