@@ -36,6 +36,7 @@ dnsPolicy: ""
 crds:
   # -- Specifies whether the CRDs should be created when installing the chart.
   create: true
+  # -- Specifies whether the CRDs should have any annotations.
   annotations: {}
 
 # -- The webhook configuration.
