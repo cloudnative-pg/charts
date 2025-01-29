@@ -42,7 +42,7 @@ spec:
     highAvailability:
       enabled: false
       slotPrefix: _cnpg_cust_
-      updateInterval: "60"
+    updateInterval: "60"
   enableSuperuserAccess: true
   enablePDB: false
   certificates:
