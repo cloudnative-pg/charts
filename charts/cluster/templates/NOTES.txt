@@ -1,3 +1,12 @@
+{{- if .Values.pooler -}}
+  {{ fail ".Values.pooler has been deprecated. Use .Values.poolers instead." }}
+{{- end -}}
+
+{{- if gt (omit .Values.cluster.postgresql "parameters" "synchronous" "pg_hba" "pg_ident" "syncReplicaElectionConstraint" "shared_preload_libraries" "ldap" "promotionTimeout" "enableAlterSystem" | keys | len) 0 -}}
+  {{ fail ".Values.cluster.postgresql has been deprecated. Use .Values.cluster.postgresql.parameters instead." }}
+{{- end -}}
+
+
 {{ if .Release.IsInstall }}
 The {{ include "cluster.color-info" (include "cluster.fullname" .) }} has been installed successfully.
 {{ else if .Release.IsUpgrade }}

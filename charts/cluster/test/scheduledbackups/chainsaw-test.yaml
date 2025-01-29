@@ -1,0 +1,27 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: scheduledbackups
+spec:
+  timeouts:
+    apply: 1s
+    assert: 1m
+    cleanup: 1m
+  steps:
+    - name: Install the a cluster with ScheduledBackups
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-scheduledbackups_cluster.yaml \
+                --wait \
+                scheduledbackups ../../
+        - assert:
+            file: ./01-scheduledbackups_cluster-assert.yaml
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE scheduledbackups

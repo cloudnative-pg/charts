@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ default (printf "%s-backup-azure-creds" (include "cluster.fullname" .)) .Values.backups.secret.name }}
+  namespace: {{ include "cluster.namespace" . }}
 data:
   AZURE_CONNECTION_STRING: {{ .Values.backups.azure.connectionString | b64enc | quote }}
   AZURE_STORAGE_ACCOUNT: {{ .Values.backups.azure.storageAccount | b64enc | quote }}

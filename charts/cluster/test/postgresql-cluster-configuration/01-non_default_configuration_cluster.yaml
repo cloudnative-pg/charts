@@ -49,6 +49,7 @@ cluster:
       enabled: false
       slotPrefix: _cnpg_cust_
       updateInterval: "60"
+  enablePDB: false
   roles:
      - name: dante
        ensure: present
@@ -66,6 +67,9 @@ cluster:
       - mymap   /^(.*)@mydomain\.com$      \1
     shared_preload_libraries:
       - pgaudit
+    synchronous:
+      method: any
+      number: 1
   initdb:
     database: mydb
     owner: dante
@@ -81,6 +85,10 @@ cluster:
     foo: bar
   annotations:
     foo: bar
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        my-annotation: my-service-account
 
 backups:
   enabled: false

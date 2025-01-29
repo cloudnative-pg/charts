@@ -21,7 +21,7 @@ spec:
     name: pooler-cluster
   instances: 2
   pgbouncer:
-    poolMode: session
+    poolMode: transaction
   type: rw
 ---
 apiVersion: postgresql.cnpg.io/v1

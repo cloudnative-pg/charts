@@ -21,6 +21,9 @@ spec:
       - mymap   /^(.*)@mydomain\.com$      \1
     shared_preload_libraries:
       - pgaudit
+    synchronous:
+      method: any
+      number: 1
   bootstrap:
     initdb:
       database: mydb
@@ -41,6 +44,7 @@ spec:
       slotPrefix: _cnpg_cust_
       updateInterval: "60"
   enableSuperuserAccess: true
+  enablePDB: false
   certificates:
     serverCASecret: ca-secret
     serverTLSSecret: tls-secret
@@ -85,3 +89,7 @@ spec:
         inRoles:
           - pg_monitor
           - pg_signal_backend
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        my-annotation: my-service-account

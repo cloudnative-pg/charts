@@ -184,6 +184,9 @@
                 "certificates": {
                     "type": "object"
                 },
+                "enablePDB": {
+                    "type": "boolean"
+                },
                 "enableSuperuserAccess": {
                     "type": "boolean"
                 },
@@ -270,6 +273,9 @@
                         },
                         "shared_preload_libraries": {
                             "type": "array"
+                        },
+                        "synchronous": {
+                            "type": "object"
                         }
                     }
                 },
@@ -306,6 +312,9 @@
                 },
                 "roles": {
                     "type": "array"
+                },
+                "serviceAccountTemplate": {
+                    "type": "object"
                 },
                 "storage": {
                     "type": "object",
@@ -355,6 +364,9 @@
             "type": "string"
         },
         "nameOverride": {
+            "type": "string"
+        },
+        "namespaceOverride": {
             "type": "string"
         },
         "poolers": {
