@@ -48,7 +48,7 @@ cluster:
     highAvailability:
       enabled: false
       slotPrefix: _cnpg_cust_
-      updateInterval: "60"
+    updateInterval: "60"
   enablePDB: false
   roles:
      - name: dante
