@@ -222,6 +222,17 @@ cluster:
     #     - pg_monitor
     #     - pg_signal_backend
 
+  # -- ManagedServices represents the services managed by the cluster.
+  services: {}
+  #  disabledDefaultServices: ["r"]
+  #  additional:
+  #    - selectorType: rw
+  #      updateStrategy: patch # or recreate
+  #      serviceTemplate:
+  #        metadata:
+  #          name: rw
+  #        spec:
+
   monitoring:
     # -- Whether to enable monitoring
     enabled: false

@@ -84,6 +84,16 @@ spec:
         inRoles:
           - pg_monitor
           - pg_signal_backend
+    services:
+      disabledDefaultServices: ["r"]
+      additional:
+        - selectorType: rw
+          updateStrategy: replace
+          serviceTemplate:
+            metadata:
+              name: rw
+            spec:
+              type: NodePort
   serviceAccountTemplate:
     metadata:
       annotations:

@@ -53,6 +53,17 @@ cluster:
        inRoles:
          - pg_monitor
          - pg_signal_backend
+  services:
+    disabledDefaultServices: ["r"]
+    additional:
+      - name: rw
+        selectorType: rw
+        updateStrategy: replace
+        serviceTemplate:
+          metadata:
+            name: rw
+          spec:
+            type: NodePort
   postgresql:
     parameters:
       max_connections: "42"
