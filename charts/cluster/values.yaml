@@ -222,7 +222,7 @@ cluster:
     #     - pg_monitor
     #     - pg_signal_backend
 
-  # -- ManagedServices represents the services managed by the cluster.
+  # -- Customization of service definions. Please refer to https://cloudnative-pg.io/documentation/1.24/service_management/
   services: {}
   #  disabledDefaultServices: ["r"]
   #  additional:
