@@ -17,6 +17,13 @@ spec:
       max_connections: "42"
     pg_hba:
       - host all 1.2.3.4/32 trust
+    pg_ident:
+      - mymap   /^(.*)@mydomain\.com$      \1
+    shared_preload_libraries:
+      - pgaudit
+    synchronous:
+      method: any
+      number: 1
   bootstrap:
     initdb:
       database: mydb
@@ -32,6 +39,7 @@ spec:
   superuserSecret:
     name: supersecret-secret
   enableSuperuserAccess: true
+  enablePDB: false
   certificates:
     serverCASecret: ca-secret
     serverTLSSecret: tls-secret
@@ -76,3 +84,7 @@ spec:
         inRoles:
           - pg_monitor
           - pg_signal_backend
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        my-annotation: my-service-account

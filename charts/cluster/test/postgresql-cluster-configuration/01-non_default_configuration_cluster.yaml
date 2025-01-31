@@ -1,3 +1,4 @@
+type: postgresql
 mode: standalone
 cluster:
   instances: 2
@@ -43,6 +44,7 @@ cluster:
     clientCASecret: client-ca-secret
   enableSuperuserAccess: true
   superuserSecret: supersecret-secret
+  enablePDB: false
   roles:
      - name: dante
        ensure: present
@@ -56,6 +58,13 @@ cluster:
       max_connections: "42"
     pg_hba:
       - host all 1.2.3.4/32 trust
+    pg_ident:
+      - mymap   /^(.*)@mydomain\.com$      \1
+    shared_preload_libraries:
+      - pgaudit
+    synchronous:
+      method: any
+      number: 1
   initdb:
     database: mydb
     owner: dante
@@ -71,6 +80,10 @@ cluster:
     foo: bar
   annotations:
     foo: bar
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        my-annotation: my-service-account
 
 backups:
   enabled: false

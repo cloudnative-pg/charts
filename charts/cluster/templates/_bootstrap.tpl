@@ -3,10 +3,14 @@
 bootstrap:
   initdb:
     {{- with .Values.cluster.initdb }}
-        {{- with (omit . "postInitApplicationSQL") }}
+        {{- with (omit . "postInitApplicationSQL" "owner") }}
             {{- . | toYaml | nindent 4 }}
         {{- end }}
     {{- end }}
+    {{- if .Values.cluster.initdb.owner }}
+    owner: {{ tpl .Values.cluster.initdb.owner . }}
+    {{- end }}
+    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (not (empty .Values.cluster.initdb.postInitApplicationSQL)) }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
       - CREATE EXTENSION IF NOT EXISTS postgis;
@@ -21,6 +25,7 @@ bootstrap:
             {{- printf "- %s" . | nindent 6 }}
           {{- end -}}
       {{- end -}}
+    {{- end }}
 {{- else if eq .Values.mode "recovery" -}}
 bootstrap:
 {{- if eq .Values.recovery.method "pg_basebackup" }}

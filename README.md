@@ -24,6 +24,30 @@ helm upgrade --install cnpg \
   cnpg/cloudnative-pg
 ```
 
+#### Single namespace installation
+
+It is possible to limit the operator's capabilities to solely the namespace in
+which it has been installed. With this restriction, the cluster-level
+permissions required by the operator will be substantially reduced, and
+the security profile of the installation will be enhanced.
+
+You can install the operator in single-namespace mode by setting the
+`config.clusterWide` flag to false, as in the following example:
+
+```console
+helm upgrade --install cnpg \
+  --namespace cnpg-system \
+  --create-namespace \
+  --set config.clusterWide=false \
+  cnpg/cloudnative-pg
+```
+
+**IMPORTANT**: the single-namespace installation mode can't coexist
+with the cluster-wide operator. Otherwise there would be collisions when
+managing the resources in the namespace watched by the single-namespace
+operator.
+It is up to the user to ensure there is no collision between operators.
+
 Refer to the [Operator Chart documentation](charts/cloudnative-pg/README.md) for advanced configuration and monitoring.
 
 ## Cluster chart

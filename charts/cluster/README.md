@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.0.11](https://img.shields.io/badge/Version-0.0.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -100,7 +100,7 @@ below. Refer to the table for the full list of parameters and place the configur
 Recovery
 --------
 
-There is a separate document outlining the recovery procedure here: **[Recovery](docs/recovery.md)**
+There is a separate document outlining the recovery procedure here: **[Recovery](docs/Recovery.md)**
 
 Examples
 --------
@@ -136,6 +136,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | backups.retentionPolicy | string | `"30d"` | Retention policy for backups |
 | backups.s3.accessKey | string | `""` |  |
 | backups.s3.bucket | string | `""` |  |
+| backups.s3.inheritFromIAMRole | bool | `false` | Use the role based authentication without providing explicitly the keys |
 | backups.s3.path | string | `"/"` |  |
 | backups.s3.region | string | `""` |  |
 | backups.s3.secretKey | string | `""` |  |
@@ -152,6 +153,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.affinity | object | `{"topologyKey":"topology.kubernetes.io/zone"}` | Affinity/Anti-affinity rules for Pods. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
 | cluster.annotations | object | `{}` |  |
 | cluster.certificates | object | `{}` | The configuration for the CA and related certificates. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration |
+| cluster.enablePDB | bool | `true` | Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets |
 | cluster.enableSuperuserAccess | bool | `true` | When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password. If the secret is not present, the operator will automatically create one. When this option is disabled, the operator will ignore the SuperuserSecret content, delete it when automatically created, and then blank the password of the postgres user by setting it to NULL. |
 | cluster.imageCatalogRef | object | `{}` | Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName` |
 | cluster.imageName | string | `""` | Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments: <image>:<tag>@sha256:<digestValue> |
@@ -160,20 +162,28 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.initdb | object | `{}` | BootstrapInitDB is the configuration of the bootstrap process when initdb is used. See: https://cloudnative-pg.io/documentation/current/bootstrap/ See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb |
 | cluster.instances | int | `3` | Number of instances |
 | cluster.logLevel | string | `"info"` | The instances' log level, one of the following values: error, warning, info (default), debug, trace |
-| cluster.monitoring.customQueries | list | `[]` | Custom Prometheus metrics |
+| cluster.monitoring.customQueries | list | `[]` | Custom Prometheus metrics Will be stored in the ConfigMap |
+| cluster.monitoring.customQueriesSecret | list | `[]` | The list of secrets containing the custom queries |
+| cluster.monitoring.disableDefaultQueries | bool | `false` | Whether the default queries should be injected. Set it to true if you don't want to inject default queries into the cluster. |
 | cluster.monitoring.enabled | bool | `false` | Whether to enable monitoring |
 | cluster.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
+| cluster.monitoring.podMonitor.metricRelabelings | list | `[]` | The list of metric relabelings for the PodMonitor. Applied to samples before ingestion. |
+| cluster.monitoring.podMonitor.relabelings | list | `[]` | The list of relabelings for the PodMonitor. Applied to samples before scraping. |
 | cluster.monitoring.prometheusRule.enabled | bool | `true` | Whether to enable the PrometheusRule automated alerts |
 | cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
 | cluster.postgresGID | int | `-1` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `-1` | The UID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresql.parameters | object | `{}` | PostgreSQL configuration options (postgresql.conf) |
 | cluster.postgresql.pg_hba | list | `[]` | PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file) |
+| cluster.postgresql.pg_ident | list | `[]` | PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file) |
+| cluster.postgresql.shared_preload_libraries | list | `[]` | Lists of shared preload libraries to add to the default ones |
+| cluster.postgresql.synchronous | object | `{}` | Quorum-based Synchronous Replication |
 | cluster.primaryUpdateMethod | string | `"switchover"` | Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated. It can be switchover (default) or restart. |
 | cluster.primaryUpdateStrategy | string | `"unsupervised"` | Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated: it can be automated (unsupervised - default) or manual (supervised) |
 | cluster.priorityClassName | string | `""` |  |
 | cluster.resources | object | `{}` | Resources requirements of every generated Pod. Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information. We strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS. See: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/ |
 | cluster.roles | list | `[]` | This feature enables declarative management of existing roles, as well as the creation of new roles if they are not already present in the database. See: https://cloudnative-pg.io/documentation/current/declarative_role_management/ |
+| cluster.serviceAccountTemplate | object | `{}` | Configure the metadata of the generated service account |
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
@@ -185,14 +195,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | imageCatalog.images | list | `[]` | List of images to be provisioned in an image catalog. |
 | mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - default mode. Creates new or updates an existing CNPG cluster. * `replica` - Creates a replica cluster from an existing CNPG cluster. # TODO * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup. |
 | nameOverride | string | `""` | Override the name of the chart |
-| pooler.enabled | bool | `false` | Whether to enable PgBouncer |
-| pooler.instances | int | `3` | Number of PgBouncer instances |
-| pooler.monitoring.enabled | bool | `false` | Whether to enable monitoring |
-| pooler.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
-| pooler.parameters | object | `{"default_pool_size":"25","max_client_conn":"1000"}` | PgBouncer configuration parameters |
-| pooler.poolMode | string | `"transaction"` | PgBouncer pooling mode |
-| pooler.template | object | `{}` | Custom PgBouncer deployment template. Use to override image, specify resources, etc. |
-| pooler.type | string | `"rw"` | PgBouncer type of service to forward traffic to. |
+| namespaceOverride | string | `""` | Override the namespace of the chart |
+| poolers | list | `[]` | List of PgBouncer poolers |
 | recovery.azure.connectionString | string | `""` |  |
 | recovery.azure.containerName | string | `""` |  |
 | recovery.azure.inheritFromAzureAD | bool | `false` |  |
@@ -234,6 +238,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | recovery.s3.accessKey | string | `""` |  |
 | recovery.s3.bucket | string | `""` |  |
+| recovery.s3.inheritFromIAMRole | bool | `false` | Use the role based authentication without providing explicitly the keys |
 | recovery.s3.path | string | `"/"` |  |
 | recovery.s3.region | string | `""` |  |
 | recovery.s3.secretKey | string | `""` |  |
@@ -243,6 +248,18 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | version.postgis | string | `"3.4"` | If using PostGIS, specify the version |
 | version.postgresql | string | `"16"` | PostgreSQL major version to use |
 | version.timescaledb | string | `"2.15"` | If using TimescaleDB, specify the version |
+| poolers[].name                                      | string                                       | ``                                               | Name of the pooler resource                                                                                                                                                                                                                                                                                                                                                                                                                |
+| poolers[].instances                                 | number                                       | `1`                                              | The number of replicas we want                                                                                                                                                                                                                                                                                                                                                                                                             |
+| poolers[].type                                      | [PoolerType][PoolerType]                     | `rw`                                             | Type of service to forward traffic to. Default: `rw`.                                                                                                                                                                                                                                                                                                                                                                                      |
+| poolers[].poolMode                                  | [PgBouncerPoolMode][PgBouncerPoolMode]       | `session`                                        | The pool mode. Default: `session`.                                                                                                                                                                                                                                                                                                                                                                                                         |
+| poolers[].authQuerySecret                           | [LocalObjectReference][LocalObjectReference] | `{}`                                             | The credentials of the user that need to be used for the authentication query.                                                                                                                                                                                                                                                                                                                                                             |
+| poolers[].authQuery                                 | string                                       | `{}`                                             | The credentials of the user that need to be used for the authentication query.                                                                                                                                                                                                                                                                                                                                                             |
+| poolers[].parameters                                | map[string]string                            | `{}`                                             | Additional parameters to be passed to PgBouncer - please check the CNPG documentation for a list of options you can configure                                                                                                                                                                                                                                                                                                              |
+| poolers[].template                                  | [PodTemplateSpec][PodTemplateSpec]           | `{}`                                             | The template of the Pod to be created                                                                                                                                                                                                                                                                                                                                                                                                      |
+| poolers[].template                                  | [ServiceTemplateSpec][ServiceTemplateSpec]   | `{}`                                             | Template for the Service to be created                                                                                                                                                                                                                                                                                                                                                                                                     |
+| poolers[].pg_hba                                    | []string                                     | `{}`                                             | PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)                                                                                                                                                                                                                                                                                                                                                  |
+| poolers[].monitoring.enabled                        | bool                                         | `false`                                          | Whether to enable monitoring for the Pooler.                                                                                                                                                                                                                                                                                                                                                                                               |
+| poolers[].monitoring.podMonitor.enabled             | bool                                         | `true`                                           | Create a podMonitor for the Pooler.                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ## Maintainers
 
@@ -264,3 +281,5 @@ TODO
 * IAM Role for S3 Service Account
 * Automatic provisioning of a Alert Manager configuration
 
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)

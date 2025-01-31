@@ -2,7 +2,7 @@ type: postgresql
 mode: standalone
 
 cluster:
-  instances: 2
+  instances: 1
   storage:
     size: 256Mi
 
@@ -19,9 +19,18 @@ backups:
     encryption: ""
   s3:
     bucket: "mybucket"
-    path: "/postgresql-minio-backup-restore/v1"
+    path: "/scheduledbackups/v1"
     accessKey: "minio"
     secretKey: "minio123"
     region: "local"
-  scheduledBackups: []
   retentionPolicy: "30d"
+  scheduledBackups:
+    - name: daily-backup
+      schedule: "0 0 0 * * *"
+      backupOwnerReference: self
+      method: barmanObjectStore
+    - name: weekly-backup
+      schedule: "0 0 0 * * 1"
+      backupOwnerReference: self
+      method: barmanObjectStore
+
