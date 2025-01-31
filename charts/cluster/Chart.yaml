@@ -18,7 +18,7 @@ name: cluster
 description: Deploys and manages a CloudNativePG cluster and its associated resources.
 icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
 type: application
-version: 0.1.3
+version: 0.2.0
 sources:
   - https://github.com/cloudnative-pg/charts
 keywords:
