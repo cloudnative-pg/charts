@@ -1,4 +1,4 @@
-{{- if and .Values.backups.enabled (eq .Values.backups.provider "s3") .Values.backups.secret.create }}
+{{- if and .Values.backups.enabled (eq .Values.backups.provider "s3") (not .Values.backups.s3.inheritFromIAMRole) .Values.backups.secret.create }}
 apiVersion: v1
 kind: Secret
 metadata:

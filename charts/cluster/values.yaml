@@ -73,6 +73,8 @@ recovery:
     path: "/"
     accessKey: ""
     secretKey: ""
+    # -- Use the role based authentication without providing explicitly the keys
+    inheritFromIAMRole: false
   azure:
     path: "/"
     connectionString: ""
@@ -366,6 +368,8 @@ backups:
     path: "/"
     accessKey: ""
     secretKey: ""
+    # -- Use the role based authentication without providing explicitly the keys
+    inheritFromIAMRole: false
   azure:
     path: "/"
     connectionString: ""
