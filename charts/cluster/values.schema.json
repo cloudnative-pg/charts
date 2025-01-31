@@ -294,6 +294,9 @@
                 "roles": {
                     "type": "array"
                 },
+                "services": {
+                    "type": "object"
+                },
                 "serviceAccountTemplate": {
                     "type": "object"
                 },
