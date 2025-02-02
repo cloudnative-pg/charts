@@ -11,6 +11,9 @@
         "affinity": {
             "type": "object"
         },
+        "topologySpreadConstraints": {
+            "type": "array"
+        },
         "commonAnnotations": {
             "type": "object"
         },
