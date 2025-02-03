@@ -131,3 +131,9 @@ spec:
     {{- end }}
   {{ include "cluster.bootstrap" . | nindent 2 }}
   {{ include "cluster.backup" . | nindent 2 }}
+  {{-  with .Values.cluster.projectedVolumeTemplate.sources }}
+  projectedVolumeTemplate:
+    sources:
+      {{- . | toYaml | nindent 8 -}}
+  {{ end }}
+
