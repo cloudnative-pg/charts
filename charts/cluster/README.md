@@ -173,6 +173,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
 | cluster.postgresGID | int | `-1` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `-1` | The UID of the postgres user inside the image, defaults to 26 |
+| cluster.postgresql.ldap | object | `{}` | PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration) |
 | cluster.postgresql.parameters | object | `{}` | PostgreSQL configuration options (postgresql.conf) |
 | cluster.postgresql.pg_hba | list | `[]` | PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file) |
 | cluster.postgresql.pg_ident | list | `[]` | PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file) |

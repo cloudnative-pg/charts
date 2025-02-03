@@ -265,6 +265,9 @@
                 "postgresql": {
                     "type": "object",
                     "properties": {
+                        "ldap": {
+                            "type": "object"
+                        },
                         "parameters": {
                             "type": "object"
                         },
