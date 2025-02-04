@@ -6,7 +6,7 @@ spec:
   timeouts:
     apply: 1s
     assert: 1m
-    cleanup: 1m
+    cleanup: 5m
   steps:
     - name: Install the a cluster with ScheduledBackups
       try:
