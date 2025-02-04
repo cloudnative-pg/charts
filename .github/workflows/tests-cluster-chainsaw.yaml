@@ -22,6 +22,7 @@ jobs:
     needs: test-list
     runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix: ${{ fromJson(needs.test-list.outputs.tests) }}
     steps:
       - name: Checkout
