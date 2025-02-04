@@ -106,6 +106,9 @@
                         "bucket": {
                             "type": "string"
                         },
+                        "inheritFromIAMRole": {
+                            "type": "boolean"
+                        },
                         "path": {
                             "type": "string"
                         },
@@ -295,6 +298,9 @@
                     "type": "array"
                 },
                 "serviceAccountTemplate": {
+                    "type": "object"
+                },
+                "services": {
                     "type": "object"
                 },
                 "storage": {
@@ -627,6 +633,9 @@
                         },
                         "bucket": {
                             "type": "string"
+                        },
+                        "inheritFromIAMRole": {
+                            "type": "boolean"
                         },
                         "path": {
                             "type": "string"
