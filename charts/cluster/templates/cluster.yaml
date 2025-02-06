@@ -77,7 +77,7 @@ spec:
     pg_ident:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-    {{- with .ldap }}
+    {{- with .Values.cluster.postgresql.ldap  }}
     ldap:
       {{- toYaml . | nindent 6 }}
     {{- end}}
