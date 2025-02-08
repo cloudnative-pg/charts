@@ -21,6 +21,9 @@ spec:
       - mymap   /^(.*)@mydomain\.com$      \1
     shared_preload_libraries:
       - pgaudit
+    synchronous:
+      method: any
+      number: 1
   bootstrap:
     initdb:
       database: mydb
@@ -36,6 +39,7 @@ spec:
   superuserSecret:
     name: supersecret-secret
   enableSuperuserAccess: true
+  enablePDB: false
   certificates:
     serverCASecret: ca-secret
     serverTLSSecret: tls-secret
@@ -80,3 +84,19 @@ spec:
         inRoles:
           - pg_monitor
           - pg_signal_backend
+    services:
+      additional:
+        - selectorType: rw
+          serviceTemplate:
+            metadata:
+              name: "test-lb"
+              labels:
+                test-label: "true"
+              annotations:
+                test-annotation: "true"
+            spec:
+              type: LoadBalancer
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        my-annotation: my-service-account

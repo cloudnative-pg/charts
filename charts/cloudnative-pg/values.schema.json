@@ -17,11 +17,17 @@
         "config": {
             "type": "object",
             "properties": {
+                "clusterWide": {
+                    "type": "boolean"
+                },
                 "create": {
                     "type": "boolean"
                 },
                 "data": {
                     "type": "object"
+                },
+                "maxConcurrentReconciles": {
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -156,6 +162,9 @@
             }
         },
         "nameOverride": {
+            "type": "string"
+        },
+        "namespaceOverride": {
             "type": "string"
         },
         "nodeSelector": {

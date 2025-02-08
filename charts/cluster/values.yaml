@@ -2,6 +2,8 @@
 nameOverride: ""
 # -- Override the full name of the chart
 fullnameOverride: ""
+# -- Override the namespace of the chart
+namespaceOverride: ""
 
 ###
 # -- Type of the CNPG database. Available types:
@@ -70,6 +72,8 @@ recovery:
     path: "/"
     accessKey: ""
     secretKey: ""
+    # -- Use the role based authentication without providing explicitly the keys
+    inheritFromIAMRole: false
   azure:
     path: "/"
     connectionString: ""
@@ -160,6 +164,9 @@ cluster:
   # -- The GID of the postgres user inside the image, defaults to 26
   postgresGID: -1
 
+  # -- Customization of service definions. Please refer to https://cloudnative-pg.io/documentation/1.24/service_management/
+  services: {}
+
   # -- Resources requirements of every generated Pod.
   # Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.
   # We strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS.
@@ -200,6 +207,10 @@ cluster:
   # and then blank the password of the postgres user by setting it to NULL.
   enableSuperuserAccess: true
   superuserSecret: ""
+
+  # -- Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes
+  # See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets
+  enablePDB: true
 
   # -- This feature enables declarative management of existing roles, as well as the creation of new roles if they are not
   # already present in the database.
@@ -256,6 +267,10 @@ cluster:
     # -- PostgreSQL configuration options (postgresql.conf)
     parameters: {}
       # max_connections: 300
+    # -- Quorum-based Synchronous Replication
+    synchronous: {}
+     # method: any
+     # number: 1
     # -- PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
     pg_hba: []
       # - host all all 10.244.0.0/16 md5
@@ -280,6 +295,9 @@ cluster:
     #   - CREATE EXTENSION IF NOT EXISTS vector;
     # postInitApplicationSQL: []
     # postInitTemplateSQL: []
+
+  # -- Configure the metadata of the generated service account
+  serviceAccountTemplate: {}
 
   additionalLabels: {}
   annotations: {}
@@ -313,6 +331,8 @@ backups:
     path: "/"
     accessKey: ""
     secretKey: ""
+    # -- Use the role based authentication without providing explicitly the keys
+    inheritFromIAMRole: false
   azure:
     path: "/"
     connectionString: ""
