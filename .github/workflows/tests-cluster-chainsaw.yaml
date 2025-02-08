@@ -1,4 +1,4 @@
-name: tests-cluster-chainsaw
+name: test( cluster )
 
 on:
   pull_request:
@@ -6,8 +6,25 @@ on:
       - 'gh-pages'
 
 jobs:
-  test-cluster-standalone:
+  test-list:
     runs-on: ubuntu-24.04
+    outputs:
+      tests: ${{ steps.listTests.outputs.tests }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+      - id: listTests
+        run: |
+          echo "tests=$(ls charts/cluster/test -1 | jq -cRn '{ include: [inputs | { test: "\(.)" }]}')" >> $GITHUB_OUTPUT
+  test:
+    needs: test-list
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.test-list.outputs.tests) }}
+    name: ${{matrix.test}}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -15,7 +32,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Cosign
-        uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da # v3.7.0
+        uses: sigstore/cosign-installer@c56c2d3e59e4281cc41dea2217323ba5694b171e # v3.8.0
 
       - name: Setup kind
         uses: ./.github/actions/setup-kind
@@ -51,4 +68,4 @@ jobs:
             tenant minio-operator/tenant
 
       - name: Run Kyverno/Chainsaw
-        run: chainsaw test
+        run: chainsaw test charts/cluster/test/${{matrix.test}}

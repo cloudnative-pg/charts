@@ -45,6 +45,18 @@ cluster:
   enableSuperuserAccess: true
   superuserSecret: supersecret-secret
   enablePDB: false
+  services:
+    additional:
+      - selectorType: rw
+        serviceTemplate:
+          metadata:
+            name: "test-lb"
+            labels:
+              test-label: "true"
+            annotations:
+              test-annotation: "true"
+          spec:
+            type: LoadBalancer
   roles:
      - name: dante
        ensure: present
