@@ -12,7 +12,7 @@ jobs:
       tests: ${{ steps.listTests.outputs.tests }}
     steps:
       - name: Checkout
-        uses: actions/checkout@4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - id: listTests
