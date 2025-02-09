@@ -23,7 +23,6 @@ bootstrap:
     postInitApplicationSQL:
       {{- if or (eq .Values.type "paradedb") (eq .Values.type "paradedb-enterprise") }}
       - CREATE EXTENSION IF NOT EXISTS pg_search;
-      - CREATE EXTENSION IF NOT EXISTS pg_analytics;
       - CREATE EXTENSION IF NOT EXISTS pg_ivm;
       - CREATE EXTENSION IF NOT EXISTS vector;
       - CREATE EXTENSION IF NOT EXISTS postgis;
@@ -42,7 +41,6 @@ bootstrap:
     postInitTemplateSQL:
       {{- if or (eq .Values.type "paradedb") (eq .Values.type "paradedb-enterprise") }}
       - CREATE EXTENSION IF NOT EXISTS pg_search;
-      - CREATE EXTENSION IF NOT EXISTS pg_analytics;
       - CREATE EXTENSION IF NOT EXISTS pg_ivm;
       - CREATE EXTENSION IF NOT EXISTS vector;
       - CREATE EXTENSION IF NOT EXISTS postgis;
