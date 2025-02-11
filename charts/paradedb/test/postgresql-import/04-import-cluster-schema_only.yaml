@@ -5,6 +5,8 @@ recovery:
   import:
     type: "microservice"
     databases: [ "mygooddb" ]
+    pgRestoreExtraOptions:
+      - --table=mygoodtable
     schemaOnly: true
     source:
       host: "source-paradedb-rw"
@@ -21,7 +23,7 @@ recovery:
         key: tls.crt
 
 cluster:
-  instances: 2
+  instances: 1
   storage:
     size: 256Mi
   initdb:

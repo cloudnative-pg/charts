@@ -25,7 +25,9 @@ spec:
         command: ['sh', '-c']
         args:
          - |
+           set -e
            apk --no-cache add postgresql-client
            psql "$DB_URI" -c "CREATE DATABASE mygooddb;"
            psql "$DB_URI/mygooddb" -c "CREATE TABLE mygoodtable (id serial PRIMARY KEY);"
            psql "$DB_URI/mygooddb" -c "INSERT INTO mygoodtable VALUES (314159265);"
+           psql "$DB_URI/mygooddb" -c "CREATE TABLE mybadtable (id serial PRIMARY KEY);"
