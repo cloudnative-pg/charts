@@ -3,4 +3,4 @@ kind: Cluster
 metadata:
   name: import-paradedb
 status:
-  readyInstances: 2
+  readyInstances: 1
