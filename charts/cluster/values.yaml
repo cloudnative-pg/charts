@@ -128,10 +128,10 @@ recovery:
         name: ""
         key: ""
 
-  # See: https://cloudnative-pg.io/documentation/1.24/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Import
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Import
   import:
     # -- One of `microservice` or `monolith.`
-    # See: https://cloudnative-pg.io/documentation/1.24/database_import/#how-it-works
+    # See: https://cloudnative-pg.io/documentation/current/database_import/#how-it-works
     type: "microservice"
     # -- Databases to import
     databases: []
