@@ -15,8 +15,8 @@ version:
   # -- PostgreSQL major version to use
   postgresql: "17"
   # -- The ParadeDB version, set in the publish CI workflow from the latest paradedb/paradedb GitHub tag
-  # -- We default to v0.15.1 for testing and local development
-  paradedb: "0.15.1"
+  # -- We default to v0.15.13 for testing and local development
+  paradedb: "0.15.13"
 
 ###
 # -- Cluster mode of operation. Available modes:
@@ -176,10 +176,6 @@ recovery:
       sslRootCertSecret:
         name: ""
         key: ""
-<<<<<<< HEAD
-
-=======
->>>>>>> 5566e55 (Feat recovery.mode=import (#53))
 
 cluster:
   # -- Number of instances
