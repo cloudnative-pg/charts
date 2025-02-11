@@ -20,18 +20,21 @@ icon: https://raw.githubusercontent.com/paradedb/paradedb/main/docs/logo/light.s
 type: application
 
 # The Chart version, set in the publish CI workflow from GitHub Actions Variables
-# We default to v0.15.1 for testing and local development
-version: 0.15.1
+# We default to v0.15.6 for testing and local development
+version: 0.15.6
 
 sources:
   - https://github.com/paradedb/charts
 keywords:
   - paradedb
   - pg_search
-  - pg_analytics
   - postgresql
   - postgres
   - database
+  - full-text
+  - analytics
+  - vector
+  - zero-etl
 home: https://paradedb.com
 maintainers:
   - name: ParadeDB
