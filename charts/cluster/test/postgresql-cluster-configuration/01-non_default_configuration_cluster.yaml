@@ -97,5 +97,12 @@ cluster:
       annotations:
         my-annotation: my-service-account
 
+  projectedVolumeTemplate:
+    sources:
+      - secret:
+          name: ca-secret 
+          items:
+          - key: ca.crt
+            path: crt/ca-01.pem
 backups:
   enabled: false
