@@ -5,6 +5,8 @@ recovery:
   import:
     type: "microservice"
     databases: [ "mygooddb" ]
+    pgRestoreExtraOptions:
+      - --table=mygoodtable
     schemaOnly: true
     source:
       host: "source-cluster-rw"

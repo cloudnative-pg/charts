@@ -68,6 +68,14 @@ externalClusters:
         {{- . | toYaml | nindent 6 }}
       {{- end }}
       schemaOnly: {{ .Values.recovery.import.schemaOnly }}
+      {{ with .Values.recovery.import.pgDumpExtraOptions }}
+      pgDumpExtraOptions:
+        {{- . | toYaml | nindent 6 }}
+      {{- end }}
+      {{ with .Values.recovery.import.pgRestoreExtraOptions }}
+      pgRestoreExtraOptions:
+        {{- . | toYaml | nindent 6 }}
+      {{- end }}
 
 externalClusters:
   {{- include "cluster.externalSourceCluster" (list "importSource" .Values.recovery.import.source) | nindent 2 }}
