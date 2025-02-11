@@ -1,9 +1,9 @@
-name: test( cluster )
+name: Test ParadeDB Helm Chart
 
 on:
   pull_request:
     branches-ignore:
-      - 'gh-pages'
+      - "gh-pages"
 
 jobs:
   test-list:
@@ -17,7 +17,7 @@ jobs:
           fetch-depth: 1
       - id: listTests
         run: |
-          echo "tests=$(ls charts/cluster/test -1 | jq -cRn '{ include: [inputs | { test: "\(.)" }]}')" >> $GITHUB_OUTPUT
+          echo "tests=$(ls charts/paradedb/test -1 | jq -cRn '{ include: [inputs | { test: "\(.)" }]}')" >> $GITHUB_OUTPUT
 
   test:
     needs: test-list

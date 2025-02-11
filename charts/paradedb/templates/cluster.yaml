@@ -65,6 +65,7 @@ spec:
       {{- if or (eq .Values.type "paradedb") (eq .Values.type "paradedb-enterprise") }}
       - pg_search
       - pg_analytics
+      - pg_parquet
       - pg_cron
       {{- end }}
       {{- with .Values.cluster.postgresql.shared_preload_libraries }}
