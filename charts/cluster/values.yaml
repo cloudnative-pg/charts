@@ -73,6 +73,8 @@ recovery:
     path: "/"
     accessKey: ""
     secretKey: ""
+    # -- Use the role based authentication without providing explicitly the keys
+    inheritFromIAMRole: false
   azure:
     path: "/"
     connectionString: ""
@@ -209,6 +211,9 @@ cluster:
 
   # -- The GID of the postgres user inside the image, defaults to 26
   postgresGID: -1
+
+  # -- Customization of service definions. Please refer to https://cloudnative-pg.io/documentation/1.24/service_management/
+  services: {}
 
   # -- Resources requirements of every generated Pod.
   # Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.
@@ -374,6 +379,8 @@ backups:
     path: "/"
     accessKey: ""
     secretKey: ""
+    # -- Use the role based authentication without providing explicitly the keys
+    inheritFromIAMRole: false
   azure:
     path: "/"
     connectionString: ""

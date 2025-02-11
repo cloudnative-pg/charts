@@ -23,12 +23,16 @@
   {{- end }}
   {{- $secretName := coalesce .scope.secret.name (printf "%s-%s-s3-creds" .chartFullname .secretPrefix) }}
   s3Credentials:
+  {{- if .scope.s3.inheritFromIAMRole }}
+    inheritFromIAMRole: true
+  {{- else }}
     accessKeyId:
       name: {{ $secretName }}
       key: ACCESS_KEY_ID
     secretAccessKey:
       name: {{ $secretName }}
       key: ACCESS_SECRET_KEY
+  {{- end }}
 {{- else if eq .scope.provider "azure" }}
   {{- if empty .scope.destinationPath }}
   destinationPath: "https://{{ required "You need to specify Azure storageAccount if destinationPath is not specified." .scope.azure.storageAccount }}.{{ .scope.azure.serviceName }}.core.windows.net/{{ .scope.azure.containerName }}{{ .scope.azure.path }}"
