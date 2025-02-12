@@ -302,7 +302,7 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
-  # -- mounting custom files inside the Postgres pods through .spec.projectedVolumeTemplate 
+  # -- mounting custom files inside the Postgres pods through .spec.projectedVolumeTemplate
   # See https://cloudnative-pg.io/documentation/current/cluster_conf/#projected-volumes
   projectedVolumeTemplate: {}
     # sources:
