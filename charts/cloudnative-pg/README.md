@@ -26,7 +26,7 @@ CloudNativePG Operator Helm Chart
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| additionalArgs | list | `[]` | Additinal arguments to be added to the operator's args list. |
+| additionalArgs | list | `[]` | Additional arguments to be added to the operator's args list. |
 | additionalEnv | list | `[]` | Array containing extra environment variables which can be templated. For example:  - name: RELEASE_NAME    value: "{{ .Release.Name }}"  - name: MY_VAR    value: "mySpecialKey" |
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |

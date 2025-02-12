@@ -23,7 +23,7 @@ helm upgrade --install cnpg \
 
 ## Creating a cluster configuration
 
-Once you have the operator installed, the next step is to prepare the cluster configuration. Whether this will be manged
+Once you have the operator installed, the next step is to prepare the cluster configuration. Whether this will be managed
 via a GitOps solution or directly via Helm is up to you. The following sections outlines the important steps in both cases.
 
 ### Choosing the database type
