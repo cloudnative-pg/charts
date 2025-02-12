@@ -280,6 +280,7 @@ cluster:
     # -- Lists of shared preload libraries to add to the default ones
     shared_preload_libraries: []
       # - pgaudit
+    # -- PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)
     ldap: {}
       # https://cloudnative-pg.io/documentation/1.24/postgresql_conf/#ldap-configuration
       # server: 'openldap.default.svc.cluster.local'
