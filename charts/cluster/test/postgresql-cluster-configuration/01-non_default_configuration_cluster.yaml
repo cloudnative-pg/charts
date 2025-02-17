@@ -101,6 +101,11 @@ cluster:
     foo: bar
   annotations:
     foo: bar
+  inheritedMetadata:
+    annotations:
+      super.annotation: "super-annotation"
+    labels:
+      azure.workload.identity/use: "true"
   serviceAccountTemplate:
     metadata:
       annotations:
