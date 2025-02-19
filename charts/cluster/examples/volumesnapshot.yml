@@ -1,0 +1,22 @@
+type: postgresql
+mode: standalone
+version:
+  postgresql: "16"
+cluster:
+  instances: 1
+backups:
+  enabled: true
+  method: volumeSnapshot
+  volumeSnapshot:
+    labels:
+      testlabel: abc
+    annotations:
+      testannotation: def
+    className: snapclass
+    snapshotOwnerReference: backup
+    online: true
+  scheduledBackups:
+    - name: daily-backup
+      schedule: "0 0 0 * * *"
+      backupOwnerReference: self
+      method: volumeSnapshot

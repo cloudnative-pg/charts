@@ -1,0 +1,14 @@
+type: postgresql
+mode: standalone
+version:
+  postgresql: "16"
+cluster:
+  instances: 1
+backups:
+  enabled: true
+  method: plugin
+  pluginConfiguration:
+    name: testplugin
+    parameters:
+      param1: value1
+      param2: value2

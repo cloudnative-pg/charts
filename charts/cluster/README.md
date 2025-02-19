@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.2.1](https://img.shields.io/badge/Version-0.2.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.2.2](https://img.shields.io/badge/Version-0.2.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -73,6 +73,8 @@ The chart has three modes of operation. These are configured via the `mode` para
 
 ### Backup configuration
 
+#### Barman Object Store
+
 CNPG implements disaster recovery via [Barman](https://pgbarman.org/). The following section configures the barman object
 store where backups will be stored. Barman performs backups of the cluster filesystem base backup and WALs. Both are
 stored in the specified location. The backup provider is configured via the `backups.provider` parameter. The following
@@ -93,9 +95,29 @@ backups:
       backupOwnerReference: self
 ```
 
-Each backup adapter takes it's own set of parameters, listed in the [Configuration options](#Configuration-options) section
-below. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backup.s3`,
-`backup.azure`, or `backup.google`.
+Each backup adapter takes its own set of parameters, listed in the [Configuration options](#Configuration-options) section
+below. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backup.barmanObjectStore.s3`,
+`backup.barmanObjectStore.azure`, or `backup.barmanObjectStore.google`.
+
+#### Volume Snapshots
+
+You can also configure backup using Volume Snapshots. See the [example](.examples/volumesnapshot.yml) to learn how to do that.
+
+Volume snapshots can be used as a backup method by setting the `backups.method` parameter to `volumeSnapshot`. The following parameters can be configured:
+* `backups.volumeSnapshot.className` - Snapshot Class to be used for PG_DATA PersistentVolumeClaim.
+* `backups.volumeSnapshot.walClassName` - Snapshot Class to be used for the PG_WAL PersistentVolumeClaim.
+* `backups.volumeSnapshot.tablespaceClassName` - Snapshot Class to be used for the tablespaces. Defaults to the PGDATA Snapshot Class, if set.
+* `backups.volumeSnapshot.snapshotOwnerReference` - Type of owner reference the snapshot should have. Available options are `none`, `cluster`, and `backup`.
+* `backups.volumeSnapshot.online` - Define if the backup shall be online or offline.
+* `backups.volumeSnapshot.onlineConfiguration` - Configuration for online backups, including `waitForArchive` and `immediateCheckpoint`.
+
+#### Plugin Backups
+
+Another backup option are plugin backups. See the [example](.examples/pluginbackup.yml) to learn how to do that.
+
+Plugin backups can be used by setting the `backups.method` parameter to `plugin`. The following parameters can be configured:
+* `backups.pluginConfiguration.name` - Name of the plugin to use.
+* `backups.pluginConfiguration.parameters` - Configuration parameters for the plugin.
 
 Recovery
 --------
@@ -112,43 +134,43 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| backups.azure.connectionString | string | `""` |  |
-| backups.azure.containerName | string | `""` |  |
-| backups.azure.inheritFromAzureAD | bool | `false` |  |
-| backups.azure.path | string | `"/"` |  |
-| backups.azure.serviceName | string | `"blob"` |  |
-| backups.azure.storageAccount | string | `""` |  |
-| backups.azure.storageKey | string | `""` |  |
-| backups.azure.storageSasToken | string | `""` |  |
-| backups.data.compression | string | `"gzip"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
-| backups.data.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
-| backups.data.jobs | int | `2` | Number of data files to be archived or restored in parallel. |
-| backups.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| backups.barmanObjectStore | object | `{"azure":{"connectionString":"","containerName":"","inheritFromAzureAD":false,"path":"/","serviceName":"blob","storageAccount":"","storageKey":"","storageSasToken":""},"data":{"compression":"gzip","encryption":"AES256","jobs":2},"destinationPath":"","endpointCA":{"create":false,"key":"","name":"","value":""},"endpointURL":"","google":{"applicationCredentials":"","bucket":"","gkeEnvironment":false,"path":"/"},"provider":"s3","s3":{"accessKey":"","bucket":"","inheritFromIAMRole":false,"path":"/","region":"","secretKey":""},"secret":{"create":true,"name":""},"wal":{"compression":"gzip","encryption":"AES256","maxParallel":1}}` | Configuration for method barmanObjectStore |
+| backups.barmanObjectStore.data.compression | string | `"gzip"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
+| backups.barmanObjectStore.data.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
+| backups.barmanObjectStore.data.jobs | int | `2` | Number of data files to be archived or restored in parallel. |
+| backups.barmanObjectStore.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| backups.barmanObjectStore.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
+| backups.barmanObjectStore.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
+| backups.barmanObjectStore.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" Leave empty if using the default S3 endpoint |
+| backups.barmanObjectStore.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
+| backups.barmanObjectStore.s3.inheritFromIAMRole | bool | `false` | Use the role based authentication without providing explicitly the keys |
+| backups.barmanObjectStore.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
+| backups.barmanObjectStore.secret.name | string | `""` | Name of the backup credentials secret |
+| backups.barmanObjectStore.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
+| backups.barmanObjectStore.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
+| backups.barmanObjectStore.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
 | backups.enabled | bool | `false` | You need to configure backups manually, so backups are disabled by default. |
-| backups.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
-| backups.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
-| backups.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" |
-| backups.google.applicationCredentials | string | `""` |  |
-| backups.google.bucket | string | `""` |  |
-| backups.google.gkeEnvironment | bool | `false` |  |
-| backups.google.path | string | `"/"` |  |
-| backups.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
+| backups.method | string | `"barmanObjectStore"` | The backup method to be used, possible options are `barmanObjectStore`, `volumeSnapshot` or `plugin` |
+| backups.pluginConfiguration | object | `{"name":"","parameters":{}}` | Configuration for method plugin |
+| backups.pluginConfiguration.name | string | `""` | Name of the plugin to use |
+| backups.pluginConfiguration.parameters | object | `{}` | Configuration for the plugin |
 | backups.retentionPolicy | string | `"30d"` | Retention policy for backups |
-| backups.s3.accessKey | string | `""` |  |
-| backups.s3.bucket | string | `""` |  |
-| backups.s3.inheritFromIAMRole | bool | `false` | Use the role based authentication without providing explicitly the keys |
-| backups.s3.path | string | `"/"` |  |
-| backups.s3.region | string | `""` |  |
-| backups.s3.secretKey | string | `""` |  |
 | backups.scheduledBackups[0].backupOwnerReference | string | `"self"` | Backup owner reference |
-| backups.scheduledBackups[0].method | string | `"barmanObjectStore"` | Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot` |
+| backups.scheduledBackups[0].method | string | `"barmanObjectStore"` | Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot` or `plugin` |
 | backups.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
-| backups.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
-| backups.secret.name | string | `""` | Name of the backup credentials secret |
-| backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
-| backups.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
-| backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
+| backups.target | string | `"prefer-standby"` | The policy to decide which instance should perform this backup. Available options are empty string, `primary` and `prefer-standby` |
+| backups.volumeSnapshot | object | `{"annotations":{},"className":"","labels":{},"online":true,"onlineConfiguration":{"immediateCheckpoint":false,"waitForArchive":true},"snapshotOwnerReference":"backup","tablespaceClassName":{},"walClassName":""}` | Define volume snapshot configuration |
+| backups.volumeSnapshot.annotations | object | `{}` | Key-value pairs that will be added to .metadata.annotations snapshot resources |
+| backups.volumeSnapshot.className | string | `""` | Snapshot Class to be used for PG_DATA PersistentVolumeClaim |
+| backups.volumeSnapshot.labels | object | `{}` | Key-value pairs that will be added to .metadata.labels snapshot resources. |
+| backups.volumeSnapshot.online | bool | `true` | Define if the backup shall be online or offline |
+| backups.volumeSnapshot.onlineConfiguration | object | `{"immediateCheckpoint":false,"waitForArchive":true}` | Configuration for method volumeSnapshot |
+| backups.volumeSnapshot.onlineConfiguration.immediateCheckpoint | bool | `false` | If set to true, an immediate checkpoint will be used, meaning PostgreSQL will complete the checkpoint as soon as possible |
+| backups.volumeSnapshot.onlineConfiguration.waitForArchive | bool | `true` | If false, the function will return immediately after the backup is completed, without waiting for WAL to be archived |
+| backups.volumeSnapshot.snapshotOwnerReference | string | `"backup"` | Type of owner reference the snapshot should have. Available options are `none`, `cluster` and `backup` |
+| backups.volumeSnapshot.tablespaceClassName | object | `{}` | Snapshot Class to be used for the tablespaces. defaults to the PGDATA Snapshot Class, if set |
+| backups.volumeSnapshot.walClassName | string | `""` | Snapshot Class to be used for the PG_WAL PersistentVolumeClaim |
 | cluster.additionalLabels | object | `{}` |  |
 | cluster.affinity | object | `{"topologyKey":"topology.kubernetes.io/zone"}` | Affinity/Anti-affinity rules for Pods. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
 | cluster.annotations | object | `{}` |  |
@@ -156,7 +178,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.enablePDB | bool | `true` | Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets |
 | cluster.enableSuperuserAccess | bool | `true` | When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password. If the secret is not present, the operator will automatically create one. When this option is disabled, the operator will ignore the SuperuserSecret content, delete it when automatically created, and then blank the password of the postgres user by setting it to NULL. |
 | cluster.imageCatalogRef | object | `{}` | Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName` |
-| cluster.imageName | string | `""` | Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments: <image>:<tag>@sha256:<digestValue> |
+| cluster.imageName | string | `""` | Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments: <image>:<tag>@sha256:<digestValue> Default value depends on type (postgresql/postgis/timescaledb) |
 | cluster.imagePullPolicy | string | `"IfNotPresent"` | Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images |
 | cluster.imagePullSecrets | list | `[]` | The list of pull secrets to be used to pull the images. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-LocalObjectReference |
 | cluster.initdb | object | `{}` | BootstrapInitDB is the configuration of the bootstrap process when initdb is used. See: https://cloudnative-pg.io/documentation/current/bootstrap/ See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb |
@@ -207,7 +229,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.azure.storageAccount | string | `""` |  |
 | recovery.azure.storageKey | string | `""` |  |
 | recovery.azure.storageSasToken | string | `""` |  |
-| recovery.backupName | string | `""` | Backup Recovery Method |
+| recovery.backupName | string | `""` | Backup Recovery Method Name of the backup to recover from. Required if method is `backup`. |
 | recovery.clusterName | string | `""` | The original cluster name when used in backups. Also known as serverName. |
 | recovery.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
 | recovery.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
@@ -305,3 +327,5 @@ TODO
 * IAM Role for S3 Service Account
 * Automatic provisioning of a Alert Manager configuration
 
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)

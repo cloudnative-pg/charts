@@ -82,7 +82,10 @@ Configuration
 │ Instances         │ {{ include (printf "%s%s" "cluster.color-" $redundancyColor) (printf "%-56s" (toString .Values.cluster.instances)) }} │
 │ Backups           │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.backups.enabled)) (printf "%-56s" (ternary "Enabled" "Disabled" .Values.backups.enabled)) }} │
 {{- if .Values.backups.enabled }}
-│ Backup Provider   │ {{ printf "%-56s" (title .Values.backups.provider) }} │
+| Backup Method     | {{  printf "%-56s" .Values.backups.method }} |
+{{- if eq .Values.backups.method "barmanObjectStore" }}
+│ Backup Provider   │ {{ printf "%-56s" (title .Values.backups.barmanObjectStore.provider) }} │
+{{- end }}
 │ Scheduled Backups │ {{ printf "%-56s" $scheduledBackups }} │
 {{- end }}
 │ Storage           │ {{ printf "%-56s" .Values.cluster.storage.size }} │
