@@ -1,0 +1,17 @@
+type: postgresql
+mode: standalone
+version:
+  postgresql: "16"
+cluster:
+  instances: 1
+backups:
+  enabled: true
+  method: volumeSnapshot
+  pluginConfiguration:
+    labels:
+      testlabel: abc
+    annotations:
+      testannotation: def
+    className: snapclass
+    snapshotOwnerReference: backup
+    online: true

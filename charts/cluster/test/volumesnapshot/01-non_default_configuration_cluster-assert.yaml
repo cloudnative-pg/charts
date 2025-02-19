@@ -1,0 +1,183 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: non-default-configuration-cluster
+  annotations:
+    foo: bar
+  labels:
+    foo: bar
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - node1
+                  - node2
+    podAntiAffinityType: preferred
+    topologyKey: kubernetes.io/hostname
+  backup:
+    retentionPolicy: 30d
+    target: prefer-standby
+    volumeSnapshot:
+      annotations:
+        annotationA: valueA
+        annotationB: valueB
+      className: testClass
+      labels:
+        labelA: valueA
+        labelB: valueB
+      online: false
+      onlineConfiguration:
+        immediateCheckpoint: true
+        waitForArchive: false
+      snapshotOwnerReference: cluster
+      walClassName: testWalClass
+  bootstrap:
+    initdb:
+      database: mydb
+      encoding: UTF8
+      localeCType: C
+      localeCollate: C
+      owner: dante
+      postInitApplicationSQL:
+        - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
+      postInitSQL:
+        - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
+      postInitTemplateSQL:
+        - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
+      secret:
+        name: mydb-secret
+  certificates:
+    clientCASecret: client-ca-secret
+    replicationTLSSecret: replication-tls-secret
+    serverCASecret: ca-secret
+    serverTLSSecret: tls-secret
+  enablePDB: false
+  enableSuperuserAccess: true
+  failoverDelay: 0
+  imageName: ghcr.io/cloudnative-pg/crazycustomimage:99.99
+  imagePullPolicy: Always
+  imagePullSecrets:
+    - name: image-pull-secret
+  instances: 2
+  logLevel: warning
+  managed:
+    roles:
+      - comment: Dante Alighieri
+        connectionLimit: -1
+        ensure: present
+        inRoles:
+          - pg_monitor
+          - pg_signal_backend
+        inherit: true
+        login: true
+        name: dante
+    services:
+      additional:
+        - selectorType: rw
+          serviceTemplate:
+            metadata:
+              annotations:
+                test-annotation: "true"
+              labels:
+                test-label: "true"
+              name: test-lb
+            spec:
+              type: LoadBalancer
+          updateStrategy: patch
+  maxSyncReplicas: 0
+  minSyncReplicas: 0
+  monitoring:
+    customQueriesConfigMap:
+      - key: queries
+        name: cnpg-default-monitoring
+    disableDefaultQueries: false
+    enablePodMonitor: false
+  postgresGID: 1002
+  postgresUID: 1001
+  postgresql:
+    ldap:
+      bindSearchAuth:
+        baseDN: ou=org,dc=example,dc=com
+        bindDN: cn=admin,dc=example,dc=com
+        bindPassword:
+          key: data
+          name: ldapBindPassword
+        searchAttribute: uid
+      server: openldap.default.svc.cluster.local
+    parameters:
+      archive_mode: "on"
+      archive_timeout: 5min
+      dynamic_shared_memory_type: posix
+      full_page_writes: "on"
+      log_destination: csvlog
+      log_directory: /controller/log
+      log_filename: postgres
+      log_rotation_age: "0"
+      log_rotation_size: "0"
+      log_truncate_on_rotation: "false"
+      logging_collector: "on"
+      max_connections: "42"
+      max_parallel_workers: "32"
+      max_replication_slots: "32"
+      max_worker_processes: "32"
+      shared_memory_type: mmap
+      shared_preload_libraries: ""
+      ssl_max_protocol_version: TLSv1.3
+      ssl_min_protocol_version: TLSv1.3
+      wal_keep_size: 512MB
+      wal_level: logical
+      wal_log_hints: "on"
+      wal_receiver_timeout: 5s
+      wal_sender_timeout: 5s
+    pg_hba:
+      - host all 1.2.3.4/32 trust
+    pg_ident:
+      - mymap   /^(.*)@mydomain\.com$      \1
+    shared_preload_libraries:
+      - pgaudit
+    syncReplicaElectionConstraint:
+      enabled: false
+    synchronous:
+      dataDurability: required
+      method: any
+      number: 1
+  primaryUpdateMethod: restart
+  primaryUpdateStrategy: supervised
+  priorityClassName: mega-high
+  replicationSlots:
+    highAvailability:
+      enabled: true
+      slotPrefix: _cnpg_
+    synchronizeReplicas:
+      enabled: true
+    updateInterval: 30
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        my-annotation: my-service-account
+  smartShutdownTimeout: 180
+  startDelay: 3600
+  stopDelay: 1800
+  storage:
+    resizeInUseVolumes: true
+    size: 256Mi
+    storageClass: standard
+  superuserSecret:
+    name: supersecret-secret
+  switchoverDelay: 3600
+  walStorage:
+    resizeInUseVolumes: true
+    size: 256Mi
+    storageClass: standard
