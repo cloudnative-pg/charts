@@ -82,10 +82,18 @@ externalClusters:
 
 {{- else }}
   recovery:
-    {{- with .Values.recovery.pitrTarget.time }}
+    {{- with .Values.recovery.recoveryTarget }}
     recoveryTarget:
-      targetTime: {{ . }}
+      {{- toYaml . | nindent 6 }}
     {{- end }}
+
+    {{/* DEPRECATED, replaced by .Values.recovery.recoveryTarget above */}}
+    {{/* Will fail if both pitrTarget.time and recoveryTarget are specified */}}
+	{{- with .Values.recovery.pitrTarget.time }}
+	recoveryTarget:
+	  targetTime: {{ . }}
+	{{- end }}
+
     {{- if eq .Values.recovery.method "backup" }}
     backup:
       name: {{ .Values.recovery.backupName }}
