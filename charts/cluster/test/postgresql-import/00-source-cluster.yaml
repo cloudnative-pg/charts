@@ -2,6 +2,7 @@ type: postgresql
 mode: "standalone"
 cluster:
   instances: 1
+  superuserSecret: source-cluster-superuser
   storage:
     size: 256Mi
 backups:
