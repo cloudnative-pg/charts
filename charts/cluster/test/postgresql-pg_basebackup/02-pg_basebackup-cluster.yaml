@@ -17,6 +17,8 @@ recovery:
 
 cluster:
   instances: 2
+  storage:
+    size: 256Mi
 
 backups:
   enabled: false

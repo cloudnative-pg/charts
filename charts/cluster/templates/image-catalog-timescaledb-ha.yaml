@@ -3,14 +3,15 @@ apiVersion: postgresql.cnpg.io/v1
 kind: ImageCatalog
 metadata:
   name: {{ include "cluster.fullname" . }}-timescaledb-ha
+  namespace: {{ include "cluster.namespace" . }}
 spec:
   images:
     - major: 12
-      image: timescale/timescaledb-ha:pg15-ts{{ .Values.version.timescaledb }}
+      image: timescale/timescaledb-ha:pg12-ts{{ .Values.version.timescaledb }}
     - major: 13
-      image: timescale/timescaledb-ha:pg15-ts{{ .Values.version.timescaledb }}
+      image: timescale/timescaledb-ha:pg13-ts{{ .Values.version.timescaledb }}
     - major: 14
-      image: timescale/timescaledb-ha:pg15-ts{{ .Values.version.timescaledb }}
+      image: timescale/timescaledb-ha:pg14-ts{{ .Values.version.timescaledb }}
     - major: 15
       image: timescale/timescaledb-ha:pg15-ts{{ .Values.version.timescaledb }}
     - major: 16
