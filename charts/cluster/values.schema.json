@@ -446,6 +446,12 @@
                         "databases": {
                             "type": "array"
                         },
+                        "pgDumpExtraOptions": {
+                            "type": "array"
+                        },
+                        "pgRestoreExtraOptions": {
+                            "type": "array"
+                        },
                         "postImportApplicationSQL": {
                             "type": "array"
                         },
