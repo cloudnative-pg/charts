@@ -205,6 +205,9 @@
                 "imagePullSecrets": {
                     "type": "array"
                 },
+                "inheritedMetadata": {
+                    "type": "object"
+                },
                 "initdb": {
                     "type": "object"
                 },
