@@ -2,6 +2,35 @@ apiVersion: v1
 entries:
   cloudnative-pg:
   - apiVersion: v2
+    appVersion: 1.25.1
+    created: "2025-03-05T14:15:49.173195912Z"
+    dependencies:
+    - alias: monitoring
+      condition: monitoring.grafanaDashboard.create
+      name: cluster
+      repository: https://cloudnative-pg.github.io/grafana-dashboards
+      version: "0.0"
+    description: CloudNativePG Operator Helm Chart
+    digest: 940300b9c16cc98c819f248ed6f8a347bd872201da59717df580072071d7f276
+    home: https://cloudnative-pg.io
+    icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
+    keywords:
+    - operator
+    - controller
+    - postgresql
+    - postgres
+    - database
+    maintainers:
+    - email: p.scorsolini@gmail.com
+      name: phisco
+    name: cloudnative-pg
+    sources:
+    - https://github.com/cloudnative-pg/charts
+    type: application
+    urls:
+    - https://github.com/cloudnative-pg/charts/releases/download/cloudnative-pg-v0.23.2/cloudnative-pg-0.23.2.tgz
+    version: 0.23.2
+  - apiVersion: v2
     appVersion: 1.25.0
     created: "2025-03-04T13:08:40.259480784Z"
     dependencies:
@@ -1360,4 +1389,4 @@ entries:
     urls:
     - https://cloudnative-pg.github.io/charts/pgbench-0.1.0.tgz
     version: 0.1.0
-generated: "2025-03-04T13:08:40.370738895Z"
+generated: "2025-03-05T14:15:49.17358889Z"
