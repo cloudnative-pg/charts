@@ -91,7 +91,7 @@ externalClusters:
       name: {{ .Values.recovery.backupName }}
     {{- else if eq .Values.recovery.method "object_store" }}
     source: objectStoreRecoveryCluster
-    {{- end }}
+    
 
 externalClusters:
   - name: objectStoreRecoveryCluster
@@ -99,6 +99,7 @@ externalClusters:
       serverName: {{ .Values.recovery.clusterName }}
       {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
+    {{- end }}
 {{- end }}
 {{-  else }}
   {{ fail "Invalid cluster mode!" }}
