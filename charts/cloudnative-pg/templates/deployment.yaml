@@ -123,6 +123,17 @@ spec:
           {{- toYaml .Values.resources | nindent 10 }}
         securityContext:
           {{- toYaml .Values.containerSecurityContext | nindent 10 }}
+        startupProbe:
+          {{- if .Values.webhook.startupProbe.failureThreshold }}
+          failureThreshold: {{ .Values.webhook.startupProbe.failureThreshold }}
+          {{- end }}
+          httpGet:
+            path: /readyz
+            port: {{ .Values.webhook.port }}
+            scheme: HTTPS
+          {{- if .Values.webhook.startupProbe.periodSeconds }}
+          periodSeconds: {{ .Values.webhook.startupProbe.periodSeconds }}
+          {{- end }}
         volumeMounts:
         - mountPath: /controller
           name: scratch-data

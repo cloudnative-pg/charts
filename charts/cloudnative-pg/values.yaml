@@ -59,6 +59,9 @@ webhook:
     initialDelaySeconds: 3
   readinessProbe:
     initialDelaySeconds: 3
+  startupProbe:
+    failureThreshold: 6
+    periodSeconds: 5
 
 # Operator configuration.
 config:
