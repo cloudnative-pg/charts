@@ -10,6 +10,19 @@ on:
       - 'gh-pages'
 
 jobs:
+  codespell:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run code spelling check
+        uses: codespell-project/actions-codespell@v2
+        with:
+          ignore_words_list: notin
+
   linter:
     runs-on: ubuntu-24.04
     steps:
