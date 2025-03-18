@@ -81,6 +81,8 @@ The chart has three modes of operation. These are configured via the `mode` para
 
 ### Backup configuration
 
+#### Barman Object Store
+
 CNPG implements disaster recovery via [Barman](https://pgbarman.org/). The following section configures the barman object
 store where backups will be stored. Barman performs backups of the cluster filesystem base backup and WALs. Both are
 stored in the specified location. The backup provider is configured via the `backups.provider` parameter. The following
@@ -101,10 +103,29 @@ backups:
       backupOwnerReference: self
 ```
 
-Each backup adapter takes it's own set of parameters, listed in the [Configuration options](#Configuration-options) section
-below. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backup.s3`,
-`backup.azure`, or `backup.google`.
+Each backup adapter takes its own set of parameters, listed in the [Configuration options](#Configuration-options) section
+below. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backup.barmanObjectStore.s3`,
+`backup.barmanObjectStore.azure`, or `backup.barmanObjectStore.google`.
 
+#### Volume Snapshots
+
+You can also configure backup using Volume Snapshots. See the [example](.examples/volumesnapshot.yml) to learn how to do that.
+
+Volume snapshots can be used as a backup method by setting the `backups.method` parameter to `volumeSnapshot`. The following parameters can be configured:
+* `backups.volumeSnapshot.className` - Snapshot Class to be used for PG_DATA PersistentVolumeClaim.
+* `backups.volumeSnapshot.walClassName` - Snapshot Class to be used for the PG_WAL PersistentVolumeClaim.
+* `backups.volumeSnapshot.tablespaceClassName` - Snapshot Class to be used for the tablespaces. Defaults to the PGDATA Snapshot Class, if set.
+* `backups.volumeSnapshot.snapshotOwnerReference` - Type of owner reference the snapshot should have. Available options are `none`, `cluster`, and `backup`.
+* `backups.volumeSnapshot.online` - Define if the backup shall be online or offline.
+* `backups.volumeSnapshot.onlineConfiguration` - Configuration for online backups, including `waitForArchive` and `immediateCheckpoint`.
+
+#### Plugin Backups
+
+Another backup option are plugin backups. See the [example](.examples/pluginbackup.yml) to learn how to do that.
+
+Plugin backups can be used by setting the `backups.method` parameter to `plugin`. The following parameters can be configured:
+* `backups.pluginConfiguration.name` - Name of the plugin to use.
+* `backups.pluginConfiguration.parameters` - Configuration parameters for the plugin.
 
 Recovery
 --------

@@ -1,10 +1,10 @@
-{{- if .Values.backups.endpointCA.create }}
+{{- if .Values.backups.barmanObjectStore.endpointCA.create }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Values.backups.endpointCA.name | default (printf "%s-ca-bundle" (include "cluster.fullname" .)) | quote }}
+  name: {{ .Values.backups.barmanObjectStore.endpointCA.name | default (printf "%s-ca-bundle" (include "cluster.fullname" .)) | quote }}
   namespace: {{ include "cluster.namespace" . }}
 data:
-  {{ .Values.backups.endpointCA.key | default "ca-bundle.crt" | quote }}: {{ .Values.backups.endpointCA.value }}
+  {{ .Values.backups.barmanObjectStore.endpointCA.key | default "ca-bundle.crt" | quote }}: {{ .Values.backups.barmanObjectStore.endpointCA.value }}
   
 {{- end }}

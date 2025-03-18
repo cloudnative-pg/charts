@@ -44,7 +44,8 @@ recovery:
 
   ##
   # -- Backup Recovery Method
-  backupName: ""  # Name of the backup to recover from. Required if method is `backup`.
+  # Name of the backup to recover from. Required if method is `backup`.
+  backupName: ""
 
   ##
   # -- The original cluster name when used in backups. Also known as serverName.
@@ -175,17 +176,18 @@ recovery:
         name: ""
         key: ""
 
-
 cluster:
   # -- Number of instances
   instances: 3
 
   # -- Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments:
   # <image>:<tag>@sha256:<digestValue>
-  imageName: ""  # Default value depends on type (postgresql/postgis/timescaledb)
+  # Default value depends on type (postgresql/postgis/timescaledb)
+  imageName: ""
 
   # -- Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName`
-  imageCatalogRef: {}
+  imageCatalogRef:
+    {}
     # kind: ImageCatalog
     # name: postgresql
 
@@ -219,7 +221,8 @@ cluster:
   # Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.
   # We strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS.
   # See: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/
-  resources: {}
+  resources:
+    {}
     # limits:
     #   cpu: 2000m
     #   memory: 8Gi
@@ -263,7 +266,8 @@ cluster:
   # -- This feature enables declarative management of existing roles, as well as the creation of new roles if they are not
   # already present in the database.
   # See: https://cloudnative-pg.io/documentation/current/declarative_role_management/
-  roles: []
+  roles:
+    []
     # - name: dante
     #   ensure: present
     #   comment: Dante Alighieri
@@ -289,7 +293,8 @@ cluster:
       # -- Whether to enable the PrometheusRule automated alerts
       enabled: true
       # -- Exclude specified rules
-      excludeRules: []
+      excludeRules:
+        []
         # - CNPGClusterZoneSpreadWarning
     # -- Whether the default queries should be injected.
     # Set it to true if you don't want to inject default queries into the cluster.
@@ -313,38 +318,44 @@ cluster:
 
   postgresql:
     # -- PostgreSQL configuration options (postgresql.conf)
-    parameters: {}
+    parameters:
+      {}
       # max_connections: 300
     # -- Quorum-based Synchronous Replication
-    synchronous: {}
-     # method: any
-     # number: 1
+    synchronous:
+      {}
+      # method: any
+      # number: 1
     # -- PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
-    pg_hba: []
+    pg_hba:
+      []
       # - host all all 10.244.0.0/16 md5
     # -- PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file)
-    pg_ident: []
+    pg_ident:
+      []
       # - mymap   /^(.*)@mydomain\.com$      \1
     # -- Lists of shared preload libraries to add to the default ones
-    shared_preload_libraries: []
+    shared_preload_libraries:
+      []
       # - pgaudit
     # -- PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)
-    ldap: {}
+    ldap:
+      {}
       # https://cloudnative-pg.io/documentation/1.24/postgresql_conf/#ldap-configuration
       # server: 'openldap.default.svc.cluster.local'
       # bindSearchAuth:
-        # baseDN: 'ou=org,dc=example,dc=com'
-        # bindDN: 'cn=admin,dc=example,dc=com'
-        # bindPassword:
-          # name: 'ldapBindPassword'
-          # key: 'data'
-        # searchAttribute: 'uid'
-
+      # baseDN: 'ou=org,dc=example,dc=com'
+      # bindDN: 'cn=admin,dc=example,dc=com'
+      # bindPassword:
+      # name: 'ldapBindPassword'
+      # key: 'data'
+      # searchAttribute: 'uid'
 
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb
-  initdb: {}
+  initdb:
+    {}
     # database: app
     # owner: "" # Defaults to the database name
     # secret:
@@ -362,96 +373,135 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
-
 backups:
   # -- You need to configure backups manually, so backups are disabled by default.
   enabled: false
 
-  # -- Overrides the provider specific default endpoint. Defaults to:
-  # S3: https://s3.<region>.amazonaws.com"
-  endpointURL: ""  # Leave empty if using the default S3 endpoint
-  # -- Specifies a CA bundle to validate a privately signed certificate.
-  endpointCA:
-    # -- Creates a secret with the given value if true, otherwise uses an existing secret.
-    create: false
-    name: ""
-    key: ""
-    value: ""
+  # -- The backup method to be used, possible options are `barmanObjectStore`, `volumeSnapshot` or `plugin`
+  method: barmanObjectStore
 
-  # -- Overrides the provider specific default path. Defaults to:
-  # S3: s3://<bucket><path>
-  # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
-  # Google: gs://<bucket><path>
-  destinationPath: ""
-  # -- One of `s3`, `azure` or `google`
-  provider: s3
-  s3:
-    region: ""
-    bucket: ""
-    path: "/"
-    accessKey: ""
-    secretKey: ""
-    # -- Use the role based authentication without providing explicitly the keys
-    inheritFromIAMRole: false
-  azure:
-    path: "/"
-    connectionString: ""
-    storageAccount: ""
-    storageKey: ""
-    storageSasToken: ""
-    containerName: ""
-    serviceName: blob
-    inheritFromAzureAD: false
-  google:
-    path: "/"
-    bucket: ""
-    gkeEnvironment: false
-    applicationCredentials: ""
-  secret:
-    # -- Whether to create a secret for the backup credentials
-    create: true
-    # -- Name of the backup credentials secret
-    name: ""
+  # -- Retention policy for backups
+  retentionPolicy: "30d"
 
-  wal:
-    # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
-    compression: gzip
-    # -- Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`.
-    encryption: AES256
-    # -- Number of WAL files to be archived or restored in parallel.
-    maxParallel: 1
-  data:
-    # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
-    compression: gzip
-    # -- Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`.
-    encryption: AES256
-    # -- Number of data files to be archived or restored in parallel.
-    jobs: 2
+  # -- The policy to decide which instance should perform this backup. Available options are empty string, `primary` and `prefer-standby`
+  target: "prefer-standby"
+
+  # -- Configuration for method plugin
+  pluginConfiguration:
+    # -- Name of the plugin to use
+    name: ""
+    # -- Configuration for the plugin
+    parameters: {}
+
+  # -- Define volume snapshot configuration
+  volumeSnapshot:
+    # -- Key-value pairs that will be added to .metadata.labels snapshot resources.
+    labels: {}
+    # -- Key-value pairs that will be added to .metadata.annotations snapshot resources
+    annotations: {}
+    # -- Snapshot Class to be used for PG_DATA PersistentVolumeClaim
+    className: ""
+    # -- Snapshot Class to be used for the PG_WAL PersistentVolumeClaim
+    walClassName: ""
+    # -- Snapshot Class to be used for the tablespaces. defaults to the PGDATA Snapshot Class, if set
+    tablespaceClassName: {}
+    # -- Type of owner reference the snapshot should have. Available options are `none`, `cluster` and `backup`
+    snapshotOwnerReference: backup
+    # -- Define if the backup shall be online or offline
+    online: true
+    # -- Configuration for method volumeSnapshot
+    onlineConfiguration:
+      # -- If false, the function will return immediately after the backup is completed, without waiting for WAL to be archived
+      waitForArchive: true
+      # -- If set to true, an immediate checkpoint will be used, meaning PostgreSQL will complete the checkpoint as soon as possible
+      immediateCheckpoint: false
+
+  # -- Configuration for method barmanObjectStore
+  barmanObjectStore:
+    # -- Overrides the provider specific default endpoint. Defaults to:
+    # S3: https://s3.<region>.amazonaws.com"
+    # Leave empty if using the default S3 endpoint
+    endpointURL: ""
+    # -- Specifies a CA bundle to validate a privately signed certificate.
+    endpointCA:
+      # -- Creates a secret with the given value if true, otherwise uses an existing secret.
+      create: false
+      name: ""
+      key: ""
+      value: ""
+
+    # -- Overrides the provider specific default path. Defaults to:
+    # S3: s3://<bucket><path>
+    # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
+    # Google: gs://<bucket><path>
+    destinationPath: ""
+    # -- One of `s3`, `azure` or `google`
+    provider: s3
+    s3:
+      region: ""
+      bucket: ""
+      path: "/"
+      accessKey: ""
+      secretKey: ""
+      # -- Use the role based authentication without providing explicitly the keys
+      inheritFromIAMRole: false
+    azure:
+      path: "/"
+      connectionString: ""
+      storageAccount: ""
+      storageKey: ""
+      storageSasToken: ""
+      containerName: ""
+      serviceName: blob
+      inheritFromAzureAD: false
+    google:
+      path: "/"
+      bucket: ""
+      gkeEnvironment: false
+      applicationCredentials: ""
+    secret:
+      # -- Whether to create a secret for the backup credentials
+      create: true
+      # -- Name of the backup credentials secret
+      name: ""
+
+    wal:
+      # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
+      compression: gzip
+      # -- Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`.
+      encryption: AES256
+      # -- Number of WAL files to be archived or restored in parallel.
+      maxParallel: 1
+    data:
+      # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
+      compression: gzip
+      # -- Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`.
+      encryption: AES256
+      # -- Number of data files to be archived or restored in parallel.
+      jobs: 2
 
   scheduledBackups:
-    -
-      # -- Scheduled backup name
+    - # -- Scheduled backup name
       name: daily-backup
       # -- Schedule in cron format
       schedule: "0 0 0 * * *"
       # -- Backup owner reference
       backupOwnerReference: self
-      # -- Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`
+      # -- Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot` or `plugin`
       method: barmanObjectStore
-
-  # -- Retention policy for backups
-  retentionPolicy: "30d"
 
 imageCatalog:
   # -- Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored.
   create: true
   # -- List of images to be provisioned in an image catalog.
-  images: []
+  images:
+    []
     # - image: ghcr.io/your_repo/your_image:your_tag
     #   major: 16
 
 # -- List of PgBouncer poolers
-poolers: []
+poolers:
+  []
   # -
   #   # -- Pooler name
   #   name: rw
