@@ -83,6 +83,10 @@ spec:
   priorityClassName: mega-high
   primaryUpdateStrategy: supervised
   primaryUpdateMethod: restart
+  smartShutdownTimeout: 180
+  startDelay: 3600
+  stopDelay: 1800
+  switchoverDelay: 3600
   logLevel: warning
   managed:
     roles:

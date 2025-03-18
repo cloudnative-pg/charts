@@ -48,6 +48,12 @@ spec:
 
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
+
+  smartShutdownTimeout: {{ .Values.cluster.smartShutdownTimeout }}
+  startDelay: {{ .Values.cluster.startDelay }}
+  stopDelay: {{ .Values.cluster.stopDelay }}
+  switchoverDelay: {{ .Values.cluster.switchoverDelay }}
+
   logLevel: {{ .Values.cluster.logLevel }}
   {{- with .Values.cluster.certificates }}
   certificates:
