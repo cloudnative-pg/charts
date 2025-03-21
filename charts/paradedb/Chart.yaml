@@ -20,8 +20,8 @@ icon: https://raw.githubusercontent.com/paradedb/paradedb/main/docs/logo/light.s
 type: application
 
 # The Chart version, set in the publish CI workflow from GitHub Actions Variables
-# We default to v0.15.8 for testing and local development
-version: 0.15.8
+# We default to v0.15.9 for testing and local development
+version: 0.15.9
 
 sources:
   - https://github.com/paradedb/charts
