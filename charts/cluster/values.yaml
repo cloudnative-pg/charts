@@ -256,6 +256,18 @@ cluster:
   enableSuperuserAccess: true
   superuserSecret: ""
 
+  # -- The time in seconds that controls the window of time reserved for the smart shutdown of Postgres to complete. Make sure you reserve enough time for the operator to request a fast shutdown of Postgres (that is: stopDelay - smartShutdownTimeout).
+  smartShutdownTimeout: 180
+
+  # -- The time in seconds that is allowed for a PostgreSQL instance to successfully start up (default 3600). The startup probe failure threshold is derived from this value using the formula: ceiling(startDelay / 10).
+  startDelay: 3600
+
+  # The time in seconds that is allowed for a PostgreSQL instance to gracefully shutdown (default 1800)
+  stopDelay: 1800
+
+  # The time in seconds that is allowed for a primary PostgreSQL instance to gracefully shutdown during a switchover. Default value is 3600 seconds (1 hour).
+  switchoverDelay: 3600
+
   # -- Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes
   # See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets
   enablePDB: true
