@@ -5,6 +5,10 @@ on:
     branches-ignore:
       - 'gh-pages'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   deploy_operator:
     name: Deploy the operator in cluster-wide mode
