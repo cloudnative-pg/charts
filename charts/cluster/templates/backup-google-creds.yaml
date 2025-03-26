@@ -1,9 +1,9 @@
-{{- if and .Values.backups.enabled (eq .Values.backups.provider "google") .Values.backups.secret.create }}
+{{- if and .Values.backups.enabled (eq .Values.backups.method "barmanObjectStore") (eq .Values.backups.barmanObjectStore.provider "google") .Values.backups.barmanObjectStore.secret.create }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ default (printf "%s-backup-google-creds" (include "cluster.fullname" .)) .Values.backups.secret.name }}
+  name: {{ default (printf "%s-backup-google-creds" (include "cluster.fullname" .)) .Values.backups.barmanObjectStore.secret.name }}
   namespace: {{ include "cluster.namespace" . }}
 data:
-  APPLICATION_CREDENTIALS: {{ .Values.backups.google.applicationCredentials | b64enc | quote }}
+  APPLICATION_CREDENTIALS: {{ .Values.backups.barmanObjectStore.google.applicationCredentials | b64enc | quote }}
 {{- end }}
