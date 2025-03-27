@@ -1,4 +1,15 @@
 {{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts
+*/}}
+{{- define "cloudnative-pg.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Expand the name of the chart.
 */}}
 {{- define "cloudnative-pg.name" -}}
@@ -185,8 +196,11 @@ namespace scope or clusterwide
   resources:
   - backups
   - clusters
+  - databases
   - poolers
+  - publications
   - scheduledbackups
+  - subscriptions
   verbs:
   - create
   - delete
@@ -199,7 +213,10 @@ namespace scope or clusterwide
   - postgresql.cnpg.io
   resources:
   - backups/status
+  - databases/status
+  - publications/status
   - scheduledbackups/status
+  - subscriptions/status
   verbs:
   - get
   - patch

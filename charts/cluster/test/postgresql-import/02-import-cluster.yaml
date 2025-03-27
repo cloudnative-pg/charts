@@ -1,0 +1,32 @@
+type: postgresql
+mode: "recovery"
+recovery:
+  method: "import"
+  import:
+    type: "microservice"
+    databases: [ "mygooddb" ]
+    pgDumpExtraOptions:
+      - --table=mygood*
+    source:
+      host: "source-cluster-rw"
+      username: "postgres"
+      passwordSecret:
+        name: source-cluster-superuser
+        key: password
+      sslMode: "require"
+      sslKeySecret:
+        name: source-cluster-replication
+        key: tls.key
+      sslCertSecret:
+        name: source-cluster-replication
+        key: tls.crt
+
+cluster:
+  instances: 2
+  storage:
+    size: 256Mi
+  initdb:
+    database: mygooddb
+
+backups:
+  enabled: false
