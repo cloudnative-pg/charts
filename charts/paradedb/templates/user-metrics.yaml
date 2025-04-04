@@ -12,6 +12,12 @@ data:
     {{- range .Values.cluster.monitoring.customQueries }}
     {{ .name }}:
       query: {{ .query | quote }}
+      {{- with .target_databases }}
+      target_databases: {{ . | toJson }}
+      {{- end }}
+      {{- with .predicate_query }}
+      predicate_query: {{ . | quote }}
+      {{- end }}
       metrics:
         {{- .metrics | toYaml | nindent 8 }}
     {{- end }}
