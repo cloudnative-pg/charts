@@ -53,6 +53,7 @@ jobs:
           fi
           # Update appVersion to the GitHub Release version and version to the Helm Chart version
           sed -i "s/^[[:space:]]*paradedb: .*/  paradedb: \"$APP_VERSION\"/" values.yaml
+          sed -i "s/^appVersion: .*/appVersion: \"$APP_VERSION\"/" Chart.yaml
           sed -i "s/^version: .*/version: ${{ vars.CHART_VERSION_MAJOR }}.${{ vars.CHART_VERSION_MINOR }}.${{ vars.CHART_VERSION_PATCH }}/" Chart.yaml
           echo "values.yaml:"
           cat values.yaml
