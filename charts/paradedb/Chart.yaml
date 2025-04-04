@@ -18,10 +18,10 @@ name: paradedb
 description: Deploys and manages a ParadeDB CloudNativePG cluster and its associated resources.
 icon: https://raw.githubusercontent.com/paradedb/paradedb/main/docs/logo/light.svg
 type: application
-
 # The Chart version, set in the publish CI workflow from GitHub Actions Variables
+version: 0.0.0-generated-in-ci
 # We default to v0.15.13 for testing and local development
-version: 0.15.13
+appVersion: 0.15.13
 
 sources:
   - https://github.com/paradedb/charts
