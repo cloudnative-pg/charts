@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -100,7 +100,7 @@ below. Refer to the table for the full list of parameters and place the configur
 Recovery
 --------
 
-There is a separate document outlining the recovery procedure here: **[Recovery](docs/Recovery.md)**
+There is a separate document outlining the recovery procedure here: **[Recovery](docs/recovery.md)**
 
 Examples
 --------
@@ -173,6 +173,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
 | cluster.postgresGID | int | `-1` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `-1` | The UID of the postgres user inside the image, defaults to 26 |
+| cluster.postgresql.ldap | object | `{}` | PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration) |
 | cluster.postgresql.parameters | object | `{}` | PostgreSQL configuration options (postgresql.conf) |
 | cluster.postgresql.pg_hba | list | `[]` | PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file) |
 | cluster.postgresql.pg_ident | list | `[]` | PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file) |
@@ -185,6 +186,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.resources | object | `{}` | Resources requirements of every generated Pod. Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information. We strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS. See: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/ |
 | cluster.roles | list | `[]` | This feature enables declarative management of existing roles, as well as the creation of new roles if they are not already present in the database. See: https://cloudnative-pg.io/documentation/current/declarative_role_management/ |
 | cluster.serviceAccountTemplate | object | `{}` | Configure the metadata of the generated service account |
+| cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/1.24/service_management/ |
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
@@ -216,7 +218,29 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.google.bucket | string | `""` |  |
 | recovery.google.gkeEnvironment | bool | `false` |  |
 | recovery.google.path | string | `"/"` |  |
-| recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. # TODO |
+| recovery.import.databases | list | `[]` | Databases to import |
+| recovery.import.pgDumpExtraOptions | list | `[]` | List of custom options to pass to the `pg_dump` command. IMPORTANT: Use these options with caution and at your own risk, as the operator does not validate their content. Be aware that certain options may conflict with the operator's intended functionality or design. |
+| recovery.import.pgRestoreExtraOptions | list | `[]` | List of custom options to pass to the `pg_restore` command. IMPORTANT: Use these options with caution and at your own risk, as the operator does not validate their content. Be aware that certain options may conflict with the operator's intended functionality or design. |
+| recovery.import.postImportApplicationSQL | list | `[]` | List of SQL queries to be executed as a superuser in the application database right after is imported. To be used with extreme care. Only available in microservice type. |
+| recovery.import.roles | list | `[]` | Roles to import |
+| recovery.import.schemaOnly | bool | `false` | When set to true, only the pre-data and post-data sections of pg_restore are invoked, avoiding data import. |
+| recovery.import.source.database | string | `""` |  |
+| recovery.import.source.host | string | `""` |  |
+| recovery.import.source.passwordSecret.create | bool | `false` | Whether to create a secret for the password |
+| recovery.import.source.passwordSecret.key | string | `"password"` | The key in the secret containing the password |
+| recovery.import.source.passwordSecret.name | string | `""` | Name of the secret containing the password |
+| recovery.import.source.passwordSecret.value | string | `""` | The password value to use when creating the secret |
+| recovery.import.source.port | int | `5432` |  |
+| recovery.import.source.sslCertSecret.key | string | `""` |  |
+| recovery.import.source.sslCertSecret.name | string | `""` |  |
+| recovery.import.source.sslKeySecret.key | string | `""` |  |
+| recovery.import.source.sslKeySecret.name | string | `""` |  |
+| recovery.import.source.sslMode | string | `"verify-full"` |  |
+| recovery.import.source.sslRootCertSecret.key | string | `""` |  |
+| recovery.import.source.sslRootCertSecret.name | string | `""` |  |
+| recovery.import.source.username | string | `""` |  |
+| recovery.import.type | string | `"microservice"` | One of `microservice` or `monolith.` See: https://cloudnative-pg.io/documentation/current/database_import/#how-it-works |
+| recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. * `import` - Import one or more databases from an existing Postgres cluster. |
 | recovery.pgBaseBackup.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
 | recovery.pgBaseBackup.owner | string | `""` | Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch |
 | recovery.pgBaseBackup.secret | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
@@ -282,5 +306,3 @@ TODO
 * IAM Role for S3 Service Account
 * Automatic provisioning of a Alert Manager configuration
 
-----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)
