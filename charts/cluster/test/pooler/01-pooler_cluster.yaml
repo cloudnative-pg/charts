@@ -1,3 +1,4 @@
+type: postgresql
 mode: standalone
 cluster:
   instances: 2
@@ -6,6 +7,11 @@ cluster:
     storageClass: standard
 backups:
   enabled: false
-pooler:
-  enabled: true
-  instances: 2
+poolers:
+  - name: rw
+    type: rw
+    instances: 2
+    poolMode: transaction
+  - name: ro
+    type: ro
+    instances: 2

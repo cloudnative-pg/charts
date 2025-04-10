@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ default (printf "%s-backup-google-creds" (include "cluster.fullname" .)) .Values.backups.secret.name }}
+  namespace: {{ include "cluster.namespace" . }}
 data:
   APPLICATION_CREDENTIALS: {{ .Values.backups.google.applicationCredentials | b64enc | quote }}
 {{- end }}

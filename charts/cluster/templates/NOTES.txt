@@ -1,3 +1,12 @@
+{{- if .Values.pooler -}}
+  {{ fail ".Values.pooler has been deprecated. Use .Values.poolers instead." }}
+{{- end -}}
+
+{{- if gt (omit .Values.cluster.postgresql "parameters" "synchronous" "pg_hba" "pg_ident" "syncReplicaElectionConstraint" "shared_preload_libraries" "ldap" "promotionTimeout" "enableAlterSystem" | keys | len) 0 -}}
+  {{ fail ".Values.cluster.postgresql has been deprecated. Use .Values.cluster.postgresql.parameters instead." }}
+{{- end -}}
+
+
 {{ if .Release.IsInstall }}
 The {{ include "cluster.color-info" (include "cluster.fullname" .) }} has been installed successfully.
 {{ else if .Release.IsUpgrade }}
@@ -37,7 +46,7 @@ Configuration
   {{- $redundancyColor = "ok" -}}
 {{- end }}
 
-{{ $scheduledBackups := (first .Values.backups.scheduledBackups).name }}
+{{- $scheduledBackups := (first .Values.backups.scheduledBackups).name -}}
 {{- range (rest .Values.backups.scheduledBackups) -}}
   {{ $scheduledBackups = printf "%s, %s" $scheduledBackups .name }}
 {{- end -}}
@@ -54,12 +63,19 @@ Configuration
   {{- end -}}
 {{- end -}}
 
+{{- $image := (include "cluster.image" .) | fromYaml -}}
+{{- if $image.imageCatalogRef -}}
+  {{- $image = printf "%s: %s(%s)" $image.imageCatalogRef.kind $image.imageCatalogRef.name (include "cluster.postgresqlMajor" .) -}}
+{{- else if $image.imageName -}}
+  {{- $image = $image.imageName -}}
+{{- end }}
+
 ╭───────────────────┬──────────────────────────────────────────────────────────╮
 │ Configuration     │ Value                                                    │
 ┝━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
 │ Cluster mode      │ {{ printf "%-56s" $mode }} │
 │ Type              │ {{ printf "%-56s" .Values.type }} │
-│ Image             │ {{ include "cluster.color-info" (printf "%-56s" (include "cluster.imageName" .)) }} │
+│ Image             │ {{ include "cluster.color-info" (printf "%-56s" $image) }} │
 {{- if eq .Values.mode "recovery" }}
 │ Source            │ {{ printf "%-56s" $source }} │
 {{- end }}
@@ -71,7 +87,7 @@ Configuration
 {{- end }}
 │ Storage           │ {{ printf "%-56s" .Values.cluster.storage.size }} │
 │ Storage Class     │ {{ printf "%-56s" (default "Default" .Values.cluster.storage.storageClass) }} │
-│ PGBouncer         │ {{ printf "%-56s" (ternary "Enabled" "Disabled" .Values.pooler.enabled) }} │
+│ PGBouncer         │ {{ printf "%-56s" (ternary "Enabled" "Disabled" (gt (len .Values.poolers) 0)) }} │
 │ Monitoring        │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.cluster.monitoring.enabled)) (printf "%-56s" (ternary "Enabled" "Disabled" .Values.cluster.monitoring.enabled)) }} │
 ╰───────────────────┴──────────────────────────────────────────────────────────╯
 

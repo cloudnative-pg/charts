@@ -1,21 +1,49 @@
-{{ if .Values.pooler.enabled }}
+{{- range .Values.poolers }}
+---
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: {{ include "cluster.fullname" . }}-pooler-rw
+  name: {{ include "cluster.fullname" $  }}-pooler-{{ .name }}
+  namespace: {{ include "cluster.namespace" $ }}
 spec:
   cluster:
-    name: {{ include "cluster.fullname" . }}
-  instances: {{ .Values.pooler.instances }}
-  type: {{ .Values.pooler.type }}
+    name: {{ include "cluster.fullname" $ }}
+  instances: {{ .instances }}
+  type: {{ default "rw" .type }}
   pgbouncer:
-    poolMode: {{ .Values.pooler.poolMode }}
+    poolMode: {{ default "session" .poolMode }}
+    {{- with .authQuerySecret }}
+    authQuerySecret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .authQuery }}
+    authQuery:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .parameters }}
     parameters:
-      {{- .Values.pooler.parameters | toYaml | nindent 6 }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .pg_hba }}
+    pg_hba:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{ with .monitoring }}
   monitoring:
-    enablePodMonitor: {{ and .Values.pooler.monitoring.enabled .Values.pooler.monitoring.podMonitor.enabled }}
-  {{- with .Values.pooler.template }}
+  {{- if not (empty .podMonitor) }}
+    enablePodMonitor: {{ and .enabled .podMonitor.enabled }}
+    {{- with .podMonitor.relabelings }}
+    podMonitorRelabelings:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+    {{- with .podMonitor.metricRelabelings }}
+    podMonitorMetricRelabelings:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
+  {{- end }}
+  {{- end }}
+  {{- with .template }}
   template:
     {{- . | toYaml | nindent 4 }}
   {{- end }}
-{{ end }}
+{{- end }}

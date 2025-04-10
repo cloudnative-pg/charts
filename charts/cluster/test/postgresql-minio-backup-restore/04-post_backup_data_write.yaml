@@ -49,7 +49,7 @@ spec:
         command: ['sh', '-c']
         args:
          - |
-           apk --no-cache add postgresql-client kubectl
+           apk --no-cache add postgresql-client kubectl coreutils
            DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
            DATE_NO_BAD_TABLE=$(date --rfc-3339=ns)
            sleep 30

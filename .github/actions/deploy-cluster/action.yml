@@ -1,0 +1,27 @@
+name: Deploy a CNPG Cluster
+description: Deploys a CNPG Cluster
+inputs:
+  namespace:
+    description: 'The name of the namespace where the Cluster will be deployed'
+    required: false
+    default: 'default'
+runs:
+  using: composite
+  steps:
+    - name: Deploy a cluster
+      shell: bash
+      env:
+        NAMESPACE: ${{ inputs.namespace }}
+      run: |
+        cat <<EOF | kubectl apply -f -
+        # Example of PostgreSQL cluster
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: cluster-example
+          namespace: $NAMESPACE
+        spec:
+          instances: 3
+          storage:
+            size: 1Gi
+        EOF
