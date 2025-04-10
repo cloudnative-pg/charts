@@ -23,7 +23,9 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
 
 1. Take note of the current value of the release: see `.version` in `charts/cloudnative-pg/Chart.yaml`
     ```bash
-    yq -r '.version' charts/cloudnative-pg/Chart.yaml
+    OLD_VERSION=$(yq -r '.version' charts/cloudnative-pg/Chart.yaml)
+    OLD_CNPG_VERSION=$(yq -r '.appVersion' charts/cloudnative-pg/Chart.yaml)
+    echo $OLD_VERSION
     ```
 2. Decide which version to create, depending on the kind of jump of the CloudNativePG release, following semver
     semantics. For this document, let's call it `X.Y.Z`
@@ -39,36 +41,41 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
     sed -i -E "s/^version: \"([0-9]+.?)+\"/version: \"$NEW_VERSION\"/" charts/cloudnative-pg/Chart.yaml
     ```
 5. Update everything else as required, e.g. if releasing due to a new `cloudnative-pg` version being released, you might
-    want to update the following:
-    1. `.appVersion` in the [Chart.yaml](./charts/cloudnative-pg/Chart.yaml) file
-    2. [crds.yaml](./charts/cloudnative-pg/templates/crds/crds.yaml), which can be built using
+    want to:
+    1. Find the latest `cloudnative-pg` version by running:
+        ```bash
+        NEW_CNPG_VERSION=$(curl  "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/tags" | jq -r '.[0].name | ltrimstr("v")')
+        echo $NEW_CNPG_VERSION
+        ```
+    2. Update `.appVersion` in the [Chart.yaml](./charts/cloudnative-pg/Chart.yaml) file
+        ```bash
+        sed -i -E "s/^appVersion: \"([0-9]+.?)+\"/appVersion: \"$NEW_CNPG_VERSION\"/" charts/cloudnative-pg/Chart.yaml
+        ```
+    3. Update [crds.yaml](./charts/cloudnative-pg/templates/crds/crds.yaml), which can be built using
         [kustomize](https://kustomize.io/) from the `cloudnative-pg` repo using kustomize
         [remoteBuild](https://github.com/kubernetes-sigs/kustomize/blob/master/examples/remoteBuild.md)
         running:
+
+        Verify the version is correct. Edit it if incorrect, then run:
         ```bash
-        VERSION=v1.16.0
-        kustomize build https://github.com/cloudnative-pg/cloudnative-pg/tree/release-1.16/config/helm/\?ref=v1.16.0
+        echo '{{- if .Values.crds.create }}' > ./charts/cloudnative-pg/templates/crds/crds.yaml
+        kustomize build https://github.com/cloudnative-pg/cloudnative-pg/config/helm/\?ref\=v$NEW_CNPG_VERSION >> ./charts/cloudnative-pg/templates/crds/crds.yaml
+        echo '{{- end }}' >> ./charts/cloudnative-pg/templates/crds/crds.yaml
         ```
-        It might be easier to run `kustomize build config/helm` from the `cloudnative-pg` repo, with the desired release
-        branch checked out, and copy the result to `./charts/cloudnative-pg/templates/crds/crds.yaml`.
-    3. NOTE: please keep the guards for `.Values.crds.create`, i.e.
-        `{{- if .Values.crds.create }}` and `{{- end }}` after you copy the CRD into `templates/crds/crds.yaml`.
     4. To update the files in the [templates](./charts/cloudnative-pg/templates) directory, you can diff the previous
         CNPG release yaml against the new one, to find what should be updated (e.g.
         ```bash
-        OLD_VERSION=1.15.0
-        NEW_VERSION=1.15.1
         vimdiff \
-            "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/releases/cnpg-${OLD_VERSION}.yaml" \
-            "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/releases/cnpg-${NEW_VERSION}.yaml"
+            "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v${OLD_CNPG_VERSION}/cnpg-${OLD_CNPG_VERSION}.yaml" \
+            "https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v${NEW_CNPG_VERSION}/cnpg-${NEW_CNPG_VERSION}.yaml"
        ```
        Or from the `cloudnative-pg` repo, with the desired release branch checked out:
        ```bash
        vimdiff releases/cnpg-1.15.0.yaml releases/cnpg-1.15.1.yaml
        ```
-   5. Update [values.yaml](./charts/cloudnative-pg/values.yaml) if needed
-   6. NOTE: updating `values.yaml` just for the CNPG  version may not be necessary, as the value should default to the
-       `appVersion` in `Chart.yaml`
+    5. Update [values.yaml](./charts/cloudnative-pg/values.yaml) if needed
+    6. NOTE: updating `values.yaml` just for the CNPG  version may not be necessary, as the value should default to the
+        `appVersion` in `Chart.yaml`
 6. Run `make docs schema` to regenerate the docs and the values schema in case it is needed
     ```bash
     make docs schema

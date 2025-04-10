@@ -1,3 +1,4 @@
+type: postgresql
 mode: standalone
 cluster:
   instances: 2
@@ -9,6 +10,7 @@ cluster:
     size: 256Mi
     storageClass: standard
   walStorage:
+    enabled: true
     size: 256Mi
     storageClass: standard
   postgresUID: 1001
@@ -42,6 +44,19 @@ cluster:
     clientCASecret: client-ca-secret
   enableSuperuserAccess: true
   superuserSecret: supersecret-secret
+  enablePDB: false
+  services:
+    additional:
+      - selectorType: rw
+        serviceTemplate:
+          metadata:
+            name: "test-lb"
+            labels:
+              test-label: "true"
+            annotations:
+              test-annotation: "true"
+          spec:
+            type: LoadBalancer
   roles:
      - name: dante
        ensure: present
@@ -51,7 +66,26 @@ cluster:
          - pg_monitor
          - pg_signal_backend
   postgresql:
-    max_connections: "42"
+    ldap:
+      server: 'openldap.default.svc.cluster.local'
+      bindSearchAuth:
+        baseDN: 'ou=org,dc=example,dc=com'
+        bindDN: 'cn=admin,dc=example,dc=com'
+        bindPassword:
+          name: 'ldapBindPassword'
+          key: 'data'
+        searchAttribute: 'uid'
+    parameters:
+      max_connections: "42"
+    pg_hba:
+      - host all 1.2.3.4/32 trust
+    pg_ident:
+      - mymap   /^(.*)@mydomain\.com$      \1
+    shared_preload_libraries:
+      - pgaudit
+    synchronous:
+      method: any
+      number: 1
   initdb:
     database: mydb
     owner: dante
@@ -67,6 +101,10 @@ cluster:
     foo: bar
   annotations:
     foo: bar
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        my-annotation: my-service-account
 
 backups:
   enabled: false

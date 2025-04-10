@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: timescale-test
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-test
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: timescale-cluster-app
+                key: uri
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+          - |
+            apk --no-cache add postgresql-client
+            test "$(psql $DB_URI -t -c 'SELECT EXISTS (SELECT FROM pg_extension WHERE extname = '\''timescaledb'\'')' --csv -q 2>/dev/null)" = "t"

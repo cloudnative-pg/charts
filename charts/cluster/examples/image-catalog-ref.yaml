@@ -1,0 +1,12 @@
+type: postgresql
+mode: standalone
+version:
+  major: "16"
+  timescaledb: "2.15"
+cluster:
+  instances: 1
+  imageCatalogRef:
+    kind: ImageCatalog
+    name: my-image-catalog
+backups:
+  enabled: false
