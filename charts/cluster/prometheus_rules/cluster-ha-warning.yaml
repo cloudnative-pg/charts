@@ -15,7 +15,7 @@ annotations:
     In this case you may want to silence it.
   runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterHAWarning.md
 expr: |
-  max by (job) (cnpg_pg_replication_streaming_replicas{namespace="{{ .namespace }}"} - cnpg_pg_replication_is_wal_receiver_up{namespace="{{ .namespace }}"}) < 2
+  max by (job) (cnpg_pg_replication_streaming_replicas{job="{{ .job }}"} - cnpg_pg_replication_is_wal_receiver_up{job="{{ .job }}"}) < 2
 for: 5m
 labels:
   severity: warning
