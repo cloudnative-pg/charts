@@ -364,6 +364,9 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
+  console:
+    # -- Deploys a console StatefulSet to run long-running commands against the cluster.
+    enabled: false
 
 backups:
   # -- You need to configure backups manually, so backups are disabled by default.

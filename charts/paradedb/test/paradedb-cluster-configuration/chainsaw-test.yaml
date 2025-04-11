@@ -10,6 +10,7 @@ spec:
     apply: 1s
     assert: 5s
     cleanup: 30s
+    exec: 30s
   steps:
     - name: Install the non-default configuration cluster
       try:

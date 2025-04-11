@@ -132,3 +132,8 @@ spec:
     metadata:
       annotations:
         my-annotation: my-service-account
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: non-default-configuration-paradedb-console

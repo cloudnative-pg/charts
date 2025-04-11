@@ -1,0 +1,58 @@
+{{- if .Values.cluster.console.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "cluster.fullname" $  }}-console
+  namespace: {{ include "cluster.namespace" $ }}
+  {{- with .Values.cluster.annotations }}
+  annotations:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  labels:
+    {{- include "cluster.labels" . | nindent 4 }}
+    {{- with .Values.cluster.additionalLabels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+    app.kubernetes.io/component: console
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "cluster.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: console
+  serviceName: console
+  volumeClaimTemplates:
+    - metadata:
+        name: console-home
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+  template:
+    metadata:
+      {{- with .Values.cluster.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "cluster.labels" . | nindent 8 }}
+        {{- with .Values.cluster.additionalLabels }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        app.kubernetes.io/component: console
+    spec:
+      terminationGracePeriodSeconds: 2
+      containers:
+        - name: console
+          image: ubuntu:latest
+          command: [ "sh" ]
+          args:
+            - "-c"
+            - |
+              apt update && apt install -y postgresql-client screen curl wget jq unzip gzip nano util-linux
+              sleep infinity
+          volumeMounts:
+            - name: console-home
+              mountPath: /root
+{{- end }}

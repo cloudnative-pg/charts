@@ -34,6 +34,11 @@ Get a list of all base backups:
 Connect to the cluster's primary instance:
 {{ include "cluster.color-info" (printf "kubectl --namespace %s exec --stdin --tty services/%s-rw -- bash" .Release.Namespace (include "cluster.fullname" .)) }}
 
+{{- if .Values.cluster.console.enabled}}
+Cluster console pod for long-running tasks:
+{{ include "cluster.color-info" (printf "kubectl --namespace %s exec --stdin --tty statefulsets/%s-console -- bash" .Release.Namespace (include "cluster.fullname" .)) }}
+{{- end }}
+
 Configuration
 -------------
 
