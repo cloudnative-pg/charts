@@ -94,7 +94,7 @@ If a custom imageName is available, use it, otherwise use the defaults based on 
 
 {{/*
 Cluster Image
-If imageCatalogRef defined, use it, otherwice calculate ordinary imageName.
+If imageCatalogRef defined, use it, otherwise calculate ordinary imageName.
 */}}
 {{- define "cluster.image" }}
 {{- if .Values.cluster.imageCatalogRef.name }}

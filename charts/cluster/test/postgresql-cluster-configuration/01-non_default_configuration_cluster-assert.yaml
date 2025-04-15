@@ -13,6 +13,15 @@ spec:
   postgresGID: 1002
   instances: 2
   postgresql:
+    ldap:
+      server: 'openldap.default.svc.cluster.local'
+      bindSearchAuth:
+        baseDN: 'ou=org,dc=example,dc=com'
+        bindDN: 'cn=admin,dc=example,dc=com'
+        bindPassword:
+          name: 'ldapBindPassword'
+          key: 'data'
+        searchAttribute: 'uid'
     parameters:
       max_connections: "42"
     pg_hba:
@@ -84,6 +93,18 @@ spec:
         inRoles:
           - pg_monitor
           - pg_signal_backend
+    services:
+      additional:
+        - selectorType: rw
+          serviceTemplate:
+            metadata:
+              name: "test-lb"
+              labels:
+                test-label: "true"
+              annotations:
+                test-annotation: "true"
+            spec:
+              type: LoadBalancer
   serviceAccountTemplate:
     metadata:
       annotations:

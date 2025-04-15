@@ -77,6 +77,10 @@ spec:
     pg_ident:
       {{- toYaml . | nindent 6 }}
     {{- end }}
+    {{- with .Values.cluster.postgresql.ldap  }}
+    ldap:
+      {{- toYaml . | nindent 6 }}
+    {{- end}}
     {{- with .Values.cluster.postgresql.synchronous }}
     synchronous:
       {{- toYaml . | nindent 6 }}
@@ -86,8 +90,12 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{- end }}
 
-  {{- if not (empty .Values.cluster.roles) }}
+  {{- if not (and (empty .Values.cluster.roles) (empty .Values.cluster.services)) }}
   managed:
+    {{- with .Values.cluster.services }}
+    services:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
     {{- with .Values.cluster.roles }}
     roles:
       {{- toYaml . | nindent 6 }}
