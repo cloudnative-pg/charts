@@ -85,7 +85,7 @@ config:
   # -- The maximum number of concurrent reconciles. Defaults to 10.
   maxConcurrentReconciles: 10
 
-# -- Additinal arguments to be added to the operator's args list.
+# -- Additional arguments to be added to the operator's args list.
 additionalArgs: []
 
 # -- Array containing extra environment variables which can be templated.
@@ -163,6 +163,9 @@ resources: {}
 
 # -- Nodeselector for the operator to be installed.
 nodeSelector: {}
+
+# -- Topology Spread Constraints for the operator to be installed.
+topologySpreadConstraints: []
 
 # -- Tolerations for the operator to be installed.
 tolerations: []
