@@ -1,0 +1,16 @@
+type: postgresql
+mode: recovery
+
+recovery:
+  method: backup
+  backupName: "post-init-backup"
+  database: my-special-database
+  owner: me
+  s3:
+    bucket: "mybucket"
+    accessKey: "minio"
+    secretKey: "minio123"
+    region: "local"
+
+backups:
+  enabled: false
