@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: recovery-object-store-database-owner-cluster
+  name: recovery-object-store-database-owner-paradedb
 spec:
  bootstrap:
     recovery:
