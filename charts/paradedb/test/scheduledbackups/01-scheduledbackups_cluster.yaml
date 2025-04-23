@@ -2,7 +2,7 @@ type: paradedb
 mode: standalone
 version:
   major: "17"
-  paradedb: "0.15.16"
+  paradedb: "0.15.17"
 cluster:
   instances: 1
   storage:
