@@ -2,5 +2,10 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: paradedb-ncc-1701-d
+spec:
+  postgresql:
+    parameters:
+      hot_standby_feedback: "on"
+      cron.database_name: "postgres"
 status:
   readyInstances: 2
