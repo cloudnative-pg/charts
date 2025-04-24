@@ -11,8 +11,8 @@ cluster:
     - name: paradedb-enterprise-registry-cred
   postgresql:
     parameters:
-      hot_standby_feedback: "on"
-      cron.database_name: "postgres"
+      cron.database_name: postgres
+      hot_standby_feedback: "1"
 
 backups:
   enabled: false
