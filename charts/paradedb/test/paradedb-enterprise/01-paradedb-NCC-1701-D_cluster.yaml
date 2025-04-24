@@ -9,6 +9,10 @@ cluster:
     size: 256Mi
   imagePullSecrets:
     - name: paradedb-enterprise-registry-cred
+  postgresql:
+    parameters:
+      hot_standby_feedback: "on"
+      cron.database_name: "postgres"
 
 backups:
   enabled: false
