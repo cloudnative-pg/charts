@@ -86,11 +86,14 @@ spec:
     synchronous:
       {{- toYaml . | nindent 6 }}
     {{ end }}
-    {{- with .Values.cluster.postgresql.parameters }}
     parameters:
-      {{- toYaml . | nindent 6 }}
+      {{ if eq .Values.type "paradedb-enterprise" }}
+      hot_standby_feedback: "1"
+      {{ end }}
+      {{- with .Values.cluster.postgresql.parameters }}
+      {{ toYaml . | nindent 6 }}
+      {{ end }}
       cron.database_name: postgres
-    {{ end }}
 
   {{- if not (and (empty .Values.cluster.roles) (empty .Values.cluster.services)) }}
   managed:
