@@ -90,6 +90,9 @@ spec:
     parameters:
       {{- toYaml . | nindent 6 }}
       cron.database_name: postgres
+      {{- if (eq .Values.type "paradedb-enterprise") }}
+      hot_standby_feedback: on
+      {{ end }}
     {{ end }}
 
   {{- if not (and (empty .Values.cluster.roles) (empty .Values.cluster.services)) }}
