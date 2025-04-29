@@ -6,6 +6,11 @@
   {{ fail ".Values.cluster.postgresql has been deprecated. Use .Values.cluster.postgresql.parameters instead." }}
 {{- end -}}
 
+{{/* Parentheses are needed to avoid nil pointer errors */}}
+{{- if (((.Values.recovery).pitrTarget).time) -}}
+  {{/* We don't fail here, otherwise that would be a breaking change */}}
+  DEPRECATION NOTICE: .Values.recovery.pitrTarget.time has been deprecated. Use .Values.recovery.recoveryTarget.targetTime instead.
+{{- end -}}
 
 {{ if .Release.IsInstall }}
 The {{ include "cluster.color-info" (include "cluster.fullname" .) }} has been installed successfully.

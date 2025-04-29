@@ -120,7 +120,7 @@ spec:
                 --install \
                 --namespace $NAMESPACE \
                 --values ./09-recovery_backup_pitr_cluster.yaml \
-                --set recovery.pitrTarget.time="$DATE_NO_BAD_TABLE" \
+                --set recovery.recoveryTarget.targetTime="$DATE_NO_BAD_TABLE" \
                 --wait \
                 recovery-backup-pitr ../../
         - assert:

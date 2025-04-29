@@ -37,7 +37,14 @@ recovery:
   # * `import` - Import one or more databases from an existing Postgres cluster.
   method: backup
 
+  ##
+  # -- Recovery target:
+  # It is passed directly to the CR. For example, for point in time recovery,
+  # specify `targetTime`.
+  recoveryTarget: {}
+
   ## -- Point in time recovery target. Specify one of the following:
+  # DEPRECATED: Use `recoveryTarget` instead.
   pitrTarget:
     # -- Time in RFC3339 format
     time: ""

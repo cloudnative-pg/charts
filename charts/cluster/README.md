@@ -260,7 +260,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.pgBaseBackup.source.sslRootCertSecret.key | string | `""` |  |
 | recovery.pgBaseBackup.source.sslRootCertSecret.name | string | `""` |  |
 | recovery.pgBaseBackup.source.username | string | `""` |  |
-| recovery.pitrTarget.time | string | `""` | Time in RFC3339 format |
+| recovery.recoveryTarget | object | `{}` | Recovery target, e.g. targetTime. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-RecoveryTarget |
 | recovery.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | recovery.s3.accessKey | string | `""` |  |
 | recovery.s3.bucket | string | `""` |  |

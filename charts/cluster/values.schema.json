@@ -629,6 +629,9 @@
                         }
                     }
                 },
+                "recoveryTarget": {
+                    "type": "object"
+                },
                 "pitrTarget": {
                     "type": "object",
                     "properties": {
