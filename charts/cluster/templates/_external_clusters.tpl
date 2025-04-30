@@ -13,6 +13,19 @@ externalClusters:
       {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
   {{- end }}
+{{- else if eq .Values.mode "replica" }}
+  - name: originCluster
+    {{- if eq .Values.replica.origin.type "object_store" }}
+    barmanObjectStore:
+      {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.replica.origin.objectStore "secretPrefix" "origin" -}}
+      {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 -}}
+    {{- else if eq .Values.replica.origin.type "pg_basebackup" }}
+      {{- toYaml .Values.replica.origin.pg_basebackup | nindent 4 }}
+    {{- else if eq .Values.replica.origin.type "" }}
+      {{ fail "Origin type unspecified!" }}
+    {{- else -}}
+      {{ fail (printf "Invalid origin type: \"%s\"!" .Values.replica.origin.type) }}
+    {{- end }}
 {{- else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}

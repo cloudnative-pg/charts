@@ -84,7 +84,23 @@ bootstrap:
     owner: {{ . }}
     {{- end }}
   {{- end }}
+{{- else if eq .Values.mode "replica" }}
 {{- else }}
   {{ fail "Invalid cluster mode!" }}
+{{- end }}
+{{- if eq .Values.mode "replica" }}
+replica:
+  enabled: true
+  self: {{ default (include "cluster.fullname" .) .Values.replica.name }}
+  {{ with .Values.replica.primary }}
+  primary: {{ . }}
+  {{- end }}
+  {{ with .Values.replica.promotionToken }}
+  promotionToken: {{ . }}
+  {{- end }}
+  {{ with .Values.replica.minApplyDelay }}
+  minApplyDelay: {{ . }}
+  {{- end }}
+  source: originCluster
 {{- end }}
 {{- end }}
