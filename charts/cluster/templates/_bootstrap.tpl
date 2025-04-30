@@ -1,6 +1,6 @@
 {{- define "cluster.bootstrap" -}}
-{{- if eq .Values.mode "standalone" }}
 bootstrap:
+{{- if eq .Values.mode "standalone" }}
   initdb:
     {{- with .Values.cluster.initdb }}
         {{- with (omit . "postInitApplicationSQL" "owner" "import") }}
@@ -27,8 +27,7 @@ bootstrap:
       {{- end -}}
     {{- end }}
 {{- else if eq .Values.mode "recovery" -}}
-bootstrap:
-{{- if eq .Values.recovery.method "pg_basebackup" }}
+  {{- if eq .Values.recovery.method "pg_basebackup" }}
   pg_basebackup:
     source: pgBaseBackupSource
     {{ with .Values.recovery.pgBaseBackup.database }}
@@ -41,11 +40,7 @@ bootstrap:
     secret:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-
-externalClusters:
-  {{- include "cluster.externalSourceCluster" (list "pgBaseBackupSource" .Values.recovery.pgBaseBackup.source) | nindent 2 }}
-
-{{- else if eq .Values.recovery.method "import" }}
+  {{- else if eq .Values.recovery.method "import" }}
   initdb:
     {{- with .Values.cluster.initdb }}
         {{- with (omit . "owner" "import") }}
@@ -76,11 +71,7 @@ externalClusters:
       pgRestoreExtraOptions:
         {{- . | toYaml | nindent 6 }}
       {{- end }}
-
-externalClusters:
-  {{- include "cluster.externalSourceCluster" (list "importSource" .Values.recovery.import.source) | nindent 2 }}
-
-{{- else }}
+  {{- else }}
   recovery:
     {{- with .Values.recovery.pitrTarget.time }}
     recoveryTarget:
@@ -92,21 +83,8 @@ externalClusters:
     {{ with .Values.recovery.owner }}
     owner: {{ . }}
     {{- end }}
-    {{- if eq .Values.recovery.method "backup" }}
-    backup:
-      name: {{ .Values.recovery.backupName }}
-    {{- else if eq .Values.recovery.method "object_store" }}
-    source: objectStoreRecoveryCluster
-
-externalClusters:
-  - name: objectStoreRecoveryCluster
-    barmanObjectStore:
-      serverName: {{ .Values.recovery.clusterName }}
-      {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
-      {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
-    {{- end }}
-{{- end }}
-{{-  else }}
+  {{- end }}
+{{- else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}
 {{- end }}
