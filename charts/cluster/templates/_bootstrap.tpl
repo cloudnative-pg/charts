@@ -91,7 +91,12 @@ externalClusters:
       name: {{ .Values.recovery.backupName }}
     {{- else if eq .Values.recovery.method "object_store" }}
     source: objectStoreRecoveryCluster
-    
+    {{ with .Values.recovery.database }}
+    database: {{ . }}
+    {{- end }}
+    {{ with .Values.recovery.owner }}
+    owner: {{ . }}
+    {{- end }}
 
 externalClusters:
   - name: objectStoreRecoveryCluster

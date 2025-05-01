@@ -1,0 +1,11 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: recovery-backup-database-owner-cluster
+spec:
+ bootstrap:
+    recovery:
+      backup:
+        name: post-init-backup
+      database: my-special-database
+      owner: me
