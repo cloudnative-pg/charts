@@ -86,18 +86,17 @@ externalClusters:
     recoveryTarget:
       targetTime: {{ . }}
     {{- end }}
-    {{- if eq .Values.recovery.method "backup" }}
-    backup:
-      name: {{ .Values.recovery.backupName }}
-    {{- else if eq .Values.recovery.method "object_store" }}
-    source: objectStoreRecoveryCluster
-    {{- end }}
     {{ with .Values.recovery.database }}
     database: {{ . }}
     {{- end }}
     {{ with .Values.recovery.owner }}
     owner: {{ . }}
     {{- end }}
+    {{- if eq .Values.recovery.method "backup" }}
+    backup:
+      name: {{ .Values.recovery.backupName }}
+    {{- else if eq .Values.recovery.method "object_store" }}
+    source: objectStoreRecoveryCluster
 
 externalClusters:
   - name: objectStoreRecoveryCluster
@@ -105,6 +104,7 @@ externalClusters:
       serverName: {{ .Values.recovery.clusterName }}
       {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
+    {{- end }}
 {{- end }}
 {{-  else }}
   {{ fail "Invalid cluster mode!" }}
