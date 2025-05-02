@@ -112,7 +112,7 @@ bootstrap:
       {{- toYaml . | nindent 6 }}
     {{- end }}
   {{- else }}
-    {{ fail "Invalid replica bootsrap mode!" }}
+    {{ fail "Invalid replica bootstrap mode!" }}
   {{- end }}
 {{- else }}
   {{ fail "Invalid cluster mode!" }}
