@@ -85,13 +85,45 @@ bootstrap:
     {{- end }}
   {{- end }}
 {{- else if eq .Values.mode "replica" }}
+  {{- if eq .Values.replica.bootstrap.type "pg_basebackup" }}
+  pg_basebackup:
+    source: originCluster
+    {{ with .Values.replica.bootstrap.database }}
+    database: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.owner }}
+    owner: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.secret }}
+    secret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- else if eq .Values.replica.bootstrap.type "object_store" }}
+  recovery:
+    source: originClusterObjectStore
+    {{ with .Values.replica.bootstrap.database }}
+    database: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.owner }}
+    owner: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.secret }}
+    secret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- else }}
+    {{ fail "Invalid replica bootsrap mode!" }}
+  {{- end }}
 {{- else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}
 {{- if eq .Values.mode "replica" }}
 replica:
   enabled: true
-  self: {{ default (include "cluster.fullname" .) .Values.replica.name }}
+  source: {{ ternary "originCluster" "pgBaseBackupSource" (eq .Values.replica.bootstrap.type "pg_basebackup") }}
+  {{ with .Values.replica.self }}
+  self: {{ . }}
+  {{- end }}
   {{ with .Values.replica.primary }}
   primary: {{ . }}
   {{- end }}
@@ -101,6 +133,5 @@ replica:
   {{ with .Values.replica.minApplyDelay }}
   minApplyDelay: {{ . }}
   {{- end }}
-  source: originCluster
 {{- end }}
 {{- end }}
