@@ -120,7 +120,7 @@ bootstrap:
 {{- if eq .Values.mode "replica" }}
 replica:
   enabled: true
-  source: {{ ternary "originCluster" "pgBaseBackupSource" (eq .Values.replica.bootstrap.type "pg_basebackup") }}
+  source: {{ ternary "originCluster" "originClusterObjectStore" (eq .Values.replica.bootstrap.type "pg_basebackup") }}
   {{ with .Values.replica.self }}
   self: {{ . }}
   {{- end }}
