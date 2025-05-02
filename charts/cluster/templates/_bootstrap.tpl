@@ -83,6 +83,12 @@ bootstrap:
     {{ with .Values.recovery.owner }}
     owner: {{ . }}
     {{- end }}
+    {{- if eq .Values.recovery.method "backup" }}
+    backup:
+      name: {{ .Values.recovery.backupName }}
+    {{- else if eq .Values.recovery.method "object_store" }}
+    source: objectStoreRecoveryCluster
+    {{- end }}
   {{- end }}
 {{- else if eq .Values.mode "replica" }}
   {{- if eq .Values.replica.bootstrap.type "pg_basebackup" }}
