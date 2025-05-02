@@ -63,17 +63,17 @@ spec:
               helm upgrade \
                 --install \
                 --namespace $NAMESPACE \
-                --values ./05-replica_cluster.yaml \
+                --values ./04-replica_cluster.yaml \
                 --wait \
                 replica ../../
         - assert:
-            file: ./05-replica_cluster-assert.yaml
+            file: ./04-replica_cluster-assert.yaml
     - name: Verify the data on the replica cluster exists
       try:
         - apply:
-            file: 06-data_test.yaml
+            file: 05-data_test.yaml
         - assert:
-            file: 06-data_test-assert.yaml
+            file: 05-data_test-assert.yaml
     - name: Create a replica cluster from object store
       try:
         - script:
@@ -81,17 +81,17 @@ spec:
               helm upgrade \
                 --install \
                 --namespace $NAMESPACE \
-                --values ./07-replica_object_store_cluster.yaml \
+                --values ./06-replica_object_store_cluster.yaml \
                 --wait \
                 replica-object-store ../../
         - assert:
-            file: ./07-replica_object_store_cluster-assert.yaml
+            file: ./06-replica_object_store_cluster-assert.yaml
     - name: Verify the data on the object store replica cluster exists
       try:
         - apply:
-            file: 08-data_test.yaml
+            file: 07-data_test.yaml
         - assert:
-            file: 08-data_test-assert.yaml
+            file: 07-data_test-assert.yaml
     - name: Cleanup
       try:
         - script:
