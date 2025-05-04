@@ -14,12 +14,12 @@ externalClusters:
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
   {{- end }}
 {{- else if eq .Values.mode "replica" }}
-  {{- if has "object_store" (list .Values.replica.bootstrap.type .Values.replica.replication.type) }}
+  {{- if not (empty .Values.replica.origin.objectStore.provider) }}
   - name: originClusterObjectStore
     barmanObjectStore:
       {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.replica.origin.objectStore "secretPrefix" "origin" -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 -}}
-  {{- else if has "pg_basebackup" (list .Values.replica.bootstrap.type .Values.replica.replication.type) }}
+  {{- else if not (empty .Values.replica.origin.pg_basebackup.host) }}
     {{- include "cluster.externalSourceCluster" (list "originCluster" .Values.replica.origin.pg_basebackup) | nindent 2 }}
   {{- end }}
 {{- else }}

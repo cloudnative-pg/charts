@@ -9,9 +9,7 @@ cluster:
 replica:
   name: "off-site-backup1"
   bootstrap:
-    type: object_store
-  replication:
-    type: object_store
+    source: object_store
   origin:
     objectStore:
       provider: s3

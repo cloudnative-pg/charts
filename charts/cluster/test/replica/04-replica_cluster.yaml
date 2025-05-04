@@ -8,9 +8,7 @@ cluster:
 
 replica:
   bootstrap:
-    type: pg_basebackup
-  replication:
-    type: pg_basebackup
+    source: pg_basebackup
   origin:
     pg_basebackup:
       host: "source-cluster-rw"

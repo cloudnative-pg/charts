@@ -91,7 +91,7 @@ bootstrap:
     {{- end }}
   {{- end }}
 {{- else if eq .Values.mode "replica" }}
-  {{- if eq .Values.replica.bootstrap.type "pg_basebackup" }}
+  {{- if eq .Values.replica.bootstrap.source "pg_basebackup" }}
   pg_basebackup:
     source: originCluster
     {{ with .Values.replica.bootstrap.database }}
@@ -104,7 +104,7 @@ bootstrap:
     secret:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-  {{- else if eq .Values.replica.bootstrap.type "object_store" }}
+  {{- else if eq .Values.replica.bootstrap.source "object_store" }}
   recovery:
     source: originClusterObjectStore
     {{ with .Values.replica.bootstrap.database }}
@@ -126,7 +126,7 @@ bootstrap:
 {{- if eq .Values.mode "replica" }}
 replica:
   enabled: true
-  source: {{ ternary "originCluster" "originClusterObjectStore" (eq .Values.replica.bootstrap.type "pg_basebackup") }}
+  source: {{ ternary "originCluster" "originClusterObjectStore" (eq .Values.replica.bootstrap.source "pg_basebackup") }}
   {{ with .Values.replica.self }}
   self: {{ . }}
   {{- end }}

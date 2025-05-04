@@ -691,7 +691,7 @@
                         "secret": {
                             "type": "string"
                         },
-                        "type": {
+                        "source": {
                             "type": "string"
                         }
                     }
@@ -867,14 +867,6 @@
                 },
                 "promotionToken": {
                     "type": "string"
-                },
-                "replication": {
-                    "type": "object",
-                    "properties": {
-                        "type": {
-                            "type": "string"
-                        }
-                    }
                 },
                 "self": {
                     "type": "string"

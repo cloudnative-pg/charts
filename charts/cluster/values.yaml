@@ -457,16 +457,13 @@ replica:
   minApplyDelay: ""
   bootstrap:
     # --  One of `object_store` or `pg_basebackup`. Method to use for bootstrap.
-    type: ""
+    source: ""
     # -- Name of the database used by the application. Default: `app`.
     database: app
     # -- Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
     secret: ""
     # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
     owner: ""
-  replication:
-    # --  One of `object_store` or `pg_basebackup`. Method to use for replication.
-    type: ""
   origin:
     objectStore:
       # -- The original cluster name when used in backups. Also known as serverName.
@@ -477,7 +474,7 @@ replica:
       # Google: gs://<bucket><path>
       destinationPath: ""
       # -- One of `s3`, `azure` or `google`
-      provider: s3
+      provider: ""
       s3:
         region: ""
         bucket: ""
