@@ -1,6 +1,6 @@
 ##
-# This test sets up a CNPG cluster with MinIO backups and then restores the cluster from the backup using backup,
-# object store, and object store with PITR replica.
+# This test create a source CNPG cluster with MinIO backups and then creates a replica cluster bootstrapped with
+# pg_basebackup, object store, and a hybrid one, using both.
 apiVersion: chainsaw.kyverno.io/v1alpha1
 kind: Test
 metadata:
