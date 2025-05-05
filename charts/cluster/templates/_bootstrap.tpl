@@ -106,7 +106,7 @@ bootstrap:
     {{- end }}
   {{- else if eq .Values.replica.bootstrap.source "object_store" }}
   recovery:
-    source: originClusterObjectStore
+    source: originCluster
     {{ with .Values.replica.bootstrap.database }}
     database: {{ . }}
     {{- end }}
@@ -126,7 +126,7 @@ bootstrap:
 {{- if eq .Values.mode "replica" }}
 replica:
   enabled: true
-  source: {{ ternary "originCluster" "originClusterObjectStore" (eq .Values.replica.bootstrap.source "pg_basebackup") }}
+  source: originCluster
   {{ with .Values.replica.self }}
   self: {{ . }}
   {{- end }}
