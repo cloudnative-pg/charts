@@ -4,10 +4,10 @@ externalClusters:
 {{- else if eq .Values.mode "recovery" }}
   {{- if eq .Values.recovery.method "pg_basebackup" }}
   - name: pgBaseBackupSource
-     {{- include "cluster.externalSourceCluster" .Values.recovery.pgBaseBackup.source | nindent 4 }}
+    {{- include "cluster.externalSourceCluster" .Values.recovery.pgBaseBackup.source | nindent 4 }}
   {{- else if eq .Values.recovery.method "import" }}
   - name: importSource
-     {{- include "cluster.externalSourceCluster" .Values.recovery.import.source | nindent 4 }}
+    {{- include "cluster.externalSourceCluster" .Values.recovery.import.source | nindent 4 }}
   {{- else if eq .Values.recovery.method "object_store" }}
   - name: objectStoreRecoveryCluster
     barmanObjectStore:
@@ -30,3 +30,8 @@ externalClusters:
   {{ fail "Invalid cluster mode!" }}
 {{- end }}
 {{ end }}
+{{- if .Values.cluster.externalClusters }}
+{{- range .Values.cluster.externalClusters }}
+  - {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}

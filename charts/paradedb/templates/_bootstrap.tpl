@@ -100,15 +100,6 @@ bootstrap:
       pgRestoreExtraOptions:
         {{- . | toYaml | nindent 6 }}
       {{- end }}
-
-externalClusters:
-  {{- include "cluster.externalSourceCluster" (list "importSource" .Values.recovery.import.source) | nindent 2 }}
-  {{- if .Values.cluster.externalClusters }}
-  {{- range .Values.cluster.externalClusters }}
-  - {{- toYaml . | nindent 4 }}
-  {{- end }}
-  {{- end }}
-
 {{- else }}
   recovery:
     {{- with .Values.recovery.pitrTarget.time }}
