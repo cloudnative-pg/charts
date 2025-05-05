@@ -8,7 +8,7 @@ metadata:
 spec:
   timeouts:
     apply: 1s
-    assert: 2m
+    assert: 3m
     cleanup: 1m
   steps:
     - name: Clear the MinIO bucket
@@ -55,7 +55,13 @@ spec:
     - name: Create a backup
       try:
         - apply:
+            file: ./03-backup.yaml
+        - assert:
+            file: ./03-backup_running-assert.yaml
+        - apply:
             file: ./03-checkpoint.yaml
+        - assert:
+            file: ./03-backup_completed-assert.yaml
     - name: Create a replica cluster from pg_basebackup
       try:
         - script:
@@ -92,6 +98,24 @@ spec:
             file: 07-data_test.yaml
         - assert:
             file: 07-data_test-assert.yaml
+    - name: Create a hybrid replica cluster
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./08-replica_hybrid_cluster.yaml \
+                --wait \
+                replica-hybrid ../../
+        - assert:
+            file: ./08-replica_hybrid_cluster-assert.yaml
+    - name: Verify the data on the hybrid replica cluster exists
+      try:
+        - apply:
+            file: 09-data_test.yaml
+        - assert:
+            file: 09-data_test-assert.yaml
     - name: Cleanup
       try:
         - script:
@@ -99,3 +123,4 @@ spec:
               helm uninstall --namespace $NAMESPACE source
               helm uninstall --namespace $NAMESPACE replica
               helm uninstall --namespace $NAMESPACE replica-object-store
+              helm uninstall --namespace $NAMESPACE replica-hybrid

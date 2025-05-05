@@ -11,8 +11,17 @@ replica:
   bootstrap:
     source: object_store
   origin:
+    pg_basebackup:
+      host: "source-cluster-rw"
+      username: "streaming_replica"
+      sslMode: "require"
+      sslKeySecret:
+        name: source-cluster-replication
+        key: tls.key
+      sslCertSecret:
+        name: source-cluster-replication
+        key: tls.crt
     objectStore:
-      clusterName: source-cluster
       provider: s3
       endpointURL: "https://minio.minio.svc.cluster.local"
       endpointCA:

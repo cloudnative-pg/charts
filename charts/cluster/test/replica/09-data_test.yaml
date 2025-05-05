@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: data-test-replica-object-store
+  name: data-test-replica-hybrid
 spec:
   template:
     spec:
@@ -12,12 +12,12 @@ spec:
           - name: DB_URI
             valueFrom:
               secretKeyRef:
-                name: replica-object-store-cluster-superuser
+                name: replica-hybrid-cluster-superuser
                 key: uri
           - name: REPLICA_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: replica-object-store-cluster-superuser
+                name: replica-hybrid-cluster-superuser
                 key: password
           - name: SOURCE_PASSWORD
             valueFrom:

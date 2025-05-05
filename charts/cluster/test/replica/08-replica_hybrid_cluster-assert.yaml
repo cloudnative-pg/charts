@@ -1,8 +1,11 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: replica-object-store-cluster
+  name: replica-hybrid-cluster
 spec:
+  bootstrap:
+    recovery:
+      source: originCluster
   replica:
     enabled: true
     source: originCluster
