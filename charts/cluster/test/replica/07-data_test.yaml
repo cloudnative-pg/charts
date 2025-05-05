@@ -30,5 +30,6 @@ spec:
          - |
            apk --no-cache add postgresql-client
            DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
+           DB_URI=$(echo $DB_URI | sed "s|$REPLICA_PASSWORD|$SOURCE_PASSWORD|" )
            echo "DB_URI: $DB_URI"
            test "$(psql "${DB_URI}mygooddb" -t -c 'SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $$mygoodtable$$)' --csv -q)" = "t"
