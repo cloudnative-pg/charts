@@ -7,7 +7,6 @@ cluster:
     size: 256Mi
 
 replica:
-  name: "off-site-backup1"
   bootstrap:
     source: object_store
   origin:
