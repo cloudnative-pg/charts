@@ -1,6 +1,6 @@
 {{- define "cluster.bootstrap" -}}
-{{- if eq .Values.mode "standalone" }}
 bootstrap:
+{{- if eq .Values.mode "standalone" }}
   initdb:
     {{- with .Values.cluster.initdb }}
         {{- with (omit . "postInitSQL" "postInitApplicationSQL" "postInitTemplateSQL" "owner" "import") }}
@@ -56,8 +56,7 @@ bootstrap:
       {{- end -}}
     {{- end }}
 {{- else if eq .Values.mode "recovery" -}}
-bootstrap:
-{{- if eq .Values.recovery.method "pg_basebackup" }}
+  {{- if eq .Values.recovery.method "pg_basebackup" }}
   pg_basebackup:
     source: pgBaseBackupSource
     {{ with .Values.recovery.pgBaseBackup.database }}
@@ -70,11 +69,7 @@ bootstrap:
     secret:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-
-externalClusters:
-  {{- include "cluster.externalSourceCluster" (list "pgBaseBackupSource" .Values.recovery.pgBaseBackup.source) | nindent 2 }}
-
-{{- else if eq .Values.recovery.method "import" }}
+  {{- else if eq .Values.recovery.method "import" }}
   initdb:
     {{- with .Values.cluster.initdb }}
         {{- with (omit . "owner" "import") }}
@@ -105,15 +100,6 @@ externalClusters:
       pgRestoreExtraOptions:
         {{- . | toYaml | nindent 6 }}
       {{- end }}
-
-externalClusters:
-  {{- include "cluster.externalSourceCluster" (list "importSource" .Values.recovery.import.source) | nindent 2 }}
-  {{- if .Values.cluster.externalClusters }}
-  {{- range .Values.cluster.externalClusters }}
-  - {{- toYaml . | nindent 4 }}
-  {{- end }}
-  {{- end }}
-
 {{- else }}
   recovery:
     {{- with .Values.recovery.pitrTarget.time }}
@@ -131,16 +117,56 @@ externalClusters:
       name: {{ .Values.recovery.backupName }}
     {{- else if eq .Values.recovery.method "object_store" }}
     source: objectStoreRecoveryCluster
-
-externalClusters:
-  - name: objectStoreRecoveryCluster
-    barmanObjectStore:
-      serverName: {{ .Values.recovery.clusterName }}
-      {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
-      {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
     {{- end }}
-{{- end }}
-{{-  else }}
+  {{- end }}
+{{- else if eq .Values.mode "replica" }}
+  {{- if eq .Values.replica.bootstrap.source "pg_basebackup" }}
+  pg_basebackup:
+    source: originCluster
+    {{ with .Values.replica.bootstrap.database }}
+    database: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.owner }}
+    owner: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.secret }}
+    secret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- else if eq .Values.replica.bootstrap.source "object_store" }}
+  recovery:
+    source: originCluster
+    {{ with .Values.replica.bootstrap.database }}
+    database: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.owner }}
+    owner: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.secret }}
+    secret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- else }}
+    {{ fail "Invalid replica bootstrap mode!" }}
+  {{- end }}
+{{- else }}
   {{ fail "Invalid cluster mode!" }}
+{{- end }}
+{{- if eq .Values.mode "replica" }}
+replica:
+  enabled: true
+  source: originCluster
+  {{ with .Values.replica.self }}
+  self: {{ . }}
+  {{- end }}
+  {{ with .Values.replica.primary }}
+  primary: {{ . }}
+  {{- end }}
+  {{ with .Values.replica.promotionToken }}
+  promotionToken: {{ . }}
+  {{- end }}
+  {{ with .Values.replica.minApplyDelay }}
+  minApplyDelay: {{ . }}
+  {{- end }}
 {{- end }}
 {{- end }}

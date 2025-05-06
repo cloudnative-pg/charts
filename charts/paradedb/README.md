@@ -243,7 +243,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | fullnameOverride | string | `""` | Override the full name of the chart |
 | imageCatalog.create | bool | `true` | Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored. |
 | imageCatalog.images | list | `[]` | List of images to be provisioned in an image catalog. |
-| mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - default mode. Creates new or updates an existing CNPG cluster. * `replica` - Creates a replica cluster from an existing CNPG cluster. # TODO * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup. |
+| mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - default mode. Creates new or updates an existing CNPG cluster. * `replica` - Creates a replica cluster from an existing CNPG cluster. * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup. |
 | nameOverride | string | `""` | Override the name of the chart |
 | namespaceOverride | string | `""` | Override the namespace of the chart |
 | poolers | list | `[]` | List of PgBouncer poolers |
@@ -317,6 +317,50 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.s3.secretKey | string | `""` |  |
 | recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | recovery.secret.name | string | `""` | Name of the backup credentials secret |
+| replica.bootstrap.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
+| replica.bootstrap.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
+| replica.bootstrap.secret | string | `""` | Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch |
+| replica.bootstrap.source | string | `""` | One of `object_store` or `pg_basebackup`. Method to use for bootstrap. |
+| replica.minApplyDelay | string | `""` | When replica mode is enabled, this parameter allows you to replay transactions only when the system time is at least the configured time past the commit time. This provides an opportunity to correct data loss errors. Note that when this parameter is set, a promotion token cannot be used. |
+| replica.origin.objectStore.azure.connectionString | string | `""` |  |
+| replica.origin.objectStore.azure.containerName | string | `""` |  |
+| replica.origin.objectStore.azure.inheritFromAzureAD | bool | `false` |  |
+| replica.origin.objectStore.azure.path | string | `"/"` |  |
+| replica.origin.objectStore.azure.serviceName | string | `"blob"` |  |
+| replica.origin.objectStore.azure.storageAccount | string | `""` |  |
+| replica.origin.objectStore.azure.storageKey | string | `""` |  |
+| replica.origin.objectStore.azure.storageSasToken | string | `""` |  |
+| replica.origin.objectStore.clusterName | string | `""` | The original cluster name when used in backups. Also known as serverName. |
+| replica.origin.objectStore.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| replica.origin.objectStore.google.applicationCredentials | string | `""` |  |
+| replica.origin.objectStore.google.bucket | string | `""` |  |
+| replica.origin.objectStore.google.gkeEnvironment | bool | `false` |  |
+| replica.origin.objectStore.google.path | string | `"/"` |  |
+| replica.origin.objectStore.provider | string | `""` | One of `s3`, `azure` or `google` |
+| replica.origin.objectStore.s3.accessKey | string | `""` |  |
+| replica.origin.objectStore.s3.bucket | string | `""` |  |
+| replica.origin.objectStore.s3.inheritFromIAMRole | bool | `false` | Use the role based authentication without providing explicitly the keys |
+| replica.origin.objectStore.s3.path | string | `"/"` |  |
+| replica.origin.objectStore.s3.region | string | `""` |  |
+| replica.origin.objectStore.s3.secretKey | string | `""` |  |
+| replica.origin.objectStore.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
+| replica.origin.objectStore.secret.name | string | `""` | Name of the backup credentials secret |
+| replica.origin.pg_basebackup.database | string | `"app"` |  |
+| replica.origin.pg_basebackup.host | string | `""` |  |
+| replica.origin.pg_basebackup.passwordSecret.key | string | `""` |  |
+| replica.origin.pg_basebackup.passwordSecret.name | string | `""` |  |
+| replica.origin.pg_basebackup.port | int | `5432` |  |
+| replica.origin.pg_basebackup.sslCertSecret.key | string | `""` |  |
+| replica.origin.pg_basebackup.sslCertSecret.name | string | `""` |  |
+| replica.origin.pg_basebackup.sslKeySecret.key | string | `""` |  |
+| replica.origin.pg_basebackup.sslKeySecret.name | string | `""` |  |
+| replica.origin.pg_basebackup.sslMode | string | `"verify-full"` |  |
+| replica.origin.pg_basebackup.sslRootCertSecret.key | string | `""` |  |
+| replica.origin.pg_basebackup.sslRootCertSecret.name | string | `""` |  |
+| replica.origin.pg_basebackup.username | string | `""` |  |
+| replica.primary | string | `""` | Primary defines which Cluster is defined to be the primary in the distributed PostgreSQL cluster, based on the topology specified in externalClusters |
+| replica.promotionToken | string | `""` | A demotion token generated by an external cluster used to check if the promotion requirements are met. |
+| replica.self | string | `""` | Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default. |
 | type | string | `"paradedb"` | Type of the CNPG database. Available types: * `paradedb` * `paradedb-enterprise` |
 | version.paradedb | string | `"0.15.18"` | We default to v0.15.18 for testing and local development |
 | version.postgresql | string | `"17"` | PostgreSQL major version to use |
