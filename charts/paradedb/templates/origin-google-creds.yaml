@@ -1,0 +1,9 @@
+{{- if and (eq .Values.mode "replica" ) (eq .Values.replica.origin.objectStore.provider "google") .Values.replica.origin.objectStore.secret.create }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ default (printf "%s-origin-google-creds" (include "cluster.fullname" .)) .Values.recovery.secret.name }}
+  namespace: {{ include "cluster.namespace" . }}
+data:
+  APPLICATION_CREDENTIALS: {{ .Values.recovery.google.applicationCredentials | b64enc | quote }}
+{{- end }}

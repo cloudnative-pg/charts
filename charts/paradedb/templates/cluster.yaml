@@ -139,4 +139,5 @@ spec:
     {{ end }}
     {{- end }}
   {{ include "cluster.bootstrap" . | nindent 2 }}
+  {{ include "cluster.externalClusters" . | nindent 2 }}
   {{ include "cluster.backup" . | nindent 2 }}
