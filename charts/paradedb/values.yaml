@@ -469,6 +469,13 @@ replica:
       # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
       # Google: gs://<bucket><path>
       destinationPath: ""
+      # -- Specifies a CA bundle to validate a privately signed certificate.
+      endpointCA:
+        # -- Creates a secret with the given value if true, otherwise uses an existing secret.
+        create: false
+        name: ""
+        key: ""
+        value: ""
       # -- One of `s3`, `azure` or `google`
       provider: ""
       s3:
