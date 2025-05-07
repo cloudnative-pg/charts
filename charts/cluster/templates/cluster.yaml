@@ -138,6 +138,6 @@ spec:
   {{-  with .Values.cluster.projectedVolumeTemplate.sources }}
   projectedVolumeTemplate:
     sources:
-      {{- . | toYaml | nindent 8 -}}
+      {{- . | toYaml | nindent 6 -}}
   {{ end }}
 
