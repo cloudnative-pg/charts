@@ -403,6 +403,9 @@
                 "clusterName": {
                     "type": "string"
                 },
+                "database": {
+                    "type": "string"
+                },
                 "destinationPath": {
                     "type": "string"
                 },
@@ -540,6 +543,9 @@
                     }
                 },
                 "method": {
+                    "type": "string"
+                },
+                "owner": {
                     "type": "string"
                 },
                 "pgBaseBackup": {

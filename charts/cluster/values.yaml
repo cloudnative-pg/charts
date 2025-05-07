@@ -49,6 +49,10 @@ recovery:
   ##
   # -- The original cluster name when used in backups. Also known as serverName.
   clusterName: ""
+  # -- Name of the database used by the application. Default: `app`.
+  database: app
+  # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
+  owner: ""
   # -- Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
   # Leave empty if using the default S3 endpoint
@@ -99,9 +103,9 @@ recovery:
   pgBaseBackup:
     # -- Name of the database used by the application. Default: `app`.
     database: app
-    # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
-    secret: ""
     # -- Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch
+    secret: ""
+    # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
     owner: ""
     source:
       host: ""
