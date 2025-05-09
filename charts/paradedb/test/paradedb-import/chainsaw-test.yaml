@@ -1,9 +1,10 @@
 ##
-# This is a test that provisions a regular (non CNPG) PostgreSQL cluster and attempts to perform a pg_basebackup recovery.
+# This is a test that provisions a regular (non CNPG) PostgreSQL cluster and attempts to perform a
+# pg_basebackup recovery into a ParadeDB cluster.
 apiVersion: chainsaw.kyverno.io/v1alpha1
 kind: Test
 metadata:
-  name: postgresql-import
+  name: paradedb-import
 spec:
   timeouts:
     apply: 1s
