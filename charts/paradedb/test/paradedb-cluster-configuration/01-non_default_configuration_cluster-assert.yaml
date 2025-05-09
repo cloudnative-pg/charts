@@ -30,8 +30,9 @@ spec:
     pg_ident:
       - mymap   /^(.*)@mydomain\.com$      \1
     shared_preload_libraries:
-      - pgaudit
+      - pg_search
       - pg_cron
+      - pgaudit
     synchronous:
       method: any
       number: 1
@@ -42,8 +43,24 @@ spec:
       secret:
         name: mydb-secret
       postInitApplicationSQL:
+        - CREATE EXTENSION IF NOT EXISTS pg_search;
+        - CREATE EXTENSION IF NOT EXISTS pg_ivm;
+        - CREATE EXTENSION IF NOT EXISTS vector;
+        - CREATE EXTENSION IF NOT EXISTS postgis;
+        - CREATE EXTENSION IF NOT EXISTS postgis_topology;
+        - CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+        - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
+        - ALTER DATABASE "mydb" SET search_path TO public,paradedb;
         - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
       postInitTemplateSQL:
+        - CREATE EXTENSION IF NOT EXISTS pg_search;
+        - CREATE EXTENSION IF NOT EXISTS pg_ivm;
+        - CREATE EXTENSION IF NOT EXISTS vector;
+        - CREATE EXTENSION IF NOT EXISTS postgis;
+        - CREATE EXTENSION IF NOT EXISTS postgis_topology;
+        - CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+        - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
+        - ALTER DATABASE template1 SET search_path TO public,paradedb;
         - CREATE TABLE mytable (id serial PRIMARY KEY, name VARCHAR(255));
       postInitSQL:
         - CREATE EXTENSION IF NOT EXISTS pg_cron;
@@ -93,9 +110,11 @@ spec:
         ensure: present
         comment: Dante Alighieri
         login: true
+        inherit: true
         inRoles:
           - pg_monitor
           - pg_signal_backend
+        connectionLimit: -1
     services:
       additional:
         - selectorType: rw
@@ -108,6 +127,7 @@ spec:
                 test-annotation: "true"
             spec:
               type: LoadBalancer
+          updateStrategy: patch
   serviceAccountTemplate:
     metadata:
       annotations:

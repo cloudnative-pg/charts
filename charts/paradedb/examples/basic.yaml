@@ -1,4 +1,4 @@
-type: postgresql
+type: paradedb
 mode: standalone
 version:
   postgresql: "17"

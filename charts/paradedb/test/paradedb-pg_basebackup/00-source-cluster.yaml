@@ -1,4 +1,4 @@
-type: postgresql
+type: paradedb
 mode: "standalone"
 cluster:
   instances: 1
