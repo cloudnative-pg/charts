@@ -27,3 +27,5 @@ spec:
            echo "mybadtable doesn't exist"
            test "$(psql "${DB_URI}mygooddb" -t -c 'SELECT COUNT(*) FROM mygoodtable' --csv -q 2>/dev/null)" = "0"
            echo "mygoodtable is empty"
+           test "$(psql "${DB_URI}mygooddb" -t -c 'SELECT EXISTS (SELECT FROM pg_extension WHERE extname = $$pg_search$$)' --csv -q 2>/dev/null)" = "t"
+           echo "pg_search extension is installed"
