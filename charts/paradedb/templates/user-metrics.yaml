@@ -16,7 +16,7 @@ data:
       target_databases: {{ . | toJson }}
       {{- end }}
       {{- with .predicate_query }}
-      predicate_query: {{ . | quote }}
+      predicate_query: {{ tpl . $ | quote }}
       {{- end }}
       metrics:
         {{- .metrics | toYaml | nindent 8 }}

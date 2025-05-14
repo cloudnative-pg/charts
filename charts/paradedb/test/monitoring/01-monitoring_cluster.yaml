@@ -12,7 +12,7 @@ cluster:
       - name: "pg_cache_hit_ratio"
         query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
         target_databases: ["*"]
-        predicate_query: "SELECT 1;"
+        predicate_query: "SELECT '{{ .Values.type }}';"
         metrics:
           - datname:
               usage: "LABEL"
