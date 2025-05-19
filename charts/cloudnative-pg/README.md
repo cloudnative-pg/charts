@@ -77,7 +77,7 @@ CloudNativePG Operator Helm Chart
 | serviceAccount.create | bool | `true` | Specifies whether the service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template. |
 | tolerations | list | `[]` | Tolerations for the operator to be installed. |
-| topologySpreadConstraints | list | `[]` | [Topology Spread Constraints](https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/) for the operator to be installed. |
+| topologySpreadConstraints | list | `[]` | Topology Spread Constraints for the operator to be installed. |
 | updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy For example:  type: RollingUpdate  rollingUpdate:    maxSurge: 25%    maxUnavailable: 25% |
 | webhook | object | `{"livenessProbe":{"initialDelaySeconds":3},"mutating":{"create":true,"failurePolicy":"Fail"},"port":9443,"readinessProbe":{"initialDelaySeconds":3},"startupProbe":{"failureThreshold":6,"periodSeconds":5},"validating":{"create":true,"failurePolicy":"Fail"}}` | The webhook configuration. |
 
