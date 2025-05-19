@@ -308,6 +308,33 @@
                     }
                 }
             }
+        },
+        "clusterImageCatalogs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "images"],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "images": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["major", "image"],
+                    "properties": {
+                      "major": {
+                        "type": ["string", "integer"]
+                      },
+                      "image": {
+                        "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
     }
 }

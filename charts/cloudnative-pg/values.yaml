@@ -199,6 +199,8 @@ monitoring:
     # -- Annotations that ConfigMaps can have to get configured in Grafana.
     annotations: {}
 
+clusterImageCatalogs: []
+
 # Default monitoring queries
 monitoringQueriesConfigMap:
   # -- The name of the default monitoring configmap.
