@@ -90,6 +90,27 @@ webhooks:
     - scheduledbackups
   sideEffects: None
 - admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: {{ .Values.service.name }}
+      namespace: {{ include "cloudnative-pg.namespace" . }}
+      path: /validate-postgresql-cnpg-io-v1-database
+      port: {{ .Values.service.port }}
+  failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
+  name: vdatabase.cnpg.io
+  rules:
+  - apiGroups:
+    - postgresql.cnpg.io
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - databases
+  sideEffects: None
+- admissionReviewVersions:
     - v1
   clientConfig:
     service:
