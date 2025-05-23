@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: recovery-object-store-database-owner-cluster
+spec:
+ bootstrap:
+    recovery:
+      source: objectStoreRecoveryCluster
+      database: my-special-database
+      owner: me
