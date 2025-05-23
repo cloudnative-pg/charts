@@ -1,4 +1,15 @@
 {{/*
+Allow the release namespace to be overridden for multi-namespace deployments in combined charts
+*/}}
+{{- define "cluster.namespace" -}}
+  {{- if .Values.namespaceOverride -}}
+    {{- .Values.namespaceOverride -}}
+  {{- else -}}
+    {{- .Release.Namespace -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Expand the name of the chart.
 */}}
 {{- define "cluster.name" -}}
@@ -83,7 +94,7 @@ If a custom imageName is available, use it, otherwise use the defaults based on 
 
 {{/*
 Cluster Image
-If imageCatalogRef defined, use it, otherwice calculate ordinary imageName.
+If imageCatalogRef defined, use it, otherwise calculate ordinary imageName.
 */}}
 {{- define "cluster.image" }}
 {{- if .Values.cluster.imageCatalogRef.name }}

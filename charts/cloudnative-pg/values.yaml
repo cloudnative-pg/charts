@@ -28,9 +28,19 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+namespaceOverride: ""
 
 hostNetwork: false
 dnsPolicy: ""
+
+# -- Update strategy for the operator.
+# ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+# For example:
+#  type: RollingUpdate
+#  rollingUpdate:
+#    maxSurge: 25%
+#    maxUnavailable: 25%
+updateStrategy: {}
 
 crds:
   # -- Specifies whether the CRDs should be created when installing the chart.
@@ -49,8 +59,11 @@ webhook:
     initialDelaySeconds: 3
   readinessProbe:
     initialDelaySeconds: 3
+  startupProbe:
+    failureThreshold: 6
+    periodSeconds: 5
 
-# -- Operator configuration.
+# Operator configuration.
 config:
   # -- Specifies whether the secret should be created.
   create: true
@@ -58,6 +71,10 @@ config:
   name: cnpg-controller-manager-config
   # -- Specifies whether it should be stored in a secret, instead of a configmap.
   secret: false
+  # -- This option determines if the operator is responsible for observing
+  # events across the entire Kubernetes cluster or if its focus should be
+  # narrowed down to the specific namespace within which it has been deployed.
+  clusterWide: true
   # -- The content of the configmap/secret, see
   # https://cloudnative-pg.io/documentation/current/operator_conf/#available-options
   # for all the available options.
@@ -65,8 +82,10 @@ config:
   # INHERITED_ANNOTATIONS: categories
   # INHERITED_LABELS: environment, workload, app
   # WATCH_NAMESPACE: namespace-a,namespace-b
+  # -- The maximum number of concurrent reconciles. Defaults to 10.
+  maxConcurrentReconciles: 10
 
-# -- Additinal arguments to be added to the operator's args list.
+# -- Additional arguments to be added to the operator's args list.
 additionalArgs: []
 
 # -- Array containing extra environment variables which can be templated.
@@ -126,6 +145,10 @@ service:
   # and can not be configured
   name: cnpg-webhook-service
   port: 443
+  # -- Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services)
+  ipFamilyPolicy: ""
+  # -- Sets the families that should be supported and the order in which they should be applied to ClusterIP as well. Can be IPv4 and/or IPv6.
+  ipFamilies: []
 
 resources: {}
   # If you want to specify resources, uncomment the following
@@ -140,6 +163,9 @@ resources: {}
 
 # -- Nodeselector for the operator to be installed.
 nodeSelector: {}
+
+# -- Topology Spread Constraints for the operator to be installed.
+topologySpreadConstraints: []
 
 # -- Tolerations for the operator to be installed.
 tolerations: []
@@ -626,3 +652,35 @@ monitoringQueriesConfigMap:
         - setting:
             usage: "GAUGE"
             description: "Setting value"
+
+    pg_extensions:
+      query: |
+        SELECT
+         current_database() as datname,
+         name as extname,
+         default_version,
+         installed_version,
+         CASE
+           WHEN default_version = installed_version THEN 0
+           ELSE 1
+        END AS update_available
+        FROM pg_catalog.pg_available_extensions
+        WHERE installed_version IS NOT NULL
+      metrics:
+        - datname:
+            usage: "LABEL"
+            description: "Name of the database"
+        - extname:
+            usage: "LABEL"
+            description: "Extension name"
+        - default_version:
+            usage: "LABEL"
+            description: "Default version"
+        - installed_version:
+            usage: "LABEL"
+            description: "Installed version"
+        - update_available:
+            usage: "GAUGE"
+            description: "An update is available"
+      target_databases:
+        - '*'

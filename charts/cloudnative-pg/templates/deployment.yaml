@@ -18,6 +18,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "cloudnative-pg.fullname" . }}
+  namespace: {{ include "cloudnative-pg.namespace" . }}
   labels:
     {{- include "cloudnative-pg.labels" . | nindent 4 }}
   {{- with .Values.commonAnnotations }}
@@ -29,10 +30,16 @@ spec:
   selector:
     matchLabels:
       {{- include "cloudnative-pg.selectorLabels" . | nindent 6 }}
+  {{- if .Values.updateStrategy }}
+  strategy:
+    {{- toYaml .Values.updateStrategy | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       annotations:
+        checksum/rbac: {{ include (print $.Template.BasePath "/rbac.yaml") . | sha256sum }}
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        checksum/monitoring-config: {{ include (print $.Template.BasePath "/monitoring-configmap.yaml") . | sha256sum }}
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -56,6 +63,7 @@ spec:
       - args:
         - controller
         - --leader-elect
+        - --max-concurrent-reconciles={{ .Values.config.maxConcurrentReconciles }}
         {{- if .Values.config.name }}
         {{- if not .Values.config.secret }}
         - --config-map-name={{ .Values.config.name }}
@@ -78,6 +86,10 @@ spec:
               fieldPath: metadata.namespace
         - name: MONITORING_QUERIES_CONFIGMAP
           value: "{{ .Values.monitoringQueriesConfigMap.name }}"
+        {{- if not .Values.config.clusterWide }}
+        - name: WATCH_NAMESPACE
+          value: "{{ include "cloudnative-pg.namespace" . }}"
+        {{- end }}
         {{- if .Values.additionalEnv }}
         {{- tpl (.Values.additionalEnv | toYaml) . | nindent 8 }}
         {{- end }}
@@ -111,6 +123,17 @@ spec:
           {{- toYaml .Values.resources | nindent 10 }}
         securityContext:
           {{- toYaml .Values.containerSecurityContext | nindent 10 }}
+        startupProbe:
+          {{- if .Values.webhook.startupProbe.failureThreshold }}
+          failureThreshold: {{ .Values.webhook.startupProbe.failureThreshold }}
+          {{- end }}
+          httpGet:
+            path: /readyz
+            port: {{ .Values.webhook.port }}
+            scheme: HTTPS
+          {{- if .Values.webhook.startupProbe.periodSeconds }}
+          periodSeconds: {{ .Values.webhook.startupProbe.periodSeconds }}
+          {{- end }}
         volumeMounts:
         - mountPath: /controller
           name: scratch-data
@@ -125,6 +148,10 @@ spec:
       terminationGracePeriodSeconds: 10
       {{- with .Values.nodeSelector }}
       nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.affinity }}
