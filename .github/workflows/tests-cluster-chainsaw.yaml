@@ -5,6 +5,8 @@ on:
     branches-ignore:
       - 'gh-pages'
 
+permissions: read-all
+
 jobs:
   test-list:
     runs-on: ubuntu-24.04
