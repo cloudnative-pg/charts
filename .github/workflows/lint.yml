@@ -9,6 +9,8 @@ on:
     branches-ignore:
       - 'gh-pages'
 
+permissions: read-all
+
 jobs:
   codespell:
     runs-on: ubuntu-latest
