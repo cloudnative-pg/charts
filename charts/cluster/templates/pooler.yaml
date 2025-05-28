@@ -46,4 +46,7 @@ spec:
   template:
     {{- . | toYaml | nindent 4 }}
   {{- end }}
-{{- end }}
+  {{- with serviceTemplate }}
+  serviceTemplate:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
