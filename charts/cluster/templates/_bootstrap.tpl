@@ -92,6 +92,9 @@ externalClusters:
     {{ with .Values.recovery.owner }}
     owner: {{ . }}
     {{- end }}
+    {{ with .Values.recovery.secret }}
+    secret: {{ . }}
+    {{- end }}
     {{- if eq .Values.recovery.method "backup" }}
     backup:
       name: {{ .Values.recovery.backupName }}

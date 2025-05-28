@@ -4,6 +4,10 @@ mode: recovery
 recovery:
   method: object_store
   clusterName: "cluster-name-to-recover-from"
+  database: example
+  owner: example
+  secret:
+    name: example
   provider: s3
   s3:
     region: "eu-west-1"
@@ -11,6 +15,7 @@ recovery:
     path: "/v1-restore"
     accessKey: "AWS_S3_ACCESS_KEY"
     secretKey: "AWS_S3_SECRET_KEY"
+  
 
 cluster:
   instances: 1
