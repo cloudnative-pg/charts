@@ -4,10 +4,10 @@ mode: recovery
 recovery:
   method: object_store
   clusterName: "cluster-name-to-recover-from"
-  database: example
-  owner: example
+  database: app
+  owner: app
   secret:
-    name: example
+    name: app
   provider: s3
   s3:
     region: "eu-west-1"
@@ -34,3 +34,7 @@ backups:
       schedule: "0 0 0 * * *" # Daily at midnight
       backupOwnerReference: self
   retentionPolicy: "30d"
+  secret:
+    create: false
+    name: "s3"
+
