@@ -1,0 +1,416 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    helm.sh/chart: plugin-barman-cloud
+    app.kubernetes.io/name: plugin-barman-cloud
+    app.kubernetes.io/instance: plugin-barman-cloud
+    app.kubernetes.io/version: 0.4.0
+    app.kubernetes.io/managed-by: Helm
+  name: plugin-barman-cloud
+  namespace: cnpg-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: plugin-barman-cloud
+      app.kubernetes.io/instance: plugin-barman-cloud
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: plugin-barman-cloud
+        app.kubernetes.io/instance: plugin-barman-cloud
+    spec:
+      containers:
+      - args:
+        - operator
+        - --server-cert=/server/tls.crt
+        - --server-key=/server/tls.key
+        - --client-cert=/client/tls.crt
+        - --server-address=:9090
+        - --leader-elect
+        - --log-level=debug
+        env:
+        - name: SIDECAR_IMAGE
+          valueFrom:
+            secretKeyRef:
+              key: SIDECAR_IMAGE
+              name: plugin-barman-cloud-m76km67hd7
+        image: "{{ .Values.image.registry }}{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        name: barman-cloud
+        ports:
+        - containerPort: 9090
+          protocol: TCP
+        readinessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          tcpSocket:
+            port: 9090
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsUser: 10001
+          runAsGroup: 10001
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop:
+              - "ALL"
+        volumeMounts:
+        - mountPath: /server
+          name: server
+        - mountPath: /client
+          name: client
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: plugin-barman-cloud
+      volumes:
+      - name: server
+        secret:
+          secretName: barman-cloud-server-tls
+      - name: client
+        secret:
+          secretName: barman-cloud-client-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    helm.sh/chart: plugin-barman-cloud
+    app.kubernetes.io/name: plugin-barman-cloud
+    app.kubernetes.io/instance: plugin-barman-cloud
+    app.kubernetes.io/version: 0.4.0
+    app.kubernetes.io/managed-by: Helm
+    cnpg.io/pluginName: barman-cloud.cloudnative-pg.io
+  annotations:
+    cnpg.io/pluginClientSecret: barman-cloud-client-tls
+    cnpg.io/pluginPort: "9090"
+    cnpg.io/pluginServerSecret: barman-cloud-server-tls
+  name: cnpg-webhook-service
+  namespace: cnpg-system
+spec:
+  ports:
+  - port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    app.kubernetes.io/name: plugin-barman-cloud
+    app.kubernetes.io/instance: plugin-barman-cloud
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: plugin-barman-cloud-selfsigned-issuer
+  namespace: cnpg-system
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: barman-cloud-client
+  namespace: cnpg-system
+spec:
+  commonName: barman-cloud-client
+  duration: 2160h
+  isCA: false
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: plugin-barman-cloud-selfsigned-issuer
+  renewBefore: 360h
+  secretName: barman-cloud-client-tls
+  usages:
+  - client auth
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: barman-cloud-server
+  namespace: cnpg-system
+spec:
+  commonName: barman-cloud
+  dnsNames:
+  - barman-cloud
+  duration: 2160h
+  isCA: false
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: plugin-barman-cloud-selfsigned-issuer
+  renewBefore: 360h
+  secretName: barman-cloud-server-tls
+  usages:
+  - server auth
+---
+apiVersion: v1
+data:
+  SIDECAR_IMAGE: |
+    Z2hjci5pby9jbG91ZG5hdGl2ZS1wZy9wbHVnaW4tYmFybWFuLWNsb3VkLXNpZGVjYXI6dj
+    AuNC4w
+kind: Secret
+metadata:
+  name: plugin-barman-cloud-m76km67hd7
+  namespace: cnpg-system
+type: Opaque
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    helm.sh/chart: plugin-barman-cloud
+    app.kubernetes.io/name: plugin-barman-cloud
+    app.kubernetes.io/instance: plugin-barman-cloud
+    app.kubernetes.io/version: 0.4.0
+    app.kubernetes.io/managed-by: Helm
+  name: plugin-barman-cloud
+  namespace: cnpg-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: plugin-barman-cloud
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - watch
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - postgresql.cnpg.io
+  resources:
+  - backups
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  - roles
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    helm.sh/chart: plugin-barman-cloud
+    app.kubernetes.io/name: plugin-barman-cloud
+    app.kubernetes.io/instance: plugin-barman-cloud
+    app.kubernetes.io/version: 0.4.0
+    app.kubernetes.io/managed-by: Helm
+  name: plugin-barman-cloud-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: plugin-barman-cloud
+subjects:
+- kind: ServiceAccount
+  name: plugin-barman-cloud
+  namespace: cnpg-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    helm.sh/chart: plugin-barman-cloud
+    app.kubernetes.io/name: plugin-barman-cloud
+    app.kubernetes.io/instance: plugin-barman-cloud
+    app.kubernetes.io/version: 0.4.0
+    app.kubernetes.io/managed-by: Helm
+  name: plugin-barman-cloud-leader-election-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    helm.sh/chart: plugin-barman-cloud
+    app.kubernetes.io/name: plugin-barman-cloud
+    app.kubernetes.io/instance: plugin-barman-cloud
+    app.kubernetes.io/version: 0.4.0
+    app.kubernetes.io/managed-by: Helm
+  name: plugin-barman-cloud-leader-election-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: plugin-barman-cloud-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: plugin-barman-cloud
+  namespace: cnpg-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: plugin-barman-cloud-metrics-auth-role
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: plugin-barman-cloud-metrics-auth-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: plugin-barman-cloud-metrics-auth-role
+subjects:
+- kind: ServiceAccount
+  name: plugin-barman-cloud
+  namespace: cnpg-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: plugin-barman-cloud-metrics-reader
+rules:
+- nonResourceURLs:
+  - "/metrics"
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    helm.sh/chart: plugin-barman-cloud
+    app.kubernetes.io/name: plugin-barman-cloud
+    app.kubernetes.io/instance: plugin-barman-cloud
+    app.kubernetes.io/version: 0.4.0
+    app.kubernetes.io/managed-by: Helm
+  name: plugin-barman-cloud-objectstore-editor-role
+rules:
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores/status
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    helm.sh/chart: plugin-barman-cloud
+    app.kubernetes.io/name: plugin-barman-cloud
+    app.kubernetes.io/instance: plugin-barman-cloud
+    app.kubernetes.io/version: 0.4.0
+    app.kubernetes.io/managed-by: Helm
+  name: plugin-barman-cloud-objectstore-viewer-role
+rules:
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores/status
+  verbs:
+  - get
