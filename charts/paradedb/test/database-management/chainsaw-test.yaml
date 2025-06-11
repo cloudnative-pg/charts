@@ -1,0 +1,73 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: database-management
+spec:
+  timeouts:
+    apply: 1s
+    assert: 300s
+    cleanup: 60s
+  steps:
+    - name: database-parameters
+      timeouts:
+        apply: 1s
+        assert: 5s
+        cleanup: 30s
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-database-parameters.yaml \
+                --wait \
+                database-parameters ../../
+        - assert:
+            file: ./01-database-parameters-assert.yaml
+
+    - name: Provision a cluster with a database with the ParadeDB extension
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./02.1-extension-upgrade-init.yaml \
+                --wait \
+                extension-upgrade ../../
+        - assert:
+            file: ./02.1-extension-upgrade-init-assert.yaml
+
+    - name: Verify the ParadeDB extension version before upgrade
+      try:
+        - apply:
+            file: ./02.2-paradedb_extension_check.yaml
+        - assert:
+            file: ./02.2-paradedb_extension_check-assert.yaml
+
+    - name: Upgrade the ParadeDB cluster and the extension
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./02.3-extension-upgrade-post.yaml \
+                --wait \
+                extension-upgrade ../../
+        - assert:
+            file: ./02.3-extension-upgrade-post-assert.yaml
+
+    - name: Verify the ParadeDB extension version after upgrade
+      try:
+        - apply:
+            file: ./02.4-paradedb_extension_check.yaml
+        - assert:
+            file: ./02.4-paradedb_extension_check-assert.yaml
+
+    - name: cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE database-parameters
+              helm uninstall --namespace $NAMESPACE extension-upgrade 

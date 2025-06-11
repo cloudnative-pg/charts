@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: paradedb-version-check-before
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-test
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: extension-upgrade-paradedb-app
+                key: uri
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+          - |
+            apk --no-cache add postgresql-client
+            PG_SEARCH_VERSION=$(psql "$DB_URI" -t) <<-EOSQL
+              SELECT version FROM paradedb.version_info();
+            EOSQL
+            echo $PG_SEARCH_VERSION
+            test "$PG_SEARCH_VERSION" = " 0.15.20"
+
+            EXTVERSION=$(psql "$DB_URI" -t) <<-EOSQL
+              SELECT extversion FROM pg_extension WHERE extname = 'pg_search';
+            EOSQL
+            echo $EXTVERSION
+            test "$EXTVERSION" = " 0.15.20"

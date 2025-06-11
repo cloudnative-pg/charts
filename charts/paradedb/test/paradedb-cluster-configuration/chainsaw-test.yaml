@@ -54,3 +54,15 @@ spec:
               helm uninstall --namespace $NAMESPACE non-default-configuration
               helm uninstall --namespace $NAMESPACE recovery-object-store-database-owner
               helm uninstall --namespace $NAMESPACE recovery-backup-database-owner
+    - name: database-parameters
+      try:
+      - apply:
+          file: 04-database-parameters-test.yaml
+      - assert:
+          file: 04-database-parameters-test-assert.yaml
+    - name: extension-upgrade
+      try:
+      - apply:
+          file: 05-paradedb-extension-upgrade-test.yaml
+      - assert:
+          file: 05-paradedb-extension-upgrade-test-assert.yaml

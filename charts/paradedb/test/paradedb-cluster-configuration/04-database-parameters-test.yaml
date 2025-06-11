@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-parameters-test
+data:
+  values.yaml: |
+    type: paradedb
+    version:
+      postgresql: "17"
+      paradedb: "0.15.21"
+    
+    cluster:
+      instances: 1
+    
+    databases:
+      - name: test-db
+        ensure: present
+        owner: test-owner
+        template: template0
+        encoding: UTF8
+        connectionLimit: 100
+        tablespace: test-space
+        databaseReclaimPolicy: retain
+        isTemplate: true
+        locale: "en_US.utf8"
+        localeProvider: icu
+        localeCollate: "en_US.utf8"
+        localeCType: "en_US.utf8"
+        icuLocale: "en_US"
+        icuRules: "standard"
+        builtinLocale: "en_US.utf8"
+        collationVersion: "1"
+        schemas:
+          - name: test-schema
+            owner: test-owner
+            ensure: present
+        extensions:
+          - name: pg_search
+            ensure: present
+            owner: test-owner
+            version: "0.15.21"
+            schema: test-schema 

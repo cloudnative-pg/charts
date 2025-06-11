@@ -1,0 +1,45 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: check-database-parameters
+spec:
+  validationFailureAction: enforce
+  background: false
+  rules:
+    - name: check-database-spec
+      match:
+        any:
+        - resources:
+            kinds:
+              - Database
+      validate:
+        message: "Database parameters do not match expected values"
+        pattern:
+          spec:
+            name: test-db
+            ensure: present
+            owner: test-owner
+            template: template0
+            encoding: UTF8
+            connectionLimit: 100
+            tablespace: test-space
+            databaseReclaimPolicy: retain
+            isTemplate: true
+            locale: "en_US.utf8"
+            localeProvider: icu
+            localeCollate: "en_US.utf8"
+            localeCType: "en_US.utf8"
+            icuLocale: "en_US"
+            icuRules: "standard"
+            builtinLocale: "en_US.utf8"
+            collationVersion: "1"
+            schemas:
+              - name: test-schema
+                owner: test-owner
+                ensure: present
+            extensions:
+              - name: pg_search
+                ensure: present
+                owner: test-owner
+                version: "0.15.21"
+                schema: test-schema 

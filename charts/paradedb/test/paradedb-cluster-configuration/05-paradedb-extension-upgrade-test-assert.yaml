@@ -1,0 +1,36 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: check-extension-upgrade
+spec:
+  validationFailureAction: enforce
+  background: false
+  rules:
+    - name: check-initial-version
+      match:
+        any:
+        - resources:
+            kinds:
+              - Database
+      validate:
+        message: "Initial extension version not set correctly"
+        pattern:
+          spec:
+            name: upgrade-test-db
+            extensions:
+              - name: pg_search
+                version: "0.15.20"
+    - name: check-upgraded-version
+      match:
+        any:
+        - resources:
+            kinds:
+              - Database
+      validate:
+        message: "Extension upgrade not applied correctly"
+        pattern:
+          spec:
+            name: upgrade-test-db
+            extensions:
+              - name: pg_search
+                version: "0.15.21" 
