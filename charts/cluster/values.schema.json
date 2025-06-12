@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/schema#",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "properties": {
         "backups": {
@@ -192,6 +192,12 @@
                 },
                 "enableSuperuserAccess": {
                     "type": "boolean"
+                },
+                "env": {
+                    "type": "array"
+                },
+                "envFrom": {
+                    "type": "array"
                 },
                 "imageCatalogRef": {
                     "type": "object"

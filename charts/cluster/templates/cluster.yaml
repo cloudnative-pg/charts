@@ -42,6 +42,14 @@ spec:
   affinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- if .Values.cluster.env }}
+  env:
+  {{ toYaml .Values.cluster.env | indent 4 }}
+  {{- end }}
+  {{- if .Values.cluster.envFrom }}
+  envFrom:
+  {{ toYaml .Values.cluster.envFrom | indent 4 }}
+  {{- end }}
   {{- if .Values.cluster.priorityClassName }}
   priorityClassName: {{ .Values.cluster.priorityClassName }}
   {{- end }}

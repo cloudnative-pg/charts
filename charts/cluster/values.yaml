@@ -249,6 +249,32 @@ cluster:
   affinity:
     topologyKey: topology.kubernetes.io/zone
 
+  # -- Env follows the Env format to pass environment variables to the pods created in the cluster
+  env: []
+    # - name: MY_CUSTOM_FLAG
+    #   value: "enabled"
+    # - name: MY_CUSTROM_ENV
+    #   valueFrom:
+    #     configMapKeyRef:
+    #       name: my-custom-env
+    #       key: env
+    #       optional: true
+    # - name: MY_CUSTOM_SECRET_ENV
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: my-custom-secret
+    #       key: secret
+    #       optional: true
+
+  # -- EnvFrom follows the EnvFrom format to pass environment variables sources to the pods to be used by Env
+  envFrom: []
+    # - configMapRef:
+    #     name: global-envs
+    #     optional: true
+    # - secretRef:
+    #     name: db-credentials
+    #     optional: true
+
   # -- The configuration for the CA and related certificates.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration
   certificates: {}
