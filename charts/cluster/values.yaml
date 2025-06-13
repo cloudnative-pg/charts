@@ -449,9 +449,9 @@ backups:
 ##
 # Database management configuration
 databases: []
- # - name: paradedb                 # -- Name of the database to be created.
+ # - name: app                      # -- Name of the database to be created.
  #   ensure: present                # -- Ensure the PostgreSQL database is present or absent - defaults to "present".
- #   owner: paradedb                # -- Owner of the database, defaults to the value of the `name` key.
+ #   owner: app                     # -- Owner of the database, defaults to the value of the `name` key.
  #   template: template1            # -- Maps to the TEMPLATE parameter.
  #   encoding: UTF8                 # -- Maps to the ENCODING parameter.
  #   connectionLimit: -1            # -- Maps to the CONNECTION LIMIT parameter. -1 (the default) means no limit.
