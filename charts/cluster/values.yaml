@@ -456,7 +456,7 @@ databases: []
  #   encoding: UTF8                 # -- Maps to the ENCODING parameter.
  #   connectionLimit: -1            # -- Maps to the CONNECTION LIMIT parameter. -1 (the default) means no limit.
  #   tablespace: ""                 # -- Maps to the TABLESPACE parameter and ALTER DATABASE.
- #   databaseReclaimPolicy: retain  # -- One of: retaion / delete (retain by default).
+ #   databaseReclaimPolicy: retain  # -- One of: retain / delete (retain by default).
  #   schemas: []                    # -- List of schemas to be created in the database.
  #    # - name: myschema
  #    #   owner: app                # -- Owner of the schema, defaults to the database owner.
