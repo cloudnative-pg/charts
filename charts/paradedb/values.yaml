@@ -47,8 +47,8 @@ recovery:
   ##
   # -- The original cluster name when used in backups. Also known as serverName.
   clusterName: ""
-  # -- Name of the database used by the application. Default: `app`.
-  database: app
+  # -- Name of the database used by the application. Default: `paradedb`.
+  database: paradedb
   # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
   owner: ""
   # -- Overrides the provider specific default endpoint. Defaults to:
@@ -525,6 +525,36 @@ replica:
       passwordSecret:
         name: ""
         key: ""
+
+##
+# Database management configuration
+databases: []
+ # - name: paradedb                 # -- Name of the database to be created.
+ #   ensure: present                # -- Ensure the PostgreSQL database is present or absent - defaults to "present".
+ #   owner: paradedb                # -- Owner of the database, defaults to the value of the `name` key.
+ #   template: template1            # -- Maps to the TEMPLATE parameter.
+ #   encoding: UTF8                 # -- Maps to the ENCODING parameter.
+ #   connectionLimit: -1            # -- Maps to the CONNECTION LIMIT parameter. -1 (the default) means no limit.
+ #   tablespace: ""                 # -- Maps to the TABLESPACE parameter and ALTER DATABASE.
+ #   databaseReclaimPolicy: retain  # -- One of: retain / delete (retain by default).
+ #   schemas: []                    # -- List of schemas to be created in the database.
+ #    # - name: myschema
+ #    #   owner: paradedb           # -- Owner of the schema, defaults to the database owner.
+ #    #   ensure: present           # -- Ensure the PostgreSQL schema is present or absent - defaults to "present".
+ #   extensions: []                 # -- List of extensions to be created in the database.
+ #    # - name: pg_search
+ #    #   ensure: present           # -- Ensure the PostgreSQL extension is present or absent - defaults to "present".
+ #    #   version: "0.15.21"        # -- Version of the extension to be installed, if not specified the latest version will be used.
+ #    #   schema: ""                # -- Schema where the extension will be installed, if not specified the extensions or current default object creation schema will be used.
+ #   isTemplate: false              # -- Maps to the IS_TEMPLATE parameter. If true, the database is considered a template for new databases.
+ #   locale: ""                     # -- Maps to the LC_COLLATE and LC_CTYPE parameters
+ #   localeProvider: ""             # -- Maps to the LOCALE_PROVIDER parameter. Available from PostgreSQL 16.
+ #   localeCollate: ""              # -- Maps to the LC_COLLATE parameter
+ #   localeCType: ""                # -- Maps to the LC_CTYPE parameter
+ #   icuLocale: ""                  # -- Maps to the ICU_LOCALE parameter. Available from PostgreSQL 15.
+ #   icuRules: ""                   # -- Maps to the ICU_RULES parameter. Available from PostgreSQL 16.
+ #   builtinLocale: ""              # -- Maps to the BUILTIN_LOCALE parameter. Available from PostgreSQL 17.
+ #   collationVersion: ""           # -- Maps to the COLLATION_VERSION parameter.
 
 imageCatalog:
   # -- Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored.

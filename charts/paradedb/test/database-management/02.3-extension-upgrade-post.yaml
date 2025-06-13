@@ -1,0 +1,16 @@
+type: paradedb
+version:
+  postgresql: "17"
+  paradedb: "0.15.21"
+
+cluster:
+  instances: 2
+
+databases:
+  - name: paradedb
+    ensure: present
+    owner: paradedb
+    encoding: UTF8
+    extensions:
+      - name: pg_search
+        ensure: present

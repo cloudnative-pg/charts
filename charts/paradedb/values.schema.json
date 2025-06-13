@@ -341,6 +341,9 @@
                 }
             }
         },
+        "databases": {
+            "type": "array"
+        },
         "fullnameOverride": {
             "type": "string"
         },
@@ -744,6 +747,23 @@
                                 },
                                 "destinationPath": {
                                     "type": "string"
+                                },
+                                "endpointCA": {
+                                    "type": "object",
+                                    "properties": {
+                                        "create": {
+                                            "type": "boolean"
+                                        },
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "value": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "google": {
                                     "type": "object",
