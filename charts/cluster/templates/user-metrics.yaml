@@ -10,9 +10,6 @@ metadata:
 data:
   custom-queries: |
     {{- range .Values.cluster.monitoring.customQueries }}
-    {{ .name }}:
-      query: {{ .query | quote }}
-      metrics:
-        {{- .metrics | toYaml | nindent 8 }}
+    {{ .name }}: {{ omit . "name" | toYaml | nindent 6 }}
     {{- end }}
 {{- end }}
