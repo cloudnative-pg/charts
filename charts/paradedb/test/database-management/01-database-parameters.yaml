@@ -7,7 +7,7 @@ cluster:
   instances: 1
 
 databases:
-  - name: default-db
+  - name: default_db
     ensure: present
     owner: test-owner
 

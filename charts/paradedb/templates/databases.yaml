@@ -3,7 +3,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: {{ include "cluster.fullname" $ }}-{{ .name }}
+  name: {{ include "cluster.fullname" $ }}-{{ .name | replace "_" "-" }}
   namespace: {{ include "cluster.namespace" $ }}
   {{- with $.Values.cluster.annotations }}
   annotations:
