@@ -3,7 +3,7 @@ kind: Database
 metadata:
   name: database-parameters-cluster-default-db
 spec:
-  name: default-db
+  name: default_db
   cluster:
     name: database-parameters-cluster
   ensure: present
