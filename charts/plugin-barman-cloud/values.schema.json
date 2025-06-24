@@ -233,6 +233,20 @@
                 }
             }
         },
+        "sidecarImage": {
+            "type": "object",
+            "properties": {
+                "registry": {
+                    "type": "string"
+                },
+                "repository": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            }
+        },
         "tolerations": {
             "type": "array"
         },
