@@ -57,13 +57,13 @@ spec:
         env:
         - name: SIDECAR_IMAGE
           valueFrom:
-            secretKeyRef:
+            configMapKeyRef:
               key: SIDECAR_IMAGE
-              name: plugin-barman-cloud-m76km67hd7
+              name: plugin-barman-cloud-config
         {{- if .Values.additionalEnv }}
         {{- tpl (.Values.additionalEnv | toYaml) . | nindent 8 }}
         {{- end }}
-        image: "{{ .Values.image.registry }}{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         name: barman-cloud
         ports:
         - containerPort: 9090
@@ -87,7 +87,7 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      serviceAccountName: plugin-barman-cloud
+      serviceAccountName: {{ include "plugin-barman-cloud.serviceAccountName" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
