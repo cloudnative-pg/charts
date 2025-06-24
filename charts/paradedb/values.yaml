@@ -15,8 +15,8 @@ version:
   # -- PostgreSQL major version to use
   postgresql: "17"
   # -- The ParadeDB version, set in the publish CI workflow from the latest paradedb/paradedb GitHub tag
-  # -- We default to v0.15.25 for testing and local development
-  paradedb: "0.15.25"
+  # -- We default to v0.16.0 for testing and local development
+  paradedb: "0.16.0"
 
 ###
 # -- Cluster mode of operation. Available modes:
