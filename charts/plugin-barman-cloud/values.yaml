@@ -124,7 +124,7 @@ priorityClassName: ""
 service:
   # -- DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate
   # and can not be configured
-  name: cnpg-webhook-service
+  name: barman-cloud
   port: 9090
   # -- Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services)
   ipFamilyPolicy: ""
