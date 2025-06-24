@@ -21,9 +21,9 @@ metadata:
   name: barman-cloud-server
   namespace: {{ include "plugin-barman-cloud.namespace" . }}
 spec:
-  commonName: barman-cloud
+  commonName: {{ .Values.service.name }}
   dnsNames:
-  - barman-cloud
+  - {{ .Values.service.name }}
   duration: {{ .Values.certificate.duration | default "2160h" }}
   isCA: false
   issuerRef:

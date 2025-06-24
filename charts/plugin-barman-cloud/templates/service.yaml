@@ -23,7 +23,7 @@ metadata:
   {{- with .Values.commonAnnotations }}
   annotations:
     cnpg.io/pluginClientSecret: barman-cloud-client-tls
-    cnpg.io/pluginPort: "9090"
+    cnpg.io/pluginPort: {{ .Values.service.port | quote }}
     cnpg.io/pluginServerSecret: barman-cloud-server-tls
     {{- toYaml . | nindent 4 }}
   {{- end }}
