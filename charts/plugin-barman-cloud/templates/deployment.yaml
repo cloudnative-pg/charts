@@ -30,10 +30,9 @@ spec:
   selector:
     matchLabels:
       {{- include "plugin-barman-cloud.selectorLabels" . | nindent 6 }}
-  {{- if .Values.updateStrategy }}
+  # RollingUpdate strategy is not supported by the operator yet, so it can only use the Recreate strategy.
   strategy:
-    {{- toYaml .Values.updateStrategy | nindent 4 }}
-  {{- end }}
+    type: Recreate
   template:
     metadata:
       labels:
