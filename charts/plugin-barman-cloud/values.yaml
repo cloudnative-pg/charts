@@ -47,6 +47,9 @@ dnsPolicy: ""
 #  rollingUpdate:
 #    maxSurge: 25%
 #    maxUnavailable: 25%
+#
+# WARNING: the RollingUpdate strategy is not supported by the operator yet so it can 
+# currently. only use the Recreate strategy.
 updateStrategy: {}
 
 crds:
