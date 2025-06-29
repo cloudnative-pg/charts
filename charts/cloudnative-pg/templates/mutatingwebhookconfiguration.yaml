@@ -74,6 +74,27 @@ webhooks:
     service:
       name: {{ .Values.service.name }}
       namespace: {{ include "cloudnative-pg.namespace" . }}
+      path: /mutate-postgresql-cnpg-io-v1-database
+      port: {{ .Values.service.port }}
+  failurePolicy: {{ .Values.webhook.mutating.failurePolicy }}
+  name: mdatabase.cnpg.io
+  rules:
+  - apiGroups:
+    - postgresql.cnpg.io
+    apiVersions:
+    - v1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - databases
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: {{ .Values.service.name }}
+      namespace: {{ include "cloudnative-pg.namespace" . }}
       path: /mutate-postgresql-cnpg-io-v1-scheduledbackup
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.mutating.failurePolicy }}
