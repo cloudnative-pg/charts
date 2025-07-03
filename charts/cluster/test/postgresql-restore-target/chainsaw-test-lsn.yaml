@@ -1,0 +1,31 @@
+##
+# This is a test that verifies that recovery target options are correctly propagated to the CNPG cluster.
+# P.S. This test is not designed to have a good running configuration, it is designed to test the configuration propagation!
+---
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: recovery-target-lsn
+spec:
+  timeouts:
+    apply: 1s
+    assert: 5s
+    cleanup: 30s
+  steps:
+    - name: Install backup recovery cluster target lsn
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values 04-recovery_target_lsn.yaml \
+                --wait \
+                recovery-target-lsn ../../
+        - assert:
+            file: ./04-recovery_target_lsn-assert.yaml
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE recovery-target-lsn
