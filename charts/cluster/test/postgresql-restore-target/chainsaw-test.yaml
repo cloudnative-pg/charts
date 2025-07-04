@@ -1,0 +1,144 @@
+# Aggregated chainsaw test that includes all recovery target option tests.
+---
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: recovery-target-all
+spec:
+  timeouts:
+    apply: 1s
+    assert: 5s
+    cleanup: 30s
+  steps:
+    # Step group: backup id
+    - name: Install backup recovery cluster target backup id
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-recovery_target_backup_id.yaml \
+                --wait \
+                recovery-target-backup-id ../../
+        - assert:
+            file: ./01-recovery_target_backup_id-assert.yaml
+    - name: Cleanup backup id
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE recovery-target-backup-id
+
+    # Step group: backup name
+    - name: Install backup recovery cluster target backup name
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./02-recovery_target_backup_name.yaml \
+                --wait \
+                recovery-target-backup-name ../../
+        - assert:
+            file: ./02-recovery_target_backup_name-assert.yaml
+    - name: Cleanup backup name
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE recovery-target-backup-name
+
+    # Step group: xid
+    - name: Install backup recovery cluster target xid
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./03-recovery_target_xid.yaml \
+                --wait \
+                recovery-target-xid ../../
+        - assert:
+            file: ./03-recovery_target_xid-assert.yaml
+    - name: Cleanup xid
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE recovery-target-xid
+
+    # Step group: lsn
+    - name: Install backup recovery cluster target lsn
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values 04-recovery_target_lsn.yaml \
+                --wait \
+                recovery-target-lsn ../../
+        - assert:
+            file: ./04-recovery_target_lsn-assert.yaml
+    - name: Cleanup lsn
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE recovery-target-lsn
+
+    # Step group: time
+    - name: Install backup recovery cluster target time
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./05-recovery_target_time.yaml \
+                --wait \
+                recovery-target-time ../../
+        - assert:
+            file: ./05-recovery_target_time-assert.yaml
+    - name: Cleanup time
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE recovery-target-time
+
+    # Step group: exclusive
+    - name: Install backup recovery cluster target exclusive
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./06-recovery_target_exclusive.yaml \
+                --wait \
+                recovery-target-exclusive ../../
+        - assert:
+            file: ./06-recovery_target_exclusive-assert.yaml
+    - name: Cleanup exclusive
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE recovery-target-exclusive
+
+    # Step group: immediate
+    - name: Install backup recovery cluster target immediate
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./07-recovery_target_immediate.yaml \
+                --wait \
+                recovery-target-immediate ../../
+        - assert:
+            file: ./07-recovery_target_immediate-assert.yaml
+    - name: Cleanup immediate
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE recovery-target-immediate
