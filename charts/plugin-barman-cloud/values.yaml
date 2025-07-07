@@ -35,6 +35,9 @@ sidecarImage:
   # -- Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# @schema
+# additionalProperties: true
+# @schema
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -43,6 +46,9 @@ namespaceOverride: ""
 hostNetwork: false
 dnsPolicy: ""
 
+# @schema
+# additionalProperties: true
+# @schema
 # -- Update strategy for the operator.
 # ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 # For example:
@@ -51,7 +57,7 @@ dnsPolicy: ""
 #    maxSurge: 25%
 #    maxUnavailable: 25%
 #
-# WARNING: the RollingUpdate strategy is not supported by the operator yet so it can 
+# WARNING: the RollingUpdate strategy is not supported by the operator yet so it can
 # currently. only use the Recreate strategy.
 updateStrategy: {}
 
@@ -59,9 +65,15 @@ crds:
   # -- Specifies whether the CRDs should be created when installing the chart.
   create: true
 
+# @schema
+# additionalProperties: true
+# @schema
 # -- Additional arguments to be added to the operator's args list.
 additionalArgs: []
 
+# @schema
+# additionalProperties: true
+# @schema
 # -- Array containing extra environment variables which can be templated.
 # For example:
 #  - name: RELEASE_NAME
@@ -98,10 +110,19 @@ rbac:
         # -- Specifies whether the object store viewer ClusterRole should be created.
         create: true
 
+# @schema
+# additionalProperties: true
+# @schema
 # -- Annotations to be added to all other resources.
 commonAnnotations: {}
+# @schema
+# additionalProperties: true
+# @schema
 # -- Annotations to be added to the pod.
 podAnnotations: {}
+# @schema
+# additionalProperties: true
+# @schema
 # -- Labels to be added to the pod.
 podLabels: {}
 
@@ -134,9 +155,17 @@ service:
   port: 9090
   # -- Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services)
   ipFamilyPolicy: ""
+  # @schema
+  # type: array
+  # items:
+  #  enum: [IPv4, IPv6]
+  # @schema
   # -- Sets the families that should be supported and the order in which they should be applied to ClusterIP as well. Can be IPv4 and/or IPv6.
   ipFamilies: []
 
+# @schema
+# additionalProperties: true
+# @schema
 resources: {}
   # If you want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
@@ -148,15 +177,27 @@ resources: {}
   #   cpu: 100m
   #   memory: 100Mi
 
+# @schema
+# additionalProperties: true
+# @schema
 # -- Nodeselector for the operator to be installed.
 nodeSelector: {}
 
+# @schema
+# additionalProperties: true
+# @schema
 # -- Topology Spread Constraints for the operator to be installed.
 topologySpreadConstraints: []
 
+# @schema
+# additionalProperties: true
+# @schema
 # -- Tolerations for the operator to be installed.
 tolerations: []
 
+# @schema
+# additionalProperties: true
+# @schema
 # -- Affinity for the operator to be installed.
 affinity: {}
 

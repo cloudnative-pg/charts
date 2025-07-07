@@ -21,3 +21,7 @@ cloudnative-pg-schema:
 cluster-schema:
 	@helm schema-gen charts/cluster/values.yaml | cat > charts/cluster/values.schema.json || \
 		(echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
+
+plugin-barman-cloud:
+	@helm schema-gen --skip-auto-generation additionalProperties -c charts/plugin-barman-cloud \
+		(echo "Please, run: helm plugin install https://github.com/dadav/helm-schema && exit 1)
