@@ -1,4 +1,15 @@
 # Aggregated chainsaw test that includes all recovery target option tests.
+#
+# Tested recovery pitrTarget options:
+# - backupID
+# - time
+# - xid
+# - tli
+# - name
+# - immediate
+# - exclusive
+#
+# For more info please refer to charts/cluster/README.md file
 ---
 apiVersion: chainsaw.kyverno.io/v1alpha1
 kind: Test
