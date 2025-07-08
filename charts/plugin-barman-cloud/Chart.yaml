@@ -36,7 +36,7 @@ keywords:
   - cloudnative-pg
 home: https://cloudnative-pg.io
 maintainers:
-  - name: Itay Grudev
+  - name: itay-grudev
     email: itay@verito.digital
   - name: quantumenigmaa
     email: thibaud.vaisseau@gmail.com
