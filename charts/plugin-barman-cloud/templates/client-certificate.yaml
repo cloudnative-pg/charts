@@ -34,5 +34,7 @@ spec:
   renewBefore: {{ .Values.certificate.renewBefore | default "360h" }}
   secretName: barman-cloud-client-tls
   usages:
-  - client auth
+    - client auth
+  privateKey:
+    rotationPolicy: Always
 {{- end }}
