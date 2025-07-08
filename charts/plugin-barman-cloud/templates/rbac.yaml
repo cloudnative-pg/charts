@@ -33,21 +33,23 @@ metadata:
 {{- if .Values.rbac.create }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
   name: {{ include "plugin-barman-cloud.fullname" . }}
+  namespace: {{ include "plugin-barman-cloud.namespace" . }}
 rules:
 {{- include "plugin-barman-cloud.clusterwideRules" . }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
   labels:
     {{- include "plugin-barman-cloud.labels" . | nindent 4 }}
   name: {{ include "plugin-barman-cloud.fullname" . }}-binding
+  namespace: {{ include "plugin-barman-cloud.namespace" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  kind: Role
   name: {{ include "plugin-barman-cloud.fullname" . }}
 subjects:
 - kind: ServiceAccount

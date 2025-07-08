@@ -347,7 +347,7 @@
               "properties": {
                 "create": {
                   "default": true,
-                  "description": "Specifies whether the metrics auth ClusterRole and ClusterRoleBinding should be created.",
+                  "description": "Specifies whether the metrics auth Role and RoleBinding should be created.",
                   "required": [],
                   "title": "create",
                   "type": "boolean"
@@ -364,7 +364,7 @@
               "properties": {
                 "create": {
                   "default": true,
-                  "description": "Specifies whether the metrics reader ClusterRole should be created.",
+                  "description": "Specifies whether the metrics reader Role should be created.",
                   "required": [],
                   "title": "create",
                   "type": "boolean"
@@ -384,7 +384,7 @@
                   "properties": {
                     "create": {
                       "default": true,
-                      "description": "Specifies whether the object store editor ClusterRole should be created.",
+                      "description": "Specifies whether the object store editor Role should be created.",
                       "required": [],
                       "title": "create",
                       "type": "boolean"
@@ -401,7 +401,7 @@
                   "properties": {
                     "create": {
                       "default": true,
-                      "description": "Specifies whether the object store viewer ClusterRole should be created.",
+                      "description": "Specifies whether the object store viewer Role should be created.",
                       "required": [],
                       "title": "create",
                       "type": "boolean"
@@ -433,7 +433,7 @@
         },
         "create": {
           "default": true,
-          "description": "Specifies whether ClusterRole and ClusterRoleBinding should be created.",
+          "description": "Specifies whether Role and RoleBinding should be created.",
           "required": [],
           "title": "create",
           "type": "boolean"
