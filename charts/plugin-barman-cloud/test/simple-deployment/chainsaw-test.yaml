@@ -8,7 +8,7 @@ spec:
   timeouts:
     apply: 1s
     exec: 30s
-    assert: 20s
+    assert: 5s
     cleanup: 30s
   steps:
     - name: Install barman cloud plugin
@@ -28,3 +28,4 @@ spec:
         - script:
             content: |
               helm uninstall --namespace $NAMESPACE plugin-barman-cloud
+              kubectl delete customresourcedefinitions.apiextensions.k8s.io objectstores.barmancloud.cnpg.io
