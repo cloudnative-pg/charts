@@ -96,19 +96,6 @@ rbac:
     leaderElection:
       # -- Specifies whether the leader election Role and RoleBinding should be created.
       create: true
-    metricsAuth:
-      # -- Specifies whether the metrics auth Role and RoleBinding should be created.
-      create: true
-    metricsReader:
-      # -- Specifies whether the metrics reader Role should be created.
-      create: true
-    objectStore:
-      editor:
-        # -- Specifies whether the object store editor Role should be created.
-        create: true
-      viewer:
-        # -- Specifies whether the object store viewer Role should be created.
-        create: true
 
 # @schema
 # additionalProperties: true
