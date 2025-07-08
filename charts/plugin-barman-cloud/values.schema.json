@@ -1,6 +1,5 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "additionalProperties": false,
   "properties": {
     "additionalArgs": {
       "additionalProperties": true,
@@ -27,7 +26,6 @@
       "title": "affinity"
     },
     "certificate": {
-      "additionalProperties": false,
       "properties": {
         "createClientCertificate": {
           "default": true,
@@ -82,7 +80,6 @@
       "title": "commonAnnotations"
     },
     "containerSecurityContext": {
-      "additionalProperties": false,
       "description": "Container Security Context.",
       "properties": {
         "allowPrivilegeEscalation": {
@@ -92,7 +89,6 @@
           "type": "boolean"
         },
         "capabilities": {
-          "additionalProperties": false,
           "properties": {
             "drop": {
               "items": {
@@ -134,7 +130,6 @@
           "type": "integer"
         },
         "seccompProfile": {
-          "additionalProperties": false,
           "properties": {
             "type": {
               "default": "RuntimeDefault",
@@ -162,7 +157,6 @@
       "type": "object"
     },
     "crds": {
-      "additionalProperties": false,
       "properties": {
         "create": {
           "default": true,
@@ -203,7 +197,6 @@
       "type": "boolean"
     },
     "image": {
-      "additionalProperties": false,
       "properties": {
         "pullPolicy": {
           "default": "IfNotPresent",
@@ -279,7 +272,6 @@
       "title": "podLabels"
     },
     "podSecurityContext": {
-      "additionalProperties": false,
       "description": "Security Context for the whole pod.",
       "properties": {
         "runAsNonRoot": {
@@ -289,7 +281,6 @@
           "type": "boolean"
         },
         "seccompProfile": {
-          "additionalProperties": false,
           "properties": {
             "type": {
               "default": "RuntimeDefault",
@@ -320,13 +311,10 @@
       "type": "string"
     },
     "rbac": {
-      "additionalProperties": false,
       "properties": {
         "additional": {
-          "additionalProperties": false,
           "properties": {
             "leaderElection": {
-              "additionalProperties": false,
               "properties": {
                 "create": {
                   "default": true,
@@ -341,92 +329,10 @@
               ],
               "title": "leaderElection",
               "type": "object"
-            },
-            "metricsAuth": {
-              "additionalProperties": false,
-              "properties": {
-                "create": {
-                  "default": true,
-                  "description": "Specifies whether the metrics auth Role and RoleBinding should be created.",
-                  "required": [],
-                  "title": "create",
-                  "type": "boolean"
-                }
-              },
-              "required": [
-                "create"
-              ],
-              "title": "metricsAuth",
-              "type": "object"
-            },
-            "metricsReader": {
-              "additionalProperties": false,
-              "properties": {
-                "create": {
-                  "default": true,
-                  "description": "Specifies whether the metrics reader Role should be created.",
-                  "required": [],
-                  "title": "create",
-                  "type": "boolean"
-                }
-              },
-              "required": [
-                "create"
-              ],
-              "title": "metricsReader",
-              "type": "object"
-            },
-            "objectStore": {
-              "additionalProperties": false,
-              "properties": {
-                "editor": {
-                  "additionalProperties": false,
-                  "properties": {
-                    "create": {
-                      "default": true,
-                      "description": "Specifies whether the object store editor Role should be created.",
-                      "required": [],
-                      "title": "create",
-                      "type": "boolean"
-                    }
-                  },
-                  "required": [
-                    "create"
-                  ],
-                  "title": "editor",
-                  "type": "object"
-                },
-                "viewer": {
-                  "additionalProperties": false,
-                  "properties": {
-                    "create": {
-                      "default": true,
-                      "description": "Specifies whether the object store viewer Role should be created.",
-                      "required": [],
-                      "title": "create",
-                      "type": "boolean"
-                    }
-                  },
-                  "required": [
-                    "create"
-                  ],
-                  "title": "viewer",
-                  "type": "object"
-                }
-              },
-              "required": [
-                "editor",
-                "viewer"
-              ],
-              "title": "objectStore",
-              "type": "object"
             }
           },
           "required": [
-            "leaderElection",
-            "metricsAuth",
-            "metricsReader",
-            "objectStore"
+            "leaderElection"
           ],
           "title": "additional",
           "type": "object"
@@ -458,7 +364,6 @@
       "title": "resources"
     },
     "service": {
-      "additionalProperties": false,
       "properties": {
         "ipFamilies": {
           "description": "Sets the families that should be supported and the order in which they should be applied to ClusterIP as well. Can be IPv4 and/or IPv6.",
@@ -503,7 +408,6 @@
       "type": "object"
     },
     "serviceAccount": {
-      "additionalProperties": false,
       "properties": {
         "create": {
           "default": true,
@@ -528,7 +432,6 @@
       "type": "object"
     },
     "sidecarImage": {
-      "additionalProperties": false,
       "properties": {
         "registry": {
           "default": "ghcr.io",

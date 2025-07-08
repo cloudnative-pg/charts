@@ -10,7 +10,7 @@ Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Itay Grudev | <itay@verito.digital> |  |
+| itay-grudev | <itay@verito.digital> |  |
 | quantumenigmaa | <thibaud.vaisseau@gmail.com> |  |
 | quentinbisson | <quentin.bisson@gmail.com> |  |
 
@@ -49,10 +49,6 @@ Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 | podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security Context for the whole pod. |
 | priorityClassName | string | `""` | Priority indicates the importance of a Pod relative to other Pods. |
 | rbac.additional.leaderElection.create | bool | `true` | Specifies whether the leader election Role and RoleBinding should be created. |
-| rbac.additional.metricsAuth.create | bool | `true` | Specifies whether the metrics auth Role and RoleBinding should be created. |
-| rbac.additional.metricsReader.create | bool | `true` | Specifies whether the metrics reader Role should be created. |
-| rbac.additional.objectStore.editor.create | bool | `true` | Specifies whether the object store editor Role should be created. |
-| rbac.additional.objectStore.viewer.create | bool | `true` | Specifies whether the object store viewer Role should be created. |
 | rbac.create | bool | `true` | Specifies whether Role and RoleBinding should be created. |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
@@ -68,3 +64,4 @@ Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 | tolerations | list | `[]` | Tolerations for the operator to be installed. |
 | topologySpreadConstraints | list | `[]` | Topology Spread Constraints for the operator to be installed. |
 | updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy For example:  type: RollingUpdate  rollingUpdate:    maxSurge: 25%    maxUnavailable: 25%  WARNING: the RollingUpdate strategy is not supported by the operator yet so it can currently. only use the Recreate strategy. |
+
