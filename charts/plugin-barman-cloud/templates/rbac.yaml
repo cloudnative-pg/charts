@@ -33,23 +33,76 @@ metadata:
 {{- if .Values.rbac.create }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name: {{ include "plugin-barman-cloud.fullname" . }}
-  namespace: {{ include "plugin-barman-cloud.namespace" . }}
 rules:
-{{- include "plugin-barman-cloud.clusterwideRules" . }}
+  - apiGroups:
+    - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - barmancloud.cnpg.io
+    resources:
+      - objectstores
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - barmancloud.cnpg.io
+    resources:
+      - objectstores/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - barmancloud.cnpg.io
+    resources:
+      - objectstores/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - postgresql.cnpg.io
+    resources:
+      - backups
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - rolebindings
+      - roles
+    verbs:
+      - create
+      - get
+      - list
+      - patch
+      - update
+      - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   labels:
     {{- include "plugin-barman-cloud.labels" . | nindent 4 }}
   name: {{ include "plugin-barman-cloud.fullname" . }}-binding
-  namespace: {{ include "plugin-barman-cloud.namespace" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
+  kind: ClusterRole
   name: {{ include "plugin-barman-cloud.fullname" . }}
 subjects:
 - kind: ServiceAccount
