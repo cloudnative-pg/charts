@@ -634,6 +634,27 @@
                     "properties": {
                         "time": {
                             "type": "string"
+                        },
+                        "BackupID": {
+                            "type": "string"
+                        },
+                        "immediate": {
+                            "type": "string"
+                        },
+                        "tli": {
+                            "type": "string"
+                        },
+                        "exclusive": {
+                            "type": "string"
+                        },
+                        "xid": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "lsn": {
+                            "type": "string"
                         }
                     }
                 },
