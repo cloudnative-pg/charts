@@ -260,7 +260,14 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.pgBaseBackup.source.sslRootCertSecret.key | string | `""` |  |
 | recovery.pgBaseBackup.source.sslRootCertSecret.name | string | `""` |  |
 | recovery.pgBaseBackup.source.username | string | `""` |  |
-| recovery.pitrTarget.time | string | `""` | Time in RFC3339 format |
+| recovery.pitrTarget.backupID | string | `""` | The ID of the backup from which to start the recovery process. If empty (default) the operator will automatically detect the backup based on `pitrTarget.time` or `pitrTarget.lsn` if provided. Otherwise use the latest available backup in chronological order. |
+| recovery.pitrTarget.exclusive | string | `""` | Set the target to be exclusive. If omitted, defaults to false, so that in Postgres, `recovery_target_inclusive` will be true |
+| recovery.pitrTarget.immediate | string | `""` | Recovery ends as soon as a consistent state is reached, that is, as early as possible |
+| recovery.pitrTarget.lsn | string | `""` | LSN (Log Sequence Number) of the write-ahead log location up to which recovery proceeds. (The precise stopping point is also influenced by the exclusive option.) |
+| recovery.pitrTarget.name | string | `""` | Named restore point (created with pg_create_restore_point()) to which recovery proceeds |
+| recovery.pitrTarget.time | string | `""` | Point in time recovery Time target in RFC3339 format |
+| recovery.pitrTarget.tli | string | `""` | The target timeline ("latest" or a positive integer) |
+| recovery.pitrTarget.xid | string | `""` | Point in time recovery Transaction ID up to which recovery proceeds. (The precise stopping point is also influenced by the exclusive option.) |
 | recovery.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | recovery.s3.accessKey | string | `""` |  |
 | recovery.s3.bucket | string | `""` |  |
