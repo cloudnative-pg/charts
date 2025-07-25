@@ -16,4 +16,6 @@ spec:
       image: timescale/timescaledb-ha:pg15-ts{{ .Values.version.timescaledb }}
     - major: 16
       image: timescale/timescaledb-ha:pg16-ts{{ .Values.version.timescaledb }}
+    - major: 17
+      image: timescale/timescaledb-ha:pg17-ts{{ .Values.version.timescaledb }}
 {{ end }}
