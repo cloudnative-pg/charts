@@ -1,0 +1,23 @@
+name: Deploys cert-manager
+description: Deploys the cert-manager operator using Helm.
+inputs:
+  namespace:
+    description: 'The name of the namespace where cert-manager will be installed.'
+    required: false
+    default: 'cert-manager'
+runs:
+  using: composite
+  steps:
+    - name: Deploy the operator
+      shell: bash
+      env:
+        NAMESPACE: ${{ inputs.namespace }}
+      run: |
+        helm repo add jetstack https://charts.jetstack.io
+
+        helm install \
+          cert-manager jetstack/cert-manager \
+          --namespace $NAMESPACE \
+          --create-namespace \
+          --version v1.18.2 \
+          --set crds.enabled=true
