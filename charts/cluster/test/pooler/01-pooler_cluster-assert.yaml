@@ -3,21 +3,21 @@ kind: Deployment
 metadata:
   name: pooler-cluster-pooler-rw
 status:
- readyReplicas: 2
+  readyReplicas: 2
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pooler-cluster-pooler-ro
 status:
- readyReplicas: 2
+  readyReplicas: 2
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pooler-cluster-pooler-lb-rw
 status:
- readyReplicas: 2
+  readyReplicas: 2
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
