@@ -12,7 +12,7 @@
     sslmode: {{ $config.sslMode | quote }}
   {{- if $config.passwordSecret.name }}
   password:
-    name: {{ $config.passwordSecret.name }}
+    name: {{ tpl $config.passwordSecret.name . }}
     key: {{ $config.passwordSecret.key }}
   {{- end }}
   {{- if $config.sslKeySecret.name }}

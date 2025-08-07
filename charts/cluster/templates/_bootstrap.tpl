@@ -43,7 +43,7 @@ bootstrap:
     {{- end }}
 
 externalClusters:
-  {{- include "cluster.externalSourceCluster" (list "pgBaseBackupSource" .Values.recovery.pgBaseBackup.source) | nindent 2 }}
+  {{- include "cluster.externalSourceCluster" (list "pgBaseBackupSource" . .Values.recovery.pgBaseBackup.source) | nindent 2 }}
 
 {{- else if eq .Values.recovery.method "import" }}
   initdb:
@@ -78,7 +78,7 @@ externalClusters:
       {{- end }}
 
 externalClusters:
-  {{- include "cluster.externalSourceCluster" (list "importSource" .Values.recovery.import.source) | nindent 2 }}
+  {{- include "cluster.externalSourceCluster" (list "importSource" . .Values.recovery.import.source) | nindent 2 }}
 
 {{- else }}
   recovery:
