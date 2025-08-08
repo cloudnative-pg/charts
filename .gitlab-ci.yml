@@ -1,5 +1,5 @@
 # Use shared CI/CD code for elm projects
 include:
   - project: 'ngc/teak/shared-ci-cd'
-    ref: main
+    ref: improve_maven_build
     file: 'gitlab-ci-only-charts.yml'
