@@ -2,4 +2,4 @@
 include:
   - project: 'ngc/teak/shared-ci-cd'
     ref: main
-    file: 'gitlab-ci-charts-only.yml'
+    file: 'gitlab-ci-only-charts.yml'
