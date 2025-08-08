@@ -1,3 +1,4 @@
+{{- $root := . -}}
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -98,7 +99,7 @@ spec:
     {{ end }}
     {{- with .Values.cluster.roles }}
     roles:
-      {{- toYaml . | nindent 6 }}
+      {{- tpl (toYaml .) $root | nindent 6 }}
     {{ end }}
   {{- end }}
 
