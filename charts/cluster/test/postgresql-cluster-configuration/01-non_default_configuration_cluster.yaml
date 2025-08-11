@@ -37,6 +37,28 @@ cluster:
             values:
             - node1
             - node2
+  env:
+    - name: MY_CUSTOM_FLAG
+      value: enabled
+    - name: MY_CUSTROM_ENV
+      valueFrom:
+        configMapKeyRef:
+          name: my-custom-env
+          key: env
+          optional: true
+    - name: MY_CUSTOM_SECRET_ENV
+      valueFrom:
+        secretKeyRef:
+          name: my-custom-secret
+          key: secret
+          optional: true
+  envFrom:
+    - configMapRef:
+        name: global-envs
+        optional: true
+    - secretRef:
+        name: db-credentials
+        optional: true
   certificates:
     serverCASecret: ca-secret
     serverTLSSecret: tls-secret
