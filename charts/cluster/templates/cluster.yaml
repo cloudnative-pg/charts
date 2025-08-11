@@ -22,6 +22,9 @@ spec:
   {{- end }}
   postgresUID: {{ include "cluster.postgresUID" . }}
   postgresGID: {{ include "cluster.postgresGID" . }}
+  {{- with .Values.cluster.additionalEnv }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
   storage:
     size: {{ .Values.cluster.storage.size }}
     {{- if not (empty .Values.cluster.storage.storageClass) }}
@@ -41,6 +44,14 @@ spec:
   {{- with .Values.cluster.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- if .Values.cluster.env }}
+  env:
+    {{ toYaml .Values.cluster.env | indent 4 }}
+  {{- end }}
+  {{- if .Values.cluster.envFrom }}
+  envFrom:
+    {{ toYaml .Values.cluster.envFrom | indent 4 }}
   {{- end }}
   {{- if .Values.cluster.priorityClassName }}
   priorityClassName: {{ .Values.cluster.priorityClassName }}
