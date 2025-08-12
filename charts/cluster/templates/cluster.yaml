@@ -57,7 +57,7 @@ spec:
   enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
   {{- with .Values.cluster.superuserSecret }}
   superuserSecret:
-    name: {{ . }}
+    name: {{ tpl . $root }}
   {{ end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
   postgresql:
