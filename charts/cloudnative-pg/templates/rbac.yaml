@@ -129,6 +129,7 @@ rules:
   - backups
   - clusters
   - databases
+  - failoverquorums
   - poolers
   - publications
   - scheduledbackups
@@ -157,6 +158,7 @@ rules:
   - backups
   - clusters
   - databases
+  - failoverquorums
   - poolers
   - publications
   - scheduledbackups
