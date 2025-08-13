@@ -502,3 +502,15 @@ poolers: []
   #   # -- Custom PgBouncer deployment template.
   #   # Use to override image, specify resources, etc.
   #   template: {}
+
+# -- Configure Helm tests
+tests:
+  ping:
+    image: alpine:3.17
+    command:
+      - sh
+    args:
+      - -c
+      - >-
+        apk add postgresql-client &&
+        psql "postgresql://$PGUSER:$PGPASS@{{ include "cluster.fullname" . }}-rw.{{ include "cluster.namespace" . }}.svc.cluster.local:5432/${PGDBNAME:-$PGUSER}" -c 'SELECT 1'
