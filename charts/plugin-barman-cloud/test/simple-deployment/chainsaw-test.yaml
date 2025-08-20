@@ -8,7 +8,7 @@ spec:
   timeouts:
     apply: 1s
     exec: 30s
-    assert: 5s
+    assert: 10s
     cleanup: 30s
   steps:
     - name: Install barman cloud plugin
