@@ -48,7 +48,6 @@ Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 | podLabels | object | `{}` | Labels to be added to the pod. |
 | podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security Context for the whole pod. |
 | priorityClassName | string | `""` | Priority indicates the importance of a Pod relative to other Pods. |
-| rbac.additional.leaderElection.create | bool | `true` | Specifies whether the leader election Role and RoleBinding should be created. |
 | rbac.create | bool | `true` | Specifies whether Role and RoleBinding should be created. |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |

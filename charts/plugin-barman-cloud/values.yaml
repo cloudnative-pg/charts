@@ -92,10 +92,6 @@ serviceAccount:
 rbac:
   # -- Specifies whether Role and RoleBinding should be created.
   create: true
-  additional:
-    leaderElection:
-      # -- Specifies whether the leader election Role and RoleBinding should be created.
-      create: true
 
 # @schema
 # additionalProperties: true

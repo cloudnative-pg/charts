@@ -312,31 +312,6 @@
     },
     "rbac": {
       "properties": {
-        "additional": {
-          "properties": {
-            "leaderElection": {
-              "properties": {
-                "create": {
-                  "default": true,
-                  "description": "Specifies whether the leader election Role and RoleBinding should be created.",
-                  "required": [],
-                  "title": "create",
-                  "type": "boolean"
-                }
-              },
-              "required": [
-                "create"
-              ],
-              "title": "leaderElection",
-              "type": "object"
-            }
-          },
-          "required": [
-            "leaderElection"
-          ],
-          "title": "additional",
-          "type": "object"
-        },
         "create": {
           "default": true,
           "description": "Specifies whether Role and RoleBinding should be created.",
@@ -346,8 +321,7 @@
         }
       },
       "required": [
-        "create",
-        "additional"
+        "create"
       ],
       "title": "rbac",
       "type": "object"
