@@ -418,6 +418,8 @@ backups:
     create: true
     # -- Name of the backup credentials secret
     name: ""
+    accessKeyIdField: ""
+    secretAccessKeyField: ""
 
   wal:
     # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
@@ -426,6 +428,7 @@ backups:
     encryption: AES256
     # -- Number of WAL files to be archived or restored in parallel.
     maxParallel: 1
+    additionalCommandArgs: []
   data:
     # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
     compression: gzip
@@ -433,6 +436,7 @@ backups:
     encryption: AES256
     # -- Number of data files to be archived or restored in parallel.
     jobs: 2
+    additionalCommandArgs: []
 
   scheduledBackups:
     -
