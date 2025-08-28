@@ -38,6 +38,7 @@ CloudNativePG Operator Helm Chart
 | config.secret | bool | `false` | Specifies whether it should be stored in a secret, instead of a configmap. |
 | containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container Security Context. |
 | crds.create | bool | `true` | Specifies whether the CRDs should be created when installing the chart. |
+| crds.annotations | dict | `{}` | Annotations to pass to the CRDs created. Useful e.g. for ArgoCD ServerSideApply |
 | dnsPolicy | string | `""` |  |
 | fullnameOverride | string | `""` |  |
 | hostNetwork | bool | `false` |  |
