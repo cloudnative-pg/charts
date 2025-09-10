@@ -23,8 +23,34 @@ spec:
                 non-default-configuration ../../
         - assert:
             file: ./01-non_default_configuration_cluster-assert.yaml
+    - name: Install object-store recovery-cluster for specific database and owner
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./02-recovery_object_store_database_owner.yaml \
+                --wait \
+                recovery-object-store-database-owner ../../
+        - assert:
+            file: ./02-recovery_object_store_database_owner-assert.yaml
+    - name: Install backup recovery-cluster for specific database and owner
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./03-recovery_backup_database_owner.yaml \
+                --wait \
+                recovery-backup-database-owner ../../
+        - assert:
+            file: ./03-recovery_backup_database_owner-assert.yaml
     - name: Cleanup
       try:
         - script:
             content: |
               helm uninstall --namespace $NAMESPACE non-default-configuration
+              helm uninstall --namespace $NAMESPACE recovery-object-store-database-owner
+              helm uninstall --namespace $NAMESPACE recovery-backup-database-owner
