@@ -106,7 +106,54 @@ externalClusters:
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
     {{- end }}
 {{- end }}
-{{-  else }}
+{{- else if eq .Values.mode "replica" }}
+  {{- if eq .Values.replica.bootstrap.source "pg_basebackup" }}
+  pg_basebackup:
+    source: originCluster
+    {{ with .Values.replica.bootstrap.database }}
+    database: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.owner }}
+    owner: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.secret }}
+    secret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- else if eq .Values.replica.bootstrap.source "object_store" }}
+  recovery:
+    source: originCluster
+    {{ with .Values.replica.bootstrap.database }}
+    database: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.owner }}
+    owner: {{ . }}
+    {{- end }}
+    {{ with .Values.replica.bootstrap.secret }}
+    secret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- else }}
+    {{ fail "Invalid replica bootstrap mode!" }}
+  {{- end }}
+{{- else }}
   {{ fail "Invalid cluster mode!" }}
+{{- end }}
+{{- if eq .Values.mode "replica" }}
+replica:
+  enabled: true
+  source: originCluster
+  {{ with .Values.replica.self }}
+  self: {{ . }}
+  {{- end }}
+  {{ with .Values.replica.primary }}
+  primary: {{ . }}
+  {{- end }}
+  {{ with .Values.replica.promotionToken }}
+  promotionToken: {{ . }}
+  {{- end }}
+  {{ with .Values.replica.minApplyDelay }}
+  minApplyDelay: {{ . }}
+  {{- end }}
 {{- end }}
 {{- end }}
