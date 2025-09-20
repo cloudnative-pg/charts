@@ -136,6 +136,18 @@ externalClusters:
   {{- else }}
     {{ fail "Invalid replica bootstrap mode!" }}
   {{- end }}
+
+externalClusters:
+  - name: originCluster
+  {{- if not (empty .Values.replica.origin.objectStore.provider) }}
+    barmanObjectStore:
+      serverName: {{ .Values.replica.origin.objectStore.clusterName }}
+      {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.replica.origin.objectStore "secretPrefix" "origin" -}}
+      {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 -}}
+  {{- end }}
+  {{- if not (empty .Values.replica.origin.pg_basebackup.host) }}
+    {{- include "cluster.externalSourceCluster" .Values.replica.origin.pg_basebackup | nindent 4 }}
+  {{- end }}
 {{- else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}
