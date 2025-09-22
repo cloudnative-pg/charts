@@ -98,6 +98,10 @@ recovery:
     create: true
     # -- Name of the backup credentials secret
     name: ""
+    # Definable accessKeyIdField to use (Left blank defaults to ACCESS_KEY_ID)
+    accessKeyIdField: ""
+    # Definable accessKeyIdField to use (Left blank defaults to ACCESS_SECRET_KEY)
+    secretAccessKeyField: ""
 
   # See https://cloudnative-pg.io/documentation/1.22/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
   pgBaseBackup:
@@ -418,7 +422,9 @@ backups:
     create: true
     # -- Name of the backup credentials secret
     name: ""
+    # Definable accessKeyIdField to use (Left blank defaults to ACCESS_KEY_ID)
     accessKeyIdField: ""
+    # Definable secretAccessKeyField to use (Left blank defaults to ACCESS_SECRET_KEY)
     secretAccessKeyField: ""
 
   wal:
