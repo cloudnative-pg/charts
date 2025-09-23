@@ -201,6 +201,19 @@ cluster:
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-LocalObjectReference
   imagePullSecrets: []
 
+  # -- The list of environment variables
+  # See: https://cloudnative-pg.io/documentation/current/cluster_conf/#environment-variables
+  env: []
+    #- name: TZ
+    #  value: Australia/Sydney
+
+  # -- The list of environment variables references
+  envFrom: []
+    #- configMapRef:
+    #    name: config-map-name
+    #- secretRef:
+    #    name: secret-name
+
   storage:
     size: 8Gi
     storageClass: ""

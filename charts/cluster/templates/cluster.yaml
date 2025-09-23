@@ -20,6 +20,14 @@ spec:
   imagePullSecrets:
     {{- . | toYaml | nindent 4 }}
   {{- end }}
+  {{- with .Values.cluster.env }}
+  env:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
+  {{- with .Values.cluster.envFrom }}
+  envFrom:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
   postgresUID: {{ include "cluster.postgresUID" . }}
   postgresGID: {{ include "cluster.postgresGID" . }}
   storage:
