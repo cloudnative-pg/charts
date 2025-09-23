@@ -3,7 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   name: backups.postgresql.cnpg.io
 spec:
@@ -34,7 +34,8 @@ spec:
     name: v1
     schema:
       openAPIV3Schema:
-        description: Backup is the Schema for the backups API
+        description: A Backup resource is a request for a PostgreSQL backup by the
+          user.
         properties:
           apiVersion:
             description: |-
@@ -142,6 +143,9 @@ spec:
             required:
             - cluster
             type: object
+            x-kubernetes-validations:
+            - message: BackupSpec is immutable once set
+              rule: oldSelf == self
           status:
             description: |-
               Most recently observed status of the backup. This data may not be up to
@@ -445,7 +449,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   name: clusterimagecatalogs.postgresql.cnpg.io
 spec:
@@ -527,7 +531,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   name: clusters.postgresql.cnpg.io
 spec:
@@ -671,7 +675,6 @@ spec:
                                     pod labels will be ignored. The default value is empty.
                                     The same key is forbidden to exist in both matchLabelKeys and labelSelector.
                                     Also, matchLabelKeys cannot be set when labelSelector isn't set.
-                                    This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                   items:
                                     type: string
                                   type: array
@@ -686,7 +689,6 @@ spec:
                                     pod labels will be ignored. The default value is empty.
                                     The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
                                     Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-                                    This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                   items:
                                     type: string
                                   type: array
@@ -852,7 +854,6 @@ spec:
                                 pod labels will be ignored. The default value is empty.
                                 The same key is forbidden to exist in both matchLabelKeys and labelSelector.
                                 Also, matchLabelKeys cannot be set when labelSelector isn't set.
-                                This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                               items:
                                 type: string
                               type: array
@@ -867,7 +868,6 @@ spec:
                                 pod labels will be ignored. The default value is empty.
                                 The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
                                 Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-                                This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                               items:
                                 type: string
                               type: array
@@ -1030,7 +1030,6 @@ spec:
                                     pod labels will be ignored. The default value is empty.
                                     The same key is forbidden to exist in both matchLabelKeys and labelSelector.
                                     Also, matchLabelKeys cannot be set when labelSelector isn't set.
-                                    This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                   items:
                                     type: string
                                   type: array
@@ -1045,7 +1044,6 @@ spec:
                                     pod labels will be ignored. The default value is empty.
                                     The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
                                     Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-                                    This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                   items:
                                     type: string
                                   type: array
@@ -1211,7 +1209,6 @@ spec:
                                 pod labels will be ignored. The default value is empty.
                                 The same key is forbidden to exist in both matchLabelKeys and labelSelector.
                                 Also, matchLabelKeys cannot be set when labelSelector isn't set.
-                                This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                               items:
                                 type: string
                               type: array
@@ -1226,7 +1223,6 @@ spec:
                                 pod labels will be ignored. The default value is empty.
                                 The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
                                 Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-                                This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                               items:
                                 type: string
                               type: array
@@ -1677,10 +1673,10 @@ spec:
                             description: |-
                               Compress a backup file (a tar file per tablespace) while streaming it
                               to the object store. Available options are empty string (no
-                              compression, default), `gzip`, `bzip2` or `snappy`.
+                              compression, default), `gzip`, `bzip2`, and `snappy`.
                             enum:
-                            - gzip
                             - bzip2
+                            - gzip
                             - snappy
                             type: string
                           encryption:
@@ -1868,11 +1864,15 @@ spec:
                           compression:
                             description: |-
                               Compress a WAL file before sending it to the object store. Available
-                              options are empty string (no compression, default), `gzip`, `bzip2` or `snappy`.
+                              options are empty string (no compression, default), `gzip`, `bzip2`,
+                              `lz4`, `snappy`, `xz`, and `zstd`.
                             enum:
-                            - gzip
                             - bzip2
+                            - gzip
+                            - lz4
                             - snappy
+                            - xz
+                            - zstd
                             type: string
                           encryption:
                             description: |-
@@ -2773,6 +2773,7 @@ spec:
                   sources to the pods to be used by Env
                 items:
                   description: EnvFromSource represents the source of a set of ConfigMaps
+                    or Secrets
                   properties:
                     configMapRef:
                       description: The ConfigMap to select from
@@ -2792,8 +2793,8 @@ spec:
                       type: object
                       x-kubernetes-map-type: atomic
                     prefix:
-                      description: An optional identifier to prepend to each key in
-                        the ConfigMap. Must be a C_IDENTIFIER.
+                      description: Optional text to prepend to the name of each environment
+                        variable. Must be a C_IDENTIFIER.
                       type: string
                     secretRef:
                       description: The Secret to select from
@@ -3179,10 +3180,10 @@ spec:
                               description: |-
                                 Compress a backup file (a tar file per tablespace) while streaming it
                                 to the object store. Available options are empty string (no
-                                compression, default), `gzip`, `bzip2` or `snappy`.
+                                compression, default), `gzip`, `bzip2`, and `snappy`.
                               enum:
-                              - gzip
                               - bzip2
+                              - gzip
                               - snappy
                               type: string
                             encryption:
@@ -3370,11 +3371,15 @@ spec:
                             compression:
                               description: |-
                                 Compress a WAL file before sending it to the object store. Available
-                                options are empty string (no compression, default), `gzip`, `bzip2` or `snappy`.
+                                options are empty string (no compression, default), `gzip`, `bzip2`,
+                                `lz4`, `snappy`, `xz`, and `zstd`.
                               enum:
-                              - gzip
                               - bzip2
+                              - gzip
+                              - lz4
                               - snappy
+                              - xz
+                              - zstd
                               type: string
                             encryption:
                               description: |-
@@ -3591,9 +3596,6 @@ spec:
                     description: The major version of PostgreSQL we want to use from
                       the ImageCatalog
                     type: integer
-                    x-kubernetes-validations:
-                    - message: Major is immutable
-                      rule: self == oldSelf
                   name:
                     description: Name is the name of resource being referenced
                     type: string
@@ -4158,13 +4160,12 @@ spec:
                                       type: object
                                     trafficDistribution:
                                       description: |-
-                                        TrafficDistribution offers a way to express preferences for how traffic is
-                                        distributed to Service endpoints. Implementations can use this field as a
-                                        hint, but are not required to guarantee strict adherence. If the field is
-                                        not set, the implementation will apply its default routing strategy. If set
-                                        to "PreferClose", implementations should prioritize endpoints that are
-                                        topologically close (e.g., same zone).
-                                        This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                                        TrafficDistribution offers a way to express preferences for how traffic
+                                        is distributed to Service endpoints. Implementations can use this field
+                                        as a hint, but are not required to guarantee strict adherence. If the
+                                        field is not set, the implementation will apply its default routing
+                                        strategy. If set to "PreferClose", implementations should prioritize
+                                        endpoints that are in the same zone.
                                       type: string
                                     type:
                                       description: |-
@@ -4539,6 +4540,67 @@ spec:
                       This should only be used for debugging and troubleshooting.
                       Defaults to false.
                     type: boolean
+                  extensions:
+                    description: The configuration of the extensions to be added
+                    items:
+                      description: |-
+                        ExtensionConfiguration is the configuration used to add
+                        PostgreSQL extensions to the Cluster.
+                      properties:
+                        dynamic_library_path:
+                          description: |-
+                            The list of directories inside the image which should be added to dynamic_library_path.
+                            If not defined, defaults to "/lib".
+                          items:
+                            type: string
+                          type: array
+                        extension_control_path:
+                          description: |-
+                            The list of directories inside the image which should be added to extension_control_path.
+                            If not defined, defaults to "/share".
+                          items:
+                            type: string
+                          type: array
+                        image:
+                          description: The image containing the extension, required
+                          properties:
+                            pullPolicy:
+                              description: |-
+                                Policy for pulling OCI objects. Possible values are:
+                                Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+                                Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+                                IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+                                Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+                              type: string
+                            reference:
+                              description: |-
+                                Required: Image or artifact reference to be used.
+                                Behaves in the same way as pod.spec.containers[*].image.
+                                Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+                                More info: https://kubernetes.io/docs/concepts/containers/images
+                                This field is optional to allow higher level config management to default or override
+                                container images in workload controllers like Deployments and StatefulSets.
+                              type: string
+                          type: object
+                          x-kubernetes-validations:
+                          - message: An image reference is required
+                            rule: has(self.reference)
+                        ld_library_path:
+                          description: The list of directories inside the image which
+                            should be added to ld_library_path.
+                          items:
+                            type: string
+                          type: array
+                        name:
+                          description: The name of the extension, required
+                          minLength: 1
+                          pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                          type: string
+                      required:
+                      - image
+                      - name
+                      type: object
+                    type: array
                   ldap:
                     description: Options to specify LDAP configuration
                     properties:
@@ -4666,7 +4728,6 @@ spec:
                       feature
                     properties:
                       dataDurability:
-                        default: required
                         description: |-
                           If set to "required", data durability is strictly enforced. Write operations
                           with synchronous commit settings (`on`, `remote_write`, or `remote_apply`) will
@@ -4778,6 +4839,30 @@ spec:
                           More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
                         format: int32
                         type: integer
+                      isolationCheck:
+                        description: |-
+                          Configure the feature that extends the liveness probe for a primary
+                          instance. In addition to the basic checks, this verifies whether the
+                          primary is isolated from the Kubernetes API server and from its
+                          replicas, ensuring that it can be safely shut down if network
+                          partition or API unavailability is detected. Enabled by default.
+                        properties:
+                          connectionTimeout:
+                            default: 1000
+                            description: Timeout in milliseconds for connections during
+                              the primary isolation check
+                            type: integer
+                          enabled:
+                            default: true
+                            description: Whether primary isolation checking is enabled
+                              for the liveness probe
+                            type: boolean
+                          requestTimeout:
+                            default: 1000
+                            description: Timeout in milliseconds for requests during
+                              the primary isolation check
+                            type: integer
+                        type: object
                       periodSeconds:
                         description: |-
                           How often (in seconds) to perform the probe.
@@ -4827,6 +4912,13 @@ spec:
                           More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
                         format: int32
                         type: integer
+                      maximumLag:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: Lag limit. Used only for `streaming` strategy
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
                       periodSeconds:
                         description: |-
                           How often (in seconds) to perform the probe.
@@ -4860,6 +4952,13 @@ spec:
                           More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
                         format: int32
                         type: integer
+                      type:
+                        description: The probe strategy
+                        enum:
+                        - pg_isready
+                        - streaming
+                        - query
+                        type: string
                     type: object
                   startup:
                     description: The startup probe configuration
@@ -4876,6 +4975,13 @@ spec:
                           More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
                         format: int32
                         type: integer
+                      maximumLag:
+                        anyOf:
+                        - type: integer
+                        - type: string
+                        description: Lag limit. Used only for `streaming` strategy
+                        pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                        x-kubernetes-int-or-string: true
                       periodSeconds:
                         description: |-
                           How often (in seconds) to perform the probe.
@@ -4909,6 +5015,13 @@ spec:
                           More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
                         format: int32
                         type: integer
+                      type:
+                        description: The probe strategy
+                        enum:
+                        - pg_isready
+                        - streaming
+                        - query
+                        type: string
                     type: object
                 type: object
               projectedVolumeTemplate:
@@ -5321,6 +5434,15 @@ spec:
                           This can only be set at creation time. By default set to `_cnpg_`.
                         pattern: ^[0-9a-z_]*$
                         type: string
+                      synchronizeLogicalDecoding:
+                        description: |-
+                          When enabled, the operator automatically manages synchronization of logical
+                          decoding (replication) slots across high-availability clusters.
+
+                          Requires one of the following conditions:
+                          - PostgreSQL version 17 or later
+                          - PostgreSQL version < 17 with pg_failover_slots extension enabled
+                        type: boolean
                     type: object
                   synchronizeReplicas:
                     description: Configures the synchronization of the user defined
@@ -6116,7 +6238,6 @@ spec:
                         - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
 
                         If this value is nil, the behavior is equivalent to the Honor policy.
-                        This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
                       type: string
                     nodeTaintsPolicy:
                       description: |-
@@ -6127,7 +6248,6 @@ spec:
                         - Ignore: node taints are ignored. All nodes are included.
 
                         If this value is nil, the behavior is equivalent to the Ignore policy.
-                        This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
                       type: string
                     topologyKey:
                       description: |-
@@ -6419,10 +6539,6 @@ spec:
                   - hash
                   type: object
                 type: array
-              azurePVCUpdateEnabled:
-                description: AzurePVCUpdateEnabled shows if the PVC online upgrade
-                  is enabled for this cluster
-                type: boolean
               certificates:
                 description: The configuration for the CA and related certificates,
                   initialized with defaults.
@@ -6584,14 +6700,18 @@ spec:
               firstRecoverabilityPoint:
                 description: |-
                   The first recoverability point, stored as a date in RFC3339 format.
-                  This field is calculated from the content of FirstRecoverabilityPointByMethod
+                  This field is calculated from the content of FirstRecoverabilityPointByMethod.
+
+                  Deprecated: the field is not set for backup plugins.
                 type: string
               firstRecoverabilityPointByMethod:
                 additionalProperties:
                   format: date-time
                   type: string
-                description: The first recoverability point, stored as a date in RFC3339
-                  format, per backup method type
+                description: |-
+                  The first recoverability point, stored as a date in RFC3339 format, per backup method type.
+
+                  Deprecated: the field is not set for backup plugins.
                 type: object
               healthyPVC:
                 description: List of all the PVCs not dangling nor initializing
@@ -6621,6 +6741,9 @@ spec:
                   description: InstanceReportedState describes the last reported state
                     of an instance during a reconciliation loop
                   properties:
+                    ip:
+                      description: IP address of the instance
+                      type: string
                     isPrimary:
                       description: indicates if an instance is the primary one
                       type: boolean
@@ -6646,7 +6769,10 @@ spec:
                 format: int32
                 type: integer
               lastFailedBackup:
-                description: Stored as a date in RFC3339 format
+                description: |-
+                  Last failed backup, stored as a date in RFC3339 format.
+
+                  Deprecated: the field is not set for backup plugins.
                 type: string
               lastPromotionToken:
                 description: |-
@@ -6655,15 +6781,19 @@ spec:
                 type: string
               lastSuccessfulBackup:
                 description: |-
-                  Last successful backup, stored as a date in RFC3339 format
-                  This field is calculated from the content of LastSuccessfulBackupByMethod
+                  Last successful backup, stored as a date in RFC3339 format.
+                  This field is calculated from the content of LastSuccessfulBackupByMethod.
+
+                  Deprecated: the field is not set for backup plugins.
                 type: string
               lastSuccessfulBackupByMethod:
                 additionalProperties:
                   format: date-time
                   type: string
-                description: Last successful backup, stored as a date in RFC3339 format,
-                  per backup method type
+                description: |-
+                  Last successful backup, stored as a date in RFC3339 format, per backup method type.
+
+                  Deprecated: the field is not set for backup plugins.
                 type: object
               latestGeneratedNode:
                 description: ID of the latest generated node (used to avoid node name
@@ -6711,6 +6841,20 @@ spec:
                 description: OnlineUpdateEnabled shows if the online upgrade is enabled
                   inside the cluster
                 type: boolean
+              pgDataImageInfo:
+                description: PGDataImageInfo contains the details of the latest image
+                  that has run on the current data directory.
+                properties:
+                  image:
+                    description: Image is the image name
+                    type: string
+                  majorVersion:
+                    description: MajorVersion is the major version of the image
+                    type: integer
+                required:
+                - image
+                - majorVersion
+                type: object
               phase:
                 description: Current phase of the cluster
                 type: string
@@ -6866,6 +7010,9 @@ spec:
                       of switching a cluster to a replica cluster.
                     type: boolean
                 type: object
+              systemID:
+                description: SystemID is the latest detected PostgreSQL SystemID
+                type: string
               tablespacesStatus:
                 description: TablespacesStatus reports the state of the declarative
                   tablespaces in the cluster
@@ -6955,7 +7102,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   name: databases.postgresql.cnpg.io
 spec:
@@ -7077,6 +7224,43 @@ spec:
                 - present
                 - absent
                 type: string
+              extensions:
+                description: The list of extensions to be managed in the database
+                items:
+                  description: ExtensionSpec configures an extension in a database
+                  properties:
+                    ensure:
+                      default: present
+                      description: |-
+                        Specifies whether an extension/schema should be present or absent in
+                        the database. If set to `present`, the extension/schema will be
+                        created if it does not exist. If set to `absent`, the
+                        extension/schema will be removed if it exists.
+                      enum:
+                      - present
+                      - absent
+                      type: string
+                    name:
+                      description: Name of the extension/schema
+                      type: string
+                    schema:
+                      description: |-
+                        The name of the schema in which to install the extension's objects,
+                        in case the extension allows its contents to be relocated. If not
+                        specified (default), and the extension's control file does not
+                        specify a schema either, the current default object creation schema
+                        is used.
+                      type: string
+                    version:
+                      description: |-
+                        The version of the extension to install. If empty, the operator will
+                        install the default version (whatever is specified in the
+                        extension's control file)
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
               icuLocale:
                 description: |-
                   Maps to the `ICU_LOCALE` parameter of `CREATE DATABASE`. This
@@ -7156,6 +7340,35 @@ spec:
                   Maps to the `OWNER TO` command of `ALTER DATABASE`.
                   The role name of the user who owns the database inside PostgreSQL.
                 type: string
+              schemas:
+                description: The list of schemas to be managed in the database
+                items:
+                  description: SchemaSpec configures a schema in a database
+                  properties:
+                    ensure:
+                      default: present
+                      description: |-
+                        Specifies whether an extension/schema should be present or absent in
+                        the database. If set to `present`, the extension/schema will be
+                        created if it does not exist. If set to `absent`, the
+                        extension/schema will be removed if it exists.
+                      enum:
+                      - present
+                      - absent
+                      type: string
+                    name:
+                      description: Name of the extension/schema
+                      type: string
+                    owner:
+                      description: |-
+                        The role name of the user who owns the schema inside PostgreSQL.
+                        It maps to the `AUTHORIZATION` parameter of `CREATE SCHEMA` and the
+                        `OWNER TO` command of `ALTER SCHEMA`.
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
               tablespace:
                 description: |-
                   Maps to the `TABLESPACE` parameter of `CREATE DATABASE`.
@@ -7195,6 +7408,28 @@ spec:
               applied:
                 description: Applied is true if the database was reconciled correctly
                 type: boolean
+              extensions:
+                description: Extensions is the status of the managed extensions
+                items:
+                  description: DatabaseObjectStatus is the status of the managed database
+                    objects
+                  properties:
+                    applied:
+                      description: |-
+                        True of the object has been installed successfully in
+                        the database
+                      type: boolean
+                    message:
+                      description: Message is the object reconciliation message
+                      type: string
+                    name:
+                      description: The name of the object
+                      type: string
+                  required:
+                  - applied
+                  - name
+                  type: object
+                type: array
               message:
                 description: Message is the reconciliation output message
                 type: string
@@ -7204,6 +7439,28 @@ spec:
                   desired state that was synchronized
                 format: int64
                 type: integer
+              schemas:
+                description: Schemas is the status of the managed schemas
+                items:
+                  description: DatabaseObjectStatus is the status of the managed database
+                    objects
+                  properties:
+                    applied:
+                      description: |-
+                        True of the object has been installed successfully in
+                        the database
+                      type: boolean
+                    message:
+                      description: Message is the object reconciliation message
+                      type: string
+                    name:
+                      description: The name of the object
+                      type: string
+                  required:
+                  - applied
+                  - name
+                  type: object
+                type: array
             type: object
         required:
         - metadata
@@ -7218,7 +7475,85 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
+    helm.sh/resource-policy: keep
+  name: failoverquorums.postgresql.cnpg.io
+spec:
+  group: postgresql.cnpg.io
+  names:
+    kind: FailoverQuorum
+    listKind: FailoverQuorumList
+    plural: failoverquorums
+    singular: failoverquorum
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: |-
+          FailoverQuorum contains the information about the current failover
+          quorum status of a PG cluster. It is updated by the instance manager
+          of the primary node and reset to zero by the operator to trigger
+          an update.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          status:
+            description: Most recently observed status of the failover quorum.
+            properties:
+              method:
+                description: Contains the latest reported Method value.
+                type: string
+              primary:
+                description: |-
+                  Primary is the name of the primary instance that updated
+                  this object the latest time.
+                type: string
+              standbyNames:
+                description: |-
+                  StandbyNames is the list of potentially synchronous
+                  instance names.
+                items:
+                  type: string
+                type: array
+              standbyNumber:
+                description: |-
+                  StandbyNumber is the number of synchronous standbys that transactions
+                  need to wait for replies from.
+                type: integer
+            type: object
+        required:
+        - metadata
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   name: imagecatalogs.postgresql.cnpg.io
 spec:
@@ -7299,7 +7634,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   name: poolers.postgresql.cnpg.io
 spec:
@@ -7998,13 +8333,12 @@ spec:
                         type: object
                       trafficDistribution:
                         description: |-
-                          TrafficDistribution offers a way to express preferences for how traffic is
-                          distributed to Service endpoints. Implementations can use this field as a
-                          hint, but are not required to guarantee strict adherence. If the field is
-                          not set, the implementation will apply its default routing strategy. If set
-                          to "PreferClose", implementations should prioritize endpoints that are
-                          topologically close (e.g., same zone).
-                          This is a beta field and requires enabling ServiceTrafficDistribution feature.
+                          TrafficDistribution offers a way to express preferences for how traffic
+                          is distributed to Service endpoints. Implementations can use this field
+                          as a hint, but are not required to guarantee strict adherence. If the
+                          field is not set, the implementation will apply its default routing
+                          strategy. If set to "PreferClose", implementations should prioritize
+                          endpoints that are in the same zone.
                         type: string
                       type:
                         description: |-
@@ -8358,7 +8692,6 @@ spec:
                                             pod labels will be ignored. The default value is empty.
                                             The same key is forbidden to exist in both matchLabelKeys and labelSelector.
                                             Also, matchLabelKeys cannot be set when labelSelector isn't set.
-                                            This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                           items:
                                             type: string
                                           type: array
@@ -8373,7 +8706,6 @@ spec:
                                             pod labels will be ignored. The default value is empty.
                                             The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
                                             Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-                                            This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                           items:
                                             type: string
                                           type: array
@@ -8541,7 +8873,6 @@ spec:
                                         pod labels will be ignored. The default value is empty.
                                         The same key is forbidden to exist in both matchLabelKeys and labelSelector.
                                         Also, matchLabelKeys cannot be set when labelSelector isn't set.
-                                        This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                       items:
                                         type: string
                                       type: array
@@ -8556,7 +8887,6 @@ spec:
                                         pod labels will be ignored. The default value is empty.
                                         The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
                                         Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-                                        This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                       items:
                                         type: string
                                       type: array
@@ -8722,7 +9052,6 @@ spec:
                                             pod labels will be ignored. The default value is empty.
                                             The same key is forbidden to exist in both matchLabelKeys and labelSelector.
                                             Also, matchLabelKeys cannot be set when labelSelector isn't set.
-                                            This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                           items:
                                             type: string
                                           type: array
@@ -8737,7 +9066,6 @@ spec:
                                             pod labels will be ignored. The default value is empty.
                                             The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
                                             Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-                                            This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                           items:
                                             type: string
                                           type: array
@@ -8905,7 +9233,6 @@ spec:
                                         pod labels will be ignored. The default value is empty.
                                         The same key is forbidden to exist in both matchLabelKeys and labelSelector.
                                         Also, matchLabelKeys cannot be set when labelSelector isn't set.
-                                        This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                       items:
                                         type: string
                                       type: array
@@ -8920,7 +9247,6 @@ spec:
                                         pod labels will be ignored. The default value is empty.
                                         The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
                                         Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-                                        This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
                                       items:
                                         type: string
                                       type: array
@@ -9182,7 +9508,7 @@ spec:
                                 Cannot be updated.
                               items:
                                 description: EnvFromSource represents the source of
-                                  a set of ConfigMaps
+                                  a set of ConfigMaps or Secrets
                                 properties:
                                   configMapRef:
                                     description: The ConfigMap to select from
@@ -9203,8 +9529,8 @@ spec:
                                     type: object
                                     x-kubernetes-map-type: atomic
                                   prefix:
-                                    description: An optional identifier to prepend
-                                      to each key in the ConfigMap. Must be a C_IDENTIFIER.
+                                    description: Optional text to prepend to the name
+                                      of each environment variable. Must be a C_IDENTIFIER.
                                     type: string
                                   secretRef:
                                     description: The Secret to select from
@@ -9470,6 +9796,12 @@ spec:
                                       - port
                                       type: object
                                   type: object
+                                stopSignal:
+                                  description: |-
+                                    StopSignal defines which signal will be sent to a container when it is being stopped.
+                                    If not specified, the default is defined by the container runtime in use.
+                                    StopSignal can only be set for Pods with a non-empty .spec.os.name
+                                  type: string
                               type: object
                             livenessProbe:
                               description: |-
@@ -10696,7 +11028,7 @@ spec:
                                 Cannot be updated.
                               items:
                                 description: EnvFromSource represents the source of
-                                  a set of ConfigMaps
+                                  a set of ConfigMaps or Secrets
                                 properties:
                                   configMapRef:
                                     description: The ConfigMap to select from
@@ -10717,8 +11049,8 @@ spec:
                                     type: object
                                     x-kubernetes-map-type: atomic
                                   prefix:
-                                    description: An optional identifier to prepend
-                                      to each key in the ConfigMap. Must be a C_IDENTIFIER.
+                                    description: Optional text to prepend to the name
+                                      of each environment variable. Must be a C_IDENTIFIER.
                                     type: string
                                   secretRef:
                                     description: The Secret to select from
@@ -10981,6 +11313,12 @@ spec:
                                       - port
                                       type: object
                                   type: object
+                                stopSignal:
+                                  description: |-
+                                    StopSignal defines which signal will be sent to a container when it is being stopped.
+                                    If not specified, the default is defined by the container runtime in use.
+                                    StopSignal can only be set for Pods with a non-empty .spec.os.name
+                                  type: string
                               type: object
                             livenessProbe:
                               description: Probes are not allowed for ephemeral containers.
@@ -12028,7 +12366,7 @@ spec:
                           Init containers may not have Lifecycle actions, Readiness probes, Liveness probes, or Startup probes.
                           The resourceRequirements of an init container are taken into account during scheduling
                           by finding the highest request/limit for each resource type, and then using the max of
-                          of that value or the sum of the normal containers. Limits are applied to init containers
+                          that value or the sum of the normal containers. Limits are applied to init containers
                           in a similar fashion.
                           Init containers cannot currently be added or removed.
                           Cannot be updated.
@@ -12203,7 +12541,7 @@ spec:
                                 Cannot be updated.
                               items:
                                 description: EnvFromSource represents the source of
-                                  a set of ConfigMaps
+                                  a set of ConfigMaps or Secrets
                                 properties:
                                   configMapRef:
                                     description: The ConfigMap to select from
@@ -12224,8 +12562,8 @@ spec:
                                     type: object
                                     x-kubernetes-map-type: atomic
                                   prefix:
-                                    description: An optional identifier to prepend
-                                      to each key in the ConfigMap. Must be a C_IDENTIFIER.
+                                    description: Optional text to prepend to the name
+                                      of each environment variable. Must be a C_IDENTIFIER.
                                     type: string
                                   secretRef:
                                     description: The Secret to select from
@@ -12491,6 +12829,12 @@ spec:
                                       - port
                                       type: object
                                   type: object
+                                stopSignal:
+                                  description: |-
+                                    StopSignal defines which signal will be sent to a container when it is being stopped.
+                                    If not specified, the default is defined by the container runtime in use.
+                                    StopSignal can only be set for Pods with a non-empty .spec.os.name
+                                  type: string
                               type: object
                             livenessProbe:
                               description: |-
@@ -14205,7 +14549,6 @@ spec:
                                 - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
 
                                 If this value is nil, the behavior is equivalent to the Honor policy.
-                                This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
                               type: string
                             nodeTaintsPolicy:
                               description: |-
@@ -14216,7 +14559,6 @@ spec:
                                 - Ignore: node taints are ignored. All nodes are included.
 
                                 If this value is nil, the behavior is equivalent to the Ignore policy.
-                                This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
                               type: string
                             topologyKey:
                               description: |-
@@ -15195,7 +15537,7 @@ spec:
                                 The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
                                 The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
                                 The volume will be mounted read-only (ro) and non-executable files (noexec).
-                                Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+                                Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
                                 The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
                               properties:
                                 pullPolicy:
@@ -16159,7 +16501,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   name: publications.postgresql.cnpg.io
 spec:
@@ -16355,7 +16697,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   name: scheduledbackups.postgresql.cnpg.io
 spec:
@@ -16547,7 +16889,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.2
+    controller-gen.kubebuilder.io/version: v0.18.0
     helm.sh/resource-policy: keep
   name: subscriptions.postgresql.cnpg.io
 spec:
@@ -16638,8 +16980,11 @@ spec:
                 additionalProperties:
                   type: string
                 description: |-
-                  Subscription parameters part of the `WITH` clause as expected by
-                  PostgreSQL `CREATE SUBSCRIPTION` command
+                  Subscription parameters included in the `WITH` clause of the PostgreSQL
+                  `CREATE SUBSCRIPTION` command. Most parameters cannot be changed
+                  after the subscription is created and will be ignored if modified
+                  later, except for a limited set documented at:
+                  https://www.postgresql.org/docs/current/sql-altersubscription.html#SQL-ALTERSUBSCRIPTION-PARAMS-SET
                 type: object
               publicationDBName:
                 description: |-
