@@ -116,9 +116,9 @@ bootstrap:
     {{- with .Values.replica.bootstrap.owner }}
     owner: {{ . }}
     {{- end }}
-    {{- with .Values.replica.bootstrap.secret }}
+    {{- if .Values.replica.bootstrap.secret }}
     secret:
-      {{- toYaml . | nindent 6 }}
+      name: {{ tpl ( toYaml .Values.replica.bootstrap.secret ) . }}
     {{- end }}
 
 {{- else if dig "replica" "origin" "pg_basebackup" "host" nil .Values.AsMap }}
@@ -155,7 +155,7 @@ replica:
   {{- with .Values.replica.self }}
   self: {{ . }}
   {{- end }}
-  {{ with .Values.replica.primary }}
+  {{- with .Values.replica.primary }}
   primary: {{ . }}
   {{- end }}
   {{- with .Values.replica.promotionToken }}
