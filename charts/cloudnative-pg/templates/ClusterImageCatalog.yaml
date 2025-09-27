@@ -1,0 +1,11 @@
+{{- if .Values.clusterImageCatalog }}
+{{- range $clusterCatalog := .Values.clusterImageCatalog }}
+apiVersion: postgresql.cnpg.io/v1
+kind: ClusterImageCatalog
+metadata:
+  name: {{ $clusterCatalog.name }}
+spec:
+  images: {{ toYaml $clusterCatalog.images | nindent 4 }}
+---
+{{- end }}
+{{- end }}
