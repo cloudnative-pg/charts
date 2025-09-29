@@ -1,11 +1,13 @@
-{{- if .Values.clusterImageCatalog }}
-{{- range $clusterCatalog := .Values.clusterImageCatalog }}
+{{- range $clusterImageCatalog := .Values.clusterImageCatalogs }}
 apiVersion: postgresql.cnpg.io/v1
 kind: ClusterImageCatalog
 metadata:
-  name: {{ $clusterCatalog.name }}
+  name: {{ required "Items in .Values.clusterImageCatalogs require key 'name'." $clusterImageCatalog.name }}
 spec:
-  images: {{ toYaml $clusterCatalog.images | nindent 4 }}
+  images:
+  {{- range $entry := required "Items in .Values.clusterImageCatalogs require key 'images' with a list of keys 'image' and 'major'." $clusterImageCatalog.images }}
+  - image: {{ required "Items in .Values.clusterImageCatalogs.images require key 'image'." $entry.image }}
+    major: {{ required "Items in .Values.clusterImageCatalogs.images require key 'major'." $entry.major }}
+  {{- end }}
 ---
-{{- end }}
 {{- end }}
