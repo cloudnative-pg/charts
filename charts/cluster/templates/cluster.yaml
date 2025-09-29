@@ -22,9 +22,6 @@ spec:
   {{- end }}
   postgresUID: {{ include "cluster.postgresUID" . }}
   postgresGID: {{ include "cluster.postgresGID" . }}
-  {{- with .Values.cluster.additionalEnv }}
-      {{- toYaml . | nindent 6 }}
-      {{- end }}
   storage:
     size: {{ .Values.cluster.storage.size }}
     {{- if not (empty .Values.cluster.storage.storageClass) }}
