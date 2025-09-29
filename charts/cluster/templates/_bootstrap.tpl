@@ -1,4 +1,6 @@
 {{- define "cluster.bootstrap" -}}
+{{- $replicaOriginCluster := ternary .Values.replica.primary "originCluster" ( and .Values.replica.primary ( not ( eq .Values.replica.self .Values.replica.primary ))) }}
+{{- $replicaSelfCluster := default ( include "cluster.fullname" . ) .Values.replica.self }}
 {{- if eq .Values.mode "standalone" }}
 bootstrap:
   initdb:
@@ -107,6 +109,7 @@ externalClusters:
     {{- end }}
 {{- end }}
 {{- else if eq .Values.mode "replica" }}
+{{- if dig "replica" "origin" "objectstore" "provider" nil .Values.AsMap }}
 bootstrap:
   recovery:
     source: originCluster
@@ -120,11 +123,10 @@ bootstrap:
     secret:
       name: {{ tpl ( toYaml .Values.replica.bootstrap.secret ) . }}
     {{- end }}
-
-{{- else if dig "replica" "origin" "pg_basebackup" "host" nil .Values.AsMap }}
-  {{- include "cluster.externalSourceCluster" (list "pgBaseBackupSource" . .Values.replica.origin.pgBaseBackup ) | nindent 4 }}
+{{- else if dig "replica" "origin" "pgBaseBackup" "host" nil .Values.AsMap }}
+bootstrap:
   pg_basebackup:
-    source: originCluster
+    source: {{ $replicaOriginCluster }}
     {{- with .Values.replica.bootstrap.database }}
     database: {{ . }}
     {{- end }}
@@ -132,26 +134,35 @@ bootstrap:
     owner: {{ . }}
     {{- end }}
     {{- if .Values.replica.bootstrap.secret }}
-    secret: {{ tpl ( toYaml .Values.replica.bootstrap.secret ) . }}
+    secret:
+      name: {{ tpl ( toYaml .Values.replica.bootstrap.secret ) . }}
     {{- end }}
+{{- end }}
 
 externalClusters:
-  - name: originCluster
   {{- if dig "replica" "origin" "objectStore" "provider" nil .Values.AsMap }}
+  - name: {{ $replicaOriginCluster }}
     barmanObjectStore:
       serverName: {{ .Values.replica.origin.objectStore.clusterName }}
       {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.replica.origin.objectStore "secretPrefix" "origin" -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 -}}
+  {{ else if dig "replica" "origin" "pgBaseBackup" "host" nil .Values.AsMap }}
+    {{- include "cluster.externalSourceCluster" (list $replicaOriginCluster . .Values.replica.origin.pgBaseBackup ) | nindent 2 }}
+    {{- $selfPseudoConfig := dict "host" ( include "cluster.fullname" . ) "port" "5432" "username" .Values.replica.bootstrap.owner "database" .Values.replica.bootstrap.database  "passwordSecret" ( dict "name" ( tpl .Values.replica.bootstrap.secret . ) "key" "password" ) }}
+    {{- include "cluster.externalSourceCluster" ( list $replicaSelfCluster . $selfPseudoConfig ) | nindent 2 }}
   {{- else }}
-    {{ fail "Invalid replica bootstrap mode!" }}
+    {{ fail "Invalid replica bootstrap mode, either objectStore or pgBaseBackup needs to be specified!" }}
   {{- end }}
 {{- else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}
 {{- if eq .Values.mode "replica" }}
+
 replica:
   enabled: true
-  source: originCluster
+  {{- with $replicaOriginCluster }}
+  source: {{ . }}
+  {{- end }}
   {{- with .Values.replica.self }}
   self: {{ . }}
   {{- end }}
