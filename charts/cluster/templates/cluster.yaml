@@ -1,3 +1,4 @@
+{{- $root := . -}}
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -56,7 +57,7 @@ spec:
   enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
   {{- with .Values.cluster.superuserSecret }}
   superuserSecret:
-    name: {{ . }}
+    name: {{ tpl . $root }}
   {{ end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
   postgresql:
@@ -98,7 +99,7 @@ spec:
     {{ end }}
     {{- with .Values.cluster.roles }}
     roles:
-      {{- toYaml . | nindent 6 }}
+      {{- tpl (toYaml .) $root | nindent 6 }}
     {{ end }}
   {{- end }}
 
@@ -119,19 +120,19 @@ spec:
     {{- with .Values.cluster.monitoring.customQueriesSecret }}
     customQueriesSecret:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
     {{- end }}
     {{- if not (empty .Values.cluster.monitoring.podMonitor.relabelings) }}
     {{- with .Values.cluster.monitoring.podMonitor.relabelings }}
     podMonitorRelabelings:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
     {{- end }}
     {{- if not (empty .Values.cluster.monitoring.podMonitor.metricRelabelings) }}
     {{- with .Values.cluster.monitoring.podMonitor.metricRelabelings }}
     podMonitorMetricRelabelings:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
     {{- end }}
   {{ include "cluster.bootstrap" . | nindent 2 }}
   {{ include "cluster.backup" . | nindent 2 }}
