@@ -1,6 +1,4 @@
 {{- define "cluster.bootstrap" -}}
-{{- $replicaOriginCluster := ternary .Values.replica.primary "originCluster" ( and .Values.replica.primary ( not ( eq .Values.replica.self .Values.replica.primary ))) }}
-{{- $replicaSelfCluster := default ( include "cluster.fullname" . ) .Values.replica.self }}
 {{- if eq .Values.mode "standalone" }}
 bootstrap:
   initdb:
@@ -126,7 +124,7 @@ bootstrap:
 {{- else if dig "replica" "origin" "pgBaseBackup" "host" nil .Values.AsMap }}
 bootstrap:
   pg_basebackup:
-    source: {{ $replicaOriginCluster }}
+    source: originCluster
     {{- with .Values.replica.bootstrap.database }}
     database: {{ . }}
     {{- end }}
@@ -141,15 +139,13 @@ bootstrap:
 
 externalClusters:
   {{- if dig "replica" "origin" "objectStore" "provider" nil .Values.AsMap }}
-  - name: {{ $replicaOriginCluster }}
+  - name: originCluster
     barmanObjectStore:
       serverName: {{ .Values.replica.origin.objectStore.clusterName }}
       {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.replica.origin.objectStore "secretPrefix" "origin" -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 -}}
   {{ else if dig "replica" "origin" "pgBaseBackup" "host" nil .Values.AsMap }}
-    {{- include "cluster.externalSourceCluster" (list $replicaOriginCluster . .Values.replica.origin.pgBaseBackup ) | nindent 2 }}
-    {{- $selfPseudoConfig := dict "host" ( include "cluster.fullname" . ) "port" "5432" "username" .Values.replica.bootstrap.owner "database" .Values.replica.bootstrap.database  "passwordSecret" ( dict "name" ( tpl .Values.replica.bootstrap.secret . ) "key" "password" ) }}
-    {{- include "cluster.externalSourceCluster" ( list $replicaSelfCluster . $selfPseudoConfig ) | nindent 2 }}
+    {{- include "cluster.externalSourceCluster" (list "originCluster" . .Values.replica.origin.pgBaseBackup ) | nindent 2 }}
   {{- else }}
     {{ fail "Invalid replica bootstrap mode, either objectStore or pgBaseBackup needs to be specified!" }}
   {{- end }}
@@ -160,15 +156,7 @@ externalClusters:
 
 replica:
   enabled: true
-  {{- with $replicaOriginCluster }}
-  source: {{ . }}
-  {{- end }}
-  {{- with .Values.replica.self }}
-  self: {{ . }}
-  {{- end }}
-  {{- with .Values.replica.primary }}
-  primary: {{ . }}
-  {{- end }}
+  source: originCluster
   {{- with .Values.replica.promotionToken }}
   promotionToken: {{ . }}
   {{- end }}
