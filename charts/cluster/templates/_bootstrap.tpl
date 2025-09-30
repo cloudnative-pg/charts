@@ -106,62 +106,7 @@ externalClusters:
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
     {{- end }}
 {{- end }}
-{{- else if eq .Values.mode "replica" }}
-{{- if dig "replica" "origin" "objectstore" "provider" nil .Values.AsMap }}
-bootstrap:
-  recovery:
-    source: originCluster
-    {{- with .Values.replica.bootstrap.database }}
-    database: {{ . }}
-    {{- end }}
-    {{- with .Values.replica.bootstrap.owner }}
-    owner: {{ . }}
-    {{- end }}
-    {{- if .Values.replica.bootstrap.secret }}
-    secret:
-      name: {{ tpl ( toYaml .Values.replica.bootstrap.secret ) . }}
-    {{- end }}
-{{- else if dig "replica" "origin" "pgBaseBackup" "host" nil .Values.AsMap }}
-bootstrap:
-  pg_basebackup:
-    source: originCluster
-    {{- with .Values.replica.bootstrap.database }}
-    database: {{ . }}
-    {{- end }}
-    {{- with .Values.replica.bootstrap.owner }}
-    owner: {{ . }}
-    {{- end }}
-    {{- if .Values.replica.bootstrap.secret }}
-    secret:
-      name: {{ tpl ( toYaml .Values.replica.bootstrap.secret ) . }}
-    {{- end }}
-{{- end }}
-
-externalClusters:
-  {{- if dig "replica" "origin" "objectStore" "provider" nil .Values.AsMap }}
-  - name: originCluster
-    barmanObjectStore:
-      serverName: {{ .Values.replica.origin.objectStore.clusterName }}
-      {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.replica.origin.objectStore "secretPrefix" "origin" -}}
-      {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 -}}
-  {{ else if dig "replica" "origin" "pgBaseBackup" "host" nil .Values.AsMap }}
-    {{- include "cluster.externalSourceCluster" (list "originCluster" . .Values.replica.origin.pgBaseBackup ) | nindent 2 }}
-  {{- else }}
-    {{ fail "Invalid replica bootstrap mode, either objectStore or pgBaseBackup needs to be specified!" }}
-  {{- end }}
-{{- else }}
+{{-  else }}
   {{ fail "Invalid cluster mode!" }}
-{{- end }}
-{{- if eq .Values.mode "replica" }}
-
-replica:
-  enabled: true
-  source: originCluster
-  {{- with .Values.replica.promotionToken }}
-  promotionToken: {{ . }}
-  {{- end }}
-  {{- with .Values.replica.minApplyDelay }}
-  minApplyDelay: {{ . }}
-  {{- end }}
 {{- end }}
 {{- end }}

@@ -10,22 +10,22 @@
     dbname: {{ . | quote }}
     {{- end }}
     sslmode: {{ $config.sslMode | quote }}
-  {{- if dig "passwordSecret" "name" nil $config  }}
+  {{- if $config.passwordSecret.name }}
   password:
     name: {{ tpl $config.passwordSecret.name . }}
     key: {{ $config.passwordSecret.key }}
   {{- end }}
-  {{- if dig "sslKeySecret" "name" nil $config }}
+  {{- if $config.sslKeySecret.name }}
   sslKey:
     name: {{ $config.sslKeySecret.name }}
     key: {{ $config.sslKeySecret.key }}
   {{- end }}
-  {{- if dig "sslCertSecret" "name" nil $config }}
+  {{- if $config.sslCertSecret.name }}
   sslCert:
     name: {{ $config.sslCertSecret.name }}
     key: {{ $config.sslCertSecret.key }}
   {{- end }}
-  {{- if dig "sslRootCertSecret" "name" nil $config }}
+  {{- if $config.sslRootCertSecret.name }}
   sslRootCert:
     name: {{ $config.sslRootCertSecret.name }}
     key: {{ $config.sslRootCertSecret.key }}
