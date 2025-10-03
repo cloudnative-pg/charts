@@ -131,6 +131,7 @@ rules:
   resources:
   - backups
   - clusters
+  - clusters/status
   - databases
   - failoverquorums
   - poolers
@@ -160,6 +161,7 @@ rules:
   resources:
   - backups
   - clusters
+  - clusters/status
   - databases
   - failoverquorums
   - poolers
