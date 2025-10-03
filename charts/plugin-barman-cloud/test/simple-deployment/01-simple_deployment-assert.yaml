@@ -174,6 +174,12 @@ rules:
   - list
   - watch
 - apiGroups:
+  - postgresql.cnpg.io
+  resources:
+  - clusters/finalizers
+  verbs:
+  - update
+- apiGroups:
   - rbac.authorization.k8s.io
   resources:
   - rolebindings
