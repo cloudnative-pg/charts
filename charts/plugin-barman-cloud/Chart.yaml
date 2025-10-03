@@ -17,31 +17,28 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 apiVersion: v2
-name: cloudnative-pg
-description: CloudNativePG Operator Helm Chart
+name: plugin-barman-cloud
+description: Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
 type: application
-version: "0.26.0"
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application. Versions are not expected to
-# follow Semantic Versioning, they should reflect the version the application is using.
-# It is recommended to use it with quotes.
-appVersion: "1.27.0"
+version: "0.2.0"
+appVersion: "v0.7.0"
 sources:
-  - https://github.com/cloudnative-pg/charts
+  - https://github.com/cloudnative-pg/plugin-barman-cloud
 keywords:
-  - operator
-  - controller
+  - barman
+  - cloud
+  - backup
   - postgresql
   - postgres
   - database
+  - cloudnativepg
+  - cloudnative-pg
 home: https://cloudnative-pg.io
 maintainers:
-  - name: phisco
-    email: p.scorsolini@gmail.com
-dependencies:
-  - name: cluster
-    alias: monitoring
-    condition: monitoring.grafanaDashboard.create
-    version: "0.0"
-    repository: https://cloudnative-pg.github.io/grafana-dashboards
+  - name: itay-grudev
+    email: itay@verito.digital
+  - name: quantumenigmaa
+    email: thibaud.vaisseau@gmail.com
+  - name: quentinbisson
+    email: quentin.bisson@gmail.com
