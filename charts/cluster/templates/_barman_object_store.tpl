@@ -32,6 +32,9 @@
     secretAccessKey:
       name: {{ $secretName }}
       key: ACCESS_SECRET_KEY
+    region:
+      name: {{ $secretName }}
+      key: Region
   {{- end }}
 {{- else if eq .scope.provider "azure" }}
   {{- if empty .scope.destinationPath }}
