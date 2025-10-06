@@ -16,19 +16,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-apiVersion: v2
-name: cluster
-description: Deploys and manages a CloudNativePG cluster and its associated resources.
-icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
-type: application
-version: 0.3.1
-sources:
-  - https://github.com/cloudnative-pg/charts
-keywords:
-  - postgresql
-  - postgres
-  - database
-home: https://cloudnative-pg.io
-maintainers:
-  - name: itay-grudev
-    email: itay+cloudnativepg-charts+github.com@grudev.com
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "plugin-barman-cloud.fullname" . }}-selfsigned-issuer
+  namespace: {{ include "plugin-barman-cloud.namespace" . }}
+spec:
+  selfSigned: {}
