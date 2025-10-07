@@ -1,10 +1,10 @@
-{{- define "cluster.backup" -}}
-{{- if .Values.backups.enabled }}
-backup:
-  target: "prefer-standby"
-  {{ if (eq (include "cluster.useBarmanCloudPlugin" .) "false")  }}
-  retentionPolicy: {{ .Values.backups.retentionPolicy }}
-  barmanObjectStore:
+{{ if and (eq (include "cluster.useBarmanCloudPlugin" .) "true") .Values.backups.enabled }}
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ include "cluster.fullname" $  }}-object-store
+spec:
+  configuration:
     wal:
       compression: {{ .Values.backups.wal.compression }}
       {{- if .Values.backups.wal.encryption }}
@@ -17,9 +17,6 @@ backup:
       encryption: {{ .Values.backups.data.encryption }}
       {{- end }}
       jobs: {{ .Values.backups.data.jobs }}
-
-    {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.backups "secretPrefix" "backup" }}
-    {{- include "cluster.barmanObjectStoreConfig" $d | nindent 2 }}
-  {{- end}}
-{{- end }}
+    {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.backups "secretPrefix" "backup" -}}
+    {{- include "cluster.barmanObjectStoreConfig" $d | indent 2 }}
 {{- end }}
