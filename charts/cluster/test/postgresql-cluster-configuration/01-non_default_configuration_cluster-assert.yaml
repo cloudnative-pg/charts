@@ -101,7 +101,7 @@ spec:
       memory: 256Mi
     limits:
       cpu: 100m
-      memory: 256Mi  
+      memory: 256Mi
   plugins:
     - name: cnpg-i-plugin-example.my-org.io
       enabled: true
