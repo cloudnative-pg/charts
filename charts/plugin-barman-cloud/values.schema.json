@@ -318,6 +318,12 @@
           "required": [],
           "title": "create",
           "type": "boolean"
+        },
+        "aggregateClusterRoles": {
+          "default": false,
+          "description": "Specifies whether ClusterRoles should be aggregated to standard user roles",
+          "required": [],
+          "type": "boolean"
         }
       },
       "required": [

@@ -49,6 +49,7 @@ Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 | podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security Context for the whole pod. |
 | priorityClassName | string | `""` | Priority indicates the importance of a Pod relative to other Pods. |
 | rbac.create | bool | `true` | Specifies whether Role and RoleBinding should be created. |
+| rbac.aggregateClusterRoles | bool | `false` | Aggregate ClusterRoles to Kubernetes default user-facing roles. Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
 | service.ipFamilies | list | `[]` | Sets the families that should be supported and the order in which they should be applied to ClusterIP as well. Can be IPv4 and/or IPv6. |
