@@ -1,0 +1,62 @@
+type: postgresql
+version:
+  postgresql: "17"
+
+cluster:
+  instances: 1
+
+databases:
+  - name: default_db
+    ensure: present
+    owner: test-owner
+
+  - name: test-db-icu
+    ensure: present
+    owner: test-owner
+    template: template0
+    encoding: UTF16
+    connectionLimit: 100
+    tablespace: test-space
+    databaseReclaimPolicy: delete
+    isTemplate: true
+    locale: "en_GB.utf8"
+    localeProvider: icu
+    localeCollate: "en_GB.utf8"
+    localeCType: "en_GB.utf8"
+    icuLocale: "en_GB"
+    icuRules: "en_GB"
+    collationVersion: "1"
+    schemas:
+      - name: test-schema
+        owner: test-owner
+        ensure: absent
+    extensions:
+      - name: pg_search
+        ensure: absent
+        version: "0.15.21"
+        schema: test-schema
+
+  - name: test-db-builtin
+    ensure: present
+    owner: test-owner
+    template: template0
+    encoding: UTF16
+    connectionLimit: 100
+    tablespace: test-space
+    databaseReclaimPolicy: delete
+    isTemplate: true
+    locale: "en_GB.utf8"
+    localeProvider: builtin
+    localeCollate: "en_GB.utf8"
+    localeCType: "en_GB.utf8"
+    builtinLocale: "en_GB.utf8"
+    collationVersion: "1"
+    schemas:
+      - name: test-schema
+        owner: test-owner
+        ensure: absent
+    extensions:
+      - name: pg_search
+        ensure: absent
+        version: "0.15.21"
+        schema: test-schema
