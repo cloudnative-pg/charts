@@ -4,6 +4,9 @@ kind: ObjectStore
 metadata:
   name: {{ include "cluster.fullname" $  }}-object-store
 spec:
+  {{- with .Values.backups.retentionPolicy }}
+  retentionPolicy: {{ . }}
+  {{- end }}
   configuration:
   {{- if and (eq .Values.mode "recovery") (eq .Values.recovery.method "object_store") -}}
   {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
