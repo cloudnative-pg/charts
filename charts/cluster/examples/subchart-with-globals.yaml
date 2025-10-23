@@ -1,0 +1,75 @@
+# Example: Using CloudNative PG Chart as a Subchart with Global Values and TPL supporting
+# 
+# This example demonstrates how to use this chart as a subchart in a parent chart,
+# leveraging global values for dynamic configuration. This is useful when multiple
+# charts need to share common values like database names, backup buckets, AWS regions, etc.
+#
+
+# Global values (typically defined in parent chart's values.yaml)
+# These are shared across multiple subcharts
+global:
+  accountId: "123456789012"
+  region: us-east-1
+  resourcePrefix: prod-
+  
+  # Database configuration (used across subcharts)
+  dbName: application_db
+  dbOwner: app_owner
+  backupBucket: postgresql-backups
+  iamRole: ekes-postgres-role
+  environment: production
+  project: mobile-app
+
+# PostgreSQL Cluster Configuration (subchart-specific)
+type: postgresql
+mode: standalone
+
+cluster:
+  instances: 3
+  
+  # Initialize database with dynamic name from globals
+  initdb:
+    database: "{{ .Values.global.dbName }}"
+    owner: "{{ .Values.global.dbOwner }}"
+    encoding: UTF8
+  
+  storage:
+    size: 10Gi
+    storageClass: gp3
+  
+  walStorage:
+    enabled: true
+    size: 10Gi
+    storageClass: gp3
+  
+  primaryUpdateMethod: switchover
+  primaryUpdateStrategy: unsupervised
+  
+  postgresql: {}
+  
+  # Service account with IAM role annotation from globals
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        iamRoleArn: "arn:aws:iam::{{ .Values.global.accountId }}:role/{{ .Values.global.iamRole }}"
+      labels:
+        environment: "{{ .Values.global.environment }}"
+        project: "{{ .Values.global.project }}"
+
+# Backups configuration with dynamic bucket name from globals
+backups:
+  enabled: true
+  provider: s3
+  s3:
+    region: "{{ .Values.global.region }}"
+    bucket: "{{ .Values.global.resourcePrefix }}{{ .Values.global.backupBucket }}"
+    path: "/{{ .Release.Name }}"
+    inheritFromIAMRole: true
+  
+  scheduledBackups:
+    - name: daily-full
+      schedule: "0 6 * * *"
+      method: barmanObjectStore
+  retentionPolicy: "14d"
+  secret:
+    name: "{{ .Release.Name }}-backup-s3-creds"
