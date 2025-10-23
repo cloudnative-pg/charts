@@ -3,31 +3,31 @@
 {{- $config := last . -}}
 - name: {{ first . }}
   connectionParameters:
-    host: {{ $config.host | quote }}
-    port: {{ $config.port | quote }}
-    user: {{ $config.username | quote }}
+    host: {{ include "tpl" (dict "value" $config.host "context" $) | quote }}
+    port: {{ include "tpl" (dict "value" $config.port "context" $) | quote }}
+    user: {{ include "tpl" (dict "value" $config.username "context" $) | quote }}
     {{- with $config.database }}
-    dbname: {{ . | quote }}
+    dbname: {{ include "tpl" (dict "value" . "context" $) | quote }}
     {{- end }}
-    sslmode: {{ $config.sslMode | quote }}
+    sslmode: {{ include "tpl" (dict "value" $config.sslMode "context" $) | quote }}
   {{- if $config.passwordSecret.name }}
   password:
-    name: {{ $config.passwordSecret.name }}
+    name: {{ include "tpl" (dict "value" $config.passwordSecret.name "context" $) }}
     key: {{ $config.passwordSecret.key }}
   {{- end }}
   {{- if $config.sslKeySecret.name }}
   sslKey:
-    name: {{ $config.sslKeySecret.name }}
+    name: {{ include "tpl" (dict "value" $config.sslKeySecret.name "context" $) }}
     key: {{ $config.sslKeySecret.key }}
   {{- end }}
   {{- if $config.sslCertSecret.name }}
   sslCert:
-    name: {{ $config.sslCertSecret.name }}
+    name: {{ include "tpl" (dict "value" $config.sslCertSecret.name "context" $) }}
     key: {{ $config.sslCertSecret.key }}
   {{- end }}
   {{- if $config.sslRootCertSecret.name }}
   sslRootCert:
-    name: {{ $config.sslRootCertSecret.name }}
+    name: {{ include "tpl" (dict "value" $config.sslRootCertSecret.name "context" $) }}
     key: {{ $config.sslRootCertSecret.key }}
   {{- end }}
 {{- end }}
