@@ -67,6 +67,10 @@ spec:
     name: {{ . }}
   {{ end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
+  {{- with .Values.cluster.plugins }}
+  plugins:
+    {{- toYaml . | nindent 4}}
+  {{- end }}
   postgresql:
     {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
     shared_preload_libraries:

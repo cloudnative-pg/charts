@@ -102,6 +102,12 @@ spec:
     limits:
       cpu: 100m
       memory: 256Mi
+  plugins:
+    - name: cnpg-i-plugin-example.my-org.io
+      enabled: true
+      parameters:
+        key1: value1
+        key2: value2
   priorityClassName: mega-high
   primaryUpdateStrategy: supervised
   primaryUpdateMethod: restart

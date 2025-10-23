@@ -343,6 +343,13 @@ cluster:
     #  - name: custom-queries-secret
     #    key: custom-queries
 
+  plugins: []
+    # - name: cnpg-i-plugin-example.my-org.io
+    #   enabled: true
+    #   parameters:
+    #     key1: value1
+    #     key2: value2
+
   postgresql:
     # -- PostgreSQL configuration options (postgresql.conf)
     parameters: {}
