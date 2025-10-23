@@ -561,7 +561,12 @@
                             "type": "string"
                         },
                         "secret": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            }
                         },
                         "source": {
                             "type": "object",
