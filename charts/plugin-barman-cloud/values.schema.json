@@ -383,6 +383,12 @@
     },
     "serviceAccount": {
       "properties": {
+        "additionalAnnotations": {
+          "additionalProperties": true,
+          "description": "Annotations to be added only to the service account.",
+          "required": [],
+          "title": "additionalAnnotations"
+        },
         "create": {
           "default": true,
           "description": "Specifies whether the service account should be created.",
@@ -455,7 +461,7 @@
     },
     "updateStrategy": {
       "additionalProperties": true,
-      "description": "Update strategy for the operator.\nref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy\nFor example:\n type: RollingUpdate\n rollingUpdate:\n   maxSurge: 25%\n   maxUnavailable: 25%\n\nWARNING: the RollingUpdate strategy is not supported by the operator yet so it can\ncurrently. only use the Recreate strategy.",
+      "description": "Update strategy for the operator.\nref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy\nFor example:\n type: RollingUpdate\n rollingUpdate:\n   maxSurge: 25%\n   maxUnavailable: 25%\n\nWARNING: the RollingUpdate strategy is not supported by the operator yet so it can\ncurrently only use the Recreate strategy.",
       "required": [],
       "title": "updateStrategy"
     }
