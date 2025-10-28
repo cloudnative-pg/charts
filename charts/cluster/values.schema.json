@@ -193,6 +193,12 @@
                 "enableSuperuserAccess": {
                     "type": "boolean"
                 },
+                "env": {
+                    "type": "array"
+                },
+                "envFrom": {
+                    "type": "array"
+                },
                 "imageCatalogRef": {
                     "type": "object"
                 },
@@ -400,6 +406,9 @@
                 "clusterName": {
                     "type": "string"
                 },
+                "database": {
+                    "type": "string"
+                },
                 "destinationPath": {
                     "type": "string"
                 },
@@ -537,6 +546,9 @@
                     }
                 },
                 "method": {
+                    "type": "string"
+                },
+                "owner": {
                     "type": "string"
                 },
                 "pgBaseBackup": {
