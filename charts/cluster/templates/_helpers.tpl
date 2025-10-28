@@ -87,6 +87,8 @@ If a custom imageName is available, use it, otherwise use the defaults based on 
         {{- printf "ghcr.io/cloudnative-pg/postgresql:%s" .Values.version.postgresql -}}
     {{- else if eq .Values.type "postgis" -}}
         {{- printf "ghcr.io/cloudnative-pg/postgis:%s-%s" .Values.version.postgresql .Values.version.postgis -}}
+    {{- else if eq .Values.type "documentdb" -}}
+        {{- printf "ghcr.io/ferretdb/postgres-documentdb:%s-%s-ferretdb-%s" (include "cluster.postgresqlMajor" .) .Values.version.documentdb .Values.version.ferretdb -}}
     {{- else -}}
         {{ fail "Invalid cluster type!" }}
     {{- end }}

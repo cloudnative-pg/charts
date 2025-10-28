@@ -10,6 +10,7 @@ namespaceOverride: ""
 # * `postgresql`
 # * `postgis`
 # * `timescaledb`
+# * `documentdb`
 type: postgresql
 
 version:
@@ -19,6 +20,10 @@ version:
   timescaledb: "2.15"
   # -- If using PostGIS, specify the version
   postgis: "3.4"
+  # -- If using DocumentDB, specify the version
+  documentdb: "0.106.0"
+  # -- If using DocumentDB, specify the FerretDB version
+  ferretdb: "2.5.0"
 
 ###
 # -- Cluster mode of operation. Available modes:

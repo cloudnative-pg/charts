@@ -68,10 +68,14 @@ spec:
   {{ end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
   postgresql:
-    {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
+    {{- if or (eq .Values.type "timescaledb") (eq .Values.type "documentdb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
     shared_preload_libraries:
       {{- if eq .Values.type "timescaledb" }}
       - timescaledb
+      {{- else if eq .Values.type "documentdb" }}
+      - pg_cron
+      - pg_documentdb_core
+      - pg_documentdb
       {{- end }}
       {{- with .Values.cluster.postgresql.shared_preload_libraries }}
       {{- toYaml . | nindent 6 }}

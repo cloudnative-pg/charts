@@ -1,0 +1,10 @@
+type: documentdb
+mode: standalone
+version:
+  postgresql: "17"
+  documentdb: "0.106.0"
+  ferretdb: "2.5.0"
+cluster:
+  instances: 1
+backups:
+  enabled: false

@@ -10,7 +10,7 @@ bootstrap:
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
-    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (not (empty .Values.cluster.initdb.postInitApplicationSQL)) }}
+    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (eq .Values.type "documentdb") (not (empty .Values.cluster.initdb.postInitApplicationSQL)) }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
       - CREATE EXTENSION IF NOT EXISTS postgis;
@@ -19,6 +19,9 @@ bootstrap:
       - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
       {{- else if eq .Values.type "timescaledb" }}
       - CREATE EXTENSION IF NOT EXISTS timescaledb;
+      {{- else if eq .Values.type "documentdb" }}
+      - CREATE EXTENSION IF NOT EXISTS pg_cron CASCADE;
+      - CREATE EXTENSION IF NOT EXISTS documentdb CASCADE;
       {{- end }}
       {{- with .Values.cluster.initdb }}
           {{- range .postInitApplicationSQL }}
