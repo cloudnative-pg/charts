@@ -1,0 +1,99 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: documentdb-mongodb-client-test
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: mongo-client-test
+        image: mongo:7.0
+        env:
+          - name: POSTGRES_HOST
+            value: "documentdb-cluster-rw"
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: documentdb-cluster-app
+                key: username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: documentdb-cluster-app
+                key: password
+          - name: DB_NAME
+            value: "app"
+        command: ['sh', '-c']
+        args:
+          - |
+            # Wait a moment for the service to be ready
+            sleep 5
+
+            # Test MongoDB client connectivity and operations
+            mongosh "mongodb://$DB_USER:$DB_PASSWORD@$POSTGRES_HOST:27017/$DB_NAME?directConnection=true" --eval '
+              print("Testing MongoDB client connectivity to DocumentDB...");
+
+              // Test 1: Insert a document
+              print("Test 1: Inserting document...");
+              const insertResult = db.test_collection.insertOne({
+                hello: "world",
+                timestamp: new Date(),
+                nested: { field: "value" },
+                array: [1, 2, 3]
+              });
+              print("Insert successful, _id: " + insertResult.insertedId);
+
+              // Test 2: Find the document
+              print("Test 2: Finding document...");
+              const doc = db.test_collection.findOne({ hello: "world" });
+              if (!doc || doc.hello !== "world") {
+                throw new Error("Document not found or incorrect");
+              }
+              print("Find successful: " + JSON.stringify(doc));
+
+              // Test 3: Update the document
+              print("Test 3: Updating document...");
+              const updateResult = db.test_collection.updateOne(
+                { hello: "world" },
+                { $set: { updated: true, updateTime: new Date() } }
+              );
+              if (updateResult.modifiedCount !== 1) {
+                throw new Error("Update failed");
+              }
+              print("Update successful");
+
+              // Test 4: Verify update
+              print("Test 4: Verifying update...");
+              const updatedDoc = db.test_collection.findOne({ hello: "world" });
+              if (!updatedDoc.updated) {
+                throw new Error("Update verification failed");
+              }
+              print("Update verified");
+
+              // Test 5: Count documents
+              print("Test 5: Counting documents...");
+              const count = db.test_collection.countDocuments({ hello: "world" });
+              if (count !== 1) {
+                throw new Error("Count failed, expected 1 got " + count);
+              }
+              print("Count successful: " + count);
+
+              // Test 6: Delete the document
+              print("Test 6: Deleting document...");
+              const deleteResult = db.test_collection.deleteOne({ hello: "world" });
+              if (deleteResult.deletedCount !== 1) {
+                throw new Error("Delete failed");
+              }
+              print("Delete successful");
+
+              // Test 7: Verify deletion
+              print("Test 7: Verifying deletion...");
+              const deletedDoc = db.test_collection.findOne({ hello: "world" });
+              if (deletedDoc !== null) {
+                throw new Error("Document still exists after deletion");
+              }
+              print("Deletion verified");
+
+              print("✓ All MongoDB client operations successful!");
+            '

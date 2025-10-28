@@ -1,0 +1,6 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: documentdb-cluster
+status:
+  readyInstances: 2
