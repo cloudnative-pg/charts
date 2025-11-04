@@ -97,9 +97,14 @@ spec:
     synchronous:
       {{- toYaml . | nindent 6 }}
     {{ end }}
-    {{- with .Values.cluster.postgresql.parameters }}
+    {{- if or (eq .Values.type "documentdb") .Values.cluster.postgresql.parameters }}
     parameters:
+      {{- if eq .Values.type "documentdb" }}
+      cron.database_name: {{ .Values.cluster.initdb.database | default "app" | quote }}
+      {{- end }}
+      {{- with .Values.cluster.postgresql.parameters }}
       {{- toYaml . | nindent 6 }}
+      {{- end }}
     {{- end }}
 
   {{- if not (and (empty .Values.cluster.roles) (empty .Values.cluster.services)) }}
