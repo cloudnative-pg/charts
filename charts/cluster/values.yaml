@@ -487,6 +487,28 @@ imageCatalog:
     # - image: ghcr.io/your_repo/your_image:your_tag
     #   major: 16
 
+# -- FerretDB gateway (DocumentDB only)
+# Provides MongoDB wire protocol (port 27017) for existing MongoDB applications
+ferretdb:
+  # -- Enable FerretDB gateway (only for type: documentdb)
+  enabled: false
+  # -- Number of FerretDB instances
+  instances: 1
+  # -- FerretDB image (defaults to ghcr.io/ferretdb/ferretdb)
+  image: ""
+  # -- FerretDB image tag (defaults to version.ferretdb)
+  tag: ""
+  # -- Container resources
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 250m
+    #   memory: 256Mi
+  # -- Additional environment variables
+  env: []
+
 # -- List of PgBouncer poolers
 poolers: []
   # -
