@@ -10,8 +10,8 @@ spec:
       - name: mongo-client-test
         image: mongo:7.0
         env:
-          - name: POSTGRES_HOST
-            value: "documentdb-cluster-rw"
+          - name: FERRETDB_HOST
+            value: "documentdb-cluster-ferretdb"
           - name: DB_USER
             valueFrom:
               secretKeyRef:
@@ -31,7 +31,7 @@ spec:
             sleep 5
 
             # Test MongoDB client connectivity and operations
-            mongosh "mongodb://$DB_USER:$DB_PASSWORD@$POSTGRES_HOST:27017/$DB_NAME?directConnection=true" --eval '
+            mongosh "mongodb://$DB_USER:$DB_PASSWORD@$FERRETDB_HOST:27017/$DB_NAME?directConnection=true" --eval '
               print("Testing MongoDB client connectivity to DocumentDB...");
 
               // Test 1: Insert a document

@@ -506,6 +506,32 @@ ferretdb:
     # requests:
     #   cpu: 250m
     #   memory: 256Mi
+  # -- FerretDB log level (debug, info, warn, error)
+  logLevel: "info"
+  # -- Enable/disable FerretDB telemetry
+  telemetry: "disable"
+  # -- How FerretDB provides credentials to PostgreSQL (pgpass, password-in-url, or env)
+  # - pgpass: Uses .pgpass file (recommended, works with all pg_hba methods)
+  # - password-in-url: Embeds password in connection string (simpler, dev/test only)
+  # - env: Uses PGPASSWORD environment variable
+  # Note: PostgreSQL authentication method is controlled by cluster.postgresql.pg_hba
+  credentialMethod: "pgpass"
+  # -- PostgreSQL connection SSL mode (disable, require, verify-ca, verify-full)
+  # Uncomment to override default SSL behavior
+  # sslMode: "require"
+  # -- Enable authentication (default: true). Set to false to disable
+  # auth: true
+  # -- FerretDB operation mode (default: normal, options: diff-normal, proxy)
+  # mode: "normal"
+  # -- Expose debug/metrics endpoint (e.g. ":8088")
+  # debugAddr: ":8088"
+  # -- OpenTelemetry traces URL for distributed tracing
+  # otelTracesUrl: ""
+  # -- Additional FerretDB command-line arguments (as list)
+  # extraArgs: []
+    # - "--listen-tls=:27018"
+    # - "--listen-tls-cert-file=/path/to/cert"
+    # - "--listen-tls-key-file=/path/to/key"
   # -- Additional environment variables
   env: []
 

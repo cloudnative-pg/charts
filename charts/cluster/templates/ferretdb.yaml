@@ -30,21 +30,55 @@ spec:
         - name: mongodb
           containerPort: 27017
           protocol: TCP
-        command: ["/ferretdb"]
+        command: ["/bin/sh"]
         args:
-        - "--listen-addr=:27017"
-        - "--postgresql-url=postgres://{{ $dbOwner }}@{{ include "cluster.fullname" . }}-rw:5432/{{ $dbName }}"
-        - "--telemetry=disable"
-        - "--log-level=info"
+        - "-c"
+        - |
+          {{- $credMethod := .Values.ferretdb.credentialMethod | default "pgpass" }}
+          {{- if eq $credMethod "pgpass" }}
+          # Create .pgpass file for secure password handling
+          echo "{{ include "cluster.fullname" . }}-rw:5432:{{ $dbName }}:{{ $dbOwner }}:${DB_PASSWORD}" > /tmp/.pgpass
+          chmod 600 /tmp/.pgpass
+          export PGPASSFILE=/tmp/.pgpass
+          PG_URL="postgres://{{ $dbOwner }}@{{ include "cluster.fullname" . }}-rw:5432/{{ $dbName }}{{- if .Values.ferretdb.sslMode }}?sslmode={{ .Values.ferretdb.sslMode }}{{- end }}"
+          {{- else if eq $credMethod "password-in-url" }}
+          # Using password in URL (less secure, for dev/test only)
+          PG_URL="postgres://{{ $dbOwner }}:${DB_PASSWORD}@{{ include "cluster.fullname" . }}-rw:5432/{{ $dbName }}{{- if .Values.ferretdb.sslMode }}?sslmode={{ .Values.ferretdb.sslMode }}{{- end }}"
+          {{- else if eq $credMethod "env" }}
+          # Using PGPASSWORD environment variable
+          export PGPASSWORD="${DB_PASSWORD}"
+          PG_URL="postgres://{{ $dbOwner }}@{{ include "cluster.fullname" . }}-rw:5432/{{ $dbName }}{{- if .Values.ferretdb.sslMode }}?sslmode={{ .Values.ferretdb.sslMode }}{{- end }}"
+          {{- end }}
+
+          exec /ferretdb \
+            --listen-addr=:27017 \
+            --postgresql-url="${PG_URL}" \
+            --telemetry={{ .Values.ferretdb.telemetry | default "disable" }} \
+            --log-level={{ .Values.ferretdb.logLevel | default "info" }} \
+            {{- if .Values.ferretdb.auth }}
+            --auth={{ .Values.ferretdb.auth }} \
+            {{- end }}
+            {{- if .Values.ferretdb.mode }}
+            --mode={{ .Values.ferretdb.mode }} \
+            {{- end }}
+            {{- if .Values.ferretdb.debugAddr }}
+            --debug-addr={{ .Values.ferretdb.debugAddr }} \
+            {{- end }}
+            {{- if .Values.ferretdb.otelTracesUrl }}
+            --otel-traces-url={{ .Values.ferretdb.otelTracesUrl }} \
+            {{- end }}
+            {{- range .Values.ferretdb.extraArgs }}
+            {{ . }} \
+            {{- end }}
         env:
         {{- if .Values.cluster.initdb.secret }}
-        - name: PGPASSWORD
+        - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Values.cluster.initdb.secret.name }}
               key: password
         {{- else }}
-        - name: PGPASSWORD
+        - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ include "cluster.fullname" . }}-app
