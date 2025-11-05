@@ -296,7 +296,6 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | ---- | ------ | --- |
 | itay-grudev | <itay+cloudnativepg-charts+github.com@grudev.com> |  |
 
-
 Features that require feedback
 ------------------------------
 
@@ -305,7 +304,6 @@ Alternatively a ticket and a PR if you have found that something needs a change 
 
 - [ ] Google Cloud Storage Backups
 - [ ] Google Cloud Storage Recovery
-
 
 TODO
 ----
