@@ -45,9 +45,10 @@ spec:
   {{- if .Values.cluster.priorityClassName }}
   priorityClassName: {{ .Values.cluster.priorityClassName }}
   {{- end }}
+  {{- with .Values.cluster.inheritedMetadata }}
   inheritedMetadata:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
 
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
