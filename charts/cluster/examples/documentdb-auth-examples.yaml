@@ -4,13 +4,14 @@
 # Users can choose the approach that best fits their security requirements.
 
 ###############################################################################
-# Option 1: Default Configuration (.pgpass) - Recommended for Dev/Test
+# Option 1: Default Configuration (.pgpass)
 ###############################################################################
-# The chart automatically configures secure authentication using .pgpass file.
-# No additional configuration needed!
+# The chart automatically configures .pgpass for credential handling.
+# This is the recommended way to provide credentials (vs password-in-url or env).
 #
-# Security Level: Medium
-# Use Case: Development, Testing, Staging
+# Credential Handling: Best practice (prevents password exposure in logs/ps)
+# Use Case: All environments (recommended default for password-based auth)
+# Production Note: Combine with strong pg_hba rules (see Option 2 below)
 ---
 type: documentdb
 mode: standalone
