@@ -1,11 +1,6 @@
 # DocumentDB Authentication Configuration Examples
-#
-# This file shows different authentication configurations for DocumentDB with FerretDB.
-# Users can choose the approach that best fits their security requirements.
 
-###############################################################################
 # Option 1: Default Configuration (.pgpass)
-###############################################################################
 # The chart automatically configures .pgpass for credential handling.
 # This is the recommended way to provide credentials (vs password-in-url or env).
 #
@@ -26,13 +21,10 @@ ferretdb:
 backups:
   enabled: false
 
-###############################################################################
 # Option 2: pg_hba Host-Based Authentication - Recommended for Production
-###############################################################################
 # Configure PostgreSQL to authenticate based on source IP/network.
 # This is the most secure and flexible production approach.
 #
-# Security Level: High
 # Use Case: Production, Staging with network isolation
 ---
 type: documentdb
@@ -64,13 +56,10 @@ ferretdb:
 backups:
   enabled: true
 
-###############################################################################
 # Option 3: Trust Authentication - Local Development ONLY
-###############################################################################
 # WARNING: This is INSECURE! Use only for local testing.
 # No password required - anyone who can reach the database can connect.
 #
-# Security Level: None
 # Use Case: Local development on trusted networks only
 ---
 type: documentdb
@@ -90,12 +79,9 @@ ferretdb:
 backups:
   enabled: false
 
-###############################################################################
 # Option 4: Mixed Authentication Rules
-###############################################################################
 # Combine multiple pg_hba rules for different access patterns.
 #
-# Security Level: High (with proper configuration)
 # Use Case: Complex environments with different access requirements
 ---
 type: documentdb
@@ -124,12 +110,9 @@ ferretdb:
   enabled: true
   instances: 2
 
-###############################################################################
 # Option 5: Custom FerretDB Configuration
-###############################################################################
 # Override FerretDB behavior with custom environment variables
 #
-# Security Level: Configurable
 # Use Case: Custom FerretDB settings, debugging
 ---
 type: documentdb
@@ -166,12 +149,9 @@ ferretdb:
     # - name: FERRETDB_POSTGRESQL_URL
     #   value: "postgres://custom-connection-string"
 
-###############################################################################
 # Option 6: Production Setup with All Security Features
-###############################################################################
 # Complete production-ready configuration with all security best practices.
 #
-# Security Level: Maximum
 # Use Case: Production deployments
 ---
 type: documentdb
@@ -207,7 +187,7 @@ cluster:
       log_connections: "on"
       log_disconnections: "on"
       log_failed_authentication: "on"
-      log_statement: "ddl"  # Log all DDL statements
+      log_statement: "ddl" # Log all DDL statements
       # Performance tuning
       shared_buffers: "4GB"
       effective_cache_size: "12GB"
@@ -234,16 +214,13 @@ backups:
     region: us-east-1
     bucket: production-backups
     path: /documentdb
-    inheritFromIAMRole: true  # Use IAM roles instead of access keys
+    inheritFromIAMRole: true # Use IAM roles instead of access keys
   scheduledBackups:
     - name: daily-backup
-      schedule: "0 0 2 * * *"  # Daily at 2 AM
+      schedule: "0 0 2 * * *" # Daily at 2 AM
       backupOwnerReference: self
   retentionPolicy: "30d"
-
-###############################################################################
 # How to Find Your Pod Network CIDR
-###############################################################################
 # To configure pg_hba rules, you need to know your Kubernetes pod network CIDR:
 #
 # Method 1: Check node pod CIDR allocation
@@ -262,9 +239,7 @@ backups:
 # - EKS: 10.0.0.0/8 (varies)
 # - AKS: 10.244.0.0/16
 
-###############################################################################
 # Testing Authentication Configuration
-###############################################################################
 # After deploying, test your authentication setup:
 #
 # 1. Test PostgreSQL direct connection:
@@ -283,9 +258,7 @@ backups:
 # 4. View pg_hba configuration:
 #    kubectl exec documentdb-cluster-1 -- cat /var/lib/postgresql/data/pgdata/pg_hba.conf
 
-###############################################################################
 # Troubleshooting
-###############################################################################
 # Common Issues:
 #
 # 1. "fe_sendauth: no password supplied"
