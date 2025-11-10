@@ -1,8 +1,8 @@
 # DocumentDB Authentication Configuration Examples
 
-# Option 1: Default Configuration (.pgpass)
-# The chart automatically configures .pgpass for credential handling.
-# This is the recommended way to provide credentials (vs password-in-url or env).
+# Option 1: Default Configuration (Secure File-Based Authentication)
+# The chart automatically configures secure file-based PostgreSQL URL handling.
+# Credentials are stored in a memory-backed volume and passed via --postgresql-url-file.
 #
 # Credential Handling: Best practice (prevents password exposure in logs/ps)
 # Use Case: All environments (recommended default for password-based auth)
@@ -144,10 +144,8 @@ ferretdb:
       value: "debug"
     - name: FERRETDB_TELEMETRY
       value: "disable"
-    # You can even override the PostgreSQL connection parameters
-    # But be careful - the chart manages the connection string by default
-    # - name: FERRETDB_POSTGRESQL_URL
-    #   value: "postgres://custom-connection-string"
+    # Note: PostgreSQL connection is managed via --postgresql-url-file flag
+    # The chart automatically creates a secure connection string from secrets
 
 # Option 6: Production Setup with All Security Features
 # Complete production-ready configuration with all security best practices.

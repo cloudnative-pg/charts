@@ -510,12 +510,6 @@ ferretdb:
   logLevel: "info"
   # -- Enable/disable FerretDB telemetry
   telemetry: "disable"
-  # -- How FerretDB provides credentials to PostgreSQL (pgpass, password-in-url, or env)
-  # - pgpass: Uses .pgpass file (recommended, works with all pg_hba methods)
-  # - password-in-url: Embeds password in connection string (simpler, dev/test only)
-  # - env: Uses PGPASSWORD environment variable
-  # Note: PostgreSQL authentication method is controlled by cluster.postgresql.pg_hba
-  credentialMethod: "pgpass"
   # -- PostgreSQL connection SSL mode (disable, require, verify-ca, verify-full)
   # Uncomment to override default SSL behavior
   # sslMode: "require"
