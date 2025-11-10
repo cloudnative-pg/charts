@@ -80,4 +80,3 @@ CloudNativePG Operator Helm Chart
 | topologySpreadConstraints | list | `[]` | Topology Spread Constraints for the operator to be installed. |
 | updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy For example:  type: RollingUpdate  rollingUpdate:    maxSurge: 25%    maxUnavailable: 25% |
 | webhook | object | `{"livenessProbe":{"initialDelaySeconds":3},"mutating":{"create":true,"failurePolicy":"Fail"},"port":9443,"readinessProbe":{"initialDelaySeconds":3},"startupProbe":{"failureThreshold":6,"periodSeconds":5},"validating":{"create":true,"failurePolicy":"Fail"}}` | The webhook configuration. |
-
