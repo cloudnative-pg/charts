@@ -26,6 +26,10 @@ spec:
       initContainers:
       - name: setup-pgurl
         image: busybox:1.36
+        # Run as same user as FerretDB container to ensure file permissions work
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
         command: ["/bin/sh", "-c"]
         args:
         - |
