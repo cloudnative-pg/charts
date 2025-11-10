@@ -1,5 +1,5 @@
 {{ if and (eq .Values.type "documentdb") .Values.ferretdb.enabled }}
-{{- $dbOwner := .Values.cluster.initdb.owner | default .Values.cluster.initdb.database | default "app" }}
+{{- $dbOwner := "postgres" }}
 {{- $dbName := .Values.cluster.initdb.database | default "app" }}
 ---
 apiVersion: apps/v1
@@ -102,11 +102,8 @@ spec:
           medium: Memory  # Use in-memory storage for credentials
       - name: db-password
         secret:
-          {{- if .Values.cluster.initdb.secret }}
-          secretName: {{ .Values.cluster.initdb.secret.name }}
-          {{- else }}
-          secretName: {{ include "cluster.fullname" . }}-app
-          {{- end }}
+          # Use superuser secret for FerretDB (required for DocumentDB extension)
+          secretName: {{ include "cluster.fullname" . }}-superuser
           items:
           - key: password
             path: password
