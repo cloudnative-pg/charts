@@ -11,22 +11,11 @@ bootstrap:
     owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
     {{- if eq .Values.type "documentdb" }}
-    # pg_cron extension must be created in postgres database
-    # See: https://github.com/citusdata/pg_cron#installing-pg_cron
+    # Both pg_cron and documentdb extensions must be created in postgres database
+    # See: https://blog.ferretdb.io/run-ferretdb-postgres-documentdb-extension-cnpg-kubernetes/
+    {{- $owner := .Values.cluster.initdb.owner | default .Values.cluster.initdb.database | default "app" }}
     postInitSQL:
       - CREATE EXTENSION IF NOT EXISTS pg_cron CASCADE;
-    {{- end }}
-    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (eq .Values.type "documentdb") (not (empty .Values.cluster.initdb.postInitApplicationSQL)) }}
-    postInitApplicationSQL:
-      {{- if eq .Values.type "postgis" }}
-      - CREATE EXTENSION IF NOT EXISTS postgis;
-      - CREATE EXTENSION IF NOT EXISTS postgis_topology;
-      - CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
-      - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
-      {{- else if eq .Values.type "timescaledb" }}
-      - CREATE EXTENSION IF NOT EXISTS timescaledb;
-      {{- else if eq .Values.type "documentdb" }}
-      {{- $owner := .Values.cluster.initdb.owner | default .Values.cluster.initdb.database | default "app" }}
       - CREATE EXTENSION IF NOT EXISTS documentdb CASCADE;
       - GRANT documentdb_admin_role TO {{ $owner }};
       - GRANT USAGE ON SCHEMA documentdb_api TO {{ $owner }};
@@ -55,6 +44,16 @@ bootstrap:
       - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_api_internal GRANT ALL ON SEQUENCES TO {{ $owner }};
       - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_data GRANT ALL ON TABLES TO {{ $owner }};
       - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_data GRANT ALL ON SEQUENCES TO {{ $owner }};
+    {{- end }}
+    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (not (empty .Values.cluster.initdb.postInitApplicationSQL)) }}
+    postInitApplicationSQL:
+      {{- if eq .Values.type "postgis" }}
+      - CREATE EXTENSION IF NOT EXISTS postgis;
+      - CREATE EXTENSION IF NOT EXISTS postgis_topology;
+      - CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+      - CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder;
+      {{- else if eq .Values.type "timescaledb" }}
+      - CREATE EXTENSION IF NOT EXISTS timescaledb;
       {{- end }}
       {{- with .Values.cluster.initdb }}
           {{- range .postInitApplicationSQL }}
