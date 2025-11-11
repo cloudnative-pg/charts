@@ -1,0 +1,91 @@
+{{ if and (eq .Values.type "documentdb") .Values.ferretdb.enabled }}
+{{- $dbOwner := "postgres" }}
+{{- $dbName := .Values.ferretdb.database | default "postgres" }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cluster.fullname" . }}-ferretdb
+  namespace: {{ include "cluster.namespace" . }}
+  labels:
+    {{- include "cluster.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ferretdb
+spec:
+  replicas: {{ .Values.ferretdb.instances }}
+  selector:
+    matchLabels:
+      {{- include "cluster.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: ferretdb
+  template:
+    metadata:
+      labels:
+        {{- include "cluster.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: ferretdb
+    spec:
+      containers:
+      - name: ferretdb
+        image: {{ .Values.ferretdb.image | default "ghcr.io/ferretdb/ferretdb" }}:{{ .Values.ferretdb.tag | default .Values.version.ferretdb }}
+        imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
+        ports:
+        - name: mongodb
+          containerPort: 27017
+          protocol: TCP
+        args:
+        - --telemetry={{ .Values.ferretdb.telemetry | default "disable" }}
+        - --log-level={{ .Values.ferretdb.logLevel | default "info" }}
+        - --postgresql-url=postgresql://postgres:$(POSTGRES_PASSWORD)@{{ include "cluster.fullname" . }}-rw.{{ include "cluster.namespace" . }}:5432/postgres
+        {{- if and (hasKey .Values.ferretdb "auth") (not .Values.ferretdb.auth) }}
+        - --no-auth
+        {{- end }}
+        {{- if .Values.ferretdb.debugAddr }}
+        - --debug-addr={{ .Values.ferretdb.debugAddr }}
+        {{- end }}
+        {{- if .Values.ferretdb.otelTracesUrl }}
+        - --otel-traces-url={{ .Values.ferretdb.otelTracesUrl }}
+        {{- end }}
+        {{- range .Values.ferretdb.extraArgs }}
+        - {{ . }}
+        {{- end }}
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "cluster.fullname" . }}-superuser
+              key: password
+        {{- with .Values.ferretdb.env }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.ferretdb.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        livenessProbe:
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cluster.fullname" . }}-ferretdb
+  namespace: {{ include "cluster.namespace" . }}
+  labels:
+    {{- include "cluster.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ferretdb
+spec:
+  type: ClusterIP
+  ports:
+  - name: mongodb
+    port: 27017
+    targetPort: 27017
+    protocol: TCP
+  selector:
+    {{- include "cluster.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: ferretdb
+{{- end }}
