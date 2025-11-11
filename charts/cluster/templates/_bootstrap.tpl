@@ -10,6 +10,12 @@ bootstrap:
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
+    {{- if eq .Values.type "documentdb" }}
+    # pg_cron extension must be created in postgres database
+    # See: https://github.com/citusdata/pg_cron#installing-pg_cron
+    postInitSQL:
+      - CREATE EXTENSION IF NOT EXISTS pg_cron CASCADE;
+    {{- end }}
     {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (eq .Values.type "documentdb") (not (empty .Values.cluster.initdb.postInitApplicationSQL)) }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
@@ -21,7 +27,6 @@ bootstrap:
       - CREATE EXTENSION IF NOT EXISTS timescaledb;
       {{- else if eq .Values.type "documentdb" }}
       {{- $owner := .Values.cluster.initdb.owner | default .Values.cluster.initdb.database | default "app" }}
-      - CREATE EXTENSION IF NOT EXISTS pg_cron CASCADE;
       - CREATE EXTENSION IF NOT EXISTS documentdb CASCADE;
       - GRANT documentdb_admin_role TO {{ $owner }};
       - GRANT USAGE ON SCHEMA documentdb_api TO {{ $owner }};
