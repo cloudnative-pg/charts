@@ -115,6 +115,8 @@ rbac:
 
 # -- Annotations to be added to all other resources.
 commonAnnotations: {}
+# -- Labels to be added to all other resources.
+commonLabels: {}
 # -- Annotations to be added to the pod.
 podAnnotations: {}
 # -- Labels to be added to the pod.
