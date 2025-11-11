@@ -100,7 +100,9 @@ spec:
     {{- if or (eq .Values.type "documentdb") .Values.cluster.postgresql.parameters }}
     parameters:
       {{- if eq .Values.type "documentdb" }}
-      cron.database_name: {{ .Values.cluster.initdb.database | default "app" | quote }}
+      # pg_cron should connect to postgres database (not app)
+      # See: https://blog.ferretdb.io/run-ferretdb-postgres-documentdb-extension-cnpg-kubernetes/
+      cron.database_name: "postgres"
       {{- end }}
       {{- with .Values.cluster.postgresql.parameters }}
       {{- toYaml . | nindent 6 }}
