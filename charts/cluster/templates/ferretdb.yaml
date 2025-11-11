@@ -33,6 +33,10 @@ spec:
         args:
         - --telemetry={{ .Values.ferretdb.telemetry | default "disable" }}
         - --log-level={{ .Values.ferretdb.logLevel | default "info" }}
+        - --postgresql-url=postgresql://postgres:$(POSTGRES_PASSWORD)@{{ include "cluster.fullname" . }}-rw.{{ include "cluster.namespace" . }}:5432/postgres
+        {{- if and (hasKey .Values.ferretdb "auth") (not .Values.ferretdb.auth) }}
+        - --no-auth
+        {{- end }}
         {{- if .Values.ferretdb.debugAddr }}
         - --debug-addr={{ .Values.ferretdb.debugAddr }}
         {{- end }}
