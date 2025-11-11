@@ -144,3 +144,19 @@ Postgres GID
     {{- 26 -}}
   {{- end -}}
 {{- end -}}
+
+
+{{/*
+Check if barman-cloud plugin exists and is enabled
+*/}}
+{{- define "cluster.useBarmanCloudPlugin" -}}
+{{- $hasPlugin := false }}
+{{- if .Values.cluster.plugins }}
+  {{- range .Values.cluster.plugins }}
+    {{- if and (eq .name "barman-cloud.cloudnative-pg.io") .enabled }}
+      {{- $hasPlugin = true }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- $hasPlugin }}
+{{- end }}
