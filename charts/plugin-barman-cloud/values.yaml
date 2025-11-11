@@ -88,6 +88,11 @@ serviceAccount:
   # -- The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template.
   name: ""
+  # @schema
+  # additionalProperties: true
+  # @schema
+  # -- Annotations to be added only to the service account if it's created.
+  additionalAnnotations: {}
 
 rbac:
   # -- Specifies whether Role and RoleBinding should be created.
