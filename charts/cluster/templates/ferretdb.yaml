@@ -32,6 +32,7 @@ spec:
           protocol: TCP
         args:
         - --listen-addr=:27017
+        - --postgresql-url=postgresql://{{ $dbOwner }}:$(POSTGRES_PASSWORD)@{{ include "cluster.fullname" . }}-rw:5432/{{ $dbName }}{{- if .Values.ferretdb.sslMode }}?sslmode={{ .Values.ferretdb.sslMode }}{{- end }}
         - --telemetry={{ .Values.ferretdb.telemetry | default "disable" }}
         - --log-level={{ .Values.ferretdb.logLevel | default "info" }}
         {{- if .Values.ferretdb.debugAddr }}
@@ -44,8 +45,6 @@ spec:
         - {{ . }}
         {{- end }}
         env:
-        - name: FERRETDB_POSTGRESQL_URL
-          value: "postgresql://{{ $dbOwner }}:$(POSTGRES_PASSWORD)@{{ include "cluster.fullname" . }}-rw:5432/{{ $dbName }}{{- if .Values.ferretdb.sslMode }}?sslmode={{ .Values.ferretdb.sslMode }}{{- end }}"
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
