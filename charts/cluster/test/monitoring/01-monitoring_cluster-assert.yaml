@@ -36,6 +36,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: monitoring-cluster
+  labels:
+    team-name: test-team
+    environment: test
 spec:
   selector:
     matchLabels:
