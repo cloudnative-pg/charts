@@ -528,3 +528,28 @@ poolers: []
   #   # -- Custom PgBouncer deployment template.
   #   # Use to override image, specify resources, etc.
   #   template: {}
+
+# -- Define values for chart tests
+test:
+  enabled: true
+  # -- Container image for ping.yaml
+  image:
+    registry: docker.io
+    repository: alpine
+    tag: 3.17
+  shell: sh
+  # -- Resources request/limit for ping Pod
+  resources: {}
+    # limits:
+    #   cpu: 50m
+    #   memory: 32Mi
+    # requests:
+    #   cpu: 25m
+    #   memory: 16Mi
+  # -- Security context for ping Pod
+  securityContext:
+    runAsUser: 5051
+    runAsGroup: 5051
+    fsGroup: 5051
+  # -- Container security context for ping Pod
+  containerSecurityContext: null
