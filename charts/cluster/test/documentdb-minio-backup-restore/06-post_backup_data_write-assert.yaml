@@ -1,0 +1,6 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-write-post-backup
+status:
+  succeeded: 1
