@@ -1,10 +1,9 @@
 {{- if .Values.crds.create }}
----
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.18.0
+    controller-gen.kubebuilder.io/version: v0.19.0
     helm.sh/resource-policy: keep
   name: objectstores.barmancloud.cnpg.io
 spec:
@@ -694,4 +693,4 @@ spec:
     storage: true
     subresources:
       status: {}
-{{ end }}
+{{- end }}
