@@ -41,10 +41,7 @@ spec:
     matchLabels:
       cnpg.io/cluster: monitoring-cluster
   podMetricsEndpoints:
-    - bearerTokenSecret:
-        key: ''
-        name: ''
-      relabelings:
+    - relabelings:
         - targetLabel: environment
           replacement: test
         - targetLabel: team
@@ -66,10 +63,7 @@ spec:
     matchLabels:
       cnpg.io/poolerName: monitoring-cluster-pooler-rw
   podMetricsEndpoints:
-    - bearerTokenSecret:
-        key: ''
-        name: ''
-      relabelings:
+    - relabelings:
         - targetLabel: type
           replacement: rw
           action: replace
@@ -93,10 +87,7 @@ spec:
     matchLabels:
       cnpg.io/poolerName: monitoring-cluster-pooler-ro
   podMetricsEndpoints:
-    - bearerTokenSecret:
-        key: ''
-        name: ''
-      relabelings:
+    - relabelings:
         - targetLabel: type
           replacement: ro
           action: replace
