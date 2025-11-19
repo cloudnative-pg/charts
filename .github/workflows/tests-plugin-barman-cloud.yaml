@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 1
       - id: listTests
         run: |
-          echo "tests=$(ls charts/cluster/test -1 | jq -cRn '{ include: [inputs | { test: "\(.)" }]}')" >> $GITHUB_OUTPUT
+          echo "tests=$(ls charts/plugin-barman-cloud/test -1 | jq -cRn '{ include: [inputs | { test: "\(.)" }]}')" >> $GITHUB_OUTPUT
   test:
     needs: test-list
     runs-on: ubuntu-24.04
@@ -41,6 +41,9 @@ jobs:
 
       - name: Deploy the operator
         uses: ./.github/actions/deploy-operator
+
+      - name: Install cert-manager
+        uses: ./.github/actions/deploy-cert-manager
 
       - name: Install Prometheus CRDs
         run: |
@@ -70,4 +73,4 @@ jobs:
             tenant minio-operator/tenant
 
       - name: Run Kyverno/Chainsaw
-        run: chainsaw test charts/cluster/test/${{matrix.test}}
+        run: chainsaw test charts/plugin-barman-cloud/test/${{matrix.test}}
