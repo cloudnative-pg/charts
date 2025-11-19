@@ -1,27 +1,30 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
   ],
-  "prConcurrentLimit": 5,
-  "semanticCommits": "enabled",
-  "regexManagers": [
+  prConcurrentLimit: 5,
+  semanticCommits: 'enabled',
+  customManagers: [
     {
-      "fileMatch": ["charts\\/cloudnative-pg\\/Chart\\.yaml$"],
-      "matchStrings": [
-        "appVersion: \"(?<currentValue>.*?)\"",
+      customType: 'regex',
+      managerFilePatterns: [
+        '/charts\\/cloudnative-pg\\/Chart\\.yaml$/',
       ],
-      "datasourceTemplate": "docker",
-      "depNameTemplate": "ghcr.io/cloudnative-pg/cloudnative-pg",
-      "versioningTemplate": "loose"
+      matchStrings: [
+        'appVersion: "(?<currentValue>.*?)"',
+      ],
+      datasourceTemplate: 'docker',
+      depNameTemplate: 'ghcr.io/cloudnative-pg/cloudnative-pg',
+      versioningTemplate: 'loose',
     },
   ],
-  "packageRules": [
+  packageRules: [
     {
-      "matchDepTypes": [
-        "action"
+      matchDepTypes: [
+        'action',
       ],
-      "pinDigests": true
+      pinDigests: true,
     },
-  ]
+  ],
 }
