@@ -193,6 +193,12 @@
                 "enableSuperuserAccess": {
                     "type": "boolean"
                 },
+                "env": {
+                    "type": "array"
+                },
+                "envFrom": {
+                    "type": "array"
+                },
                 "imageCatalogRef": {
                     "type": "object"
                 },
