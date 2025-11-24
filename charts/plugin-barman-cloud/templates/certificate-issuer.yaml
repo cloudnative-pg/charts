@@ -21,7 +21,7 @@
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: {{ include "plugin-barman-cloud.fullname" . }}-{{ .Values.certificate.issuerName }}
+  name: {{ include "plugin-barman-cloud.certificateIssuerName" . }}
   namespace: {{ include "plugin-barman-cloud.namespace" . }}
 spec:
   selfSigned: {}
