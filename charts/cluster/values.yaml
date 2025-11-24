@@ -99,7 +99,7 @@ recovery:
     # -- Name of the backup credentials secret
     name: ""
 
-  # See https://cloudnative-pg.io/documentation/1.22/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
+  # See https://cloudnative-pg.io/documentation/current/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
   pgBaseBackup:
     # -- Name of the database used by the application. Default: `app`.
     database: app
@@ -216,7 +216,7 @@ cluster:
   # -- The GID of the postgres user inside the image, defaults to 26
   postgresGID: -1
 
-  # -- Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/1.24/service_management/
+  # -- Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/
   services: {}
 
   # -- Resources requirements of every generated Pod.
@@ -248,6 +248,32 @@ cluster:
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration
   affinity:
     topologyKey: topology.kubernetes.io/zone
+
+  # -- Env follows the Env format to pass environment variables to the pods created in the cluster
+  env: []
+    # - name: MY_CUSTOM_FLAG
+    #   value: "enabled"
+    # - name: MY_CUSTROM_ENV
+    #   valueFrom:
+    #     configMapKeyRef:
+    #       name: my-custom-env
+    #       key: env
+    #       optional: true
+    # - name: MY_CUSTOM_SECRET_ENV
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: my-custom-secret
+    #       key: secret
+    #       optional: true
+
+  # -- EnvFrom follows the EnvFrom format to pass environment variables sources to the pods to be used by Env
+  envFrom: []
+    # - configMapRef:
+    #     name: global-envs
+    #     optional: true
+    # - secretRef:
+    #     name: db-credentials
+    #     optional: true
 
   # -- The configuration for the CA and related certificates.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration
@@ -336,7 +362,7 @@ cluster:
       # - pgaudit
     # -- PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)
     ldap: {}
-      # https://cloudnative-pg.io/documentation/1.24/postgresql_conf/#ldap-configuration
+      # https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration
       # server: 'openldap.default.svc.cluster.local'
       # bindSearchAuth:
         # baseDN: 'ou=org,dc=example,dc=com'

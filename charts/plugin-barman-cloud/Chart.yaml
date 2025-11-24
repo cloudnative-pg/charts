@@ -17,18 +17,28 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 apiVersion: v2
-name: cluster
-description: Deploys and manages a CloudNativePG cluster and its associated resources.
+name: plugin-barman-cloud
+description: Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
 type: application
-version: 0.3.1
+version: "0.3.1"
+appVersion: "v0.9.0"
 sources:
-  - https://github.com/cloudnative-pg/charts
+  - https://github.com/cloudnative-pg/plugin-barman-cloud
 keywords:
+  - barman
+  - cloud
+  - backup
   - postgresql
   - postgres
   - database
+  - cloudnativepg
+  - cloudnative-pg
 home: https://cloudnative-pg.io
 maintainers:
   - name: itay-grudev
-    email: itay+cloudnativepg-charts+github.com@grudev.com
+    email: itay@verito.digital
+  - name: quantumenigmaa
+    email: thibaud.vaisseau@gmail.com
+  - name: quentinbisson
+    email: quentin.bisson@gmail.com
