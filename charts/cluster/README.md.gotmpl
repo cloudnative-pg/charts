@@ -155,4 +155,6 @@ TODO
 * Automatic provisioning of a Alert Manager configuration
 
 
+{{- if not .SkipVersionFooter }}
 {{ template "helm-docs.versionFooter" . }}
+{{- end }}
