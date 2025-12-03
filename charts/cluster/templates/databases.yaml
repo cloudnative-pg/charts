@@ -1,0 +1,83 @@
+{{- range .Values.databases }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: {{ include "cluster.fullname" $ }}-{{ .name | replace "_" "-" }}
+  namespace: {{ include "cluster.namespace" $ }}
+  {{- with $.Values.cluster.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+  {{- include "cluster.labels" $ | nindent 4 }}
+  {{- with $.Values.cluster.additionalLabels }}
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  name: {{ .name }}
+  cluster:
+    name: {{ include "cluster.fullname" $ }}
+  ensure: {{ .ensure | default "present" }}
+  owner: {{ .owner }}
+  template: {{ .template | default "template1" }}
+  encoding: {{ .encoding | default "UTF8" }}
+  databaseReclaimPolicy: {{ .databaseReclaimPolicy | default "retain" }}
+  {{- with .isTemplate }}
+  isTemplate: {{ . }}
+  {{- end }}
+  {{- with .allowConnections }}
+  allowConnections: {{ . }}
+  {{- end }}
+  {{- with .connectionLimit }}
+  connectionLimit: {{ . }}
+  {{- end }}
+  {{- with .tablespace }}
+  tablespace: {{ . }}
+  {{- end }}
+  {{- with .locale }}
+  locale: {{ . }}
+  {{- end }}
+  {{- with .localeProvider }}
+  localeProvider: {{ . }}
+  {{- end }}
+  {{- with .localeCollate }}
+  localeCollate: {{ . }}
+  {{- end }}
+  {{- with .localeCType }}
+  localeCType: {{ . }}
+  {{- end }}
+  {{- with .icuLocale }}
+  icuLocale: {{ . }}
+  {{- end }}
+  {{- with .icuRules }}
+  icuRules: {{ . }}
+  {{- end }}
+  {{- with .builtinLocale }}
+  builtinLocale: {{ . }}
+  {{- end }}
+  {{- with .collationVersion }}
+  collationVersion: {{ . | quote }}
+  {{- end }}
+  {{- with .schemas }}
+  schemas:
+  {{- range . }}
+    - name: {{ .name }}
+      owner: {{ .owner }}
+      ensure: {{ .ensure | default "present" }}
+  {{- end }}
+  {{- end }}
+  {{- with .extensions }}
+  extensions:
+  {{- range . }}
+    - name: {{ .name }}
+      {{- with .version }}
+      version: {{ . }}
+      {{- end }}
+      {{- with .schema }}
+      schema: {{ . }}
+      {{- end }}
+      ensure: {{ .ensure | default "present" }}
+  {{- end }}
+  {{- end }}
+{{- end }}
