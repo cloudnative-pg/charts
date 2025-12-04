@@ -103,7 +103,7 @@ recovery:
   pgBaseBackup:
     # -- Name of the database used by the application. Default: `app`.
     database: app
-    # -- Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch. The secret should include
+    # -- Name of the kubernetes.io/basic-auth secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch.
     secretName: ""
     # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
     owner: ""
