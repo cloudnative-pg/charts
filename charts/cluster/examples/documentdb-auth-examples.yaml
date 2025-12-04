@@ -1,0 +1,280 @@
+# DocumentDB Authentication Configuration Examples
+
+# Option 1: Default Configuration (Secure File-Based Authentication)
+# The chart automatically configures secure file-based PostgreSQL URL handling.
+# Credentials are stored in a memory-backed volume and passed via --postgresql-url-file.
+#
+# Credential Handling: Best practice (prevents password exposure in logs/ps)
+# Use Case: All environments (recommended default for password-based auth)
+# Production Note: Combine with strong pg_hba rules (see Option 2 below)
+---
+type: documentdb
+mode: standalone
+version:
+  postgresql: "17"
+  documentdb: "0.106.0"
+  ferretdb: "2.5.0"
+cluster:
+  instances: 1
+ferretdb:
+  enabled: true
+backups:
+  enabled: false
+
+# Option 2: pg_hba Host-Based Authentication - Recommended for Production
+# Configure PostgreSQL to authenticate based on source IP/network.
+# This is the most secure and flexible production approach.
+#
+# Use Case: Production, Staging with network isolation
+---
+type: documentdb
+mode: standalone
+version:
+  postgresql: "17"
+  documentdb: "0.106.0"
+  ferretdb: "2.5.0"
+cluster:
+  instances: 3
+  postgresql:
+    pg_hba:
+      # Allow connections from pod network with SCRAM-SHA-256 (most secure)
+      - "hostssl all all 10.244.0.0/16 scram-sha-256"
+      # Or use md5 for broader compatibility
+      # - "hostssl all all 10.244.0.0/16 md5"
+    parameters:
+      # Enforce strong password encryption
+      password_encryption: "scram-sha-256"
+      # Require SSL connections
+      ssl: "on"
+      ssl_min_protocol_version: "TLSv1.3"
+      # Enable connection logging for security auditing
+      log_connections: "on"
+      log_disconnections: "on"
+ferretdb:
+  enabled: true
+  instances: 2
+backups:
+  enabled: true
+
+# Option 3: Trust Authentication - Local Development ONLY
+# WARNING: This is INSECURE! Use only for local testing.
+# No password required - anyone who can reach the database can connect.
+#
+# Use Case: Local development on trusted networks only
+---
+type: documentdb
+mode: standalone
+version:
+  postgresql: "17"
+  documentdb: "0.106.0"
+  ferretdb: "2.5.0"
+cluster:
+  instances: 1
+  postgresql:
+    pg_hba:
+      # DANGEROUS: No authentication required!
+      - "host all all 10.244.0.0/16 trust"
+ferretdb:
+  enabled: true
+backups:
+  enabled: false
+
+# Option 4: Mixed Authentication Rules
+# Combine multiple pg_hba rules for different access patterns.
+#
+# Use Case: Complex environments with different access requirements
+---
+type: documentdb
+mode: standalone
+version:
+  postgresql: "17"
+  documentdb: "0.106.0"
+  ferretdb: "2.5.0"
+cluster:
+  instances: 3
+  postgresql:
+    pg_hba:
+      # FerretDB pods from specific subnet with strong auth
+      - "hostssl all all 10.244.0.0/24 scram-sha-256"
+      # Allow admin subnet with certificate authentication
+      - "hostssl all all 10.245.0.0/24 cert"
+      # Legacy app subnet with md5 (less secure, but compatible)
+      - "hostssl all all 10.246.0.0/24 md5"
+      # Reject all other connections explicitly
+      - "reject all all 0.0.0.0/0"
+    parameters:
+      password_encryption: "scram-sha-256"
+      ssl: "on"
+      ssl_min_protocol_version: "TLSv1.2"
+ferretdb:
+  enabled: true
+  instances: 2
+
+# Option 5: Custom FerretDB Configuration
+# Override FerretDB behavior with custom environment variables
+#
+# Use Case: Custom FerretDB settings, debugging
+---
+type: documentdb
+mode: standalone
+version:
+  postgresql: "17"
+  documentdb: "0.106.0"
+  ferretdb: "2.5.0"
+cluster:
+  instances: 2
+ferretdb:
+  enabled: true
+  instances: 2
+  # Custom FerretDB image if needed
+  image: "ghcr.io/ferretdb/ferretdb"
+  tag: "2.5.0"
+  # Override resources
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+  # Add custom environment variables
+  # These can be used to modify FerretDB behavior
+  env:
+    - name: FERRETDB_LOG_LEVEL
+      value: "debug"
+    - name: FERRETDB_TELEMETRY
+      value: "disable"
+    # Note: PostgreSQL connection is managed via --postgresql-url-file flag
+    # The chart automatically creates a secure connection string from secrets
+
+# Option 6: Production Setup with All Security Features
+# Complete production-ready configuration with all security best practices.
+#
+# Use Case: Production deployments
+---
+type: documentdb
+mode: standalone
+version:
+  postgresql: "17"
+  documentdb: "0.106.0"
+  ferretdb: "2.5.0"
+cluster:
+  instances: 3
+  storage:
+    size: 100Gi
+    storageClass: fast-ssd
+  # Enable pod anti-affinity for high availability
+  affinity:
+    topologyKey: topology.kubernetes.io/zone
+  postgresql:
+    pg_hba:
+      # Only allow SSL connections from pod network
+      - "hostssl all all 10.244.0.0/16 scram-sha-256"
+      # Explicitly reject non-SSL connections
+      - "reject all all 0.0.0.0/0"
+    parameters:
+      # Security parameters
+      password_encryption: "scram-sha-256"
+      ssl: "on"
+      ssl_min_protocol_version: "TLSv1.3"
+      ssl_prefer_server_ciphers: "on"
+      # Connection limits
+      max_connections: 200
+      superuser_reserved_connections: 3
+      # Logging for security auditing
+      log_connections: "on"
+      log_disconnections: "on"
+      log_failed_authentication: "on"
+      log_statement: "ddl" # Log all DDL statements
+      # Performance tuning
+      shared_buffers: "4GB"
+      effective_cache_size: "12GB"
+      work_mem: "16MB"
+  # Enable monitoring
+  monitoring:
+    enabled: true
+    podMonitor:
+      enabled: true
+ferretdb:
+  enabled: true
+  instances: 3
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "2000m"
+backups:
+  enabled: true
+  provider: s3
+  s3:
+    region: us-east-1
+    bucket: production-backups
+    path: /documentdb
+    inheritFromIAMRole: true # Use IAM roles instead of access keys
+  scheduledBackups:
+    - name: daily-backup
+      schedule: "0 0 2 * * *" # Daily at 2 AM
+      backupOwnerReference: self
+  retentionPolicy: "30d"
+# How to Find Your Pod Network CIDR
+# To configure pg_hba rules, you need to know your Kubernetes pod network CIDR:
+#
+# Method 1: Check node pod CIDR allocation
+# kubectl get nodes -o jsonpath='{.items[*].spec.podCIDR}'
+#
+# Method 2: Check existing pod IPs
+# kubectl get pods -A -o wide | grep -v "IP" | awk '{print $6}' | sort -u
+#
+# Method 3: Check CNI configuration
+# kubectl get cm kube-proxy -n kube-system -o yaml | grep clusterCIDR
+#
+# Common pod CIDRs by Kubernetes distribution:
+# - kind: 10.244.0.0/16
+# - minikube: 172.17.0.0/16
+# - GKE: 10.0.0.0/8 (varies)
+# - EKS: 10.0.0.0/8 (varies)
+# - AKS: 10.244.0.0/16
+
+# Testing Authentication Configuration
+# After deploying, test your authentication setup:
+#
+# 1. Test PostgreSQL direct connection:
+#    kubectl run psql-test --rm -it --image postgres:17 -- \
+#      psql "$(kubectl get secret documentdb-cluster-app -o jsonpath='{.data.uri}' | base64 -d)"
+#
+# 2. Test FerretDB MongoDB connection:
+#    DB_USER=$(kubectl get secret documentdb-cluster-app -o jsonpath='{.data.username}' | base64 -d)
+#    DB_PASSWORD=$(kubectl get secret documentdb-cluster-app -o jsonpath='{.data.password}' | base64 -d)
+#    kubectl run mongo-test --rm -it --image mongo:7.0 -- \
+#      mongosh "mongodb://$DB_USER:$DB_PASSWORD@documentdb-cluster-ferretdb:27017/app"
+#
+# 3. Check authentication logs:
+#    kubectl logs -l cnpg.io/cluster=documentdb-cluster | grep -i "authentication\|connection"
+#
+# 4. View pg_hba configuration:
+#    kubectl exec documentdb-cluster-1 -- cat /var/lib/postgresql/data/pgdata/pg_hba.conf
+
+# Troubleshooting
+# Common Issues:
+#
+# 1. "fe_sendauth: no password supplied"
+#    - Check that FerretDB can reach PostgreSQL service
+#    - Verify pg_hba rules allow connections from FerretDB pods
+#    - Check FerretDB logs: kubectl logs -l app.kubernetes.io/component=ferretdb
+#
+# 2. "no pg_hba.conf entry for host"
+#    - Your pg_hba rules don't match the source IP
+#    - Check actual pod IPs: kubectl get pods -o wide
+#    - Verify your CIDR includes the FerretDB pod IPs
+#
+# 3. "SCRAM authentication failed"
+#    - Password may be incorrect
+#    - Or password_encryption setting doesn't match pg_hba method
+#    - Check: kubectl get secret documentdb-cluster-app -o yaml
+#
+# 4. Connection timeout
+#    - Check if NetworkPolicy is blocking access
+#    - Verify FerretDB service: kubectl get svc documentdb-cluster-ferretdb
+#    - Test connectivity: kubectl exec -it <ferretdb-pod> -- nc -zv documentdb-cluster-rw 5432

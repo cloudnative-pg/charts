@@ -10,6 +10,41 @@ bootstrap:
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
+    {{- if eq .Values.type "documentdb" }}
+    # Both pg_cron and documentdb extensions must be created in postgres database
+    # See: https://blog.ferretdb.io/run-ferretdb-postgres-documentdb-extension-cnpg-kubernetes/
+    {{- $owner := .Values.cluster.initdb.owner | default .Values.cluster.initdb.database | default "app" }}
+    postInitSQL:
+      - CREATE EXTENSION IF NOT EXISTS pg_cron CASCADE;
+      - CREATE EXTENSION IF NOT EXISTS documentdb CASCADE;
+      - GRANT documentdb_admin_role TO {{ $owner }};
+      - GRANT USAGE ON SCHEMA documentdb_api TO {{ $owner }};
+      - GRANT USAGE ON SCHEMA documentdb_core TO {{ $owner }};
+      - GRANT USAGE ON SCHEMA documentdb_api_catalog TO {{ $owner }};
+      - GRANT USAGE ON SCHEMA documentdb_api_internal TO {{ $owner }};
+      - GRANT USAGE ON SCHEMA documentdb_data TO {{ $owner }};
+      - GRANT ALL ON ALL TABLES IN SCHEMA documentdb_api TO {{ $owner }};
+      - GRANT ALL ON ALL SEQUENCES IN SCHEMA documentdb_api TO {{ $owner }};
+      - GRANT ALL ON ALL TABLES IN SCHEMA documentdb_core TO {{ $owner }};
+      - GRANT ALL ON ALL SEQUENCES IN SCHEMA documentdb_core TO {{ $owner }};
+      - GRANT ALL ON ALL TABLES IN SCHEMA documentdb_api_catalog TO {{ $owner }};
+      - GRANT ALL ON ALL SEQUENCES IN SCHEMA documentdb_api_catalog TO {{ $owner }};
+      - GRANT ALL ON ALL TABLES IN SCHEMA documentdb_api_internal TO {{ $owner }};
+      - GRANT ALL ON ALL SEQUENCES IN SCHEMA documentdb_api_internal TO {{ $owner }};
+      - GRANT ALL ON ALL TABLES IN SCHEMA documentdb_data TO {{ $owner }};
+      - GRANT ALL ON ALL SEQUENCES IN SCHEMA documentdb_data TO {{ $owner }};
+      - GRANT CREATE ON SCHEMA documentdb_data TO {{ $owner }};
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_api GRANT ALL ON TABLES TO {{ $owner }};
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_api GRANT ALL ON SEQUENCES TO {{ $owner }};
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_core GRANT ALL ON TABLES TO {{ $owner }};
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_core GRANT ALL ON SEQUENCES TO {{ $owner }};
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_api_catalog GRANT ALL ON TABLES TO {{ $owner }};
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_api_catalog GRANT ALL ON SEQUENCES TO {{ $owner }};
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_api_internal GRANT ALL ON TABLES TO {{ $owner }};
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_api_internal GRANT ALL ON SEQUENCES TO {{ $owner }};
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_data GRANT ALL ON TABLES TO {{ $owner }};
+      - ALTER DEFAULT PRIVILEGES IN SCHEMA documentdb_data GRANT ALL ON SEQUENCES TO {{ $owner }};
+    {{- end }}
     {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (not (empty .Values.cluster.initdb.postInitApplicationSQL)) }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
