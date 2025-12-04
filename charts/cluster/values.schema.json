@@ -563,7 +563,7 @@
                         "owner": {
                             "type": "string"
                         },
-                        "secret": {
+                        "secretName": {
                             "type": "string"
                         },
                         "source": {
