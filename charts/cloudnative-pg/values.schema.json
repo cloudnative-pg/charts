@@ -11,6 +11,9 @@
         "affinity": {
             "type": "object"
         },
+        "podDisruptionBudget": {
+            "type": "object"
+        },
         "commonAnnotations": {
             "type": "object"
         },
