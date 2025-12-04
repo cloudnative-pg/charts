@@ -342,6 +342,9 @@
                 }
             }
         },
+        "databases": {
+            "type": "array"
+        },
         "fullnameOverride": {
             "type": "string"
         },
