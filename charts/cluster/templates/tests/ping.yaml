@@ -1,3 +1,4 @@
+{{- if .Values.test.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -16,10 +17,15 @@ spec:
         app.kubernetes.io/component: database-ping-test
     spec:
       restartPolicy: Never
+      {{- if .Values.test.securityContext }}
+      securityContext:
+        {{- .Values.test.securityContext | toYaml | nindent 8 }}
+      {{- end }}
       containers:
-        - name: alpine
-          image: alpine:3.17
-          command: [ 'sh' ]
+        - name: ping
+          image: "{{ .Values.test.image.registry }}/{{ .Values.test.image.repository }}:{{ .Values.test.image.tag }}"
+          command:
+            - {{ .Values.test.shell }}
           env:
             - name: PGUSER
               valueFrom:
@@ -42,3 +48,10 @@ spec:
             - >-
               apk add postgresql-client &&
               psql "postgresql://$PGUSER:$PGPASS@{{ include "cluster.fullname" . }}-rw.{{ include "cluster.namespace" . }}.svc.cluster.local:5432/${PGDBNAME:-$PGUSER}" -c 'SELECT 1'
+          resources:
+            {{- .Values.test.resources | toYaml | nindent 12 }}
+          {{- if .Values.test.containerSecurityContext }}
+          securityContext:
+            {{- .Values.test.containerSecurityContext | toYaml | nindent 12 }}
+          {{- end }}
+{{- end }}
