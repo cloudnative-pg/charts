@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.3.1](https://img.shields.io/badge/Version-0.3.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -247,7 +247,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
 | recovery.pgBaseBackup.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
 | recovery.pgBaseBackup.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
-| recovery.pgBaseBackup.secretName | string | `""` | Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch. The secret should include |
+| recovery.pgBaseBackup.secretName | string | `""` | Name of the kubernetes.io/basic-auth secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch. |
 | recovery.pgBaseBackup.source.database | string | `"app"` |  |
 | recovery.pgBaseBackup.source.host | string | `""` |  |
 | recovery.pgBaseBackup.source.passwordSecret.create | bool | `false` | Whether to create a secret for the password |
