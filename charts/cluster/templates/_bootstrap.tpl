@@ -3,12 +3,15 @@
 bootstrap:
   initdb:
     {{- with .Values.cluster.initdb }}
-        {{- with (omit . "postInitApplicationSQL" "owner" "import") }}
+        {{- with (omit . "postInitApplicationSQL" "owner" "import" "database") }}
             {{- . | toYaml | nindent 4 }}
         {{- end }}
     {{- end }}
+    {{- if .Values.cluster.initdb.database }}
+    database: {{ include "tpl" (dict "value" .Values.cluster.initdb.database "context" $) | quote }}
+    {{- end }}
     {{- if .Values.cluster.initdb.owner }}
-    owner: {{ tpl .Values.cluster.initdb.owner . }}
+    owner: {{ include "tpl" (dict "value" .Values.cluster.initdb.owner "context" $) }}
     {{- end }}
     {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (not (empty .Values.cluster.initdb.postInitApplicationSQL)) }}
     postInitApplicationSQL:
@@ -102,7 +105,7 @@ externalClusters:
   - name: objectStoreRecoveryCluster
     barmanObjectStore:
       serverName: {{ .Values.recovery.clusterName }}
-      {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
+      {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" "context" $ -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
     {{- end }}
 {{- end }}
