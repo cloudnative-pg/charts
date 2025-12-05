@@ -309,6 +309,9 @@ cluster:
     podMonitor:
       # -- Whether to enable the PodMonitor
       enabled: true
+      # -- Additional labels to set on the generated PodMonitor resource.
+      # Add labels your monitoring stack requires (for example `team-name`).
+      labels: {}
       # --The list of relabelings for the PodMonitor.
       # Applied to samples before scraping.
       relabelings: []

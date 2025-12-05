@@ -244,6 +244,9 @@
                                 "metricRelabelings": {
                                     "type": "array"
                                 },
+                                "labels": {
+                                    "type": "object"
+                                },
                                 "relabelings": {
                                     "type": "array"
                                 }
