@@ -37,9 +37,9 @@ bootstrap:
     {{ with .Values.recovery.pgBaseBackup.owner }}
     owner: {{ . }}
     {{- end }}
-    {{ with .Values.recovery.pgBaseBackup.secret }}
+    {{ with .Values.recovery.pgBaseBackup.secretName }}
     secret:
-      {{- toYaml . | nindent 6 }}
+      name: {{ . }}
     {{- end }}
 
 externalClusters:
