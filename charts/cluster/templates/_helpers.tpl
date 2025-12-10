@@ -144,3 +144,20 @@ Postgres GID
     {{- 26 -}}
   {{- end -}}
 {{- end -}}
+
+{{/*
+Renders a value that contains template expressions.
+
+This helper processes values through the Helm template engine, allowing dynamic values
+to be used in configuration. It handles both string values and complex objects.
+
+Usage:
+  {{ include "tpl" (dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "tpl" -}}
+  {{- if typeIs "string" .value }}
+    {{- tpl .value .context }}
+  {{- else }}
+    {{- tpl (.value | toYaml) .context }}
+  {{- end }}
+{{- end -}}
