@@ -1,0 +1,31 @@
+{{ if eq (include "cluster.useBarmanCloudPlugin" .) "true" }}
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ include "cluster.fullname" $  }}-object-store
+  namespace: {{ include "cluster.namespace" $ }}
+spec:
+  {{- with .Values.backups.retentionPolicy }}
+  retentionPolicy: {{ . }}
+  {{- end }}
+  configuration:
+  {{- if and (eq .Values.mode "recovery") (eq .Values.recovery.method "object_store") -}}
+  {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
+  {{- include "cluster.barmanObjectStoreConfig" $d | indent 2 }}
+  {{- else }}
+    wal:
+      compression: {{ .Values.backups.wal.compression }}
+      {{- if .Values.backups.wal.encryption }}
+      encryption: {{ .Values.backups.wal.encryption }}
+      {{- end }}
+      maxParallel: {{ .Values.backups.wal.maxParallel }}
+    data:
+      compression: {{ .Values.backups.data.compression }}
+      {{- if .Values.backups.data.encryption }}
+      encryption: {{ .Values.backups.data.encryption }}
+      {{- end }}
+      jobs: {{ .Values.backups.data.jobs }}
+  {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.backups "secretPrefix" "backup" -}}
+  {{- include "cluster.barmanObjectStoreConfig" $d | indent 2 }}
+  {{- end }}
+{{- end }}

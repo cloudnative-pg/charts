@@ -2,6 +2,7 @@
 {{- if .Values.backups.enabled }}
 backup:
   target: "prefer-standby"
+  {{ if (eq (include "cluster.useBarmanCloudPlugin" .) "false")  }}
   retentionPolicy: {{ .Values.backups.retentionPolicy }}
   barmanObjectStore:
     wal:
@@ -19,5 +20,6 @@ backup:
 
     {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.backups "secretPrefix" "backup" }}
     {{- include "cluster.barmanObjectStoreConfig" $d | nindent 2 }}
+  {{- end}}
 {{- end }}
 {{- end }}
