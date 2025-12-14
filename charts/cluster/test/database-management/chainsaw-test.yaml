@@ -1,0 +1,31 @@
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: database-management
+spec:
+  timeouts:
+    apply: 1s
+    assert: 300s
+    cleanup: 60s
+  steps:
+    - name: database-parameters
+      timeouts:
+        apply: 1s
+        assert: 5s
+        cleanup: 30s
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-database-parameters.yaml \
+                --wait \
+                database-parameters ../../
+        - assert:
+            file: ./01-database-parameters-assert.yaml
+    - name: cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE database-parameters
