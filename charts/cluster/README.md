@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -273,7 +273,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.s3.secretKey | string | `""` |  |
 | recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | recovery.secret.name | string | `""` | Name of the backup credentials secret |
-| replica.bootstrap.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
+| replica.bootstrap.database | string | `""` | Name of the database used by the application |
 | replica.bootstrap.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
 | replica.bootstrap.secret | string | `""` | Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch |
 | replica.bootstrap.source | string | `""` | One of `object_store` or `pg_basebackup`. Method to use for bootstrap. |
@@ -288,6 +288,8 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | replica.origin.objectStore.azure.storageSasToken | string | `""` |  |
 | replica.origin.objectStore.clusterName | string | `""` | The original cluster name when used in backups. Also known as serverName. |
 | replica.origin.objectStore.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| replica.origin.objectStore.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
+| replica.origin.objectStore.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
 | replica.origin.objectStore.google.applicationCredentials | string | `""` |  |
 | replica.origin.objectStore.google.bucket | string | `""` |  |
 | replica.origin.objectStore.google.gkeEnvironment | bool | `false` |  |
@@ -301,7 +303,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | replica.origin.objectStore.s3.secretKey | string | `""` |  |
 | replica.origin.objectStore.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | replica.origin.objectStore.secret.name | string | `""` | Name of the backup credentials secret |
-| replica.origin.pg_basebackup.database | string | `"app"` |  |
+| replica.origin.pg_basebackup.database | string | `""` |  |
 | replica.origin.pg_basebackup.host | string | `""` |  |
 | replica.origin.pg_basebackup.passwordSecret.key | string | `""` |  |
 | replica.origin.pg_basebackup.passwordSecret.name | string | `""` |  |
