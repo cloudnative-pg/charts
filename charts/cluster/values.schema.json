@@ -749,6 +749,23 @@
                                 "destinationPath": {
                                     "type": "string"
                                 },
+                                "endpointCA": {
+                                    "type": "object",
+                                    "properties": {
+                                        "create": {
+                                            "type": "boolean"
+                                        },
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "value": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
                                 "google": {
                                     "type": "object",
                                     "properties": {
