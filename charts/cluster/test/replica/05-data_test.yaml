@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-test-replica
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-test
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: replica-cluster-superuser
+                key: uri
+          - name: REPLICA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: replica-cluster-superuser
+                key: password
+          - name: SOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: source-cluster-superuser
+                key: password
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+         - |
+           apk --no-cache add postgresql-client
+           DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
+           DB_URI=$(echo $DB_URI | sed "s|$REPLICA_PASSWORD|$SOURCE_PASSWORD|" )
+           echo "DB_URI: $DB_URI"
+           test "$(psql "${DB_URI}mygooddb" -t -c 'SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $$mygoodtable$$)' --csv -q)" = "t"
