@@ -459,6 +459,11 @@ backups:
     create: true
     # -- Name of the backup credentials secret
     name: ""
+    # -- Name of the keys in the secret
+    access_id: ""
+    access_key: ""
+    access_token: ""
+    access_string: ""
 
   wal:
     # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.

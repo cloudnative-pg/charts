@@ -28,10 +28,10 @@
   {{- else }}
     accessKeyId:
       name: {{ $secretName }}
-      key: ACCESS_KEY_ID
+      key: {{ coalesce .scope.secret.access_id "ACCESS_KEY_ID" }}
     secretAccessKey:
       name: {{ $secretName }}
-      key: ACCESS_SECRET_KEY
+      key: {{ coalesce .scope.secret.access_key "ACCESS_SECRET_KEY" }}
   {{- end }}
 {{- else if eq .scope.provider "azure" }}
   {{- if empty .scope.destinationPath }}
@@ -44,19 +44,19 @@
   {{- else if .scope.azure.connectionString }}
     connectionString:
       name: {{ $secretName }}
-      key: AZURE_CONNECTION_STRING
+      key: {{ coalesce .scope.secret.access_string "AZURE_CONNECTION_STRING" }}
   {{- else }}
     storageAccount:
       name: {{ $secretName }}
-      key: AZURE_STORAGE_ACCOUNT
+      key: {{ coalesce .scope.secret.access_id "AZURE_STORAGE_ACCOUNT" }}
     {{- if .scope.azure.storageKey }}
     storageKey:
       name: {{ $secretName }}
-      key: AZURE_STORAGE_KEY
+      key: {{ coalesce .scope.secret.access_key "AZURE_STORAGE_KEY" }}
     {{- else }}
     storageSasToken:
       name: {{ $secretName }}
-      key: AZURE_STORAGE_SAS_TOKEN
+      key: {{ coalesce .scope.secret.access_token "AZURE_STORAGE_SAS_TOKEN" }}
     {{- end }}
   {{- end }}
 {{- else if eq .scope.provider "google" }}
@@ -69,7 +69,7 @@
 {{- if not .scope.google.gkeEnvironment }}
     applicationCredentials:
       name: {{ $secretName }}
-      key: APPLICATION_CREDENTIALS
+      key: {{ coalesce .scope.secret.access_id "APPLICATION_CREDENTIALS" }}
 {{- end }}
 {{- end -}}
 {{- end -}}
