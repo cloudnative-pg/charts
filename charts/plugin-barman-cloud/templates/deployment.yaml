@@ -75,6 +75,11 @@ spec:
           periodSeconds: 10
           tcpSocket:
             port: 9090
+        livenessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          tcpSocket:
+            port: 9090
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
         securityContext:
