@@ -21,7 +21,7 @@ jobs:
       - name: Create Pull Request
         id: create-pr
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.REPO_GHA_PAT }}
         run: |
           TAG="${GITHUB_REF##*/}"
           TITLE="Release ${TAG}"
