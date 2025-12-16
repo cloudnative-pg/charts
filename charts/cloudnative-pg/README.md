@@ -41,6 +41,7 @@ CloudNativePG Operator Helm Chart
 | dnsPolicy | string | `""` |  |
 | fullnameOverride | string | `""` |  |
 | hostNetwork | bool | `false` |  |
+| metrics.port | int | `8080` | Port used by the controller to expose Prometheus metrics. Useful when running with hostNetwork=true to avoid conflicts. |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"ghcr.io/cloudnative-pg/cloudnative-pg"` |  |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
