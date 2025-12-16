@@ -393,6 +393,16 @@
         "poolers": {
             "type": "array"
         },
+        "plugins": {
+            "type": "array",
+            "items": {
+                "name": "string",
+                "isWALArchiver": "boolean",
+                "parameters": {
+                    "barmanObjectName": "string"
+                }
+            }
+        },
         "recovery": {
             "type": "object",
             "properties": {
