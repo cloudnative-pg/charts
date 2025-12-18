@@ -489,7 +489,7 @@ backups:
       # -- Backup owner reference
       backupOwnerReference: self
       # -- Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`
-      method: barmanObjectStore
+      method: plugin
 
   # -- Retention policy for backups
   retentionPolicy: "30d"
