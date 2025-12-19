@@ -9,7 +9,7 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
 1. Create a kind cluster.
 
     ```bash
-    kind delete cluster kind
+    kind delete cluster
     ```
 
 2. Install the CloudNativePG operator
