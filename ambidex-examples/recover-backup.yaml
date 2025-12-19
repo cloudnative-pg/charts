@@ -1,0 +1,113 @@
+
+type: timescaledb
+
+version:
+  postgresql: "18.1"
+  timescaledb: "2.24"
+
+mode: recovery
+
+recovery:
+  owner: "admin-user"
+  method: object_store
+  destinationPath: "https://devcnpg.blob.core.windows.net/cnpg-files"
+  clusterName: "mqtt-recorder-cnpg-db"
+  database: "mqtt-recorder"
+  provider: azure
+  azure:
+    storageAccount: "y"
+    storageKey: "y"
+  secret:
+    access_id: username
+    access_key: password
+    create: false
+    name: cnpg-blob-storage-secret
+
+
+imageCatalog:
+  images:
+  - image: "timescale/timescaledb-ha:pg18"
+    major: 18
+
+cluster:
+
+cluster:
+  instances: 1
+
+  storage:
+    size: 40Gi
+    storageClass: "managed-csi"
+
+  postgresUID: 1000
+  postgresGID: 1000
+
+  resources:
+    requests:
+      cpu: "1"
+      memory: 2Gi
+    limits:
+      cpu: "2"
+      memory: 8Gi
+
+  postgresql:
+    parameters:
+      max_wal_size: "1GB"
+      max_wal_senders: "3"
+      wal_level: "replica"
+      timezone: "Europe/Stockholm"
+      max_parallel_workers_per_gather: "0"
+      # due to an unresolved old bug [https://github.com/timescale/timescaledb-toolkit/issues/794, https://github.com/timescale/timescaledb-toolkit/issues/878]
+      # where the rollup of time weights can crash occasionally when run in parallel
+      # make sure gather does not run in parallel. Not a good solution...
+  
+    shared_preload_libraries:
+      - timescaledb
+      - timescaledb_toolkit
+
+  roles:
+    - name: admin-user
+      ensure: present
+      comment: Flyway user
+      login: true
+      superuser: true
+      passwordSecret:
+        name: mqtt-recorder-admin-secret
+
+  monitoring:
+    enabled: true
+    podMonitor:
+      enabled: true
+
+    prometheusRule:
+      enabled: true
+      excludeRules:
+        - CNPGClusterZoneSpreadWarning
+
+backups:
+  enabled: true
+  provider: azure
+  destinationPath: "https://devcnpg.blob.core.windows.net/cnpg-files"
+  azure:
+    storageAccount: "y"
+    storageKey: "y"
+  secret:
+    access_id: username
+    access_key: password
+    create: false
+    name: cnpg-blob-storage-secret
+
+  wal:
+    compression: bzip2
+    encryption: AES256
+    maxParallel: 3
+  data:
+    compression: bzip2
+    encryption: AES256
+    jobs: 2
+
+  scheduledBackups:
+    - name: daily-backup
+      schedule: "0 0 3 * * *"
+      backupOwnerReference: self
+      method: plugin
+  retentionPolicy: "30d"

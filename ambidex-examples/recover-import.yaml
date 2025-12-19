@@ -1,0 +1,18 @@
+mode: recovery
+
+recovery:
+  method: import
+  import:
+    type: microservice
+    schemaOnly: false
+    databases:
+    - customer_authorization_db
+    source:
+      host: "customer-authorization-db"
+      username: djaw0YijarwH58tn
+      passwordSecret:
+        name: customer-authorization-secret
+        key: CUSTOMER_AUTHORIZATION_ROOT_PASSWORD
+      sslMode: allow
+      postImportApplicationSQL:
+       - "ALTER DATABASE customer_authorization_db RENAME TO \"customer-authorization\";"
