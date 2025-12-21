@@ -195,3 +195,5 @@ certificate:
   duration: 2160h
   # -- The renew before time for the certificates.
   renewBefore: 360h
+  # -- The maximum number of CertificateRequests to retain for each certificate.
+  revisionHistoryLimit: 1
