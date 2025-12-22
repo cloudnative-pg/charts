@@ -8,21 +8,21 @@ version:
 mode: recovery
 
 recovery:
-  owner: "admin-user"
-  method: object_store
-  destinationPath: "https://devcnpg.blob.core.windows.net/cnpg-files"
-  clusterName: "mqtt-recorder-cluster"
-  database: "mqtt-recorder"
-  provider: azure
-  azure:
-    storageAccount: "y"
-    storageKey: "y"
-  secret:
-    access_id: username
-    access_key: password
-    create: false
-    name: cnpg-blob-storage-secret
+  method: pg_basebackup
+  pgBaseBackup:
+    database: "mqtt-recorder"
+    owner: "admin-user"
+    secretName:
 
+    source:
+      database: mqtt-recorder
+      host: mqtt-recorder-cluster
+      port: 5432
+      username: admin-user
+      passwordSecret:
+        key: password
+        name: mqtt-recorder-admin-secret
+      sslMode: allow
 
 imageCatalog:
   images:
@@ -30,10 +30,10 @@ imageCatalog:
     major: 18
 
 cluster:
-  instances: 3
+  instances: 1
 
   storage:
-    size: 100Gi
+    size: 40Gi
     storageClass: "managed-csi"
 
   postgresUID: 1000
@@ -41,8 +41,8 @@ cluster:
 
   resources:
     requests:
-      cpu: "1"
-      memory: 2Gi
+      cpu: 500m
+      memory: 1Gi
     limits:
       cpu: "2"
       memory: 8Gi
@@ -57,9 +57,9 @@ cluster:
       # due to an unresolved old bug [https://github.com/timescale/timescaledb-toolkit/issues/794, https://github.com/timescale/timescaledb-toolkit/issues/878]
       # where the rollup of time weights can crash occasionally when run in parallel
       # make sure gather does not run in parallel. Not a good solution...
-    
+
     pg_hba:
-    - host all all all scram-sha-256
+    - host all all 10.0.0.0/8 scram-sha-256
 
   roles:
     - name: admin-user
@@ -83,7 +83,7 @@ cluster:
 backups:
   enabled: true
   provider: azure
-  destinationPath: "https://devcnpg.blob.core.windows.net/cnpg-files"
+  destinationPath: "https://stagecnpg.blob.core.windows.net/cnpg-files"
   azure:
     storageAccount: "y"
     storageKey: "y"
