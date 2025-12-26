@@ -66,6 +66,34 @@ webhook:
     failureThreshold: 6
     periodSeconds: 5
 
+# Configure a networkPolicy for the operator
+networkPolicy:
+  # -- Specifies whether the networkPolicy should be created.
+  enabled: false
+  # -- The ingress traffic
+  # Should match the webhook and (optionally) metrics port
+  ingress:
+  - ports:
+    - port: 8080  # metrics port
+      protcol: TCP
+    - port: 9443  # webhook port
+      protcol: TCP
+  # -- The egress traffic
+  # This uses DNS (53/udp, 53/tcp) and the API server (80/tcp, 443/tcp, 6443/tcp)
+  # OKD and Openshift use 6443/tcp
+  egress:
+  - ports:
+    - port: 80
+      protocol: TCP
+    - port: 443
+      protocol: TCP
+    - port: 53
+      protocol: TCP
+    - port: 53
+      protocol: UDP
+    - port: 6443
+      protocol: TCP
+
 # Operator configuration.
 config:
   # -- Specifies whether the secret should be created.
