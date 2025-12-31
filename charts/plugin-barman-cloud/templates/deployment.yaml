@@ -79,11 +79,17 @@ spec:
           {{- toYaml .Values.resources | nindent 10 }}
         securityContext:
           {{- toYaml .Values.containerSecurityContext | nindent 10 }}
+        {{- if or .Values.certificate.createClientCertificate .Values.certificate.createServerCertificate }}
         volumeMounts:
+        {{- if .Values.certificate.createServerCertificate }}
         - mountPath: /server
           name: server
+        {{- end }}
+        {{- if .Values.certificate.createClientCertificate }}
         - mountPath: /client
           name: client
+        {{- end }}
+        {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -106,10 +112,16 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if or .Values.certificate.createClientCertificate .Values.certificate.createServerCertificate }}
       volumes:
+      {{- if .Values.certificate.createServerCertificate }}
       - name: server
         secret:
           secretName: barman-cloud-server-tls
+      {{- end }}
+      {{- if .Values.certificate.createClientCertificate }}
       - name: client
         secret:
           secretName: barman-cloud-client-tls
+      {{- end }}
+      {{- end }}
