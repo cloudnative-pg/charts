@@ -1,11 +1,11 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: database-parameters-cluster-default-db
+  name: database-parameters-paradedb-default-db
 spec:
   name: default_db
   cluster:
-    name: database-parameters-cluster
+    name: database-parameters-paradedb
   ensure: present
   owner: test-owner
   template: template1
@@ -15,11 +15,11 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: database-parameters-cluster-test-db-icu
+  name: database-parameters-paradedb-test-db-icu
 spec:
   name: test-db-icu
   cluster:
-    name: database-parameters-cluster
+    name: database-parameters-paradedb
   ensure: present
   owner: test-owner
   template: template0
@@ -42,18 +42,18 @@ spec:
   extensions:
     - name: pg_search
       ensure: absent
-      version: "0.15.21"
+      version: "0.19.11"
       schema: test-schema
 
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: database-parameters-cluster-test-db-builtin
+  name: database-parameters-paradedb-test-db-builtin
 spec:
   name: test-db-builtin
   cluster:
-    name: database-parameters-cluster
+    name: database-parameters-paradedb
   ensure: present
   owner: test-owner
   template: template0
@@ -75,5 +75,5 @@ spec:
   extensions:
     - name: pg_search
       ensure: absent
-      version: "0.15.21"
+      version: "0.19.11"
       schema: test-schema
