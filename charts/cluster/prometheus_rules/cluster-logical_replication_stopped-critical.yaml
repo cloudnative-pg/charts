@@ -10,7 +10,7 @@ annotations:
 
     Status: {{ .labels.stop_reason }}
     Duration: {{ .value }}s
-  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterLogicalReplicationStopped.md
+  runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterLogicalReplicationStopped.md
 expr: |
   (
     # Subscription is explicitly disabled

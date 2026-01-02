@@ -9,7 +9,7 @@ annotations:
     Status: {{ .labels.stop_reason }}
 
     The subscription is not actively replicating data. This could be intentional (disabled) or due to an issue preventing the subscription from working.
-  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/{{ $alert }}.md
+  runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/paradedb/docs/runbooks/{{ $alert }}.md
 expr: |
   (
     # Subscription is explicitly disabled

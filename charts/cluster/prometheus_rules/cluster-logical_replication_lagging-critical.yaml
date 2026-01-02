@@ -12,7 +12,7 @@ annotations:
     Current lag: {{ .value }}s
 
     CRITICAL: The subscriber is significantly behind the publisher. Immediate action required. This could lead to significant data inconsistency, disk space exhaustion on publisher, or extended recovery time.
-  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterLogicalReplicationLagging.md
+  runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterLogicalReplicationLagging.md
 expr: |
   (
     # Receipt lag - not receiving WAL data
