@@ -43,10 +43,10 @@ Inspect the `PostgreSQL Parameters` section of the [CloudNativePG Grafana Dashbo
 - Terminate long-running transactions that generate excessive changes.
 
 ```bash
-kubectl exec -it services/paradedb-rw --namespace <namespace> -- psql
+kubectl exec -it services/cluster-rw --namespace <namespace> -- psql
 ```
 
-- Increase the Memory and CPU resources of the ParadeDB instances under heavy load. This can be done by setting `cluster.resources.requests` and `cluster.resources.limits` in your Helm values. Set both `requests` and `limits` to the same value to achieve QoS Guaranteed. This will require a restart of the CloudNativePG cluster instances and a primary switchover, which will cause a brief service disruption.
+- Increase the Memory and CPU resources of the instances under heavy load. This can be done by setting `cluster.resources.requests` and `cluster.resources.limits` in your Helm values. Set both `requests` and `limits` to the same value to achieve QoS Guaranteed. This will require a restart of the CloudNativePG cluster instances and a primary switchover, which will cause a brief service disruption.
 
 - Enable `wal_compression` by setting the `cluster.postgresql.parameters.wal_compression` parameter to `on`. Doing so will reduce the size of the WAL files and can help reduce replication lag in a congested network. Changing `wal_compression` does not require a restart of the CloudNativePG cluster.
 
