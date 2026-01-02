@@ -1,0 +1,32 @@
+{{- $alert := "CNPGClusterLogicalReplicationLagging" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: ParadeDB CNPG Cluster logical replication lagging
+  description: |-
+    ParadeDB CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ "{{ .subname }}" }}" subscription is experiencing replication lag.
+
+    {{- if .labels.lag_type }}
+    Lag type: {{ .labels.lag_type }}
+    {{- end }}
+    Current lag: {{ .value }}s
+
+    This alert indicates the subscriber is falling behind the publisher. The lag could be receipt lag (not receiving WAL data fast enough due to network issues), apply lag (receiving data but not applying it fast enough due to resource contention), or LSN distance (large amount of pending data to be applied).
+  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/{{ $alert }}.md
+expr: |
+  (
+    # Receipt lag - time since last message received
+    label_replace(max by (namespace, job, subname) (cnpg_pg_stat_subscription_receipt_lag_seconds), "cluster", "$1", "job", ".+/(.+)") > 60
+  ) or (
+    # Apply lag - time delay in applying changes
+    label_replace(max by (namespace, job, subname) (cnpg_pg_stat_subscription_apply_lag_seconds), "cluster", "$1", "job", ".+/(.+)") > 60
+  ) or (
+    # LSN distance - bytes pending to be applied
+    label_replace(max by (namespace, job, subname) (cnpg_pg_stat_subscription_buffered_lag_bytes), "cluster", "$1", "job", ".+/(.+)") / 1024^3 > 1
+  )
+for: 5m
+labels:
+  severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}

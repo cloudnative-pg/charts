@@ -1,0 +1,18 @@
+{{- $alert := "CNPGClusterPhysicalReplicationLagCritical" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: ParadeDB CNPG Cluster very high physical replication lag
+  description: |-
+    ParadeDB CloudNativePG Cluster "{{ .namespace }}/{{ .cluster }}" is experiencing a very high physical replication lag of {{ .value }}ms.
+
+    High replication lag indicates network issues, busy instances, slow queries or suboptimal configuration.
+  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterPhysicalReplicationLag.md
+expr: |
+  max(cnpg_pg_replication_lag{namespace="{{ .namespace }}",pod=~"{{ .podSelector }}"}) * 1000 > 15000
+for: 5m
+labels:
+  severity: critical
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}

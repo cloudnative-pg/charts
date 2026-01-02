@@ -1,0 +1,29 @@
+{{- $alert := "CNPGClusterLogicalReplicationStoppedCritical" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: ParadeDB CNPG Cluster logical replication subscription CRITICAL
+  description: |-
+    ParadeDB CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ "{{ .subname }}" }}" subscription is in a critical state.
+
+    CRITICAL: The subscription has been stopped for more than 15 minutes. This will lead to significant data divergence and requires immediate intervention.
+
+    Status: {{ .labels.stop_reason }}
+    Duration: {{ .value }}s
+  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterLogicalReplicationStopped.md
+expr: |
+  (
+    # Subscription is explicitly disabled
+    label_replace(max by (namespace, job, subname) (cnpg_pg_stat_subscription_enabled), "cluster", "$1", "job", ".+/(.+)") == 0
+  ) or (
+    # Subscription is enabled but stuck (no worker process with significant lag)
+    label_replace(max by (namespace, job, subname) (cnpg_pg_stat_subscription_enabled), "cluster", "$1", "job", ".+/(.+)") == 1
+    and label_replace(max by (namespace, job, subname) (cnpg_pg_stat_subscription_pid), "cluster", "$1", "job", ".+/(.+)") == ""
+    and label_replace(max by (namespace, job, subname) (cnpg_pg_stat_subscription_buffered_lag_bytes), "cluster", "$1", "job", ".+/(.+)") / 1024^3 > 0.1
+  )
+for: 15m
+labels:
+  severity: critical
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}
