@@ -21,7 +21,7 @@ runs:
         helm dependency update charts/cloudnative-pg
 
         helm upgrade
-        --install 
+        --install
         --namespace $NAMESPACE
         --create-namespace
         --set config.clusterWide=$CLUSTER_WIDE
