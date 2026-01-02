@@ -23,10 +23,10 @@ spec:
               SELECT version FROM paradedb.version_info();
             EOSQL
             echo $PG_SEARCH_VERSION
-            test "$PG_SEARCH_VERSION" = " 0.19.11"
+            test "$PG_SEARCH_VERSION" = " 0.15.21"
 
             EXTVERSION=$(psql "$DB_URI" -t) <<-EOSQL
               SELECT extversion FROM pg_extension WHERE extname = 'pg_search';
             EOSQL
             echo $EXTVERSION
-            test "$EXTVERSION" = " 0.19.11"
+            test "$EXTVERSION" = " 0.15.21"
