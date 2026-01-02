@@ -184,6 +184,8 @@ cluster:
   # -- Number of instances
   instances: 3
 
+  plugins: []
+
   # -- Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments:
   # <image>:<tag>@sha256:<digestValue>
   imageName: ""  # Default value depends on type (postgresql/postgis/timescaledb)
@@ -473,7 +475,6 @@ backups:
 
   # -- Retention policy for backups
   retentionPolicy: "30d"
-
 replica:
   # --  Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.
   self: ""
