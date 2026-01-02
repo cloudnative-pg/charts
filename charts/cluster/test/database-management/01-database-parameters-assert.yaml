@@ -5,7 +5,7 @@ metadata:
 spec:
   name: default_db
   cluster:
-    name: database-parameters-paradedb
+    name: database-parameters-cluster
   ensure: present
   owner: test-owner
   template: template1
@@ -19,7 +19,7 @@ metadata:
 spec:
   name: test-db-icu
   cluster:
-    name: database-parameters-paradedb
+    name: database-parameters-cluster
   ensure: present
   owner: test-owner
   template: template0
@@ -53,7 +53,7 @@ metadata:
 spec:
   name: test-db-builtin
   cluster:
-    name: database-parameters-paradedb
+    name: database-parameters-cluster
   ensure: present
   owner: test-owner
   template: template0
