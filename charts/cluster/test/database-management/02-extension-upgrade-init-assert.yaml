@@ -9,7 +9,7 @@ status:
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: extension-upgrade-paradedb-paradedb
+  name: extension-upgrade-cluster-paradedb
 spec:
   name: paradedb
   cluster:
