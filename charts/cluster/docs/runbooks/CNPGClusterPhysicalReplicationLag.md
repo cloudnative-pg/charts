@@ -118,8 +118,6 @@ SHOW max_replication_slots;
          memory: 16Gi
    ```
 
-   If using the ParadeDB BYOC Terraform module, this can be done by setting the `paradedb.cpu` and `paradedb.mem` parameters in the `.tfvars` file(s).
-
 3. **Enable WAL Compression:**
    ```yaml
    cluster:
