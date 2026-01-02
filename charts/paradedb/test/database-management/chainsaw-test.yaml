@@ -25,7 +25,7 @@ spec:
         - assert:
             file: ./01-database-parameters-assert.yaml
 
-    - name: Provision a cluster with a database with the ParadeDB extension
+    - name: Provision a cluster with a database with the pg_search extension
       try:
         - script:
             content: |
