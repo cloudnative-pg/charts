@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: database-parameters-paradedb-default-db
+  name: database-parameters-cluster-default-db
 spec:
   name: default_db
   cluster:
@@ -15,7 +15,7 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: database-parameters-paradedb-test-db-icu
+  name: database-parameters-cluster-test-db-icu
 spec:
   name: test-db-icu
   cluster:
@@ -49,7 +49,7 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: database-parameters-paradedb-test-db-builtin
+  name: database-parameters-cluster-test-db-builtin
 spec:
   name: test-db-builtin
   cluster:
