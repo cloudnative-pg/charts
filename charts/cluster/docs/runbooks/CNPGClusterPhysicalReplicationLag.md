@@ -105,7 +105,7 @@ SHOW max_replication_slots;
    ```
 
 2. **Scale Up Resources:**
-   Increase the Memory and CPU resources of the ParadeDB instances under heavy load. This can be done by setting `cluster.resources.requests` and `cluster.resources.limits` in your Helm values. Set both `requests` and `limits` to the same value to achieve QoS Guaranteed.
+   Increase the Memory and CPU resources of the instances under heavy load. This can be done by setting `cluster.resources.requests` and `cluster.resources.limits` in your Helm values. Set both `requests` and `limits` to the same value to achieve QoS Guaranteed.
 
    ```yaml
    cluster:
