@@ -42,7 +42,7 @@ spec:
   extensions:
     - name: pg_search
       ensure: absent
-      version: "0.15.21"
+      version: "0.19.11"
       schema: test-schema
 
 ---
@@ -75,5 +75,5 @@ spec:
   extensions:
     - name: pg_search
       ensure: absent
-      version: "0.15.21"
+      version: "0.19.11"
       schema: test-schema

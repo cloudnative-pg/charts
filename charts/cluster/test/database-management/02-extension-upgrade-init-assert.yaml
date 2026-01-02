@@ -11,11 +11,11 @@ kind: Database
 metadata:
   name: extension-upgrade-cluster-cluster
 spec:
-  name: paradedb
+  name: test-db-icu
   cluster:
     name: extension-upgrade-cluster
   ensure: present
-  owner: paradedb
+  owner: test-owner
   template: template1
   encoding: UTF8
   databaseReclaimPolicy: retain
