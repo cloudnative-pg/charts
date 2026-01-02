@@ -2,9 +2,9 @@
 {{- if not (has $alert .excludeRules) -}}
 alert: {{ $alert }}
 annotations:
-  summary: ParadeDB CNPG Cluster logical replication lagging
+  summary: CNPG Cluster logical replication lagging
   description: |-
-    ParadeDB CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ "{{ .subname }}" }}" subscription is experiencing replication lag.
+    CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ "{{ .subname }}" }}" subscription is experiencing replication lag.
 
     {{- if .labels.lag_type }}
     Lag type: {{ .labels.lag_type }}
