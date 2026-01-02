@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: paradedb-version-check-before
+  name: test-db-icu-version-check-before
 spec:
   template:
     spec:

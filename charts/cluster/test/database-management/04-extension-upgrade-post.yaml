@@ -1,15 +1,15 @@
-type: paradedb
+type: postgresql
 version:
   postgresql: "17"
-  paradedb: "0.15.21"
+  paradedb: "0.19.11"
 
 cluster:
   instances: 2
 
 databases:
-  - name: paradedb
+  - name: test-db-icu
     ensure: present
-    owner: paradedb
+    owner: test-owner
     encoding: UTF8
     extensions:
       - name: pg_search

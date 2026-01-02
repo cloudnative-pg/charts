@@ -11,15 +11,15 @@ kind: Database
 metadata:
   name: extension-upgrade-cluster-cluster
 spec:
-  name: paradedb
+  name: test-db-icu
   cluster:
     name: extension-upgrade-cluster
   ensure: present
-  owner: paradedb
+  owner: test-owner
   template: template1
   encoding: UTF8
   databaseReclaimPolicy: retain
   extensions:
     - name: pg_search
       ensure: present
-      version: "0.15.21"
+      version: "0.19.11"
