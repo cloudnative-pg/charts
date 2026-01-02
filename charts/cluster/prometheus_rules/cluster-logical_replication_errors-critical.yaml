@@ -1,0 +1,18 @@
+{{- $alert := "CNPGClusterLogicalReplicationErrorsCritical" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: ParadeDB CNPG Cluster critical logical replication errors
+  description: |-
+    ParadeDB CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ "{{ .subname }}" }}" subscription has experienced {{ .value }} errors in the last 5 minutes.
+
+    CRITICAL: High error rate indicates persistent replication issues requiring immediate attention. This could lead to significant data inconsistency or complete replication failure. Errors include both apply errors and sync errors. The subscription may stop working if errors continue.
+  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/CNPGClusterLogicalReplicationErrors.md
+expr: |
+  label_replace(increase(max by (namespace, job, subname) (cnpg_pg_stat_subscription_apply_error_count + cnpg_pg_stat_subscription_sync_error_count)[5m]), "cluster", "$1", "job", ".+/(.+)") >= 5
+for: 0m
+labels:
+  severity: critical
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}

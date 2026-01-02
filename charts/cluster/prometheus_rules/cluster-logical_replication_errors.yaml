@@ -1,0 +1,18 @@
+{{- $alert := "CNPGClusterLogicalReplicationErrors" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: ParadeDB CNPG Cluster logical replication errors detected
+  description: |-
+    ParadeDB CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ "{{ .subname }}" }}" subscription has experienced {{ .value }} errors.
+
+    This includes both apply errors (during normal replication) and sync errors (during initial table sync). Errors indicate data consistency issues that need immediate attention to prevent data divergence.
+  runbook_url: https://github.com/paradedb/charts/blob/main/charts/paradedb/docs/runbooks/{{ $alert }}.md
+expr: |
+  label_replace(increase(max by (namespace, job, subname) (cnpg_pg_stat_subscription_apply_error_count + cnpg_pg_stat_subscription_sync_error_count)[5m]), "cluster", "$1", "job", ".+/(.+)") > 0
+for: 1m
+labels:
+  severity: warning
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- end -}}
