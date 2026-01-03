@@ -303,6 +303,9 @@ cluster:
     #     - pg_monitor
     #     - pg_signal_backend
 
+  # -- List of CNPG-I plugins
+  plugins: []
+
   monitoring:
     # -- Whether to enable monitoring
     enabled: false
