@@ -21,7 +21,7 @@ name: plugin-barman-cloud
 description: Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
 type: application
-version: "0.4.0"
+version: "0.4.1"
 appVersion: "v0.10.0"
 sources:
   - https://github.com/cloudnative-pg/plugin-barman-cloud
