@@ -15,7 +15,8 @@ release (e.g. 1.17.1)
 ## Charts
 
 1. [Releasing the `cloudnative-pg` chart](#releasing-the-cloudnative-pg-chart)
-2. [Releasing `cluster` chart](#releasing-the-cluster-chart)
+2. [Releasing the `cluster` chart](#releasing-the-cluster-chart)
+3. [Releasing the `plugin-barman-cloud` chart](#releasing-the-plugin-barman-cloud)
 
 ## Releasing the `cloudnative-pg` chart
 
@@ -25,7 +26,8 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
     ```bash
     OLD_VERSION=$(yq -r '.version' charts/cloudnative-pg/Chart.yaml)
     OLD_CNPG_VERSION=$(yq -r '.appVersion' charts/cloudnative-pg/Chart.yaml)
-    echo $OLD_VERSION
+    echo Old chart version: $OLD_VERSION
+    echo Old CNPG version: $OLD_CNPG_VERSION
     ```
 2. Decide which version to create, depending on the kind of jump of the CloudNativePG release, following semver
     semantics. For this document, let's call it `X.Y.Z`
@@ -44,8 +46,8 @@ In order to create a new release of the `cloudnative-pg` chart, follow these ste
     want to:
     1. Find the latest `cloudnative-pg` version by running:
         ```bash
-        NEW_CNPG_VERSION=$(curl  "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/tags" | jq -r '.[0].name | ltrimstr("v")')
-        echo $NEW_CNPG_VERSION
+        NEW_CNPG_VERSION=$(curl -Ssl "https://api.github.com/repos/cloudnative-pg/cloudnative-pg/tags" | jq -r '.[0].name | ltrimstr("v")')
+        echo New CNPG version: $NEW_CNPG_VERSION
         ```
     2. Update `.appVersion` in the [Chart.yaml](./charts/cloudnative-pg/Chart.yaml) file
         ```bash
@@ -155,3 +157,91 @@ In order to create a new release of the `cluster` chart, follow these steps:
     helm search repo cnpg
     ```
     and be able to see the new version `X.Y.Z` as `CHART VERSION` for `cluster`
+
+## Releasing the `plugin-barman-cloud` chart
+
+In order to create a new release of the `plugin-barman-cloud` chart, follow these steps:
+
+1. Take note of the current value of the release: see `.version` in `charts/plugin-barman-cloud/Chart.yaml`
+    ```bash
+    OLD_VERSION=$(yq -r '.version' charts/plugin-barman-cloud/Chart.yaml)
+    OLD_APP_VERSION=$(yq -r '.appVersion' charts/plugin-barman-cloud/Chart.yaml)
+    echo Old chart version: $OLD_VERSION
+    echo Old app version: $OLD_APP_VERSION
+    ```
+2. Decide which version to create, depending on the kind of jump of the CloudNativePG release, following semver
+    semantics. For this document, let's call it `X.Y.Z`
+    ```bash
+    NEW_VERSION="X.Y.Z"
+    ```
+3. Create a branch named `release/plugin-barman-cloud-vX.Y.Z` and switch to it:
+    ```bash
+    git switch --create release/plugin-barman-cloud-v$NEW_VERSION
+    ```
+4. Update the `.version` in the [Chart.yaml](./charts/plugin-barman-cloud/Chart.yaml) file to `"X.Y.Z"`
+    ```bash
+    sed -i -E "s/^version: \"([0-9]+.?)+\"/version: \"$NEW_VERSION\"/" charts/plugin-barman-cloud/Chart.yaml
+    ```
+5. Update everything else as required, e.g. if releasing due to a new `plugin-barman-cloud` version being released, you might
+    want to:
+    1. Find the latest `plugin-barman-cloud` version by running:
+        ```bash
+        NEW_APP_VERSION=$(curl -Ssl "https://api.github.com/repos/cloudnative-pg/plugin-barman-cloud/tags" | jq -r '.[0].name')
+        echo New app version: $NEW_APP_VERSION
+        ```
+    2. Update `.appVersion` in the [Chart.yaml](./charts/plugin-barman-cloud/Chart.yaml) file
+        ```bash
+        sed -i -E "s/^appVersion: \"v([0-9]+.?)+\"/appVersion: \"$NEW_APP_VERSION\"/" charts/plugin-barman-cloud/Chart.yaml
+        ```
+    3. Update [crds.yaml](./charts/plugin-barman-cloud/templates/crds/crds.yaml), which can be built using
+        [kustomize](https://kustomize.io/) from the `plugin-barman-cloud` repo using kustomize
+        [remoteBuild](https://github.com/kubernetes-sigs/kustomize/blob/master/examples/remoteBuild.md)
+        running:
+
+        Verify the version is correct. Edit it if incorrect, then run:
+        ```bash
+        echo '{{- if .Values.crds.create }}' > ./charts/plugin-barman-cloud/templates/crds/crds.yaml
+        kustomize build https://github.com/cloudnative-pg/plugin-barman-cloud/config/crd/\?ref\=$NEW_APP_VERSION >> ./charts/plugin-barman-cloud/templates/crds/crds.yaml
+        echo '{{- end }}' >> ./charts/plugin-barman-cloud/templates/crds/crds.yaml
+        ```
+
+        Check that the `helm.sh/resource-policy: keep` annotation is still present after regenerating the CRDs.
+    4. To update the files in the [templates](./charts/plugin-barman-cloud/templates) directory, you can diff the previous
+        CNPG release yaml against the new one, to find what should be updated (e.g.
+        ```bash
+        vimdiff \
+            "https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/${OLD_APP_VERSION}/manifest.yaml" \
+            "https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/${NEW_APP_VERSION}/manifest.yaml"
+       ```
+
+    5. Update [values.yaml](./charts/plugin-barman-cloud/values.yaml) if needed
+    6. NOTE: updating `values.yaml` just for the appVersion may not be necessary, as the value should default to the
+        `appVersion` in `Chart.yaml`
+6. Run `make docs schema` to regenerate the docs and the values schema in case it is needed
+    ```bash
+    make docs schema
+    ```
+7. Commit and add the relevant information you wish in the commit message.
+    ```bash
+    git add .
+    git commit -S -s -m "Release plugin-barman-cloud-v$NEW_VERSION" --edit
+    ```
+8. Push the new branch
+    ```bash
+    git push --set-upstream origin release/plugin-barman-cloud-v$NEW_VERSION
+    ```
+9. A PR named `Release plugin-barman-cloud-vX.Y.Z` should be automatically created
+10. Wait for all the checks to pass
+11. Two approvals are required in order to merge the PR, if you are a maintainer approve the PR yourself and ask for
+    another approval, otherwise ask for two approvals directly.
+12. Merge the PR squashing all commits and **taking care to keep the commit message to be
+    `Release plugin-barman-cloud-vX.Y.Z`**
+13. A release `plugin-barman-cloud-vX.Y.Z` should be automatically created by an action, which will then trigger the release
+    action. Verify they both are successful.
+14. Once done you should be able to run:
+    ```bash
+    helm repo add cnpg https://cloudnative-pg.github.io/charts
+    helm repo update
+    helm search repo cnpg
+    ```
+    and be able to see the new version `X.Y.Z` as `CHART VERSION` for `plugin-barman-cloud`

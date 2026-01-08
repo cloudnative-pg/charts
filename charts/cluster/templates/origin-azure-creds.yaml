@@ -1,0 +1,12 @@
+{{- if and (eq .Values.mode "replica" ) (eq .Values.replica.origin.objectStore.provider "azure") .Values.replica.origin.objectStore.secret.create }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ default (printf "%s-origin-azure-creds" (include "cluster.fullname" .)) .Values.recovery.secret.name }}
+  namespace: {{ include "cluster.namespace" . }}
+data:
+  AZURE_CONNECTION_STRING: {{ .Values.recovery.azure.connectionString | b64enc | quote }}
+  AZURE_STORAGE_ACCOUNT: {{ .Values.recovery.azure.storageAccount | b64enc | quote }}
+  AZURE_STORAGE_KEY: {{ .Values.recovery.azure.storageKey | b64enc | quote }}
+  AZURE_STORAGE_SAS_TOKEN: {{ .Values.recovery.azure.storageSasToken | b64enc | quote }}
+{{- end }}

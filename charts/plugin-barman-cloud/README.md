@@ -1,6 +1,6 @@
 # plugin-barman-cloud
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.5.0](https://img.shields.io/badge/AppVersion-v0.5.0-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.10.0](https://img.shields.io/badge/AppVersion-v0.10.0-informational?style=flat-square)
 
 Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 
@@ -62,5 +62,4 @@ Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 | sidecarImage.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | tolerations | list | `[]` | Tolerations for the operator to be installed. |
 | topologySpreadConstraints | list | `[]` | Topology Spread Constraints for the operator to be installed. |
-| updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy For example:  type: RollingUpdate  rollingUpdate:    maxSurge: 25%    maxUnavailable: 25%  WARNING: the RollingUpdate strategy is not supported by the operator yet so it can currently. only use the Recreate strategy. |
-
+| updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy For example:  type: RollingUpdate  rollingUpdate:    maxSurge: 25%    maxUnavailable: 25%  WARNING: the RollingUpdate strategy is not supported by the operator yet so it can currently only use the Recreate strategy. |
