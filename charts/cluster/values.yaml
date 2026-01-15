@@ -321,6 +321,10 @@ cluster:
       # -- Exclude specified rules
       excludeRules: []
         # - CNPGClusterZoneSpreadWarning
+    # Additional instrumentation via custom metrics
+    instrumentation:
+      # -- Enable logical replication metrics
+      logicalReplication: true
     # -- Whether the default queries should be injected.
     # Set it to true if you don't want to inject default queries into the cluster.
     disableDefaultQueries: false

@@ -235,6 +235,14 @@
                         "enabled": {
                             "type": "boolean"
                         },
+                        "instrumentation": {
+                            "type": "object",
+                            "properties": {
+                                "logicalReplication": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
                         "podMonitor": {
                             "type": "object",
                             "properties": {
