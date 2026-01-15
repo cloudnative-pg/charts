@@ -398,6 +398,17 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
+  # -- mounting custom files inside the Postgres pods through .spec.projectedVolumeTemplate
+  # See https://cloudnative-pg.io/documentation/current/cluster_conf/#projected-volumes
+  projectedVolumeTemplate: {}
+    # sources:
+    #   - secret:
+    #       name: sample-secret
+    #       items:
+    #         - key: tls.crt
+    #           path: certificate/tls.crt
+    #         - key: tls.key
+    #           path: certificate/tls.key
 
 backups:
   # -- You need to configure backups manually, so backups are disabled by default.
