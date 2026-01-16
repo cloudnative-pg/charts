@@ -167,6 +167,9 @@
         "namespaceOverride": {
             "type": "string"
         },
+        "networkPolicy": {
+            "type": "object"
+        },
         "nodeSelector": {
             "type": "object"
         },
