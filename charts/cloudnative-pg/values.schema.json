@@ -20,6 +20,9 @@
                 "clusterWide": {
                     "type": "boolean"
                 },
+                "namespaced": {
+                    "type": "boolean"
+                },
                 "create": {
                     "type": "boolean"
                 },
