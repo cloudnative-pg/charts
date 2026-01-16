@@ -383,6 +383,12 @@
     },
     "serviceAccount": {
       "properties": {
+        "additionalAnnotations": {
+          "additionalProperties": true,
+          "description": "Annotations to be added only to the service account.",
+          "required": [],
+          "title": "additionalAnnotations"
+        },
         "create": {
           "default": true,
           "description": "Specifies whether the service account should be created.",
