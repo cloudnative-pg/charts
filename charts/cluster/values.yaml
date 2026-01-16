@@ -395,6 +395,14 @@ cluster:
   # -- Configure the metadata of the generated service account
   serviceAccountTemplate: {}
 
+  # -- Configure the Pod Security Context.
+  # See: https://cloudnative-pg.io/documentation/preview/security/
+  podSecurityContext: {}
+
+  # -- Configure Container Security Context.
+  # See: https://cloudnative-pg.io/documentation/preview/security/
+  securityContext: {}
+
   additionalLabels: {}
   annotations: {}
 
