@@ -7,7 +7,7 @@ cluster:
     enabled: true
     podMonitor:
       enabled: true
-      # labels:
+      labels: {}
       #   team-name: my-team
 
 backups:
