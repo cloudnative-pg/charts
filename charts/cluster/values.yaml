@@ -99,7 +99,7 @@ recovery:
     # -- Name of the backup credentials secret
     name: ""
 
-  # See https://cloudnative-pg.io/documentation/current/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
+  # See https://cloudnative-pg.io/docs/1.28/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
   pgBaseBackup:
     # -- Name of the database used by the application. Default: `app`.
     database: app
@@ -132,10 +132,10 @@ recovery:
         name: ""
         key: ""
 
-  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Import
+  # See: https://cloudnative-pg.io/docs/1.28/cloudnative-pg.v1/#postgresql-cnpg-io-v1-Import
   import:
     # -- One of `microservice` or `monolith.`
-    # See: https://cloudnative-pg.io/documentation/current/database_import/#how-it-works
+    # See: https://cloudnative-pg.io/docs/1.28/database_import/#how-it-works
     type: "microservice"
     # -- Databases to import
     databases: []
@@ -198,7 +198,7 @@ cluster:
   imagePullPolicy: IfNotPresent
 
   # -- The list of pull secrets to be used to pull the images.
-  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-LocalObjectReference
+  # See: https://cloudnative-pg.io/docs/1.28/cloudnative-pg.v1/#postgresql-cnpg-io-v1-LocalObjectReference
   imagePullSecrets: []
 
   storage:
@@ -216,7 +216,7 @@ cluster:
   # -- The GID of the postgres user inside the image, defaults to 26
   postgresGID: -1
 
-  # -- Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/
+  # -- Customization of service definitions. Please refer to https://cloudnative-pg.io/docs/1.28/service_management/
   services: {}
 
   # -- Resources requirements of every generated Pod.
@@ -245,7 +245,7 @@ cluster:
   logLevel: "info"
 
   # -- Affinity/Anti-affinity rules for Pods.
-  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration
+  # See: https://cloudnative-pg.io/docs/1.28/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration
   affinity:
     topologyKey: topology.kubernetes.io/zone
 
@@ -276,7 +276,7 @@ cluster:
     #     optional: true
 
   # -- The configuration for the CA and related certificates.
-  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration
+  # See: https://cloudnative-pg.io/docs/1.28/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration
   certificates: {}
 
   # -- When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password.
@@ -287,12 +287,12 @@ cluster:
   superuserSecret: ""
 
   # -- Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes
-  # See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets
+  # See: https://cloudnative-pg.io/docs/1.28/kubernetes_upgrade/#pod-disruption-budgets
   enablePDB: true
 
   # -- This feature enables declarative management of existing roles, as well as the creation of new roles if they are not
   # already present in the database.
-  # See: https://cloudnative-pg.io/documentation/current/declarative_role_management/
+  # See: https://cloudnative-pg.io/docs/1.28/declarative_role_management/
   roles: []
     # - name: dante
     #   ensure: present
@@ -364,9 +364,9 @@ cluster:
     # -- Lists of shared preload libraries to add to the default ones
     shared_preload_libraries: []
       # - pgaudit
-    # -- PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)
+    # -- PostgreSQL LDAP configuration (see https://cloudnative-pg.io/docs/1.28/postgresql_conf/#ldap-configuration)
     ldap: {}
-      # https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration
+      # https://cloudnative-pg.io/docs/1.28/postgresql_conf/#ldap-configuration
       # server: 'openldap.default.svc.cluster.local'
       # bindSearchAuth:
         # baseDN: 'ou=org,dc=example,dc=com'
@@ -378,8 +378,8 @@ cluster:
 
 
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
-  # See: https://cloudnative-pg.io/documentation/current/bootstrap/
-  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb
+  # See: https://cloudnative-pg.io/docs/1.28/bootstrap/
+  # See: https://cloudnative-pg.io/docs/1.28/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb
   initdb: {}
     # database: app
     # owner: "" # Defaults to the database name
@@ -396,11 +396,11 @@ cluster:
   serviceAccountTemplate: {}
 
   # -- Configure the Pod Security Context.
-  # See: https://cloudnative-pg.io/documentation/preview/security/
+  # See: https://cloudnative-pg.io/docs/preview/security/
   podSecurityContext: {}
 
   # -- Configure Container Security Context.
-  # See: https://cloudnative-pg.io/documentation/preview/security/
+  # See: https://cloudnative-pg.io/docs/preview/security/
   securityContext: {}
 
   additionalLabels: {}
