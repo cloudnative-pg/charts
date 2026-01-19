@@ -43,5 +43,5 @@ dependencies:
   - name: cluster
     alias: monitoring
     condition: monitoring.grafanaDashboard.create
-    version: "0.0.5"
+    version: "0.0"
     repository: https://cloudnative-pg.github.io/grafana-dashboards
