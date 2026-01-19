@@ -270,6 +270,9 @@
                         }
                     }
                 },
+                "podSecurityContext": {
+                    "type": "object"
+                },
                 "postgresGID": {
                     "type": "integer"
                 },
@@ -313,6 +316,9 @@
                 },
                 "roles": {
                     "type": "array"
+                },
+                "securityContext": {
+                    "type": "object"
                 },
                 "serviceAccountTemplate": {
                     "type": "object"
