@@ -396,11 +396,11 @@ cluster:
   serviceAccountTemplate: {}
 
   # -- Configure the Pod Security Context.
-  # See: https://cloudnative-pg.io/docs/preview/security/
+  # See: https://cloudnative-pg.io/docs/1.28/security/
   podSecurityContext: {}
 
   # -- Configure Container Security Context.
-  # See: https://cloudnative-pg.io/docs/preview/security/
+  # See: https://cloudnative-pg.io/docs/1.28/security/
   securityContext: {}
 
   additionalLabels: {}
