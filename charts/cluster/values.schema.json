@@ -235,6 +235,14 @@
                         "enabled": {
                             "type": "boolean"
                         },
+                        "instrumentation": {
+                            "type": "object",
+                            "properties": {
+                                "logicalReplication": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
                         "podMonitor": {
                             "type": "object",
                             "properties": {
@@ -261,6 +269,9 @@
                             }
                         }
                     }
+                },
+                "podSecurityContext": {
+                    "type": "object"
                 },
                 "postgresGID": {
                     "type": "integer"
@@ -305,6 +316,9 @@
                 },
                 "roles": {
                     "type": "array"
+                },
+                "securityContext": {
+                    "type": "object"
                 },
                 "serviceAccountTemplate": {
                     "type": "object"
