@@ -1,0 +1,18 @@
+type: postgresql
+mode: standalone
+version:
+  postgresql: "16"
+cluster:
+  instances: 1
+backups:
+  enabled: false
+tablespaces:
+  - name: analytics_data
+    storage:
+      size: 50Gi
+      storageClass: local-path
+    temporary: false
+  - name: my_temp_space
+    storage:
+      size: 20Gi
+    temporary: true
