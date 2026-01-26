@@ -115,6 +115,16 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 
+  {{- with .Values.cluster.podSecurityContext }}
+  podSecurityContext:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+
+  {{- with .Values.cluster.securityContext }}
+  securityContext:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+
   monitoring:
     enablePodMonitor: {{ and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
     disableDefaultQueries: {{ .Values.cluster.monitoring.disableDefaultQueries }}

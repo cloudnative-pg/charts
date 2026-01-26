@@ -321,6 +321,10 @@ cluster:
       # -- Exclude specified rules
       excludeRules: []
         # - CNPGClusterZoneSpreadWarning
+    # Additional instrumentation via custom metrics
+    instrumentation:
+      # -- Enable logical replication metrics
+      logicalReplication: true
     # -- Whether the default queries should be injected.
     # Set it to true if you don't want to inject default queries into the cluster.
     disableDefaultQueries: false
@@ -390,6 +394,14 @@ cluster:
 
   # -- Configure the metadata of the generated service account
   serviceAccountTemplate: {}
+
+  # -- Configure the Pod Security Context.
+  # See: https://cloudnative-pg.io/documentation/preview/security/
+  podSecurityContext: {}
+
+  # -- Configure Container Security Context.
+  # See: https://cloudnative-pg.io/documentation/preview/security/
+  securityContext: {}
 
   additionalLabels: {}
   annotations: {}
