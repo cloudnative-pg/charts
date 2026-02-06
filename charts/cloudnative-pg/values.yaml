@@ -36,6 +36,9 @@ namespaceOverride: ""
 hostNetwork: false
 dnsPolicy: ""
 
+# NOTE: if hostNetwork is true hostUsers should be too
+hostUsers: true
+
 # -- Update strategy for the operator.
 # ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
 # For example:
