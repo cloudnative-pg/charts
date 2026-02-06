@@ -21,6 +21,9 @@ cluster:
               usage: GAUGE
               description: "Cache hit ratio"
     podMonitor:
+      labels:
+        team-name: test-team
+        environment: test
       relabelings:
         - targetLabel: environment
           replacement: test
