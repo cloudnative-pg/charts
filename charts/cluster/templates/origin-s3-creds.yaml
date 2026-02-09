@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ default (printf "%s-origin-s3-creds" (include "cluster.fullname" .)) .Values.recovery.secret.name }}
+  name: {{ default (printf "%s-origin-s3-creds" (include "cluster.fullname" .)) .Values.replica.origin.objectStore.secret.name }}
   namespace: {{ include "cluster.namespace" . }}
 data:
   ACCESS_KEY_ID: {{ required ".Values.replica.origin.objectStore.s3.accessKey is required, but not specified." .Values.replica.origin.objectStore.s3.accessKey | b64enc | quote }}
