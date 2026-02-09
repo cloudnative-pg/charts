@@ -86,7 +86,7 @@ spec:
                 primary: [status, currentPrimary]
 
         - name: "primary_failing_since_time"
-          help: "The timestamp when the primary was detected to be unhealthy This field is reported when .spec.failoverDelay is populated or during online upgrades"
+          help: "The timestamp when the primary was detected to be unhealthy. This field is reported when .spec.failoverDelay is populated or during online upgrades"
           each:
             type: Gauge
             gauge:

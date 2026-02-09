@@ -13,7 +13,7 @@ runs:
       env:
         NAMESPACE: ${{ inputs.namespace }}
       run: |
-        cat <<EOF | kubectl apply -f -
+        cat <<EOF | kubectl apply --server-side --validate=strict -f -
         # Example of PostgreSQL cluster
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
