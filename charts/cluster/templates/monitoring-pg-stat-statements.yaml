@@ -1,0 +1,52 @@
+{{- if .Values.cluster.monitoring.instrumentation.pgStatStatements }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cluster.fullname" . }}-monitoring-pg-stat-statements
+  namespace: {{ include "cluster.namespace" . }}
+  labels:
+    cnpg.io/reload: ""
+    {{- include "cluster.labels" . | nindent 4 }}
+data:
+  custom-queries: |
+    pg_stat_statements:
+      query: |
+        SELECT d.datname
+             , sum(s.calls) AS calls
+             , sum(s.total_exec_time) / 1000 AS total_exec_time_seconds
+             , sum(s.rows) AS rows
+             , sum(s.shared_blks_hit) AS shared_blks_hit
+             , sum(s.shared_blks_read) AS shared_blks_read
+             , sum(s.blk_read_time) / 1000 AS blk_read_time_seconds
+             , sum(s.blk_write_time) / 1000 AS blk_write_time_seconds
+        FROM pg_stat_statements s
+        JOIN pg_database d ON s.dbid = d.oid
+        GROUP BY d.datname;
+      target_databases: ["*"]
+      predicate_query: "SELECT 1 FROM pg_extension WHERE extname = 'pg_stat_statements';"
+      metrics:
+        - datname:
+            description: Name of the database
+            usage: LABEL
+        - calls:
+            description: Total number of query executions
+            usage: COUNTER
+        - total_exec_time_seconds:
+            description: Total execution time in seconds
+            usage: COUNTER
+        - rows:
+            description: Total number of rows returned or affected
+            usage: COUNTER
+        - shared_blks_hit:
+            description: Total number of shared block cache hits
+            usage: COUNTER
+        - shared_blks_read:
+            description: Total number of shared blocks read from disk
+            usage: COUNTER
+        - blk_read_time_seconds:
+            description: Total block read time in seconds
+            usage: COUNTER
+        - blk_write_time_seconds:
+            description: Total block write time in seconds
+            usage: COUNTER
+{{- end }}
