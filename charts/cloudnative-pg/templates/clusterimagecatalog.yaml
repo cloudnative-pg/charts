@@ -1,0 +1,21 @@
+{{- if .Values.clusterImageCatalogs }}
+{{- range $catalog := .Values.clusterImageCatalogs }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ClusterImageCatalog
+metadata:
+  name: {{ $catalog.name }}
+  labels:
+    {{- include "cloudnative-pg.labels" $ | nindent 4 }}
+  {{- with $.Values.commonAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  images:
+  {{- range $image := $catalog.images }}
+    - major: {{ $image.major }}
+      image: {{ $image.image }}
+  {{- end }}
+{{- end }}
+{{- end }}
