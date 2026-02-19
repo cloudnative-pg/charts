@@ -405,6 +405,15 @@ cluster:
 
   additionalLabels: {}
   annotations: {}
+  # -- Metadata to be inherited by all resources related to a Cluster, annotations and labels defined here will be added to all cluster resources
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-EmbeddedObjectMetadata
+  inheritedMetadata: {}
+  #  annotations:
+  #    my.custom: annotation
+  #    another.custom: annotation
+  #  labels:
+  #    my.custom: label
+  #    another.custom: label
 
   console:
     # -- Deploys a console StatefulSet to run long-running commands against the cluster (e.g. `CREATE INDEX`).

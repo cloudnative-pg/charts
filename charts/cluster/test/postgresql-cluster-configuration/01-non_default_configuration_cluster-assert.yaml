@@ -12,6 +12,9 @@ spec:
   postgresUID: 1001
   postgresGID: 1002
   instances: 2
+  inheritedMetadata:
+    labels:
+      azure.workload.identity/use: "true"
   postgresql:
     ldap:
       server: 'openldap.default.svc.cluster.local'
