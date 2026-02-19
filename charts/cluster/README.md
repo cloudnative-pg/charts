@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -153,6 +153,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.affinity | object | `{"topologyKey":"topology.kubernetes.io/zone"}` | Affinity/Anti-affinity rules for Pods. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
 | cluster.annotations | object | `{}` |  |
 | cluster.certificates | object | `{}` | The configuration for the CA and related certificates. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration |
+| cluster.console.enabled | bool | `false` | Deploys a console StatefulSet to run long-running commands against the cluster (e.g. `CREATE INDEX`). |
 | cluster.enablePDB | bool | `true` | Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets |
 | cluster.enableSuperuserAccess | bool | `true` | When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password. If the secret is not present, the operator will automatically create one. When this option is disabled, the operator will ignore the SuperuserSecret content, delete it when automatically created, and then blank the password of the postgres user by setting it to NULL. |
 | cluster.env | list | `[]` | Env follows the Env format to pass environment variables to the pods created in the cluster |
@@ -169,11 +170,13 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.monitoring.customQueriesSecret | list | `[]` | The list of secrets containing the custom queries |
 | cluster.monitoring.disableDefaultQueries | bool | `false` | Whether the default queries should be injected. Set it to true if you don't want to inject default queries into the cluster. |
 | cluster.monitoring.enabled | bool | `false` | Whether to enable monitoring |
+| cluster.monitoring.instrumentation.logicalReplication | bool | `true` | Enable logical replication metrics |
 | cluster.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
 | cluster.monitoring.podMonitor.metricRelabelings | list | `[]` | The list of metric relabelings for the PodMonitor. Applied to samples before ingestion. |
 | cluster.monitoring.podMonitor.relabelings | list | `[]` | The list of relabelings for the PodMonitor. Applied to samples before scraping. |
 | cluster.monitoring.prometheusRule.enabled | bool | `true` | Whether to enable the PrometheusRule automated alerts |
 | cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
+| cluster.podSecurityContext | object | `{}` | Configure the Pod Security Context. See: https://cloudnative-pg.io/documentation/preview/security/ |
 | cluster.postgresGID | int | `-1` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `-1` | The UID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresql.ldap | object | `{}` | PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration) |
@@ -187,6 +190,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.priorityClassName | string | `""` |  |
 | cluster.resources | object | `{}` | Resources requirements of every generated Pod. Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information. We strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS. See: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/ |
 | cluster.roles | list | `[]` | This feature enables declarative management of existing roles, as well as the creation of new roles if they are not already present in the database. See: https://cloudnative-pg.io/documentation/current/declarative_role_management/ |
+| cluster.securityContext | object | `{}` | Configure Container Security Context. See: https://cloudnative-pg.io/documentation/preview/security/ |
 | cluster.serviceAccountTemplate | object | `{}` | Configure the metadata of the generated service account |
 | cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/ |
 | cluster.storage.size | string | `"8Gi"` |  |
@@ -199,7 +203,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | fullnameOverride | string | `""` | Override the full name of the chart |
 | imageCatalog.create | bool | `true` | Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored. |
 | imageCatalog.images | list | `[]` | List of images to be provisioned in an image catalog. |
-| mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - default mode. Creates new or updates an existing CNPG cluster. * `replica` - Creates a replica cluster from an existing CNPG cluster. # TODO * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup. |
+| mode | string | `"standalone"` | Cluster mode of operation. Available modes: * `standalone` - default mode. Creates new or updates an existing CNPG cluster. * `replica` - Creates a replica cluster from an existing CNPG cluster. * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup. |
 | nameOverride | string | `""` | Override the name of the chart |
 | namespaceOverride | string | `""` | Override the namespace of the chart |
 | poolers | list | `[]` | List of PgBouncer poolers |
@@ -274,6 +278,52 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | recovery.s3.secretKey | string | `""` |  |
 | recovery.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | recovery.secret.name | string | `""` | Name of the backup credentials secret |
+| replica.bootstrap.database | string | `""` | Name of the database used by the application |
+| replica.bootstrap.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
+| replica.bootstrap.secret | string | `""` | Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch |
+| replica.bootstrap.source | string | `""` | One of `object_store` or `pg_basebackup`. Method to use for bootstrap. |
+| replica.minApplyDelay | string | `""` | When replica mode is enabled, this parameter allows you to replay transactions only when the system time is at least the configured time past the commit time. This provides an opportunity to correct data loss errors. Note that when this parameter is set, a promotion token cannot be used. |
+| replica.origin.objectStore.azure.connectionString | string | `""` |  |
+| replica.origin.objectStore.azure.containerName | string | `""` |  |
+| replica.origin.objectStore.azure.inheritFromAzureAD | bool | `false` |  |
+| replica.origin.objectStore.azure.path | string | `"/"` |  |
+| replica.origin.objectStore.azure.serviceName | string | `"blob"` |  |
+| replica.origin.objectStore.azure.storageAccount | string | `""` |  |
+| replica.origin.objectStore.azure.storageKey | string | `""` |  |
+| replica.origin.objectStore.azure.storageSasToken | string | `""` |  |
+| replica.origin.objectStore.clusterName | string | `""` | The original cluster name when used in backups. Also known as serverName. |
+| replica.origin.objectStore.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| replica.origin.objectStore.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
+| replica.origin.objectStore.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
+| replica.origin.objectStore.google.applicationCredentials | string | `""` |  |
+| replica.origin.objectStore.google.bucket | string | `""` |  |
+| replica.origin.objectStore.google.gkeEnvironment | bool | `false` |  |
+| replica.origin.objectStore.google.path | string | `"/"` |  |
+| replica.origin.objectStore.provider | string | `""` | One of `s3`, `azure` or `google` |
+| replica.origin.objectStore.s3.accessKey | string | `""` |  |
+| replica.origin.objectStore.s3.bucket | string | `""` |  |
+| replica.origin.objectStore.s3.inheritFromIAMRole | bool | `false` | Use the role based authentication without providing explicitly the keys |
+| replica.origin.objectStore.s3.path | string | `"/"` |  |
+| replica.origin.objectStore.s3.region | string | `""` |  |
+| replica.origin.objectStore.s3.secretKey | string | `""` |  |
+| replica.origin.objectStore.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
+| replica.origin.objectStore.secret.name | string | `""` | Name of the backup credentials secret |
+| replica.origin.pg_basebackup.database | string | `""` |  |
+| replica.origin.pg_basebackup.host | string | `""` |  |
+| replica.origin.pg_basebackup.passwordSecret.key | string | `""` |  |
+| replica.origin.pg_basebackup.passwordSecret.name | string | `""` |  |
+| replica.origin.pg_basebackup.port | int | `5432` |  |
+| replica.origin.pg_basebackup.sslCertSecret.key | string | `""` |  |
+| replica.origin.pg_basebackup.sslCertSecret.name | string | `""` |  |
+| replica.origin.pg_basebackup.sslKeySecret.key | string | `""` |  |
+| replica.origin.pg_basebackup.sslKeySecret.name | string | `""` |  |
+| replica.origin.pg_basebackup.sslMode | string | `"verify-full"` |  |
+| replica.origin.pg_basebackup.sslRootCertSecret.key | string | `""` |  |
+| replica.origin.pg_basebackup.sslRootCertSecret.name | string | `""` |  |
+| replica.origin.pg_basebackup.username | string | `""` |  |
+| replica.primary | string | `""` | Primary defines which Cluster is defined to be the primary in the distributed PostgreSQL cluster, based on the topology specified in externalClusters |
+| replica.promotionToken | string | `""` | A demotion token generated by an external cluster used to check if the promotion requirements are met. |
+| replica.self | string | `""` | Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default. |
 | type | string | `"postgresql"` | Type of the CNPG database. Available types: * `postgresql` * `postgis` * `timescaledb` |
 | version.postgis | string | `"3.4"` | If using PostGIS, specify the version |
 | version.postgresql | string | `"16"` | PostgreSQL major version to use |
