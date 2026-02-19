@@ -7,4 +7,7 @@ metadata:
 data:
   ACCESS_KEY_ID: {{ required ".Values.backups.s3.accessKey is required, but not specified." .Values.backups.s3.accessKey | b64enc | quote }}
   ACCESS_SECRET_KEY: {{ required ".Values.backups.s3.secretKey is required, but not specified." .Values.backups.s3.secretKey | b64enc | quote }}
+  {{- if .Values.backups.s3.region }}
+  REGION: {{ .Values.backups.s3.region | b64enc | quote }}
+  {{- end }}
 {{- end }}
