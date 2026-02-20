@@ -10,6 +10,13 @@ bootstrap:
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
+    {{- if .Values.poolers }}
+    secret:
+      name: {{ include "cluster.fullname" . }}-pooler-{{- range .Values.poolers }}{{- if eq .name "rw" }}{{ .name }}{{- end }}{{- end }}
+    {{- else if .Values.cluster.initdb.secret }}
+    secret:
+      {{- toYaml .Values.cluster.initdb.secret | nindent 6 }}
+    {{- end }}
     {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (not (empty .Values.cluster.initdb.postInitApplicationSQL)) }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
@@ -49,6 +56,13 @@ bootstrap:
     {{- end }}
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
+    {{- end }}
+    {{- if .Values.poolers }}
+    secret:
+      name: {{ include "cluster.fullname" . }}-{{ (index .Values.poolers 0).name }}-app
+    {{- else if .Values.cluster.initdb.secret }}
+    secret:
+      {{- toYaml .Values.cluster.initdb.secret | nindent 6 }}
     {{- end }}
     import:
       source:
