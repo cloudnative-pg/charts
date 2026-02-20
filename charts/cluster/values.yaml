@@ -286,6 +286,15 @@ cluster:
   enableSuperuserAccess: true
   superuserSecret: ""
 
+  # -- This feature automatically manages physical replication slots for each hot standby replica in
+  # the High Availability cluster, both in the primary and the standby.
+  # See: https://cloudnative-pg.io/documentation/current/replication/#replication-slots-for-high-availability
+  replicationSlots: {}
+    # highAvailability:
+    #   enabled: true
+    #   slotPrefix: _cnpg_
+    # updateInterval: 30
+
   # -- Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes
   # See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets
   enablePDB: true

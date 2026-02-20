@@ -319,6 +319,9 @@
                 "priorityClassName": {
                     "type": "string"
                 },
+                "replicationSlots": {
+                    "type": "object"
+                },
                 "resources": {
                     "type": "object"
                 },
