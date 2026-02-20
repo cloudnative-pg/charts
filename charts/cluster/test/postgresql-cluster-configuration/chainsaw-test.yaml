@@ -47,6 +47,18 @@ spec:
                 recovery-backup-database-owner ../../
         - assert:
             file: ./03-recovery_backup_database_owner-assert.yaml
+    - name: Verify replica origin Azure credentials are rendered correctly
+      try:
+        - script:
+            content: |
+              helm template \
+                --namespace $NAMESPACE \
+                --values ./04-replica_origin_azure_creds.yaml \
+                --show-only templates/origin-azure-creds.yaml \
+                replica-origin-azure-creds ../../ \
+                | kubectl apply --namespace $NAMESPACE -f -
+        - assert:
+            file: ./04-replica_origin_azure_creds-assert.yaml
     - name: Cleanup
       try:
         - script:
