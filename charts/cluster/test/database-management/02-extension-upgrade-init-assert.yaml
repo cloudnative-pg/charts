@@ -1,0 +1,25 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: extension-upgrade-cluster
+status:
+  readyInstances: 2
+  phase: Cluster in healthy state
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: extension-upgrade-cluster-cluster
+spec:
+  name: test-db-icu
+  cluster:
+    name: extension-upgrade-cluster
+  ensure: present
+  owner: test-owner
+  template: template1
+  encoding: UTF8
+  databaseReclaimPolicy: retain
+  extensions:
+    - name: pg_search
+      ensure: present
+      version: "0.19.10"

@@ -588,7 +588,7 @@ databases: []
  #   extensions: []                 # -- List of extensions to be created in the database.
  #    # - name: pg_search
  #    #   ensure: present           # -- Ensure the PostgreSQL extension is present or absent - defaults to "present".
- #    #   version: "0.15.21"        # -- Version of the extension to be installed, if not specified the latest version will be used.
+ #    #   version: "0.19.11"        # -- Version of the extension to be installed, if not specified the latest version will be used.
  #    #   schema: ""                # -- Schema where the extension will be installed, if not specified the extensions or current default object creation schema will be used.
  #   isTemplate: false              # -- Maps to the IS_TEMPLATE parameter. If true, the database is considered a template for new databases.
  #   locale: ""                     # -- Maps to the LC_COLLATE and LC_CTYPE parameters
