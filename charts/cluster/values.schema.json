@@ -228,6 +228,9 @@
                 "logLevel": {
                     "type": "string"
                 },
+                "plugins": {
+                    "type": "array"
+                },
                 "monitoring": {
                     "type": "object",
                     "properties": {
