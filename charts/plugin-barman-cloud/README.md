@@ -30,6 +30,7 @@ Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 | certificate.duration | string | `"2160h"` | The duration of the certificates. |
 | certificate.issuerName | string | `"selfsigned-issuer"` | The name of the issuer to use for the certificates. |
 | certificate.renewBefore | string | `"360h"` | The renew before time for the certificates. |
+| certificate.revisionHistoryLimit | int | `1` | The maximum number of CertificateRequests to retain for each certificate. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
 | containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container Security Context. |
 | crds.create | bool | `true` | Specifies whether the CRDs should be created when installing the chart. |
