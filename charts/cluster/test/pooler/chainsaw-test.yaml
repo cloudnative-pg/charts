@@ -8,7 +8,7 @@ metadata:
 spec:
   timeouts:
     apply: 1s
-    assert: 20s
+    assert: 2m
     cleanup: 30s
   steps:
     - name: Install the non-default configuration cluster

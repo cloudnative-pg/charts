@@ -12,6 +12,13 @@ metadata:
 status:
   readyReplicas: 2
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pooler-cluster-pooler-lb-rw
+status:
+  readyReplicas: 2
+---
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
@@ -35,3 +42,23 @@ spec:
   pgbouncer:
     poolMode: session
   type: ro
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: pooler-cluster-pooler-lb-rw
+spec:
+  cluster:
+    name: pooler-cluster
+  instances: 2
+  pgbouncer:
+    poolMode: transaction
+  type: rw
+  serviceTemplate:
+    metadata:
+      annotations:
+        metallb.universe.tf/address-pool: loadbalanced
+        metallb.universe.tf/allow-shared-ip: loadbalanced
+        metallb.universe.tf/ip-allocated-from-pool: loadbalanced
+    spec:
+      type: LoadBalancer
