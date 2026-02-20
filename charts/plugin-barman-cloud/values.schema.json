@@ -41,6 +41,13 @@
           "title": "createServerCertificate",
           "type": "boolean"
         },
+        "createIssuer": {
+          "default": true,
+          "description": "Specifies whether the issuer object should be created.",
+          "required": [],
+          "title": "createIssuer",
+          "type": "boolean"
+        },
         "duration": {
           "default": "2160h",
           "description": "The duration of the certificates.",
@@ -66,6 +73,7 @@
       "required": [
         "createClientCertificate",
         "createServerCertificate",
+        "createIssuer",
         "issuerName",
         "duration",
         "renewBefore"
