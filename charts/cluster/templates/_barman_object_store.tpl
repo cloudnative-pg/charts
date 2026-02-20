@@ -28,10 +28,10 @@
   {{- else }}
     accessKeyId:
       name: {{ $secretName }}
-      key: ACCESS_KEY_ID
+      key: {{ .scope.secret.accessKeyIdField | default "ACCESS_KEY_ID" }}
     secretAccessKey:
       name: {{ $secretName }}
-      key: ACCESS_SECRET_KEY
+      key: {{ .scope.secret.secretAccessKeyField | default "ACCESS_SECRET_KEY" }}
   {{- end }}
 {{- else if eq .scope.provider "azure" }}
   {{- if empty .scope.destinationPath }}
