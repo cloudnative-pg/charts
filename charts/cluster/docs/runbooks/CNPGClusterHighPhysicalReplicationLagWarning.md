@@ -6,7 +6,7 @@ The `CNPGClusterHighPhysicalReplicationLagWarning` alert is triggered when physi
 
 ## Impact
 
-High physical replication lag can cause the cluster replicas to become out of sync. Queries to the `-r` and `-ro` endpoints may return stale data. In the event of a failover, the data that has not yet been replicated from the primary to the replicas may be lost during failover..
+High physical replication lag can cause the cluster replicas to become out of sync. Queries to the `-r` and `-ro` endpoints may return stale data. In the event of a failover, the data that has not yet been replicated from the primary to the replicas may be lost during failover.
 
 ## Diagnosis
 
@@ -34,7 +34,7 @@ Inspect the disk IO statistics using the [CloudNativePG Grafana Dashboard](https
 
 Inspect the `Stat Activity` section of the [CloudNativePG Grafana Dashboard](https://grafana.com/grafana/dashboards/20417-cloudnativepg/).
 
-- Suboptimal PostgreSQL configuration, e.g. too `few max_wal_senders`. Set this to at least the number of cluster instances (default 10 is usually sufficient).
+- Suboptimal PostgreSQL configuration, e.g. too few `max_wal_senders`. Set this to at least the number of cluster instances (default 10 is usually sufficient).
 
 Inspect the `PostgreSQL Parameters` section of the [CloudNativePG Grafana Dashboard](https://grafana.com/grafana/dashboards/20417-cloudnativepg/).
 
