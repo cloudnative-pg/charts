@@ -8,7 +8,7 @@ help: ## Prints help command output
 ## Update chart's README.md
 .PHONY: docs
 docs: ## Generate charts' docs using helm-docs
-	helm-docs || \
+	helm-docs --skip-version-footer || \
 		(echo "Please, install https://github.com/norwoodj/helm-docs first" && exit 1)
 
 .PHONY: schema
