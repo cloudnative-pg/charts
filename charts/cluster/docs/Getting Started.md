@@ -6,12 +6,12 @@ you still need to configure backups and monitoring separately. The chart will no
 
 _**Note,**_ that this is an opinionated chart. It does not support all configuration options that CNPG supports. If you
 need a highly customized setup, you should manage your cluster via a Kubernetes CNPG cluster manifest instead of this chart.
-Refer to the [CNPG documentation](https://cloudnative-pg.io/documentation/current/) in that case.
+Refer to the [CNPG documentation](https://cloudnative-pg.io/docs/1.28/) in that case.
 
 ## Installing the operator
 
 To begin, make sure you install the CNPG operator in you cluster. It can be installed via a Helm chart as shown below or
-ir can be installed via a Kubernetes manifest. For more information see the [CNPG documentation](https://cloudnative-pg.io/documentation/current/installation_upgrade/).
+ir can be installed via a Kubernetes manifest. For more information see the [CNPG documentation](https://cloudnative-pg.io/docs/1.28/installation_upgrade/).
 
 ```console
 helm repo add cnpg https://cloudnative-pg.github.io/charts
