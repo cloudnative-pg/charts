@@ -4,7 +4,7 @@ alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster logical replication subscription stopped
   description: |-
-    CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ "{{ .subname }}" }}" subscription is stopped.
+    CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ .labels.subname }}" subscription is stopped.
 
     Status: {{ .labels.stop_reason }}
 

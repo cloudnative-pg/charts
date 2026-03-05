@@ -568,8 +568,12 @@ replica:
         name: ""
         key: ""
       passwordSecret:
+        # -- Whether to create a secret for the password
+        create: false
         name: ""
         key: ""
+        # -- The password value to use when creating the secret
+        value: ""
 ##
 # Database management configuration
 databases: []
