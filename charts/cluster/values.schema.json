@@ -319,6 +319,9 @@
                 "priorityClassName": {
                     "type": "string"
                 },
+                "projectedVolumeTemplate": {
+                    "type": "object"
+                },
                 "resources": {
                     "type": "object"
                 },
