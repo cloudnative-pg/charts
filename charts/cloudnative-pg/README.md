@@ -31,6 +31,7 @@ CloudNativePG Operator Helm Chart
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
 | config.clusterWide | bool | `true` | This option determines if the operator is responsible for observing events across the entire Kubernetes cluster or if its focus should be narrowed down to the specific namespace within which it has been deployed. |
+| config.namespaced | bool | `false` | When true, limits the operator to not access any `Nodes` or `ClusterImageCatalog` resources. The rbac policy will not include any ClusterRole and it will install the operator in namespaced deployment. See see https://cloudnative-pg.io/documentation/current/operator_conf/#available-options for more details on namespaced deployment. |
 | config.create | bool | `true` | Specifies whether the secret should be created. |
 | config.data | object | `{}` | The content of the configmap/secret, see https://cloudnative-pg.io/documentation/current/operator_conf/#available-options for all the available options. |
 | config.maxConcurrentReconciles | int | `10` | The maximum number of concurrent reconciles. Defaults to 10. |
