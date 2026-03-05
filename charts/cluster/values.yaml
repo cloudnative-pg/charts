@@ -490,7 +490,7 @@ backups:
   retentionPolicy: "30d"
 
 replica:
-  # --  Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.
+  # -- Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.
   self: ""
   # -- Primary defines which Cluster is defined to be the primary in the distributed PostgreSQL cluster, based on the topology specified in externalClusters
   primary: ""
@@ -499,7 +499,7 @@ replica:
   # -- When replica mode is enabled, this parameter allows you to replay transactions only when the system time is at least the configured time past the commit time. This provides an opportunity to correct data loss errors. Note that when this parameter is set, a promotion token cannot be used.
   minApplyDelay: ""
   bootstrap:
-    # --  One of `object_store` or `pg_basebackup`. Method to use for bootstrap.
+    # -- One of `object_store` or `pg_basebackup`. Method to use for bootstrap.
     source: ""
     # -- Name of the database used by the application
     database: ""
