@@ -187,6 +187,14 @@
                 "certificates": {
                     "type": "object"
                 },
+                "console": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    }
+                },
                 "enablePDB": {
                     "type": "boolean"
                 },
