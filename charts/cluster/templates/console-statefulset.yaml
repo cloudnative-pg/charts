@@ -55,10 +55,10 @@ spec:
               apt install -y screen curl wget jq unzip gzip nano vim util-linux less htop
               cat <<EOF > /root/.bashrc
               echo -e "\nHere are some examples for connecting and running queries on the cluster:"
-              echo '  nohup psql \$DB_SUPERUSER_URI"/DB_NAME" -c "SELECT 1;" 2>&1 > command.log &'
+              echo '  nohup psql "$DB_SUPERUSER_URI/<db-name>" -c "SELECT 1;" > command.log 2>&1 &'
               echo -e "\nTo check up on the command, use:"
               echo "  tail -f command.log"
-              echo -e "\nYou can also use 'screen' for an interactive session. See https://github.com/paradedb/charts/blob/dev/charts/paradedb/docs/long-running-tasks.md for examples."
+              echo -e "\nYou can also use 'screen' for an interactive session. See https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/Console.md for examples."
               echo -e "\n"
               EOF
               sleep infinity
