@@ -25,13 +25,12 @@ metadata:
   namespace: {{ include "plugin-barman-cloud.namespace" . }}
 spec:
   commonName: barman-cloud-client
-  duration: {{ .Values.certificate.duration | default "2160h" }}
-  isCA: false
+  duration: {{ .Values.certificate.duration | default "2160h0m0s" }}
   issuerRef:
     group: cert-manager.io
     kind: Issuer
     name: {{ include "plugin-barman-cloud.fullname" . }}-selfsigned-issuer
-  renewBefore: {{ .Values.certificate.renewBefore | default "360h" }}
+  renewBefore: {{ .Values.certificate.renewBefore | default "360h0m0s" }}
   secretName: barman-cloud-client-tls
   usages:
     - client auth
