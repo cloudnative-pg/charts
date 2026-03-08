@@ -348,6 +348,9 @@
                 "superuserSecret": {
                     "type": "string"
                 },
+                "tablespaces": {
+                    "type": "array"
+                },
                 "walStorage": {
                     "type": "object",
                     "properties": {
