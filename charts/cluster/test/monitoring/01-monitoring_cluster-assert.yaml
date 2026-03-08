@@ -16,27 +16,14 @@ spec:
       customQueriesConfigMap:
         - name: monitoring-cluster-monitoring
           key: custom-queries
-      enablePodMonitor: true
-      podMonitorRelabelings:
-        - action: replace
-          replacement: test
-          targetLabel: environment
-        - action: replace
-          replacement: alpha
-          targetLabel: team
-      podMonitorMetricRelabelings:
-        - action: replace
-          sourceLabels:
-            - cluster
-          targetLabel: cnpg_cluster
-        - action: labeldrop
-          regex: cluster
+      enablePodMonitor: false
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: monitoring-cluster
   labels:
+    cnpg.io/cluster: monitoring-cluster
     team-name: test-team
     environment: test
 spec:
