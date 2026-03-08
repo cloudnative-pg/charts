@@ -61,6 +61,13 @@
           "required": [],
           "title": "renewBefore",
           "type": "string"
+        },
+        "revisionHistoryLimit": {
+          "default": 1,
+          "description": "The maximum number of CertificateRequests to retain for each certificate.",
+          "required": [],
+          "title": "revisionHistoryLimit",
+          "type": "integer"
         }
       },
       "required": [
@@ -68,7 +75,8 @@
         "createServerCertificate",
         "issuerName",
         "duration",
-        "renewBefore"
+        "renewBefore",
+        "revisionHistoryLimit"
       ],
       "title": "certificate",
       "type": "object"
