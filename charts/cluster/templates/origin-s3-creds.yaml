@@ -1,0 +1,10 @@
+{{- if and (eq .Values.mode "replica" ) (eq .Values.replica.origin.objectStore.provider "s3") (not .Values.replica.origin.objectStore.s3.inheritFromIAMRole) .Values.replica.origin.objectStore.secret.create }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ default (printf "%s-origin-s3-creds" (include "cluster.fullname" .)) .Values.recovery.secret.name }}
+  namespace: {{ include "cluster.namespace" . }}
+data:
+  ACCESS_KEY_ID: {{ required ".Values.replica.origin.objectStore.s3.accessKey is required, but not specified." .Values.replica.origin.objectStore.s3.accessKey | b64enc | quote }}
+  ACCESS_SECRET_KEY: {{ required ".Values.replica.origin.objectStore.s3.secretKey is required, but not specified." .Values.replica.origin.objectStore.s3.secretKey | b64enc | quote }}
+{{- end }}
