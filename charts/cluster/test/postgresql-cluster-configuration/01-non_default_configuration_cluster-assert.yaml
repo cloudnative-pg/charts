@@ -131,6 +131,14 @@ spec:
     metadata:
       annotations:
         my-annotation: my-service-account
+  projectedVolumeTemplate:
+    sources:
+      - secret:
+          items:
+          - key: ca.crt
+            path: crt/ca-01.pem
+          name: ca-secret
+
   podSecurityContext:
     runAsUser: 26
     runAsGroup: 26
