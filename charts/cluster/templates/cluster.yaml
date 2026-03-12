@@ -126,7 +126,6 @@ spec:
   {{ end }}
 
   monitoring:
-    enablePodMonitor: false
     disableDefaultQueries: {{ .Values.cluster.monitoring.disableDefaultQueries }}
     {{- if not (empty .Values.cluster.monitoring.customQueries) }}
     customQueriesConfigMap:
