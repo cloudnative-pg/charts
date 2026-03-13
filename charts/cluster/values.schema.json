@@ -257,11 +257,11 @@
                                 "enabled": {
                                     "type": "boolean"
                                 },
-                                "metricRelabelings": {
-                                    "type": "array"
-                                },
                                 "labels": {
                                     "type": "object"
+                                },
+                                "metricRelabelings": {
+                                    "type": "array"
                                 },
                                 "relabelings": {
                                     "type": "array"
