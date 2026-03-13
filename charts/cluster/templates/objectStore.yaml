@@ -1,0 +1,86 @@
+{{- if and .Values.backups.enabled (eq (include "cluster.useBarmanCloudPlugin" .) "true") }}
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ include "cluster.barmanCloudObjectStoreName" . }}
+  namespace: {{ include "cluster.namespace" $ }}
+  labels:
+  {{- include "cluster.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.backups.retentionPolicy }}
+  retentionPolicy: {{ . }}
+  {{- end }}
+  configuration:
+    {{- if .Values.backups.endpointURL }}
+    endpointURL: {{ .Values.backups.endpointURL | quote }}
+    {{- end }}
+    {{- if or (.Values.backups.endpointCA.create) (.Values.backups.endpointCA.name) }}
+    endpointCA:
+      name: {{ .Values.backups.endpointCA.name }}
+      key: {{ .Values.backups.endpointCA.key }}
+    {{- end }}
+    {{- if eq .Values.backups.provider "s3" }}
+    {{- if empty .Values.backups.endpointURL }}
+    endpointURL: "https://s3.{{ required "You need to specify S3 region if endpointURL is not specified." .Values.backups.s3.region }}.amazonaws.com"
+    {{- end }}
+    destinationPath: {{ default (printf "s3://%s%s" (required "You need to specify S3 bucket." .Values.backups.s3.bucket) .Values.backups.s3.path) .Values.backups.destinationPath }}
+    {{- $secretName := coalesce .Values.backups.secret.name (printf "%s-backup-s3-creds" (include "cluster.fullname" .)) }}
+    s3Credentials:
+    {{- if .Values.backups.s3.inheritFromIAMRole }}
+      inheritFromIAMRole: true
+    {{- else }}
+      accessKeyId:
+        name: {{ $secretName }}
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: {{ $secretName }}
+        key: ACCESS_SECRET_KEY
+    {{- end }}
+    {{- else if eq .Values.backups.provider "azure" }}
+    destinationPath: {{ default (printf "https://%s.%s.core.windows.net/%s%s" (required "You need to specify Azure storageAccount." .Values.backups.azure.storageAccount) .Values.backups.azure.serviceName .Values.backups.azure.containerName .Values.backups.azure.path) .Values.backups.destinationPath }}
+    {{- $secretName := coalesce .Values.backups.secret.name (printf "%s-backup-azure-creds" (include "cluster.fullname" .)) }}
+    azureCredentials:
+    {{- if .Values.backups.azure.inheritFromAzureAD }}
+      inheritFromAzureAD: true
+    {{- else if .Values.backups.azure.connectionString }}
+      connectionString:
+        name: {{ $secretName }}
+        key: AZURE_CONNECTION_STRING
+    {{- else }}
+      storageAccount:
+        name: {{ $secretName }}
+        key: AZURE_STORAGE_ACCOUNT
+      {{- if .Values.backups.azure.storageKey }}
+      storageKey:
+        name: {{ $secretName }}
+        key: AZURE_STORAGE_KEY
+      {{- else }}
+      storageSasToken:
+        name: {{ $secretName }}
+        key: AZURE_STORAGE_SAS_TOKEN
+      {{- end }}
+    {{- end }}
+    {{- else if eq .Values.backups.provider "google" }}
+    destinationPath: {{ default (printf "gs://%s%s" (required "You need to specify Google storage bucket." .Values.backups.google.bucket) .Values.backups.google.path) .Values.backups.destinationPath }}
+    {{- $secretName := coalesce .Values.backups.secret.name (printf "%s-backup-google-creds" (include "cluster.fullname" .)) }}
+    googleCredentials:
+      gkeEnvironment: {{ .Values.backups.google.gkeEnvironment }}
+    {{- if not .Values.backups.google.gkeEnvironment }}
+      applicationCredentials:
+        name: {{ $secretName }}
+        key: APPLICATION_CREDENTIALS
+    {{- end }}
+    {{- end }}
+    wal:
+      compression: {{ .Values.backups.wal.compression }}
+      {{- if .Values.backups.wal.encryption }}
+      encryption: {{ .Values.backups.wal.encryption }}
+      {{- end }}
+      maxParallel: {{ .Values.backups.wal.maxParallel }}
+    data:
+      compression: {{ .Values.backups.data.compression }}
+      {{- if .Values.backups.data.encryption }}
+      encryption: {{ .Values.backups.data.encryption }}
+      {{- end }}
+      jobs: {{ .Values.backups.data.jobs }}
+{{- end }}

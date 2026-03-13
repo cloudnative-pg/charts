@@ -144,3 +144,39 @@ Postgres GID
     {{- 26 -}}
   {{- end -}}
 {{- end -}}
+
+
+{{/*
+Returns true if the barman-cloud plugin is present and not explicitly disabled.
+*/}}
+{{- define "cluster.useBarmanCloudPlugin" -}}
+{{- $hasPlugin := false }}
+{{- if .Values.cluster.plugins }}
+  {{- range .Values.cluster.plugins }}
+    {{- if eq .name "barman-cloud.cloudnative-pg.io" }}
+      {{- if not (eq (toString (default true .enabled)) "false") }}
+        {{- $hasPlugin = true }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- $hasPlugin }}
+{{- end }}
+
+
+{{/*
+ObjectStore name for the barman-cloud plugin, auto-derived or from plugin parameters.
+*/}}
+{{- define "cluster.barmanCloudObjectStoreName" -}}
+{{- $name := printf "%s-object-store" (include "cluster.fullname" .) }}
+{{- if .Values.cluster.plugins }}
+  {{- range .Values.cluster.plugins }}
+    {{- if eq .name "barman-cloud.cloudnative-pg.io" }}
+      {{- if and .parameters .parameters.barmanObjectName }}
+        {{- $name = .parameters.barmanObjectName }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- $name }}
+{{- end }}

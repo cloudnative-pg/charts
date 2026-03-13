@@ -11,9 +11,15 @@ metadata:
 spec:
   immediate: true
   schedule: {{ .schedule | quote }}
-  method: {{ .method }}
   backupOwnerReference: {{ .backupOwnerReference }}
   cluster:
     name: {{ include "cluster.fullname" $context }}
+{{- if and (eq (include "cluster.useBarmanCloudPlugin" $context) "true") (ne (default "" .method) "volumeSnapshot") }}
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+{{- else }}
+  method: {{ default "barmanObjectStore" .method }}
+{{- end }}
 {{ end -}}
 {{ end }}
