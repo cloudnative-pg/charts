@@ -350,6 +350,12 @@ cluster:
     #  - name: custom-queries-secret
     #    key: custom-queries
 
+  # -- List of CNPG-I plugins to be loaded by the cluster.
+  # @default -- `[]`
+  plugins: []
+    # - name: barman-cloud.cloudnative-pg.io
+    #   isWALArchiver: true
+
   postgresql:
     # -- PostgreSQL configuration options (postgresql.conf)
     parameters: {}

@@ -49,6 +49,12 @@ spec:
     name: supersecret-secret
   enableSuperuserAccess: true
   enablePDB: false
+  plugins:
+    - name: cnpg-i-plugin-example.my-org.io
+      enabled: true
+      parameters:
+        key1: value1
+        key2: value2
   certificates:
     serverCASecret: ca-secret
     serverTLSSecret: tls-secret
