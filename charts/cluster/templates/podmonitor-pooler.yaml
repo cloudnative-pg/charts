@@ -1,6 +1,6 @@
 {{- range .Values.poolers }}
 ---
-{{- if and .monitoring.enabled .monitoring.podMonitor.enabled }}
+{{- if and .monitoring .monitoring.enabled .monitoring.podMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
