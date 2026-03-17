@@ -100,7 +100,7 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         livenessProbe:
           httpGet:
-            path: /readyz
+            path: /healthz
             port: webhook-server
             scheme: HTTPS
           {{- if .Values.webhook.livenessProbe.initialDelaySeconds }}
