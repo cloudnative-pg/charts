@@ -309,6 +309,9 @@ cluster:
     podMonitor:
       # -- Whether to enable the PodMonitor
       enabled: true
+      # -- Additional labels to set on the generated PodMonitor resource.
+      # Add labels your monitoring stack requires (for example `team-name`).
+      labels: {}
       # --The list of relabelings for the PodMonitor.
       # Applied to samples before scraping.
       relabelings: []
@@ -321,6 +324,10 @@ cluster:
       # -- Exclude specified rules
       excludeRules: []
         # - CNPGClusterZoneSpreadWarning
+    # Additional instrumentation via custom metrics
+    instrumentation:
+      # -- Enable logical replication metrics
+      logicalReplication: true
     # -- Whether the default queries should be injected.
     # Set it to true if you don't want to inject default queries into the cluster.
     disableDefaultQueries: false
@@ -391,9 +398,20 @@ cluster:
   # -- Configure the metadata of the generated service account
   serviceAccountTemplate: {}
 
+  # -- Configure the Pod Security Context.
+  # See: https://cloudnative-pg.io/documentation/preview/security/
+  podSecurityContext: {}
+
+  # -- Configure Container Security Context.
+  # See: https://cloudnative-pg.io/documentation/preview/security/
+  securityContext: {}
+
   additionalLabels: {}
   annotations: {}
 
+  console:
+    # -- Deploys a console StatefulSet to run long-running commands against the cluster (e.g. `CREATE INDEX`).
+    enabled: false
 
 backups:
   # -- You need to configure backups manually, so backups are disabled by default.
@@ -614,6 +632,15 @@ poolers: []
   #     podMonitor:
   #         # -- Whether to enable the PodMonitor
   #       enabled: true
+  #       # -- Additional labels to set on the generated PodMonitor resource.
+  #       # Add labels your monitoring stack requires (for example `team-name`).
+  #       labels: {}
+  #       # --The list of relabelings for the PodMonitor.
+  #       # Applied to samples before scraping.
+  #       relabelings: []
+  #       # -- The list of metric relabelings for the PodMonitor.
+  #       # Applied to samples before ingestion.
+  #       metricRelabelings: []
   #   # -- Custom PgBouncer deployment template.
   #   # Use to override image, specify resources, etc.
   #   template: {}
@@ -636,6 +663,15 @@ poolers: []
   #     podMonitor:
   #         # -- Whether to enable the PodMonitor
   #       enabled: true
+  #       # -- Additional labels to set on the generated PodMonitor resource.
+  #       # Add labels your monitoring stack requires (for example `team-name`).
+  #       labels: {}
+  #       # --The list of relabelings for the PodMonitor.
+  #       # Applied to samples before scraping.
+  #       relabelings: []
+  #       # -- The list of metric relabelings for the PodMonitor.
+  #       # Applied to samples before ingestion.
+  #       metricRelabelings: []
   #   # -- Custom PgBouncer deployment template.
   #   # Use to override image, specify resources, etc.
   #   template: {}

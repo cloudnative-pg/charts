@@ -115,8 +115,17 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 
+  {{- with .Values.cluster.podSecurityContext }}
+  podSecurityContext:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+
+  {{- with .Values.cluster.securityContext }}
+  securityContext:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
+
   monitoring:
-    enablePodMonitor: {{ and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
     disableDefaultQueries: {{ .Values.cluster.monitoring.disableDefaultQueries }}
     {{- if not (empty .Values.cluster.monitoring.customQueries) }}
     customQueriesConfigMap:
@@ -126,18 +135,6 @@ spec:
     {{- if not (empty .Values.cluster.monitoring.customQueriesSecret) }}
     {{- with .Values.cluster.monitoring.customQueriesSecret }}
     customQueriesSecret:
-      {{- toYaml . | nindent 6 }}
-    {{ end }}
-    {{- end }}
-    {{- if not (empty .Values.cluster.monitoring.podMonitor.relabelings) }}
-    {{- with .Values.cluster.monitoring.podMonitor.relabelings }}
-    podMonitorRelabelings:
-      {{- toYaml . | nindent 6 }}
-    {{ end }}
-    {{- end }}
-    {{- if not (empty .Values.cluster.monitoring.podMonitor.metricRelabelings) }}
-    {{- with .Values.cluster.monitoring.podMonitor.metricRelabelings }}
-    podMonitorMetricRelabelings:
       {{- toYaml . | nindent 6 }}
     {{ end }}
     {{- end }}

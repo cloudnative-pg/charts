@@ -15,7 +15,7 @@ cluster:
         metrics:
           - datname:
               usage: "LABEL"
-              description: "Name of the database database"
+              description: "Name of the database"
           - ratio:
               usage: GAUGE
               description: "Cache hit ratio"

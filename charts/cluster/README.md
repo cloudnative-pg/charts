@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.6.0](https://img.shields.io/badge/Version-0.6.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -68,7 +68,7 @@ Depending on the type the chart will use a different Docker image and fill in so
 
 The chart has three modes of operation. These are configured via the `mode` parameter:
 * `standalone` - Creates new or updates an existing CNPG cluster. This is the default mode.
-* `replica` - Creates a replica cluster from an existing CNPG cluster. **_Note_ that this mode is not yet supported.**
+* `replica` - Creates a replica cluster from an existing CNPG cluster.
 * `recovery` - Recovers a CNPG cluster from a backup, object store or via pg_basebackup.
 
 ### Backup configuration
@@ -93,9 +93,9 @@ backups:
       backupOwnerReference: self
 ```
 
-Each backup adapter takes it's own set of parameters, listed in the [Configuration options](#Configuration-options) section
-below. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backup.s3`,
-`backup.azure`, or `backup.google`.
+Each backup adapter takes it's own set of parameters, listed in the [Configuration options](#Configuration-options)
+section. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backups.s3`,
+`backups.azure`, or `backups.google`.
 
 Recovery
 --------
@@ -106,7 +106,7 @@ Examples
 --------
 
 There are several configuration examples in the [examples](examples) directory. Refer to them for a basic setup and
-refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentation/current/) for more advanced configurations.
+refer to the [CloudNativePG Documentation](https://cloudnative-pg.io/documentation/current/) for more advanced configurations.
 
 ## Values
 
@@ -153,6 +153,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.affinity | object | `{"topologyKey":"topology.kubernetes.io/zone"}` | Affinity/Anti-affinity rules for Pods. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
 | cluster.annotations | object | `{}` |  |
 | cluster.certificates | object | `{}` | The configuration for the CA and related certificates. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration |
+| cluster.console.enabled | bool | `false` | Deploys a console StatefulSet to run long-running commands against the cluster (e.g. `CREATE INDEX`). |
 | cluster.enablePDB | bool | `true` | Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets |
 | cluster.enableSuperuserAccess | bool | `true` | When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password. If the secret is not present, the operator will automatically create one. When this option is disabled, the operator will ignore the SuperuserSecret content, delete it when automatically created, and then blank the password of the postgres user by setting it to NULL. |
 | cluster.env | list | `[]` | Env follows the Env format to pass environment variables to the pods created in the cluster |
@@ -168,11 +169,14 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.monitoring.customQueriesSecret | list | `[]` | The list of secrets containing the custom queries |
 | cluster.monitoring.disableDefaultQueries | bool | `false` | Whether the default queries should be injected. Set it to true if you don't want to inject default queries into the cluster. |
 | cluster.monitoring.enabled | bool | `false` | Whether to enable monitoring |
+| cluster.monitoring.instrumentation.logicalReplication | bool | `true` | Enable logical replication metrics |
 | cluster.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
+| cluster.monitoring.podMonitor.labels | object | `{}` | Additional labels to set on the generated PodMonitor resource. Add labels your monitoring stack requires (for example `team-name`). |
 | cluster.monitoring.podMonitor.metricRelabelings | list | `[]` | The list of metric relabelings for the PodMonitor. Applied to samples before ingestion. |
 | cluster.monitoring.podMonitor.relabelings | list | `[]` | The list of relabelings for the PodMonitor. Applied to samples before scraping. |
 | cluster.monitoring.prometheusRule.enabled | bool | `true` | Whether to enable the PrometheusRule automated alerts |
 | cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
+| cluster.podSecurityContext | object | `{}` | Configure the Pod Security Context. See: https://cloudnative-pg.io/documentation/preview/security/ |
 | cluster.postgresGID | int | `-1` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `-1` | The UID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresql.ldap | object | `{}` | PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration) |
@@ -186,6 +190,7 @@ refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentat
 | cluster.priorityClassName | string | `""` |  |
 | cluster.resources | object | `{}` | Resources requirements of every generated Pod. Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information. We strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS. See: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/ |
 | cluster.roles | list | `[]` | This feature enables declarative management of existing roles, as well as the creation of new roles if they are not already present in the database. See: https://cloudnative-pg.io/documentation/current/declarative_role_management/ |
+| cluster.securityContext | object | `{}` | Configure Container Security Context. See: https://cloudnative-pg.io/documentation/preview/security/ |
 | cluster.serviceAccountTemplate | object | `{}` | Configure the metadata of the generated service account |
 | cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/ |
 | cluster.storage.size | string | `"8Gi"` |  |
