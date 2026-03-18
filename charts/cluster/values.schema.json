@@ -257,6 +257,9 @@
                                 "enabled": {
                                     "type": "boolean"
                                 },
+                                "labels": {
+                                    "type": "object"
+                                },
                                 "metricRelabelings": {
                                     "type": "array"
                                 },
