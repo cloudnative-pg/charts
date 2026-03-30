@@ -19,6 +19,7 @@
 apiVersion: v2
 name: cluster
 description: Deploys and manages a CloudNativePG cluster and its associated resources.
+kubeVersion: '>= 1.29.0-0'
 icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
 type: application
 version: 0.6.0
