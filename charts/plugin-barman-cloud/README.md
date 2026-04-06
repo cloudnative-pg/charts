@@ -92,6 +92,7 @@ Kubernetes: `>=1.29.0-0`
 | certificate.duration | string | `"2160h"` | The duration of the certificates. |
 | certificate.issuerName | string | `""` | The name of the issuer to use for the certificates. |
 | certificate.renewBefore | string | `"360h"` | The renew before time for the certificates. |
+| certificate.server.dnsNames | list | `[]` | The DNS names for the server certificate. If not set, it defaults to `[.Values.service.name]`. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
 | containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container Security Context. |
 | crds.create | bool | `true` | Specifies whether the CRDs should be created when installing the chart. |
@@ -115,9 +116,11 @@ Kubernetes: `>=1.29.0-0`
 | rbac.create | bool | `true` | Specifies whether Role and RoleBinding should be created. |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
+| service.annotations | object | `{"pluginServerName":""}` | Service annotations |
+| service.annotations.pluginServerName | string | `""` | The plugin server name to be used by CloudNativePG. If set, it will be added as `cnpg.io/pluginServerName` annotation. |
 | service.ipFamilies | list | `[]` | Sets the families that should be supported and the order in which they should be applied to ClusterIP as well. Can be IPv4 and/or IPv6. |
 | service.ipFamilyPolicy | string | `""` | Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services) |
-| service.name | string | `"barman-cloud"` | DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate and can not be configured |
+| service.name | string | `"barman-cloud"` | DO NOT CHANGE THE SERVICE NAME as it is currently used by CloudNativePG to identify the plugin |
 | service.port | int | `9090` |  |
 | serviceAccount.create | bool | `true` | Specifies whether the service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template. |

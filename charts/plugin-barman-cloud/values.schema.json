@@ -53,6 +53,19 @@
           "default": "360h",
           "description": "The renew before time for the certificates.",
           "type": "string"
+        },
+        "server": {
+          "properties": {
+            "dnsNames": {
+              "description": "The DNS names for the server certificate.\nIf not set, it defaults to `[.Values.service.name]`.",
+              "items": {
+                "required": []
+              },
+              "type": "array"
+            }
+          },
+          "required": [],
+          "type": "object"
         }
       },
       "required": [],
@@ -258,6 +271,18 @@
     },
     "service": {
       "properties": {
+        "annotations": {
+          "additionalProperties": true,
+          "description": "Service annotations",
+          "properties": {
+            "pluginServerName": {
+              "default": "",
+              "description": "The plugin server name to be used by CloudNativePG.\nIf set, it will be added as `cnpg.io/pluginServerName` annotation.",
+              "type": "string"
+            }
+          },
+          "required": []
+        },
         "ipFamilies": {
           "description": "Sets the families that should be supported and the order in which they should be applied to ClusterIP as well. Can be IPv4 and/or IPv6.",
           "items": {
@@ -276,7 +301,7 @@
         },
         "name": {
           "default": "barman-cloud",
-          "description": "DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate\nand can not be configured",
+          "description": "DO NOT CHANGE THE SERVICE NAME as it is currently used by CloudNativePG\nto identify the plugin",
           "type": "string"
         },
         "port": {
