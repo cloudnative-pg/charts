@@ -18,6 +18,8 @@ CloudNativePG Operator Helm Chart
 
 ## Requirements
 
+Kubernetes: `>=1.29.0-0`
+
 | Repository | Name | Version |
 |------------|------|---------|
 | https://cloudnative-pg.github.io/grafana-dashboards | monitoring(cluster) | 0.0 |
