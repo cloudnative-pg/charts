@@ -6,5 +6,4 @@ metadata:
   namespace: {{ include "cluster.namespace" . }}
 data:
   {{ .Values.backups.endpointCA.key | default "ca-bundle.crt" | quote }}: {{ .Values.backups.endpointCA.value }}
-  
 {{- end }}
