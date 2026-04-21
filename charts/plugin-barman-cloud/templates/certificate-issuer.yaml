@@ -16,6 +16,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
+{{- if or .Values.certificate.createClientCertificate .Values.certificate.createServerCertificate }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer
@@ -24,3 +25,4 @@ metadata:
   namespace: {{ include "plugin-barman-cloud.namespace" . }}
 spec:
   selfSigned: {}
+{{- end }}
