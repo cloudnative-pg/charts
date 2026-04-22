@@ -293,6 +293,9 @@
                 "postgresql": {
                     "type": "object",
                     "properties": {
+                        "extensions": {
+                            "type": "array"
+                        },
                         "ldap": {
                             "type": "object"
                         },
