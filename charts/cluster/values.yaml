@@ -204,11 +204,40 @@ cluster:
   storage:
     size: 8Gi
     storageClass: ""
+    # -- Custom pvc template. Defining this makes size and storageClass redundant
+    # See: https://cloudnative-pg.io/documentation/1.25/cloudnative-pg.v1/#postgresql-cnpg-io-v1-StorageConfiguration:~:text=pvcTemplate
+    # Def: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#persistentvolumeclaimspec-v1-core
+    #
+    # pvcTemplate:
+    #   storageClassName: ""
+    #   selector:
+    #     matchLabels:
+    #       provided-for: custom-label-to-select-pv
+    #   accessModes:
+    #     - ReadWriteOnce
+    #   resources:
+    #     requests:
+    #       storage: 8Gi
+
 
   walStorage:
     enabled: false
     size: 1Gi
     storageClass: ""
+    # -- Custom pvc template. Defining this makes size and storageClass redundant
+    # See: https://cloudnative-pg.io/documentation/1.25/cloudnative-pg.v1/#postgresql-cnpg-io-v1-StorageConfiguration:~:text=pvcTemplate
+    # Def: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#persistentvolumeclaimspec-v1-core
+    #
+    # pvcTemplate:
+    #   storageClassName: ""
+    #   selector:
+    #     matchLabels:
+    #       provided-for: custom-label-to-select-pv
+    #   accessModes:
+    #     - ReadWriteOnce
+    #   resources:
+    #     requests:
+    #       storage: 8Gi
 
   # -- The UID of the postgres user inside the image, defaults to 26
   postgresUID: -1
