@@ -48,6 +48,12 @@ updateStrategy: {}
 crds:
   # -- Specifies whether the CRDs should be created when installing the chart.
   create: true
+  # -- Labels to be added to the CRDs.
+  labels: {}
+  # -- Annotations to be added to the CRDs.
+  # Useful for ArgoCD to enable server-side apply for CRDs managed by ArgoCD.
+  annotations: {}
+  # argocd.argoproj.io/sync-options: ServerSideApply=true
 
 # -- The webhook configuration.
 webhook:
@@ -200,7 +206,9 @@ monitoring:
     # -- Labels that ConfigMaps should have to get configured in Grafana.
     labels: {}
     # -- Annotations that ConfigMaps can have to get configured in Grafana.
+    # Useful for ArgoCD server-side apply
     annotations: {}
+    # argocd.argoproj.io/sync-options: ServerSideApply=true
 
 # Default monitoring queries
 monitoringQueriesConfigMap:
