@@ -20,6 +20,7 @@ bootstrap:
       {{- else if eq .Values.type "timescaledb" }}
       - CREATE EXTENSION IF NOT EXISTS timescaledb;
       {{- end }}
+      - CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
       {{- with .Values.cluster.initdb }}
           {{- range .postInitApplicationSQL }}
             {{- printf "- %s" . | nindent 6 }}
