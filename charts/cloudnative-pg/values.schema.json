@@ -11,6 +11,33 @@
         "affinity": {
             "type": "object"
         },
+        "clusterImageCatalogs": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["name", "images"],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": ["major", "image"],
+                            "properties": {
+                                "major": {
+                                    "type": "integer"
+                                },
+                                "image": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "commonAnnotations": {
             "type": "object"
         },

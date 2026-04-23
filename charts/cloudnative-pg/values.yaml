@@ -176,6 +176,17 @@ tolerations: []
 # -- Affinity for the operator to be installed.
 affinity: {}
 
+# -- List of ClusterImageCatalogs to provision alongside the operator.
+# Each entry must have a `name` and a list of `images` with `image` and `major` keys.
+# @default -- `[]`
+clusterImageCatalogs: []
+  # - name: postgresql
+  #   images:
+  #     - image: ghcr.io/cloudnative-pg/postgresql:17.0
+  #       major: 17
+  #     - image: ghcr.io/cloudnative-pg/postgresql:16.4
+  #       major: 16
+
 monitoring:
 
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
