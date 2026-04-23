@@ -200,6 +200,7 @@ Kubernetes: `>=1.29.0-0`
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
+| cluster.tablespaces | list | `[]` | Tablespaces configuration Ref: https://cloudnative-pg.io/docs/1.28/cloudnative-pg.v1/#tablespaceconfiguration |
 | cluster.walStorage.enabled | bool | `false` |  |
 | cluster.walStorage.size | string | `"1Gi"` |  |
 | cluster.walStorage.storageClass | string | `""` |  |
