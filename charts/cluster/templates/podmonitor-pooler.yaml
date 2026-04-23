@@ -1,6 +1,9 @@
 {{- range .Values.poolers }}
+{{- if .monitoring }}
+{{- if .monitoring.enabled }}
+{{- if .monitoring.podMonitor }}
+{{- if .monitoring.podMonitor.enabled }}
 ---
-{{- if and .monitoring .monitoring.enabled .monitoring.podMonitor.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -33,5 +36,8 @@ spec:
       metricRelabelings:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

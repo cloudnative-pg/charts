@@ -17,6 +17,8 @@ spec:
         - name: monitoring-cluster-monitoring
           key: custom-queries
       enablePodMonitor: false
+status:
+  readyInstances: 2
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
