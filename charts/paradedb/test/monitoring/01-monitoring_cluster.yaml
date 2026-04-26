@@ -22,17 +22,17 @@ cluster:
       logicalReplication: true
       pgStatStatements: true
     customQueries:
-      - name: "pg_cache_hit_ratio"
-        query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
+      - name: "pg_database_size_bytes"
+        query: "SELECT current_database() as datname, pg_database_size(current_database()) as size_bytes;"
         target_databases: ["*"]
         predicate_query: "SELECT '{{ .Values.type }}';"
         metrics:
           - datname:
               usage: "LABEL"
               description: "Name of the database"
-          - ratio:
+          - size_bytes:
               usage: GAUGE
-              description: "Cache hit ratio"
+              description: "Size of the database in bytes"
     podMonitor:
       labels:
         team-name: test-team

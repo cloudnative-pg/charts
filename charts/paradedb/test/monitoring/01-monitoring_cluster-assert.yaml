@@ -111,16 +111,16 @@ metadata:
   name: monitoring-paradedb-monitoring-user-metrics
 data:
   custom-queries: |
-    pg_cache_hit_ratio:
-      query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
+    pg_database_size_bytes:
+      query: "SELECT current_database() as datname, pg_database_size(current_database()) as size_bytes;"
       target_databases: ["*"]
       predicate_query: "SELECT 'paradedb';"
       metrics:
         - datname:
             description: Name of the database
             usage: LABEL
-        - ratio:
-            description: Cache hit ratio
+        - size_bytes:
+            description: Size of the database in bytes
             usage: GAUGE
 ---
 apiVersion: v1
