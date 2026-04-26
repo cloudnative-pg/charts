@@ -20,6 +20,8 @@ spec:
           key: custom-queries
         - name: monitoring-paradedb-monitoring-pg-stat-statements
           key: custom-queries
+        - name: monitoring-paradedb-monitoring-pg-stat-activity
+          key: custom-queries
         - name: monitoring-paradedb-monitoring-user-metrics
           key: custom-queries
       enablePodMonitor: false
@@ -137,6 +139,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: monitoring-paradedb-monitoring-pg-stat-statements
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-paradedb-monitoring-pg-stat-activity
 ---
 apiVersion: v1
 kind: ConfigMap

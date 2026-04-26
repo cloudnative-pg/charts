@@ -133,7 +133,7 @@ spec:
 
   monitoring:
     disableDefaultQueries: {{ .Values.cluster.monitoring.disableDefaultQueries }}
-    {{- if or .Values.cluster.monitoring.instrumentation.paradedbIndex .Values.cluster.monitoring.instrumentation.logicalReplication .Values.cluster.monitoring.instrumentation.pgStatStatements (not (empty .Values.cluster.monitoring.customQueries)) }}
+    {{- if or .Values.cluster.monitoring.instrumentation.paradedbIndex .Values.cluster.monitoring.instrumentation.logicalReplication .Values.cluster.monitoring.instrumentation.pgStatStatements .Values.cluster.monitoring.instrumentation.pgStatActivity (not (empty .Values.cluster.monitoring.customQueries)) }}
     customQueriesConfigMap:
     {{- if .Values.cluster.monitoring.instrumentation.paradedbIndex }}
       - name: {{ include "cluster.fullname" . }}-monitoring-paradedb-index
@@ -145,6 +145,10 @@ spec:
     {{- end }}
     {{- if .Values.cluster.monitoring.instrumentation.pgStatStatements }}
       - name: {{ include "cluster.fullname" . }}-monitoring-pg-stat-statements
+        key: custom-queries
+    {{- end }}
+    {{- if .Values.cluster.monitoring.instrumentation.pgStatActivity }}
+      - name: {{ include "cluster.fullname" . }}-monitoring-pg-stat-activity
         key: custom-queries
     {{- end }}
     {{- if not (empty .Values.cluster.monitoring.customQueries) }}

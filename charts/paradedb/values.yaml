@@ -309,6 +309,8 @@ cluster:
       logicalReplication: true
       # -- Enable pg_stat_statements metrics
       pgStatStatements: true
+      # -- Enable pg_stat_activity long-running query metrics
+      pgStatActivity: true
     podMonitor:
       # -- Whether to enable the PodMonitor
       enabled: true
