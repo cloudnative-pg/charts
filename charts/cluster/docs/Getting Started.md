@@ -24,7 +24,7 @@ helm upgrade --install cnpg \
 ## Creating a cluster configuration
 
 Once you have the operator installed, the next step is to prepare the cluster configuration. Whether this will be managed
-via a GitOps solution or directly via Helm is up to you. The following sections outlines the important steps in both cases.
+via a GitOps solution or directly via Helm is up to you. The following sections outline the important steps in both cases.
 
 ### Choosing the database type
 
@@ -88,15 +88,17 @@ There are several important cluster options. Here are the most important ones:
 `cluster.affinity.topologyKey` - The chart sets it to `topology.kubernetes.io/zone` by default which is useful if you are
   running a production cluster in a multi AZ cluster (highly recommended). If you are running a single AZ cluster, you may
   want to change that to `kubernetes.io/hostname` to ensure that cluster instances are not provisioned on the same node.
-`cluster.postgresql` - Allows you to override PostgreSQL configuration parameters example:
+`cluster.postgresql.parameters` - Allows you to override PostgreSQL configuration parameters, for example:
   ```yaml
   cluster:
     postgresql:
-      max_connections: "200"
-      shared_buffers: "2GB"
+      parameters:
+        max_connections: "200"
+        shared_buffers: "2GB"
   ```
-`cluster.initSQL` - Allows you to run custom SQL queries during the cluster initialization. This is useful for creating
-extensions, schemas and databases. Note that these are as a superuser.
+`cluster.initdb.postInitSQL` - Allows you to run custom SQL queries during cluster initialization. This is useful for creating
+extensions, schemas, and databases. Use `cluster.initdb.postInitApplicationSQL` and `cluster.initdb.postInitTemplateSQL` when
+you need application-database or template-database specific initialization.
 
 For a full list - refer to the Helm chart [configuration options](../README.md#Configuration-options).
 
