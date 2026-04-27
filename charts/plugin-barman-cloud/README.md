@@ -31,6 +31,7 @@ Kubernetes: `>=1.29.0-0`
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | certificate.createClientCertificate | bool | `true` | Specifies whether the client certificate should be created. |
 | certificate.createServerCertificate | bool | `true` | Specifies whether the server certificate should be created. |
+| certificate.createIssuer | bool | `true` | Specifies whether the issuer object should be created. |
 | certificate.duration | string | `"2160h"` | The duration of the certificates. |
 | certificate.issuerName | string | `"selfsigned-issuer"` | The name of the issuer to use for the certificates. |
 | certificate.renewBefore | string | `"360h"` | The renew before time for the certificates. |
