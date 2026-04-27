@@ -202,6 +202,16 @@ monitoring:
     # -- Annotations that ConfigMaps can have to get configured in Grafana.
     annotations: {}
 
+# List of ClusterImageCatalogs to create, e.g.
+# clusterImageCatalogs:
+# - name: postgresql
+#   images:
+#     - major: 16
+#       image: ghcr.io/cloudnative-pg/postgresql:16-minimal-bookworm
+#     - major: 17
+#       image: ghcr.io/cloudnative-pg/postgresql:17.4-minimal-bookworm
+clusterImageCatalogs: []
+
 # Default monitoring queries
 monitoringQueriesConfigMap:
   # -- The name of the default monitoring configmap.
