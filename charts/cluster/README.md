@@ -155,6 +155,7 @@ Kubernetes: `>=1.29.0-0`
 | backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
 | cluster.additionalLabels | object | `{}` |  |
 | cluster.affinity | object | `{"topologyKey":"topology.kubernetes.io/zone"}` | Affinity/Anti-affinity rules for Pods. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
+| cluster.topologySpreadConstraints | list | `[]` | TopologySpreadConstraints rules for the cluster. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#ClusterSpec |
 | cluster.annotations | object | `{}` |  |
 | cluster.certificates | object | `{}` | The configuration for the CA and related certificates. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration |
 | cluster.console.enabled | bool | `false` | Deploys a console StatefulSet to run long-running commands against the cluster (e.g. `CREATE INDEX`). |
