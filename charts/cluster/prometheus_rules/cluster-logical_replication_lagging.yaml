@@ -29,4 +29,7 @@ labels:
   severity: warning
   namespace: {{ .namespace }}
   cnpg_cluster: {{ .cluster }}
+{{- range $key, $val := .addAlertExtraLabels }}
+  {{ $key }}: {{ $val | toString }}
+{{- end }}
 {{- end -}}
