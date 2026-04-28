@@ -276,6 +276,9 @@
                                 },
                                 "excludeRules": {
                                     "type": "array"
+                                },
+                                "addAlertExtraLabels": {
+                                    "type": "object"
                                 }
                             }
                         }
