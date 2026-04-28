@@ -4,7 +4,7 @@ alert: {{ $alert }}
 annotations:
   summary: CNPG Cluster logical replication errors detected
   description: |-
-    CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ "{{ .subname }}" }}" subscription has experienced {{ .value }} errors.
+    CloudNativePG Cluster's "{{ .namespace }}/{{ .cluster }}" "{{ .labels.subname }}" subscription has experienced {{ .value }} errors.
 
     This includes both apply errors (during normal replication) and sync errors (during initial table sync). Errors indicate data consistency issues that need immediate attention to prevent data divergence.
   runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/{{ $alert }}.md

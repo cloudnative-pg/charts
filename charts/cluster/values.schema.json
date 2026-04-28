@@ -859,10 +859,16 @@
                                 "passwordSecret": {
                                     "type": "object",
                                     "properties": {
+                                        "create": {
+                                            "type": "boolean"
+                                        },
                                         "key": {
                                             "type": "string"
                                         },
                                         "name": {
+                                            "type": "string"
+                                        },
+                                        "value": {
                                             "type": "string"
                                         }
                                     }
