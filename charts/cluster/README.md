@@ -196,6 +196,7 @@ Kubernetes: `>=1.29.0-0`
 | cluster.roles | list | `[]` | This feature enables declarative management of existing roles, as well as the creation of new roles if they are not already present in the database. See: https://cloudnative-pg.io/documentation/current/declarative_role_management/ |
 | cluster.securityContext | object | `{}` | Configure Container Security Context. See: https://cloudnative-pg.io/documentation/preview/security/ |
 | cluster.serviceAccountTemplate | object | `{}` | Configure the metadata of the generated service account |
+| cluster.serviceAccountName | string | `""` | Name of the service account to use for the cluster. If not set, a new service account will be created using the template. |
 | cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/ |
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
