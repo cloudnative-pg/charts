@@ -334,6 +334,9 @@
                 "serviceAccountTemplate": {
                     "type": "object"
                 },
+                "serviceAccountName": {
+                    "type": "string"
+                },
                 "services": {
                     "type": "object"
                 },
