@@ -16,30 +16,20 @@ spec:
       customQueriesConfigMap:
         - name: monitoring-cluster-monitoring
           key: custom-queries
-      enablePodMonitor: true
-      podMonitorRelabelings:
-        - action: replace
-          replacement: test
-          targetLabel: environment
-        - action: replace
-          replacement: alpha
-          targetLabel: team
-      podMonitorMetricRelabelings:
-        - action: replace
-          sourceLabels:
-            - cluster
-          targetLabel: cnpg_cluster
-        - action: labeldrop
-          regex: cluster
+      enablePodMonitor: false
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: monitoring-cluster
+  labels:
+    cnpg.io/cluster: monitoring-cluster
+    team-name: test-team
+    environment: test
 spec:
   selector:
     matchLabels:
       cnpg.io/cluster: monitoring-cluster
+      cnpg.io/podRole: instance
   podMetricsEndpoints:
     - relabelings:
         - targetLabel: environment
@@ -56,12 +46,12 @@ spec:
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
-metadata:
-  name: monitoring-cluster-pooler-rw
 spec:
   selector:
     matchLabels:
+      cnpg.io/cluster: monitoring-cluster
       cnpg.io/poolerName: monitoring-cluster-pooler-rw
+      cnpg.io/podRole: pooler
   podMetricsEndpoints:
     - relabelings:
         - targetLabel: type
@@ -80,12 +70,12 @@ spec:
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
-metadata:
-  name: monitoring-cluster-pooler-ro
 spec:
   selector:
     matchLabels:
+      cnpg.io/cluster: monitoring-cluster
       cnpg.io/poolerName: monitoring-cluster-pooler-ro
+      cnpg.io/podRole: pooler
   podMetricsEndpoints:
     - relabelings:
         - targetLabel: type

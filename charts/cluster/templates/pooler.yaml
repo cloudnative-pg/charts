@@ -28,20 +28,6 @@ spec:
     pg_hba:
       {{- toYaml . | nindent 6 }}
     {{- end }}
-  {{ with .monitoring }}
-  monitoring:
-  {{- if not (empty .podMonitor) }}
-    enablePodMonitor: {{ and .enabled .podMonitor.enabled }}
-    {{- with .podMonitor.relabelings }}
-    podMonitorRelabelings:
-      {{- toYaml . | nindent 6 }}
-    {{ end }}
-    {{- with .podMonitor.metricRelabelings }}
-    podMonitorMetricRelabelings:
-      {{- toYaml . | nindent 6 }}
-    {{ end }}
-  {{- end }}
-  {{- end }}
   {{- with .template }}
   template:
     {{- . | toYaml | nindent 4 }}

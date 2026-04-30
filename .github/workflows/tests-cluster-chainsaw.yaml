@@ -70,4 +70,6 @@ jobs:
             tenant minio-operator/tenant
 
       - name: Run Kyverno/Chainsaw
-        run: chainsaw test charts/cluster/test/${{matrix.test}}
+        env:
+          MATRIX_TEST: ${{ matrix.test }}
+        run: chainsaw test "charts/cluster/test/${MATRIX_TEST}"

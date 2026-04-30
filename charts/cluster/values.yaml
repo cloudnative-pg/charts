@@ -309,6 +309,9 @@ cluster:
     podMonitor:
       # -- Whether to enable the PodMonitor
       enabled: true
+      # -- Additional labels to set on the generated PodMonitor resource.
+      # Add labels your monitoring stack requires (for example `team-name`).
+      labels: {}
       # --The list of relabelings for the PodMonitor.
       # Applied to samples before scraping.
       relabelings: []
@@ -406,6 +409,9 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
+  console:
+    # -- Deploys a console StatefulSet to run long-running commands against the cluster (e.g. `CREATE INDEX`).
+    enabled: false
 
 backups:
   # -- You need to configure backups manually, so backups are disabled by default.
@@ -626,6 +632,15 @@ poolers: []
   #     podMonitor:
   #         # -- Whether to enable the PodMonitor
   #       enabled: true
+  #       # -- Additional labels to set on the generated PodMonitor resource.
+  #       # Add labels your monitoring stack requires (for example `team-name`).
+  #       labels: {}
+  #       # --The list of relabelings for the PodMonitor.
+  #       # Applied to samples before scraping.
+  #       relabelings: []
+  #       # -- The list of metric relabelings for the PodMonitor.
+  #       # Applied to samples before ingestion.
+  #       metricRelabelings: []
   #   # -- Custom PgBouncer deployment template.
   #   # Use to override image, specify resources, etc.
   #   template: {}
@@ -648,6 +663,15 @@ poolers: []
   #     podMonitor:
   #         # -- Whether to enable the PodMonitor
   #       enabled: true
+  #       # -- Additional labels to set on the generated PodMonitor resource.
+  #       # Add labels your monitoring stack requires (for example `team-name`).
+  #       labels: {}
+  #       # --The list of relabelings for the PodMonitor.
+  #       # Applied to samples before scraping.
+  #       relabelings: []
+  #       # -- The list of metric relabelings for the PodMonitor.
+  #       # Applied to samples before ingestion.
+  #       metricRelabelings: []
   #   # -- Custom PgBouncer deployment template.
   #   # Use to override image, specify resources, etc.
   #   template: {}

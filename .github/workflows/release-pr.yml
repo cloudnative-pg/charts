@@ -22,11 +22,12 @@ jobs:
         id: create-pr
         env:
           GH_TOKEN: ${{ secrets.REPO_GHA_PAT }}
+          ACTOR: ${{ github.actor }}
         run: |
           TAG="${GITHUB_REF##*/}"
           TITLE="Release ${TAG}"
           BODY="Automated PR. Will trigger the ${TAG} release when approved."
           LABEL=release
-          ASSIGNEE=${{ github.actor }}
+          ASSIGNEE="${ACTOR}"
           gh pr create --title "${TITLE}" --body "${BODY}" --label "${LABEL}" --assignee "${ASSIGNEE}" ||
           gh pr edit --title "${TITLE}" --body "${BODY}" --add-label "${LABEL}"
