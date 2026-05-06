@@ -108,6 +108,10 @@ Examples
 There are several configuration examples in the [examples](examples) directory. Refer to them for a basic setup and
 refer to the [CloudNativePG Documentation](https://cloudnative-pg.io/documentation/current/) for more advanced configurations.
 
+## Requirements
+
+Kubernetes: `>=1.29.0-0`
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -171,6 +175,7 @@ refer to the [CloudNativePG Documentation](https://cloudnative-pg.io/documentati
 | cluster.monitoring.enabled | bool | `false` | Whether to enable monitoring |
 | cluster.monitoring.instrumentation.logicalReplication | bool | `true` | Enable logical replication metrics |
 | cluster.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
+| cluster.monitoring.podMonitor.labels | object | `{}` | Additional labels to set on the generated PodMonitor resource. Add labels your monitoring stack requires (for example `team-name`). |
 | cluster.monitoring.podMonitor.metricRelabelings | list | `[]` | The list of metric relabelings for the PodMonitor. Applied to samples before ingestion. |
 | cluster.monitoring.podMonitor.relabelings | list | `[]` | The list of relabelings for the PodMonitor. Applied to samples before scraping. |
 | cluster.monitoring.prometheusRule.enabled | bool | `true` | Whether to enable the PrometheusRule automated alerts |

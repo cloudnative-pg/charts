@@ -50,6 +50,21 @@ It is up to the user to ensure there is no collision between operators.
 
 Refer to the [Operator Chart documentation](charts/cloudnative-pg/README.md) for advanced configuration and monitoring.
 
+## Barman Cloud CNPG-I plugin chart
+
+Helm chart to install the CNPG-I Barman Cloud Plugin.
+
+**IMPORTANT**: this chart requires a working installation of [cert-manager](https://cert-manager.io/).
+Please refer to the cert-manager [installation page](https://cert-manager.io/docs/installation/helm/)
+for more information about that.
+
+```console
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm upgrade --install plugin-baman-cloud \
+  --namespace cnpg-system \
+  cnpg/plugin-barman-cloud
+```
+
 ## Cluster chart
 
 Helm chart to install a CloudNativePG database cluster.
