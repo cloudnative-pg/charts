@@ -108,6 +108,10 @@ Examples
 There are several configuration examples in the [examples](examples) directory. Refer to them for a basic setup and
 refer to the [CloudNativePG Documentation](https://cloudnative-pg.io/documentation/current/) for more advanced configurations.
 
+## Requirements
+
+Kubernetes: `>=1.29.0-0`
+
 ## Values
 
 | Key | Type | Default | Description |
