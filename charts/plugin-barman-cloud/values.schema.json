@@ -148,6 +148,8 @@
       "required": [
         "allowPrivilegeEscalation",
         "readOnlyRootFilesystem",
+        "runAsUser",
+        "runAsGroup",
         "seccompProfile",
         "capabilities"
       ],
