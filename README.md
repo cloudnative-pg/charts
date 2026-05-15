@@ -60,7 +60,7 @@ for more information about that.
 
 ```console
 helm repo add cnpg https://cloudnative-pg.github.io/charts
-helm upgrade --install plugin-baman-cloud \
+helm upgrade --install plugin-barman-cloud \
   --namespace cnpg-system \
   cnpg/plugin-barman-cloud
 ```
