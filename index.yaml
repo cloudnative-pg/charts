@@ -1115,6 +1115,27 @@ entries:
     version: 0.13.0
   cluster:
   - apiVersion: v2
+    created: "2026-05-15T16:55:55.175403944Z"
+    description: Deploys and manages a CloudNativePG cluster and its associated resources.
+    digest: 5027d329dedb6c40c3cffb71f14d53d97816babe80274eb2f6c244fb16c8d18c
+    home: https://cloudnative-pg.io
+    icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
+    keywords:
+    - postgresql
+    - postgres
+    - database
+    kubeVersion: '>=1.29.0-0'
+    maintainers:
+    - email: itay+cloudnativepg-charts+github.com@grudev.com
+      name: itay-grudev
+    name: cluster
+    sources:
+    - https://github.com/cloudnative-pg/charts
+    type: application
+    urls:
+    - https://github.com/cloudnative-pg/charts/releases/download/cluster-v0.6.1/cluster-0.6.1.tgz
+    version: 0.6.1
+  - apiVersion: v2
     created: "2026-03-05T02:22:35.24051152Z"
     description: Deploys and manages a CloudNativePG cluster and its associated resources.
     digest: f35a92e5e870ca8246e62b47ca36f89469d28abb9842abec8408c4b6728a7fd8
@@ -1940,4 +1961,4 @@ entries:
     urls:
     - https://github.com/cloudnative-pg/charts/releases/download/plugin-barman-cloud-v0.1.0/plugin-barman-cloud-0.1.0.tgz
     version: 0.1.0
-generated: "2026-05-12T12:54:38.787643236Z"
+generated: "2026-05-15T16:55:55.343672892Z"
