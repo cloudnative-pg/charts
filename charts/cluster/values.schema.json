@@ -322,6 +322,39 @@
                 "priorityClassName": {
                     "type": "string"
                 },
+                "replicationSlots": {
+                    "type": "object",
+                    "properties": {
+                        "highAvailability": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "slotPrefix": {
+                                    "type": "string"
+                                },
+                                "synchronizeLogicalDecoding": {
+                                    "type": "boolean"
+                                }
+                            }
+                        },
+                        "synchronizeReplicas": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "excludePatterns": {
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "updateInterval": {
+                            "type": "integer"
+                        }
+                    }
+                },
                 "resources": {
                     "type": "object"
                 },
