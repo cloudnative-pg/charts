@@ -3,10 +3,8 @@
 [![Stack Overflow](https://img.shields.io/badge/stackoverflow-cloudnative--pg-blue?logo=stackoverflow&logoColor=%23F48024&link=https%3A%2F%2Fstackoverflow.com%2Fquestions%2Ftagged%2Fcloudnative-pg)][stackoverflow]
 [![GitHub License](https://img.shields.io/github/license/cloudnative-pg/charts)][license]
 
-
 [![GitHub Release](https://img.shields.io/github/v/release/cloudnative-pg/charts?filter=cloudnative-pg-*)](https://github.com/cloudnative-pg/charts/tree/main/charts/cloudnative-pg)
 [![GitHub Release](https://img.shields.io/github/v/release/cloudnative-pg/charts?filter=cluster-*)](https://github.com/cloudnative-pg/charts/tree/main/charts/cluster)
-
 
 ## Operator chart
 
@@ -16,6 +14,7 @@ Helm chart to install the
 running in private, public, or hybrid cloud environments.
 
 **NOTE**: supports only the latest point release of the CloudNativePG operator.
+
 ```console
 helm repo add cnpg https://cloudnative-pg.github.io/charts
 helm upgrade --install cnpg \
