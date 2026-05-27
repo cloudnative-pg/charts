@@ -350,6 +350,12 @@ cluster:
     #  - name: custom-queries-secret
     #    key: custom-queries
 
+  # -- List of CNPG-I plugins to be loaded by the cluster.
+  # @default -- `[]`
+  plugins: []
+    # - name: barman-cloud.cloudnative-pg.io
+    #   isWALArchiver: true
+
   postgresql:
     # -- PostgreSQL configuration options (postgresql.conf)
     parameters: {}
@@ -486,8 +492,20 @@ backups:
       schedule: "0 0 0 * * *"
       # -- Backup owner reference
       backupOwnerReference: self
-      # -- Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`
+      # -- Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`.
+      # When the barman-cloud plugin is enabled, `barmanObjectStore` is automatically
+      # upgraded to `plugin`. Use `volumeSnapshot` to bypass the plugin.
       method: barmanObjectStore
+
+  # -- Instance sidecar configuration for the ObjectStore CR (plugin mode only).
+  # Useful for setting env vars required by S3-compatible storage providers.
+  # See: https://cloudnative-pg.io/plugin-barman-cloud/docs/
+  instanceSidecarConfiguration: {}
+    # env:
+    #   - name: AWS_REQUEST_CHECKSUM_CALCULATION
+    #     value: when_required
+    #   - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+    #     value: when_required
 
   # -- Retention policy for backups
   retentionPolicy: "30d"

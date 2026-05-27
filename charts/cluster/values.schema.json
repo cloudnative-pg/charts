@@ -91,6 +91,9 @@
                         }
                     }
                 },
+                "instanceSidecarConfiguration": {
+                    "type": "object"
+                },
                 "provider": {
                     "type": "string"
                 },
@@ -280,6 +283,9 @@
                             }
                         }
                     }
+                },
+                "plugins": {
+                    "type": "array"
                 },
                 "podSecurityContext": {
                     "type": "object"

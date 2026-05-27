@@ -136,6 +136,7 @@ Kubernetes: `>=1.29.0-0`
 | backups.google.bucket | string | `""` |  |
 | backups.google.gkeEnvironment | bool | `false` |  |
 | backups.google.path | string | `"/"` |  |
+| backups.instanceSidecarConfiguration | object | `{}` | Instance sidecar configuration for the ObjectStore CR (plugin mode only). Useful for setting env vars required by S3-compatible storage providers. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/ |
 | backups.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | backups.retentionPolicy | string | `"30d"` | Retention policy for backups |
 | backups.s3.accessKey | string | `""` |  |
@@ -145,7 +146,7 @@ Kubernetes: `>=1.29.0-0`
 | backups.s3.region | string | `""` |  |
 | backups.s3.secretKey | string | `""` |  |
 | backups.scheduledBackups[0].backupOwnerReference | string | `"self"` | Backup owner reference |
-| backups.scheduledBackups[0].method | string | `"barmanObjectStore"` | Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot` |
+| backups.scheduledBackups[0].method | string | `"barmanObjectStore"` | Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`. When the barman-cloud plugin is enabled, `barmanObjectStore` is automatically upgraded to `plugin`. Use `volumeSnapshot` to bypass the plugin. |
 | backups.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
 | backups.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
@@ -180,6 +181,7 @@ Kubernetes: `>=1.29.0-0`
 | cluster.monitoring.podMonitor.relabelings | list | `[]` | The list of relabelings for the PodMonitor. Applied to samples before scraping. |
 | cluster.monitoring.prometheusRule.enabled | bool | `true` | Whether to enable the PrometheusRule automated alerts |
 | cluster.monitoring.prometheusRule.excludeRules | list | `[]` | Exclude specified rules |
+| cluster.plugins | list | `[]` | List of CNPG-I plugins to be loaded by the cluster. |
 | cluster.podSecurityContext | object | `{}` | Configure the Pod Security Context. See: https://cloudnative-pg.io/documentation/preview/security/ |
 | cluster.postgresGID | int | `-1` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `-1` | The UID of the postgres user inside the image, defaults to 26 |
