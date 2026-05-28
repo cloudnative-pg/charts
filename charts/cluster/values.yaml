@@ -367,6 +367,8 @@ cluster:
     # -- Lists of shared preload libraries to add to the default ones
     shared_preload_libraries: []
       # - pgaudit
+    # -- List of [image volume extensions](https://cloudnative-pg.io/docs/1.29/imagevolume_extensions/) to load in the cluster pod
+    extensions: []
     # -- PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)
     ldap: {}
       # https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration
