@@ -92,6 +92,8 @@ spec:
         {{- if not .Values.config.clusterWide }}
         - name: WATCH_NAMESPACE
           value: "{{ include "cloudnative-pg.namespace" . }}"
+        - name: WEBHOOK_PREFIX
+          value: "{{ include "cloudnative-pg.namespace" . }}-"
         {{- end }}
         {{- if .Values.additionalEnv }}
         {{- tpl (.Values.additionalEnv | toYaml) . | nindent 8 }}
