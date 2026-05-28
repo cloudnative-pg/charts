@@ -26,7 +26,11 @@ metadata:
 spec:
   commonName: {{ .Values.service.name }}
   dnsNames:
+  {{- if .Values.certificate.server.dnsNames }}
+    {{- toYaml .Values.certificate.server.dnsNames | nindent 4 }}
+  {{- else }}
   - {{ .Values.service.name }}
+  {{- end }}
   duration: {{ .Values.certificate.duration | default "2160h" }}
   isCA: false
   issuerRef:

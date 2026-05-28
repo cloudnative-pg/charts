@@ -132,8 +132,8 @@ podSecurityContext:
 priorityClassName: ""
 
 service:
-  # -- DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate
-  # and can not be configured
+  # -- DO NOT CHANGE THE SERVICE NAME as it is currently used by CloudNativePG
+  # to identify the plugin
   name: barman-cloud
   port: 9090
   # -- Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services)
@@ -145,6 +145,14 @@ service:
   # @schema
   # -- Sets the families that should be supported and the order in which they should be applied to ClusterIP as well. Can be IPv4 and/or IPv6.
   ipFamilies: []
+  # @schema
+  # additionalProperties: true
+  # @schema
+  # -- Service annotations
+  annotations:
+    # -- The plugin server name to be used by CloudNativePG.
+    # If set, it will be added as `cnpg.io/pluginServerName` annotation.
+    pluginServerName: ""
 
 # @schema
 # additionalProperties: true
@@ -195,3 +203,7 @@ certificate:
   duration: 2160h
   # -- The renew before time for the certificates.
   renewBefore: 360h
+  server:
+    # -- The DNS names for the server certificate.
+    # If not set, it defaults to `[.Values.service.name]`.
+    dnsNames: []
