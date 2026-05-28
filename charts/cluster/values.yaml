@@ -349,6 +349,9 @@ cluster:
     customQueriesSecret: []
     #  - name: custom-queries-secret
     #    key: custom-queries
+    tls:
+      # -- Whether to enable tls on the metrics port.
+      enabled: false
 
   postgresql:
     # -- PostgreSQL configuration options (postgresql.conf)
