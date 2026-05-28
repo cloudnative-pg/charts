@@ -98,6 +98,11 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{- end }}
 
+  {{- with .Values.cluster.replicationSlots }}
+  replicationSlots:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
   {{- if not (and (empty .Values.cluster.roles) (empty .Values.cluster.services)) }}
   managed:
     {{- with .Values.cluster.services }}
