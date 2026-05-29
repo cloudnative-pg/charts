@@ -398,6 +398,9 @@ cluster:
   # -- Configure the metadata of the generated service account
   serviceAccountTemplate: {}
 
+  # -- Configure the name serviceAccount to use for the cluster. If specified, it takes precedence over serviceAccountTemplate.name
+  serviceAccountName: ""
+
   # -- Configure the Pod Security Context.
   # See: https://cloudnative-pg.io/documentation/preview/security/
   podSecurityContext: {}

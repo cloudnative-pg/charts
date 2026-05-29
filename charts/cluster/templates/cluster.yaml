@@ -110,9 +110,15 @@ spec:
     {{ end }}
   {{- end }}
 
+  {{- if not .Values.cluster.serviceAccountName }}
   {{- with .Values.cluster.serviceAccountTemplate }}
   serviceAccountTemplate:
     {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- end }}
+
+  {{- if .Values.cluster.serviceAccountName }}
+  serviceAccountName: {{ .Values.cluster.serviceAccountName }}
   {{- end }}
 
   {{- with .Values.cluster.podSecurityContext }}

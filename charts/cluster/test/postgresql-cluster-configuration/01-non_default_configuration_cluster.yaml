@@ -127,6 +127,7 @@ cluster:
     metadata:
       annotations:
         my-annotation: my-service-account
+  serviceAccountName: my-custom-service-account
   podSecurityContext:
     runAsUser: 26
     runAsGroup: 26
