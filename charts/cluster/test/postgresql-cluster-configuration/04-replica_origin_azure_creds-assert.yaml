@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: replica-origin-azure-creds-paradedb-origin-azure-creds
+data:
+  AZURE_CONNECTION_STRING: "bXljb25uc3RyaW5n"
+  AZURE_STORAGE_ACCOUNT: "bXlhY2NvdW50"
+  AZURE_STORAGE_KEY: "bXlzdG9yYWdla2V5"
+  AZURE_STORAGE_SAS_TOKEN: "bXlzYXN0b2tlbg=="
