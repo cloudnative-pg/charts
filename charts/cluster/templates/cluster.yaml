@@ -73,6 +73,7 @@ spec:
       {{- if eq .Values.type "timescaledb" }}
       - timescaledb
       {{- end }}
+      - pg_stat_statements
       {{- with .Values.cluster.postgresql.shared_preload_libraries }}
       {{- toYaml . | nindent 6 }}
       {{- end }}
