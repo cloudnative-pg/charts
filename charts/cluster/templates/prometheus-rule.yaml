@@ -14,6 +14,7 @@ spec:
     - name: cloudnative-pg/{{ include "cluster.fullname" . }}
       rules:
         {{- $dict := dict "excludeRules" .Values.cluster.monitoring.prometheusRule.excludeRules -}}
+        {{- $_ := set $dict "addAlertExtraLabels" .Values.cluster.monitoring.prometheusRule.addAlertExtraLabels -}}
         {{- $_ := set $dict "value"       "{{ $value }}" -}}
         {{- $_ := set $dict "namespace"   .Release.Namespace -}}
         {{- $_ := set $dict "cluster"     (include "cluster.fullname" .) -}}
