@@ -5,9 +5,11 @@
 {{- end }}
 
 {{- if or (.scope.endpointCA.create) (.scope.endpointCA.name) }}
+  {{- $endpointCAName := coalesce .scope.endpointCA.name (printf "%s-ca-bundle" .chartFullname) }}
+  {{- $endpointCAKey := default "ca-bundle.crt" .scope.endpointCA.key }}
   endpointCA:
-    name: {{ .scope.endpointCA.name }}
-    key: {{ .scope.endpointCA.key }}
+    name: {{ $endpointCAName }}
+    key: {{ $endpointCAKey }}
 {{- end }}
 
 {{- if .scope.destinationPath }}
