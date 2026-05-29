@@ -42,6 +42,10 @@ spec:
   affinity:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- with .Values.cluster.topologySpreadConstraints }}
+  topologySpreadConstraints:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.cluster.env }}
   env:
     {{- toYaml . | nindent 4 }}

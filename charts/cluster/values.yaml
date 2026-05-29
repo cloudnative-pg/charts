@@ -249,6 +249,16 @@ cluster:
   affinity:
     topologyKey: topology.kubernetes.io/zone
 
+  # -- TopologySpreadConstraints for cluster.
+  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#ClusterSpec
+  topologySpreadConstraints: []
+    # - maxSkew: 1
+    #   topologyKey: topology.kubernetes.io/zone
+    #   whenUnsatisfiable: DoNotSchedule
+    #   labelSelector:
+    #     matchLabels:
+    #       cnpg.io/cluster: my-cluster
+
   # -- Env follows the Env format to pass environment variables to the pods created in the cluster
   env: []
     # - name: MY_CUSTOM_FLAG

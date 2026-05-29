@@ -181,6 +181,65 @@
                         }
                     }
                 },
+                "topologySpreadConstraints": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "maxSkew": {
+                                "type": "integer"
+                            },
+                            "minDomains": {
+                                "type": "integer"
+                            },
+                            "topologyKey": {
+                                "type": "string"
+                            },
+                            "whenUnsatisfiable": {
+                                "type": "string"
+                            },
+                            "labelSelector": {
+                                "type": "object",
+                                "properties": {
+                                    "matchLabels": {
+                                        "type": "object"
+                                    },
+                                    "matchExpressions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "key": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "matchLabelKeys": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "nodeAffinityPolicy": {
+                                "type": "string",
+                                "enum": [
+                                    "Honor",
+                                    "Ignore"
+                                ]
+                            },
+                            "nodeTaintsPolicy": {
+                                "type": "string",
+                                "enum": [
+                                    "Honor",
+                                    "Ignore"
+                                ]
+                            }
+                        }
+                    }
+                },
                 "annotations": {
                     "type": "object"
                 },
