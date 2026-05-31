@@ -114,4 +114,52 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "plugin-barman-cloud.serviceAccountName" . }}
   namespace: {{ include "plugin-barman-cloud.namespace" . }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    {{- include "plugin-barman-cloud.labels" . | nindent 4 }}
+    {{- if .Values.rbac.aggregateClusterRoles }}
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    {{- end }}
+  name: {{ include "plugin-barman-cloud.fullname" . }}-viewer
+rules:
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores/status
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    {{- include "plugin-barman-cloud.labels" . | nindent 4 }}
+    {{- if .Values.rbac.aggregateClusterRoles }}
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    {{- end }}
+  name: {{ include "plugin-barman-cloud.fullname" . }}-editor
+rules:
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores
+  verbs:
+  - create
+  - delete
+  - patch
+  - update
 {{- end }}
