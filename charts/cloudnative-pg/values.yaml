@@ -48,7 +48,8 @@ updateStrategy: {}
 crds:
   # -- Specifies whether the CRDs should be created when installing the chart.
   create: true
-
+  # -- Annotations to pass to the CRDs created. Useful e.g. for ArgoCD ServerSideApply
+  annotations: {}
 # -- The webhook configuration.
 webhook:
   port: 9443
