@@ -32,6 +32,7 @@ metadata:
 {{- end }}
 
 {{- if .Values.rbac.create }}
+{{- if not .Values.config.namespaced }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -77,6 +78,7 @@ we create a Role with the common rules for the operator,
 and a RoleBinding. We already created the ClusterRole above with the
 required cluster-wide rules
 */}}
+{{- end }}
 {{- if eq .Values.config.clusterWide false }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1

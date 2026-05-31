@@ -310,3 +310,13 @@ Define the set of rules that must be applied clusterwide
   - list
   - watch
 {{- end }}
+
+{{/*
+Validate configuration compatibility and return namespaced value
+*/}}
+{{- define "cloudnative-pg.validateNamespaced" -}}
+{{- if and .Values.config.namespaced .Values.config.clusterWide -}}
+{{- fail "config.namespaced and config.clusterWide cannot both be true. When config.namespaced is true, config.clusterWide must be false." -}}
+{{- end -}}
+{{- .Values.config.namespaced -}}
+{{- end -}}
