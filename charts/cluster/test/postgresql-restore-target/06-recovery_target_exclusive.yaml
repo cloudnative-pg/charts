@@ -1,0 +1,26 @@
+---
+type: postgresql
+mode: recovery
+cluster:
+  instances: 1
+  enablePDB: false
+  logLevel: warning
+  storage:
+    size: 256Mi
+    storageClass: standard
+
+
+recovery:
+  method: object_store
+  database: my-special-database
+  owner: me
+  s3:
+    bucket: "mybucket"
+    accessKey: "minio"
+    secretKey: "minio123"
+    region: "local"
+  recoveryTarget:
+    exclusive: true
+
+backups:
+  enabled: false

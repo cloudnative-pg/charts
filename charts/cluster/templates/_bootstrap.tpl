@@ -73,10 +73,31 @@ bootstrap:
       {{- end }}
   {{- else }}
   recovery:
-    {{- with .Values.recovery.pitrTarget.time }}
     recoveryTarget:
+      {{- with .Values.recovery.pitrTarget.backupID }}
+      backupID: {{ . }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.exclusive }}
+      exclusive: {{ . }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.time }}
       targetTime: {{ . }}
-    {{- end }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.xid }}
+      targetXID: {{ . }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.name }}
+      targetName: {{ . }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.lsn }}
+      targetLSN: {{ . }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.immediate }}
+      targetImmediate: {{ . }}
+      {{- end }}
+      {{- with .Values.recovery.pitrTarget.tli }}
+      targetTLI: {{ . }}
+      {{- end }}
     {{ with .Values.recovery.database }}
     database: {{ . }}
     {{- end }}

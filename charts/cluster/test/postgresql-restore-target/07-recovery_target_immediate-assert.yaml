@@ -1,0 +1,12 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: recovery-target-immediate-cluster
+spec:
+  instances: 1
+  enableSuperuserAccess: true
+  enablePDB: false
+  logLevel: warning
+  storage:
+    size: 256Mi
+    storageClass: standard
