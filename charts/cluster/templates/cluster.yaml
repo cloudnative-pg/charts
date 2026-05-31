@@ -27,11 +27,19 @@ spec:
     {{- if not (empty .Values.cluster.storage.storageClass) }}
     storageClass: {{ .Values.cluster.storage.storageClass }}
     {{- end }}
+    {{- if .Values.cluster.storage.pvcTemplate }}
+    pvcTemplate:
+      {{- toYaml .Values.cluster.storage.pvcTemplate | nindent 6 }}
+    {{- end }}
   {{- if .Values.cluster.walStorage.enabled }}
   walStorage:
     size: {{ .Values.cluster.walStorage.size }}
     {{- if not (empty .Values.cluster.walStorage.storageClass) }}
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
+    {{- end }}
+    {{- if .Values.cluster.walStorage.pvcTemplate }}
+    pvcTemplate:
+      {{- toYaml .Values.cluster.walStorage.pvcTemplate | nindent 6 }}
     {{- end }}
   {{- end }}
   {{- with .Values.cluster.resources }}
