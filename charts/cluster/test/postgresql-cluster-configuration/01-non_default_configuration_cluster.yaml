@@ -66,6 +66,11 @@ cluster:
     clientCASecret: client-ca-secret
   enableSuperuserAccess: true
   superuserSecret: supersecret-secret
+  replicationSlots:
+    highAvailability:
+      enabled: false
+      slotPrefix: _cnpg_cust_
+    updateInterval: "60"
   enablePDB: false
   services:
     additional:
