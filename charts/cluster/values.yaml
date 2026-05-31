@@ -210,6 +210,17 @@ cluster:
     size: 1Gi
     storageClass: ""
 
+  # -- Tablespaces configuration
+  # Ref: https://cloudnative-pg.io/docs/1.28/cloudnative-pg.v1/#tablespaceconfiguration
+  tablespaces: []
+    # - name: fast_ssd
+    #   storage:
+    #     size: 10Gi
+    #     storageClass: premium-rwo
+    #   owner:
+    #     name: app
+    #   temporary: false
+
   # -- The UID of the postgres user inside the image, defaults to 26
   postgresUID: -1
 
