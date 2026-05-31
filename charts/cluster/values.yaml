@@ -417,6 +417,10 @@ backups:
   # -- You need to configure backups manually, so backups are disabled by default.
   enabled: false
 
+  ## -- Choose to take backups from either the primary or standby.
+  # One of: `prefer-standby` or `primary`.
+  target: "prefer-standby"
+
   # -- Overrides the provider specific default endpoint. Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
   endpointURL: ""  # Leave empty if using the default S3 endpoint

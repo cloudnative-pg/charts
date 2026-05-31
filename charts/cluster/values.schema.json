@@ -31,6 +31,9 @@
                         },
                         "storageSasToken": {
                             "type": "string"
+                        },
+                        "target": {
+                            "type": "string"
                         }
                     }
                 },
