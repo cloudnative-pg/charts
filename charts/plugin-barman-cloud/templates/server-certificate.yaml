@@ -34,6 +34,9 @@ spec:
     kind: Issuer
     name: {{ include "plugin-barman-cloud.fullname" . }}-selfsigned-issuer
   renewBefore: {{ .Values.certificate.renewBefore | default "360h" }}
+  {{- with .Values.certificate.revisionHistoryLimit }}
+  revisionHistoryLimit: {{ . }}
+  {{- end }}
   secretName: barman-cloud-server-tls
   usages:
     - server auth
