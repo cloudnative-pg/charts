@@ -34,6 +34,7 @@ Kubernetes: `>=1.29.0-0`
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
 | config.clusterWide | bool | `true` | This option determines if the operator is responsible for observing events across the entire Kubernetes cluster or if its focus should be narrowed down to the specific namespace within which it has been deployed. |
 | config.create | bool | `true` | Specifies whether the secret should be created. |
+| config.namespacedWebhooks | bool | `false` | When set to true, appends the operator namespace to webhook configuration names to avoid collisions when running multiple operators in namespaced mode. |
 | config.data | object | `{}` | The content of the configmap/secret, see https://cloudnative-pg.io/documentation/current/operator_conf/#available-options for all the available options. |
 | config.maxConcurrentReconciles | int | `10` | The maximum number of concurrent reconciles. Defaults to 10. |
 | config.name | string | `"cnpg-controller-manager-config"` | The name of the configmap/secret to use. |
