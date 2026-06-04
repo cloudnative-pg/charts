@@ -6,13 +6,43 @@ Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 
 **Homepage:** <https://cloudnative-pg.io>
 
-## Maintainers
+About this chart
+----------------
 
-| Name | Email | Url |
-| ---- | ------ | --- |
-| itay-grudev | <itay@verito.digital> |  |
-| quantumenigmaa | <thibaud.vaisseau@gmail.com> |  |
-| quentinbisson | <quentin.bisson@gmail.com> |  |
+Helm chart to install the [CNPG-I Barman Cloud Plugin](https://github.com/cloudnative-pg/plugin-barman-cloud),
+the [CloudNativePG](https://cloudnative-pg.io) plugin that adds backup and restore capabilities to PostgreSQL
+`Cluster` resources via [Barman Cloud](https://pgbarman.org/).
+
+**NOTE**: this chart supports only the latest point release of the plugin.
+
+**IMPORTANT**: this chart requires a working installation of [cert-manager](https://cert-manager.io/).
+Please refer to the cert-manager
+[installation page](https://cert-manager.io/docs/installation/helm/) for more information.
+
+The chart deploys the plugin only. It does **not** install the CloudNativePG operator — use the companion
+[`cloudnative-pg`](https://github.com/cloudnative-pg/charts/tree/main/charts/cloudnative-pg) chart for that —
+and it does not create any `Cluster` resource. To provision a PostgreSQL cluster that uses this plugin, use
+the [`cluster`](https://github.com/cloudnative-pg/charts/tree/main/charts/cluster) chart
+(see the [Cluster chart README](https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/README.md) for details)
+or apply your own `Cluster` manifest.
+
+Getting Started
+---------------
+
+### Add the chart repository
+
+```console
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm repo update
+```
+
+### Install the plugin
+
+```console
+helm upgrade --install plugin-barman-cloud \
+  --namespace cnpg-system \
+  cnpg/plugin-barman-cloud
+```
 
 ## Source Code
 
@@ -66,4 +96,18 @@ Kubernetes: `>=1.29.0-0`
 | sidecarImage.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | tolerations | list | `[]` | Tolerations for the operator to be installed. |
 | topologySpreadConstraints | list | `[]` | Topology Spread Constraints for the operator to be installed. |
-| updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy |
+| updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy For example:  type: RollingUpdate  rollingUpdate:    maxSurge: 25%    maxUnavailable: 25%  WARNING: the RollingUpdate strategy is not supported by the operator yet so it can currently only use the Recreate strategy. |
+
+## Maintainers
+
+| Name | Email | Url |
+| ---- | ------ | --- |
+| itay-grudev | <itay@verito.digital> |  |
+| quantumenigmaa | <thibaud.vaisseau@gmail.com> |  |
+| quentinbisson | <quentin.bisson@gmail.com> |  |
+
+Copyright
+---------
+
+Helm charts for CloudNativePG are distributed under [Apache License 2.0](../../LICENSE).
+
