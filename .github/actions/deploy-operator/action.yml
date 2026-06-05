@@ -9,6 +9,13 @@ inputs:
     description: 'If the operator should be deployed cluster-wide or in single-namespace mode'
     required: false
     default: 'true'
+  chart-version:
+    description: >-
+      Version constraint for the cnpg/cloudnative-pg Helm chart. The chart is
+      versioned independently from the CNPG operator: chart 0.28.x ships CNPG
+      operator 1.29.x. The default tracks the latest patch on the 1.29 line.
+    required: false
+    default: '~0.28.0'
 runs:
   using: composite
   steps:
@@ -17,12 +24,29 @@ runs:
       env:
         NAMESPACE: ${{ inputs.namespace }}
         CLUSTER_WIDE: ${{ inputs.cluster-wide }}
+        CHART_VERSION: ${{ inputs.chart-version }}
       run: |
         helm repo add cnpg https://cloudnative-pg.github.io/charts
+        helm repo update cnpg
         helm upgrade \
           --install \
           --namespace $NAMESPACE \
           --create-namespace \
+          --version "$CHART_VERSION" \
           --set config.clusterWide=$CLUSTER_WIDE \
           --wait \
           cnpg cnpg/cloudnative-pg
+
+    - name: Log the deployed CNPG version
+      shell: bash
+      env:
+        NAMESPACE: ${{ inputs.namespace }}
+      run: |
+        echo "::group::CloudNativePG operator version"
+        # Helm reports the chart version + the CNPG operator app version
+        helm list --namespace "$NAMESPACE" --filter '^cnpg$'
+        # The operator image tag is the authoritative CNPG version
+        kubectl get deployment -n "$NAMESPACE" \
+          -l app.kubernetes.io/name=cloudnative-pg \
+          -o jsonpath='{range .items[*]}{.metadata.name}{": "}{.spec.template.spec.containers[*].image}{"\n"}{end}'
+        echo "::endgroup::"
