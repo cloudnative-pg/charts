@@ -17,21 +17,21 @@ running in private, public, or hybrid cloud environments.
 
 **NOTE**: supports only the latest point release of the CloudNativePG operator.
 
-Refer to the [Operator Chart documentation](charts/cloudnative-pg/README.md) for installation advanced 
-configuration and monitoring.
+Refer to the [Operator Chart documentation](charts/cloudnative-pg/README.md) for installation,
+advanced configuration and monitoring.
 
 ## Barman Cloud CNPG-I plugin chart
 
 Helm chart to install the CNPG-I Barman Cloud Plugin.
 
-Refer to the [Barman Cloud Plugin Chart documentation](charts/plugin-barman-cloud/README.md) for installation 
+Refer to the [Barman Cloud Plugin Chart documentation](charts/plugin-barman-cloud/README.md) for installation
 and advanced configuration.
 
 ## Cluster chart
 
 Helm chart to install a CloudNativePG database cluster.
 
-Refer to the [Cluster Chart documentation](charts/cluster/README.md) for Installtion and advanced configuration options.
+Refer to the [Cluster Chart documentation](charts/cluster/README.md) for installation and advanced configuration options.
 
 ## Contributing
 
