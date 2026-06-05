@@ -16,68 +16,22 @@ Helm chart to install the
 running in private, public, or hybrid cloud environments.
 
 **NOTE**: supports only the latest point release of the CloudNativePG operator.
-```console
-helm repo add cnpg https://cloudnative-pg.github.io/charts
-helm upgrade --install cnpg \
-  --namespace cnpg-system \
-  --create-namespace \
-  cnpg/cloudnative-pg
-```
 
-#### Single namespace installation
-
-It is possible to limit the operator's capabilities to solely the namespace in
-which it has been installed. With this restriction, the cluster-level
-permissions required by the operator will be substantially reduced, and
-the security profile of the installation will be enhanced.
-
-You can install the operator in single-namespace mode by setting the
-`config.clusterWide` flag to false, as in the following example:
-
-```console
-helm upgrade --install cnpg \
-  --namespace cnpg-system \
-  --create-namespace \
-  --set config.clusterWide=false \
-  cnpg/cloudnative-pg
-```
-
-**IMPORTANT**: the single-namespace installation mode can't coexist
-with the cluster-wide operator. Otherwise there would be collisions when
-managing the resources in the namespace watched by the single-namespace
-operator.
-It is up to the user to ensure there is no collision between operators.
-
-Refer to the [Operator Chart documentation](charts/cloudnative-pg/README.md) for advanced configuration and monitoring.
+Refer to the [Operator Chart documentation](charts/cloudnative-pg/README.md) for installation advanced 
+configuration and monitoring.
 
 ## Barman Cloud CNPG-I plugin chart
 
 Helm chart to install the CNPG-I Barman Cloud Plugin.
 
-**IMPORTANT**: this chart requires a working installation of [cert-manager](https://cert-manager.io/).
-Please refer to the cert-manager [installation page](https://cert-manager.io/docs/installation/helm/)
-for more information about that.
-
-```console
-helm repo add cnpg https://cloudnative-pg.github.io/charts
-helm upgrade --install plugin-barman-cloud \
-  --namespace cnpg-system \
-  cnpg/plugin-barman-cloud
-```
+Refer to the [Barman Cloud Plugin Chart documentation](charts/plugin-barman-cloud/README.md) for installation 
+and advanced configuration.
 
 ## Cluster chart
 
 Helm chart to install a CloudNativePG database cluster.
 
-```console
-helm repo add cnpg https://cloudnative-pg.github.io/charts
-helm upgrade --install database \
-  --namespace database \
-  --create-namespace \
-  cnpg/cluster
-```
-
-Refer to the [Cluster Chart documentation](charts/cluster/README.md) for advanced configuration options.
+Refer to the [Cluster Chart documentation](charts/cluster/README.md) for Installtion and advanced configuration options.
 
 ## Contributing
 
