@@ -60,6 +60,10 @@ helm upgrade --install cnpg \
   cnpg/cloudnative-pg
 ```
 
+> **Note**
+> Enabling the `PodMonitor` requires the Prometheus Operator CRDs to be installed in the cluster.
+> Without them the install fails with `no matches for kind "PodMonitor"`.
+
 See the [Values](#values) section below for the full list of configurable parameters.
 
 ### Verify the installation
