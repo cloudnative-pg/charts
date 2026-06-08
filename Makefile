@@ -11,17 +11,19 @@ docs: ## Generate charts' docs using helm-docs
 	@helm-docs --skip-version-footer || \
 		(echo "Please, install https://github.com/norwoodj/helm-docs first" && exit 1)
 
+HELM_SCHEMA_FLAGS := -a --no-dependencies --skip-auto-generation title,required,additionalProperties
+
 .PHONY: schema
-schema: cloudnative-pg-schema cluster-schema plugin-barman-cloud ## Generate charts' schema using helm-schema
+schema: cloudnative-pg-schema cluster-schema plugin-barman-cloud-schema ## Generate charts' schema using helm-schema
 
 cloudnative-pg-schema:
-	@helm schema -a --no-dependencies --skip-auto-generation title,required,additionalProperties -c charts/cloudnative-pg || \
+	@helm schema $(HELM_SCHEMA_FLAGS) -c charts/cloudnative-pg || \
 		(echo "Please, run: helm plugin install https://github.com/dadav/helm-schema" && exit 1)
 
 cluster-schema:
-	@helm schema -a --no-dependencies --skip-auto-generation title,required,additionalProperties -c charts/cluster || \
+	@helm schema $(HELM_SCHEMA_FLAGS) -c charts/cluster || \
 		(echo "Please, run: helm plugin install https://github.com/dadav/helm-schema" && exit 1)
 
-plugin-barman-cloud:
-	@helm schema -a --no-dependencies --skip-auto-generation title,required,additionalProperties -c charts/plugin-barman-cloud || \
+plugin-barman-cloud-schema:
+	@helm schema $(HELM_SCHEMA_FLAGS) -c charts/plugin-barman-cloud || \
 		(echo "Please, run: helm plugin install https://github.com/dadav/helm-schema" && exit 1)
