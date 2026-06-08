@@ -12,15 +12,15 @@ docs: ## Generate charts' docs using helm-docs
 		(echo "Please, install https://github.com/norwoodj/helm-docs first" && exit 1)
 
 .PHONY: schema
-schema: cloudnative-pg-schema cluster-schema plugin-barman-cloud ## Generate charts' schema using helm-schema-gen
+schema: cloudnative-pg-schema cluster-schema plugin-barman-cloud ## Generate charts' schema using helm-schema
 
 cloudnative-pg-schema:
-	@helm schema-gen charts/cloudnative-pg/values.yaml | cat > charts/cloudnative-pg/values.schema.json || \
-		(echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
+	@helm schema --skip-auto-generation additionalProperties -c charts/cloudnative-pg || \
+		(echo "Please, run: helm plugin install https://github.com/dadav/helm-schema" && exit 1)
 
 cluster-schema:
-	@helm schema-gen charts/cluster/values.yaml | cat > charts/cluster/values.schema.json || \
-		(echo "Please, run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git" && exit 1)
+	@helm schema --skip-auto-generation additionalProperties -c charts/cluster || \
+		(echo "Please, run: helm plugin install https://github.com/dadav/helm-schema" && exit 1)
 
 plugin-barman-cloud:
 	@helm schema --skip-auto-generation additionalProperties -c charts/plugin-barman-cloud || \

@@ -30,35 +30,30 @@
         "createClientCertificate": {
           "default": true,
           "description": "Specifies whether the client certificate should be created.",
-          "required": [],
           "title": "createClientCertificate",
           "type": "boolean"
         },
         "createServerCertificate": {
           "default": true,
           "description": "Specifies whether the server certificate should be created.",
-          "required": [],
           "title": "createServerCertificate",
           "type": "boolean"
         },
         "duration": {
           "default": "2160h",
           "description": "The duration of the certificates.",
-          "required": [],
           "title": "duration",
           "type": "string"
         },
         "issuerName": {
           "default": "selfsigned-issuer",
           "description": "The name of the issuer to use for the certificates.",
-          "required": [],
           "title": "issuerName",
           "type": "string"
         },
         "renewBefore": {
           "default": "360h",
           "description": "The renew before time for the certificates.",
-          "required": [],
           "title": "renewBefore",
           "type": "string"
         }
@@ -84,7 +79,6 @@
       "properties": {
         "allowPrivilegeEscalation": {
           "default": false,
-          "required": [],
           "title": "allowPrivilegeEscalation",
           "type": "boolean"
         },
@@ -94,13 +88,11 @@
               "items": {
                 "anyOf": [
                   {
-                    "required": [],
                     "type": "string"
                   }
                 ],
                 "required": []
               },
-              "required": [],
               "title": "drop",
               "type": "array"
             }
@@ -113,19 +105,16 @@
         },
         "readOnlyRootFilesystem": {
           "default": true,
-          "required": [],
           "title": "readOnlyRootFilesystem",
           "type": "boolean"
         },
         "runAsGroup": {
           "default": 10001,
-          "required": [],
           "title": "runAsGroup",
           "type": "integer"
         },
         "runAsUser": {
           "default": 10001,
-          "required": [],
           "title": "runAsUser",
           "type": "integer"
         },
@@ -133,7 +122,6 @@
           "properties": {
             "type": {
               "default": "RuntimeDefault",
-              "required": [],
               "title": "type",
               "type": "string"
             }
@@ -161,7 +149,6 @@
         "create": {
           "default": true,
           "description": "Specifies whether the CRDs should be created when installing the chart.",
-          "required": [],
           "title": "create",
           "type": "boolean"
         }
@@ -174,13 +161,11 @@
     },
     "dnsPolicy": {
       "default": "",
-      "required": [],
       "title": "dnsPolicy",
       "type": "string"
     },
     "fullnameOverride": {
       "default": "",
-      "required": [],
       "title": "fullnameOverride",
       "type": "string"
     },
@@ -192,7 +177,6 @@
     },
     "hostNetwork": {
       "default": false,
-      "required": [],
       "title": "hostNetwork",
       "type": "boolean"
     },
@@ -200,26 +184,22 @@
       "properties": {
         "pullPolicy": {
           "default": "IfNotPresent",
-          "required": [],
           "title": "pullPolicy",
           "type": "string"
         },
         "registry": {
           "default": "ghcr.io",
-          "required": [],
           "title": "registry",
           "type": "string"
         },
         "repository": {
           "default": "cloudnative-pg/plugin-barman-cloud",
-          "required": [],
           "title": "repository",
           "type": "string"
         },
         "tag": {
           "default": "",
           "description": "Overrides the image tag whose default is the chart appVersion.",
-          "required": [],
           "title": "tag",
           "type": "string"
         }
@@ -243,13 +223,11 @@
     },
     "nameOverride": {
       "default": "",
-      "required": [],
       "title": "nameOverride",
       "type": "string"
     },
     "namespaceOverride": {
       "default": "",
-      "required": [],
       "title": "namespaceOverride",
       "type": "string"
     },
@@ -276,7 +254,6 @@
       "properties": {
         "runAsNonRoot": {
           "default": true,
-          "required": [],
           "title": "runAsNonRoot",
           "type": "boolean"
         },
@@ -284,7 +261,6 @@
           "properties": {
             "type": {
               "default": "RuntimeDefault",
-              "required": [],
               "title": "type",
               "type": "string"
             }
@@ -306,7 +282,6 @@
     "priorityClassName": {
       "default": "",
       "description": "Priority indicates the importance of a Pod relative to other Pods.",
-      "required": [],
       "title": "priorityClassName",
       "type": "string"
     },
@@ -315,7 +290,6 @@
         "create": {
           "default": true,
           "description": "Specifies whether Role and RoleBinding should be created.",
-          "required": [],
           "title": "create",
           "type": "boolean"
         }
@@ -328,7 +302,6 @@
     },
     "replicaCount": {
       "default": 1,
-      "required": [],
       "title": "replicaCount",
       "type": "integer"
     },
@@ -348,27 +321,23 @@
             ],
             "required": []
           },
-          "required": [],
           "title": "ipFamilies",
           "type": "array"
         },
         "ipFamilyPolicy": {
           "default": "",
           "description": "Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services)",
-          "required": [],
           "title": "ipFamilyPolicy",
           "type": "string"
         },
         "name": {
           "default": "barman-cloud",
           "description": "DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate\nand can not be configured",
-          "required": [],
           "title": "name",
           "type": "string"
         },
         "port": {
           "default": 9090,
-          "required": [],
           "title": "port",
           "type": "integer"
         }
@@ -386,14 +355,12 @@
         "create": {
           "default": true,
           "description": "Specifies whether the service account should be created.",
-          "required": [],
           "title": "create",
           "type": "boolean"
         },
         "name": {
           "default": "",
           "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template.",
-          "required": [],
           "title": "name",
           "type": "string"
         }
@@ -409,20 +376,17 @@
       "properties": {
         "registry": {
           "default": "ghcr.io",
-          "required": [],
           "title": "registry",
           "type": "string"
         },
         "repository": {
           "default": "cloudnative-pg/plugin-barman-cloud-sidecar",
-          "required": [],
           "title": "repository",
           "type": "string"
         },
         "tag": {
           "default": "",
           "description": "Overrides the image tag whose default is the chart appVersion.",
-          "required": [],
           "title": "tag",
           "type": "string"
         }
