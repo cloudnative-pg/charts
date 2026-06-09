@@ -7,4 +7,5 @@ metadata:
 data:
   ACCESS_KEY_ID: {{ required ".Values.recovery.s3.accessKey is required, but not specified." .Values.recovery.s3.accessKey | b64enc | quote }}
   ACCESS_SECRET_KEY: {{ required ".Values.recovery.s3.secretKey is required, but not specified." .Values.recovery.s3.secretKey | b64enc | quote }}
+  REGION: {{ required ".Values.recovery.s3.region is required, but not specified." .Values.recovery.s3.region | b64enc | quote }}
 {{- end }}
