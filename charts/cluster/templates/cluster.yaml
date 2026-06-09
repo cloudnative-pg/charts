@@ -67,6 +67,32 @@ spec:
     name: {{ . }}
   {{ end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
+  {{- if .Values.cluster.plugins }}
+  plugins:
+    {{- range .Values.cluster.plugins }}
+    - name: {{ .name }}
+      {{- if hasKey . "enabled" }}
+      enabled: {{ .enabled }}
+      {{- end }}
+      {{- if .isWALArchiver }}
+      isWALArchiver: {{ .isWALArchiver }}
+      {{- end }}
+      {{- if and (eq .name (include "cluster.barmanCloudPluginName" $)) $.Values.backups.enabled }}
+      parameters:
+        barmanObjectName: {{ include "cluster.barmanCloudObjectStoreName" $ }}
+        {{- with .parameters }}
+        {{- range $k, $v := . }}
+        {{- if ne $k "barmanObjectName" }}
+        {{ $k }}: {{ $v | quote }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+      {{- else if .parameters }}
+      parameters:
+        {{- toYaml .parameters | nindent 8 }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
   postgresql:
     {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
     shared_preload_libraries:

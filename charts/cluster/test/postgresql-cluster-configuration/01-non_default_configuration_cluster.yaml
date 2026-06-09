@@ -87,6 +87,12 @@ cluster:
        inRoles:
          - pg_monitor
          - pg_signal_backend
+  plugins:
+    - name: cnpg-i-plugin-example.my-org.io
+      enabled: true
+      parameters:
+        key1: value1
+        key2: value2
   postgresql:
     ldap:
       server: 'openldap.default.svc.cluster.local'
