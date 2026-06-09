@@ -203,7 +203,7 @@ Kubernetes: `>=1.29.0-0`
 | cluster.walStorage.enabled | bool | `false` |  |
 | cluster.walStorage.size | string | `"1Gi"` |  |
 | cluster.walStorage.storageClass | string | `""` |  |
-| databases | list | `[]` |  |
+| databases | list | `[]` | Database management configuration. |
 | fullnameOverride | string | `""` | Override the full name of the chart |
 | imageCatalog.create | bool | `true` | Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored. |
 | imageCatalog.images | list | `[]` | List of images to be provisioned in an image catalog. |
@@ -272,6 +272,7 @@ Kubernetes: `>=1.29.0-0`
 | recovery.pgBaseBackup.source.sslRootCertSecret.key | string | `""` |  |
 | recovery.pgBaseBackup.source.sslRootCertSecret.name | string | `""` |  |
 | recovery.pgBaseBackup.source.username | string | `""` |  |
+| recovery.pitrTarget | object | `{"time":""}` | Point in time recovery target. Specify one of the following: |
 | recovery.pitrTarget.time | string | `""` | Time in RFC3339 format |
 | recovery.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | recovery.s3.accessKey | string | `""` |  |
