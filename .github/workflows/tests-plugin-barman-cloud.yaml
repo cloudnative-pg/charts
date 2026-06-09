@@ -1,4 +1,4 @@
-name: test( cluster )
+name: test( plugin-barman-cloud )
 
 on:
   pull_request:
