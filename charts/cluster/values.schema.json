@@ -46,17 +46,17 @@
             "compression": {
               "default": "gzip",
               "description": "Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.",
-              "type": "string"
+              "required": []
             },
             "encryption": {
               "default": "AES256",
               "description": "Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`.",
-              "type": "string"
+              "required": []
             },
             "jobs": {
-              "default": 2,
+              "default": "2",
               "description": "Number of data files to be archived or restored in parallel.",
-              "type": "integer"
+              "required": []
             }
           },
           "required": [],
@@ -64,21 +64,21 @@
         },
         "destinationPath": {
           "default": "",
-          "description": "Overrides the provider specific default path. Defaults to:\nS3: s3://\u003cbucket\u003e\u003cpath\u003e\nAzure: https://\u003cstorageAccount\u003e.\u003cserviceName\u003e.core.windows.net/\u003ccontainerName\u003e\u003cpath\u003e\nGoogle: gs://\u003cbucket\u003e\u003cpath\u003e",
-          "type": "string"
+          "description": "Overrides the provider specific default path. Defaults to: S3: s3://\u003cbucket\u003e\u003cpath\u003e Azure: https://\u003cstorageAccount\u003e.\u003cserviceName\u003e.core.windows.net/\u003ccontainerName\u003e\u003cpath\u003e Google: gs://\u003cbucket\u003e\u003cpath\u003e",
+          "required": []
         },
         "enabled": {
-          "default": false,
+          "default": "false",
           "description": "You need to configure backups manually, so backups are disabled by default.",
-          "type": "boolean"
+          "required": []
         },
         "endpointCA": {
           "description": "Specifies a CA bundle to validate a privately signed certificate.",
           "properties": {
             "create": {
-              "default": false,
+              "default": "false",
               "description": "Creates a secret with the given value if true, otherwise uses an existing secret.",
-              "type": "boolean"
+              "required": []
             },
             "key": {
               "default": "",
@@ -93,13 +93,12 @@
               "type": "string"
             }
           },
-          "required": [],
-          "type": "object"
+          "required": []
         },
         "endpointURL": {
           "default": "",
-          "description": "Overrides the provider specific default endpoint. Defaults to:\nS3: https://s3.\u003cregion\u003e.amazonaws.com\"",
-          "type": "string"
+          "description": "Overrides the provider specific default endpoint. Defaults to: S3: https://s3.\u003cregion\u003e.amazonaws.com\"",
+          "required": []
         },
         "google": {
           "properties": {
@@ -126,12 +125,12 @@
         "provider": {
           "default": "s3",
           "description": "One of `s3`, `azure` or `google`",
-          "type": "string"
+          "required": []
         },
         "retentionPolicy": {
           "default": "30d",
           "description": "Retention policy for backups",
-          "type": "string"
+          "required": []
         },
         "s3": {
           "properties": {
@@ -144,9 +143,9 @@
               "type": "string"
             },
             "inheritFromIAMRole": {
-              "default": false,
+              "default": "false",
               "description": "Use the role based authentication without providing explicitly the keys",
-              "type": "boolean"
+              "required": []
             },
             "path": {
               "default": "/",
@@ -172,22 +171,22 @@
                   "backupOwnerReference": {
                     "default": "self",
                     "description": "Backup owner reference",
-                    "type": "string"
+                    "required": []
                   },
                   "method": {
                     "default": "barmanObjectStore",
                     "description": "Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`",
-                    "type": "string"
+                    "required": []
                   },
                   "name": {
                     "default": "daily-backup",
                     "description": "Scheduled backup name",
-                    "type": "string"
+                    "required": []
                   },
                   "schedule": {
                     "default": "0 0 0 * * *",
                     "description": "Schedule in cron format",
-                    "type": "string"
+                    "required": []
                   }
                 },
                 "required": [],
@@ -201,14 +200,14 @@
         "secret": {
           "properties": {
             "create": {
-              "default": true,
+              "default": "true",
               "description": "Whether to create a secret for the backup credentials",
-              "type": "boolean"
+              "required": []
             },
             "name": {
               "default": "",
               "description": "Name of the backup credentials secret",
-              "type": "string"
+              "required": []
             }
           },
           "required": [],
@@ -219,17 +218,17 @@
             "compression": {
               "default": "gzip",
               "description": "WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.",
-              "type": "string"
+              "required": []
             },
             "encryption": {
               "default": "AES256",
               "description": "Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`.",
-              "type": "string"
+              "required": []
             },
             "maxParallel": {
-              "default": 1,
+              "default": "1",
               "description": "Number of WAL files to be archived or restored in parallel.",
-              "type": "integer"
+              "required": []
             }
           },
           "required": [],
@@ -246,130 +245,126 @@
           "type": "object"
         },
         "affinity": {
-          "description": "Affinity/Anti-affinity rules for Pods.\nSee: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration",
+          "description": "Affinity/Anti-affinity rules for Pods. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration",
           "properties": {
             "topologyKey": {
               "default": "topology.kubernetes.io/zone",
               "type": "string"
             }
           },
-          "required": [],
-          "type": "object"
+          "required": []
         },
         "annotations": {
           "required": [],
           "type": "object"
         },
         "certificates": {
-          "description": "The configuration for the CA and related certificates.\nSee: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration",
-          "required": [],
-          "type": "object"
+          "description": "The configuration for the CA and related certificates. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration",
+          "required": []
         },
         "console": {
           "properties": {
             "enabled": {
-              "default": false,
+              "default": "false",
               "description": "Deploys a console StatefulSet to run long-running commands against the cluster (e.g. `CREATE INDEX`).",
-              "type": "boolean"
+              "required": []
             }
           },
           "required": [],
           "type": "object"
         },
         "enablePDB": {
-          "default": true,
-          "description": "Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes\nSee: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets",
-          "type": "boolean"
+          "default": "true",
+          "description": "Allow to disable PDB, mainly useful for upgrade of single-instance clusters or development purposes See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets",
+          "required": []
         },
         "enableSuperuserAccess": {
-          "default": true,
-          "description": "When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password.\nIf the secret is not present, the operator will automatically create one.\nWhen this option is disabled, the operator will ignore the SuperuserSecret content, delete it when automatically created,\nand then blank the password of the postgres user by setting it to NULL.",
-          "type": "boolean"
+          "default": "true",
+          "description": "When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password. If the secret is not present, the operator will automatically create one. When this option is disabled, the operator will ignore the SuperuserSecret content, delete it when automatically created, and then blank the password of the postgres user by setting it to NULL.",
+          "required": []
         },
         "env": {
           "description": "Env follows the Env format to pass environment variables to the pods created in the cluster",
           "items": {
             "required": []
           },
-          "type": "array"
+          "required": []
         },
         "envFrom": {
           "description": "EnvFrom follows the EnvFrom format to pass environment variables sources to the pods to be used by Env",
           "items": {
             "required": []
           },
-          "type": "array"
+          "required": []
         },
         "imageCatalogRef": {
           "description": "Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName`",
-          "required": [],
-          "type": "object"
+          "required": []
         },
         "imageName": {
           "default": "",
-          "description": "Name of the container image, supporting both tags (\u003cimage\u003e:\u003ctag\u003e) and digests for deterministic and repeatable deployments:\n\u003cimage\u003e:\u003ctag\u003e",
-          "type": "string"
+          "description": "Name of the container image, supporting both tags (\u003cimage\u003e:\u003ctag\u003e) and digests for deterministic and repeatable deployments: \u003cimage\u003e:\u003ctag\u003e@sha256:\u003cdigestValue\u003e",
+          "required": []
         },
         "imagePullPolicy": {
           "default": "IfNotPresent",
-          "description": "Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated.\nMore info: https://kubernetes.io/docs/concepts/containers/images#updating-images",
-          "type": "string"
+          "description": "Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images",
+          "required": []
         },
         "imagePullSecrets": {
-          "description": "The list of pull secrets to be used to pull the images.\nSee: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-LocalObjectReference",
+          "description": "The list of pull secrets to be used to pull the images. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-LocalObjectReference",
           "items": {
             "required": []
           },
-          "type": "array"
+          "required": []
         },
         "initdb": {
-          "description": "BootstrapInitDB is the configuration of the bootstrap process when initdb is used.\nSee: https://cloudnative-pg.io/documentation/current/bootstrap/\nSee: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb",
-          "required": [],
-          "type": "object"
+          "description": "BootstrapInitDB is the configuration of the bootstrap process when initdb is used. See: https://cloudnative-pg.io/documentation/current/bootstrap/ See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-bootstrapinitdb",
+          "required": []
         },
         "instances": {
-          "default": 3,
+          "default": "3",
           "description": "Number of instances",
-          "type": "integer"
+          "required": []
         },
         "logLevel": {
           "default": "info",
           "description": "The instances' log level, one of the following values: error, warning, info (default), debug, trace",
-          "type": "string"
+          "required": []
         },
         "monitoring": {
           "properties": {
             "customQueries": {
-              "description": "Custom Prometheus metrics\nWill be stored in the ConfigMap",
+              "description": "Custom Prometheus metrics Will be stored in the ConfigMap",
               "items": {
                 "required": []
               },
-              "type": "array"
+              "required": []
             },
             "customQueriesSecret": {
-              "description": " - name: \"pg_cache_hit_ratio\"\n   query: \"SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;\"\n   target_databases: [\"*\"]\n   predicate_query: \"SELECT '{{ .Values.version.postgresql }}';\"\n   metrics:\n     - datname:\n         usage: \"LABEL\"\n         description: \"Name of the database\"\n     - ratio:\n         usage: GAUGE\n         description: \"Cache hit ratio\"\nThe list of secrets containing the custom queries",
+              "description": "The list of secrets containing the custom queries",
               "items": {
                 "required": []
               },
-              "type": "array"
+              "required": []
             },
             "disableDefaultQueries": {
-              "default": false,
-              "description": "Whether the default queries should be injected.\nSet it to true if you don't want to inject default queries into the cluster.",
-              "type": "boolean"
+              "default": "false",
+              "description": "Whether the default queries should be injected. Set it to true if you don't want to inject default queries into the cluster.",
+              "required": []
             },
             "enabled": {
-              "default": false,
+              "default": "false",
               "description": "Whether to enable monitoring",
-              "type": "boolean"
+              "required": []
             },
             "instrumentation": {
               "description": "Additional instrumentation via custom metrics",
               "properties": {
                 "logicalReplication": {
-                  "default": true,
+                  "default": "true",
                   "description": "Enable logical replication metrics",
-                  "type": "boolean"
+                  "required": []
                 }
               },
               "required": [],
@@ -378,28 +373,27 @@
             "podMonitor": {
               "properties": {
                 "enabled": {
-                  "default": true,
+                  "default": "true",
                   "description": "Whether to enable the PodMonitor",
-                  "type": "boolean"
+                  "required": []
                 },
                 "labels": {
-                  "description": "Additional labels to set on the generated PodMonitor resource.\nAdd labels your monitoring stack requires (for example `team-name`).",
-                  "required": [],
-                  "type": "object"
+                  "description": "Additional labels to set on the generated PodMonitor resource. Add labels your monitoring stack requires (for example `team-name`).",
+                  "required": []
                 },
                 "metricRelabelings": {
-                  "description": "The list of metric relabelings for the PodMonitor.\nApplied to samples before ingestion.",
+                  "description": "The list of metric relabelings for the PodMonitor. Applied to samples before ingestion.",
                   "items": {
                     "required": []
                   },
-                  "type": "array"
+                  "required": []
                 },
                 "relabelings": {
-                  "description": "The list of relabelings for the PodMonitor.\nApplied to samples before scraping.",
+                  "description": "The list of relabelings for the PodMonitor. Applied to samples before scraping.",
                   "items": {
                     "required": []
                   },
-                  "type": "array"
+                  "required": []
                 }
               },
               "required": [],
@@ -408,16 +402,16 @@
             "prometheusRule": {
               "properties": {
                 "enabled": {
-                  "default": true,
+                  "default": "true",
                   "description": "Whether to enable the PrometheusRule automated alerts",
-                  "type": "boolean"
+                  "required": []
                 },
                 "excludeRules": {
                   "description": "Exclude specified rules",
                   "items": {
                     "required": []
                   },
-                  "type": "array"
+                  "required": []
                 }
               },
               "required": [],
@@ -428,57 +422,53 @@
           "type": "object"
         },
         "podSecurityContext": {
-          "description": "Configure the Pod Security Context.\nSee: https://cloudnative-pg.io/documentation/preview/security/",
-          "required": [],
-          "type": "object"
+          "description": "Configure the Pod Security Context. See: https://cloudnative-pg.io/documentation/preview/security/",
+          "required": []
         },
         "postgresGID": {
-          "default": -1,
+          "default": "-1",
           "description": "The GID of the postgres user inside the image, defaults to 26",
-          "type": "integer"
+          "required": []
         },
         "postgresUID": {
-          "default": -1,
+          "default": "-1",
           "description": "The UID of the postgres user inside the image, defaults to 26",
-          "type": "integer"
+          "required": []
         },
         "postgresql": {
           "properties": {
             "ldap": {
-              "description": "- pgaudit\nPostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)",
-              "required": [],
-              "type": "object"
+              "description": "PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)",
+              "required": []
             },
             "parameters": {
               "description": "PostgreSQL configuration options (postgresql.conf)",
-              "required": [],
-              "type": "object"
+              "required": []
             },
             "pg_hba": {
-              "description": "method: any\nnumber: 1\nPostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)",
+              "description": "PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)",
               "items": {
                 "required": []
               },
-              "type": "array"
+              "required": []
             },
             "pg_ident": {
-              "description": "- host all all 10.244.0.0/16 md5\nPostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file)",
+              "description": "PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file)",
               "items": {
                 "required": []
               },
-              "type": "array"
+              "required": []
             },
             "shared_preload_libraries": {
-              "description": "- mymap   /^(.*)\nLists of shared preload libraries to add to the default ones",
+              "description": "Lists of shared preload libraries to add to the default ones",
               "items": {
                 "required": []
               },
-              "type": "array"
+              "required": []
             },
             "synchronous": {
-              "description": "max_connections: 300\nQuorum-based Synchronous Replication",
-              "required": [],
-              "type": "object"
+              "description": "Quorum-based Synchronous Replication",
+              "required": []
             }
           },
           "required": [],
@@ -486,44 +476,40 @@
         },
         "primaryUpdateMethod": {
           "default": "switchover",
-          "description": "Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been\nsuccessfully updated. It can be switchover (default) or restart.",
-          "type": "string"
+          "description": "Method to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated. It can be switchover (default) or restart.",
+          "required": []
         },
         "primaryUpdateStrategy": {
           "default": "unsupervised",
-          "description": "Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been\nsuccessfully updated: it can be automated (unsupervised - default) or manual (supervised)",
-          "type": "string"
+          "description": "Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been successfully updated: it can be automated (unsupervised - default) or manual (supervised)",
+          "required": []
         },
         "priorityClassName": {
           "default": "",
           "type": "string"
         },
         "resources": {
-          "description": "Resources requirements of every generated Pod.\nPlease refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.\nWe strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS.\nSee: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
-          "required": [],
-          "type": "object"
+          "description": "Resources requirements of every generated Pod. Please refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information. We strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS. See: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
+          "required": []
         },
         "roles": {
-          "description": "This feature enables declarative management of existing roles, as well as the creation of new roles if they are not\nalready present in the database.\nSee: https://cloudnative-pg.io/documentation/current/declarative_role_management/",
+          "description": "This feature enables declarative management of existing roles, as well as the creation of new roles if they are not already present in the database. See: https://cloudnative-pg.io/documentation/current/declarative_role_management/",
           "items": {
             "required": []
           },
-          "type": "array"
+          "required": []
         },
         "securityContext": {
-          "description": "Configure Container Security Context.\nSee: https://cloudnative-pg.io/documentation/preview/security/",
-          "required": [],
-          "type": "object"
+          "description": "Configure Container Security Context. See: https://cloudnative-pg.io/documentation/preview/security/",
+          "required": []
         },
         "serviceAccountTemplate": {
           "description": "Configure the metadata of the generated service account",
-          "required": [],
-          "type": "object"
+          "required": []
         },
         "services": {
           "description": "Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/",
-          "required": [],
-          "type": "object"
+          "required": []
         },
         "storage": {
           "properties": {
@@ -566,16 +552,16 @@
       "type": "object"
     },
     "databases": {
-      "description": "#\nDatabase management configuration",
+      "description": " Database management configuration",
       "items": {
         "required": []
       },
-      "type": "array"
+      "required": []
     },
     "fullnameOverride": {
       "default": "",
       "description": "Override the full name of the chart",
-      "type": "string"
+      "required": []
     },
     "global": {
       "description": "Global values are values that can be accessed from any chart or subchart by exactly the same name.",
@@ -585,16 +571,16 @@
     "imageCatalog": {
       "properties": {
         "create": {
-          "default": true,
+          "default": "true",
           "description": "Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored.",
-          "type": "boolean"
+          "required": []
         },
         "images": {
           "description": "List of images to be provisioned in an image catalog.",
           "items": {
             "required": []
           },
-          "type": "array"
+          "required": []
         }
       },
       "required": [],
@@ -602,25 +588,25 @@
     },
     "mode": {
       "default": "standalone",
-      "description": "##\nCluster mode of operation. Available modes:\n* `standalone` - default mode. Creates new or updates an existing CNPG cluster.\n* `replica` - Creates a replica cluster from an existing CNPG cluster.\n* `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup.",
-      "type": "string"
+      "description": "Cluster mode of operation. Available modes: * `standalone` - default mode. Creates new or updates an existing CNPG cluster. * `replica` - Creates a replica cluster from an existing CNPG cluster. * `recovery` - Same as standalone but creates a cluster from a backup, object store or via pg_basebackup.",
+      "required": []
     },
     "nameOverride": {
       "default": "",
       "description": "Override the name of the chart",
-      "type": "string"
+      "required": []
     },
     "namespaceOverride": {
       "default": "",
       "description": "Override the namespace of the chart",
-      "type": "string"
+      "required": []
     },
     "poolers": {
       "description": "List of PgBouncer poolers",
       "items": {
         "required": []
       },
-      "type": "array"
+      "required": []
     },
     "recovery": {
       "properties": {
@@ -664,31 +650,31 @@
         },
         "backupName": {
           "default": "",
-          "description": "#\nBackup Recovery Method",
-          "type": "string"
+          "description": "Backup Recovery Method",
+          "required": []
         },
         "clusterName": {
           "default": "",
-          "description": "#\nThe original cluster name when used in backups. Also known as serverName.",
-          "type": "string"
+          "description": "The original cluster name when used in backups. Also known as serverName.",
+          "required": []
         },
         "database": {
           "default": "app",
           "description": "Name of the database used by the application. Default: `app`.",
-          "type": "string"
+          "required": []
         },
         "destinationPath": {
           "default": "",
-          "description": "Overrides the provider specific default path. Defaults to:\nS3: s3://\u003cbucket\u003e\u003cpath\u003e\nAzure: https://\u003cstorageAccount\u003e.\u003cserviceName\u003e.core.windows.net/\u003ccontainerName\u003e\u003cpath\u003e\nGoogle: gs://\u003cbucket\u003e\u003cpath\u003e",
-          "type": "string"
+          "description": "Overrides the provider specific default path. Defaults to: S3: s3://\u003cbucket\u003e\u003cpath\u003e Azure: https://\u003cstorageAccount\u003e.\u003cserviceName\u003e.core.windows.net/\u003ccontainerName\u003e\u003cpath\u003e Google: gs://\u003cbucket\u003e\u003cpath\u003e",
+          "required": []
         },
         "endpointCA": {
           "description": "Specifies a CA bundle to validate a privately signed certificate.",
           "properties": {
             "create": {
-              "default": false,
+              "default": "false",
               "description": "Creates a secret with the given value if true, otherwise uses an existing secret.",
-              "type": "boolean"
+              "required": []
             },
             "key": {
               "default": "",
@@ -703,13 +689,12 @@
               "type": "string"
             }
           },
-          "required": [],
-          "type": "object"
+          "required": []
         },
         "endpointURL": {
           "default": "",
-          "description": "Overrides the provider specific default endpoint. Defaults to:\nS3: https://s3.\u003cregion\u003e.amazonaws.com\"\nLeave empty if using the default S3 endpoint",
-          "type": "string"
+          "description": "Overrides the provider specific default endpoint. Defaults to: S3: https://s3.\u003cregion\u003e.amazonaws.com\" Leave empty if using the default S3 endpoint",
+          "required": []
         },
         "google": {
           "properties": {
@@ -741,40 +726,40 @@
               "items": {
                 "required": []
               },
-              "type": "array"
+              "required": []
             },
             "pgDumpExtraOptions": {
-              "description": "List of custom options to pass to the `pg_dump` command. IMPORTANT: Use these options with caution and at your\nown risk, as the operator does not validate their content. Be aware that certain options may conflict with the\noperator's intended functionality or design.",
+              "description": "List of custom options to pass to the `pg_dump` command. IMPORTANT: Use these options with caution and at your own risk, as the operator does not validate their content. Be aware that certain options may conflict with the operator's intended functionality or design.",
               "items": {
                 "required": []
               },
-              "type": "array"
+              "required": []
             },
             "pgRestoreExtraOptions": {
-              "description": "List of custom options to pass to the `pg_restore` command. IMPORTANT: Use these options with caution and at\nyour own risk, as the operator does not validate their content. Be aware that certain options may conflict with the\noperator's intended functionality or design.",
+              "description": "List of custom options to pass to the `pg_restore` command. IMPORTANT: Use these options with caution and at your own risk, as the operator does not validate their content. Be aware that certain options may conflict with the operator's intended functionality or design.",
               "items": {
                 "required": []
               },
-              "type": "array"
+              "required": []
             },
             "postImportApplicationSQL": {
-              "description": "List of SQL queries to be executed as a superuser in the application database right after is imported.\nTo be used with extreme care. Only available in microservice type.",
+              "description": "List of SQL queries to be executed as a superuser in the application database right after is imported. To be used with extreme care. Only available in microservice type.",
               "items": {
                 "required": []
               },
-              "type": "array"
+              "required": []
             },
             "roles": {
               "description": "Roles to import",
               "items": {
                 "required": []
               },
-              "type": "array"
+              "required": []
             },
             "schemaOnly": {
-              "default": false,
+              "default": "false",
               "description": "When set to true, only the pre-data and post-data sections of pg_restore are invoked, avoiding data import.",
-              "type": "boolean"
+              "required": []
             },
             "source": {
               "properties": {
@@ -789,24 +774,24 @@
                 "passwordSecret": {
                   "properties": {
                     "create": {
-                      "default": false,
+                      "default": "false",
                       "description": "Whether to create a secret for the password",
-                      "type": "boolean"
+                      "required": []
                     },
                     "key": {
                       "default": "password",
                       "description": "The key in the secret containing the password",
-                      "type": "string"
+                      "required": []
                     },
                     "name": {
                       "default": "",
                       "description": "Name of the secret containing the password",
-                      "type": "string"
+                      "required": []
                     },
                     "value": {
                       "default": "",
                       "description": "The password value to use when creating the secret",
-                      "type": "string"
+                      "required": []
                     }
                   },
                   "required": [],
@@ -872,8 +857,8 @@
             },
             "type": {
               "default": "microservice",
-              "description": "One of `microservice` or `monolith.`\nSee: https://cloudnative-pg.io/documentation/current/database_import/#how-it-works",
-              "type": "string"
+              "description": "One of `microservice` or `monolith.` See: https://cloudnative-pg.io/documentation/current/database_import/#how-it-works",
+              "required": []
             }
           },
           "required": [],
@@ -881,13 +866,13 @@
         },
         "method": {
           "default": "backup",
-          "description": "#\nAvailable recovery methods:\n* `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.\n* `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported).\n* `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to\n       migrate databases to CloudNativePG, even from outside Kubernetes.\n* `import` - Import one or more databases from an existing Postgres cluster.",
-          "type": "string"
+          "description": "Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. * `import` - Import one or more databases from an existing Postgres cluster.",
+          "required": []
         },
         "owner": {
           "default": "",
           "description": "Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.",
-          "type": "string"
+          "required": []
         },
         "pgBaseBackup": {
           "description": "See https://cloudnative-pg.io/documentation/current/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup",
@@ -895,17 +880,17 @@
             "database": {
               "default": "app",
               "description": "Name of the database used by the application. Default: `app`.",
-              "type": "string"
+              "required": []
             },
             "owner": {
               "default": "",
               "description": "Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.",
-              "type": "string"
+              "required": []
             },
             "secretName": {
               "default": "",
               "description": "Name of the kubernetes.io/basic-auth secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch.",
-              "type": "string"
+              "required": []
             },
             "source": {
               "properties": {
@@ -920,24 +905,24 @@
                 "passwordSecret": {
                   "properties": {
                     "create": {
-                      "default": false,
+                      "default": "false",
                       "description": "Whether to create a secret for the password",
-                      "type": "boolean"
+                      "required": []
                     },
                     "key": {
                       "default": "password",
                       "description": "The key in the secret containing the password",
-                      "type": "string"
+                      "required": []
                     },
                     "name": {
                       "default": "",
                       "description": "Name of the secret containing the password",
-                      "type": "string"
+                      "required": []
                     },
                     "value": {
                       "default": "",
                       "description": "The password value to use when creating the secret",
-                      "type": "string"
+                      "required": []
                     }
                   },
                   "required": [],
@@ -1006,21 +991,20 @@
           "type": "object"
         },
         "pitrTarget": {
-          "description": "# -- Point in time recovery target. Specify one of the following:",
+          "description": "Point in time recovery target. Specify one of the following:",
           "properties": {
             "time": {
               "default": "",
               "description": "Time in RFC3339 format",
-              "type": "string"
+              "required": []
             }
           },
-          "required": [],
-          "type": "object"
+          "required": []
         },
         "provider": {
           "default": "s3",
           "description": "One of `s3`, `azure` or `google`",
-          "type": "string"
+          "required": []
         },
         "s3": {
           "properties": {
@@ -1033,9 +1017,9 @@
               "type": "string"
             },
             "inheritFromIAMRole": {
-              "default": false,
+              "default": "false",
               "description": "Use the role based authentication without providing explicitly the keys",
-              "type": "boolean"
+              "required": []
             },
             "path": {
               "default": "/",
@@ -1056,14 +1040,14 @@
         "secret": {
           "properties": {
             "create": {
-              "default": true,
+              "default": "true",
               "description": "Whether to create a secret for the backup credentials",
-              "type": "boolean"
+              "required": []
             },
             "name": {
               "default": "",
               "description": "Name of the backup credentials secret",
-              "type": "string"
+              "required": []
             }
           },
           "required": [],
@@ -1080,22 +1064,22 @@
             "database": {
               "default": "",
               "description": "Name of the database used by the application",
-              "type": "string"
+              "required": []
             },
             "owner": {
               "default": "",
               "description": "Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.",
-              "type": "string"
+              "required": []
             },
             "secret": {
               "default": "",
               "description": "Name of the secret containing the initial credentials for the owner of the user database. If empty a new secret will be created from scratch",
-              "type": "string"
+              "required": []
             },
             "source": {
               "default": "",
-              "description": " One of `object_store` or `pg_basebackup`. Method to use for bootstrap.",
-              "type": "string"
+              "description": "One of `object_store` or `pg_basebackup`. Method to use for bootstrap.",
+              "required": []
             }
           },
           "required": [],
@@ -1104,7 +1088,7 @@
         "minApplyDelay": {
           "default": "",
           "description": "When replica mode is enabled, this parameter allows you to replay transactions only when the system time is at least the configured time past the commit time. This provides an opportunity to correct data loss errors. Note that when this parameter is set, a promotion token cannot be used.",
-          "type": "string"
+          "required": []
         },
         "origin": {
           "properties": {
@@ -1151,20 +1135,20 @@
                 "clusterName": {
                   "default": "",
                   "description": "The original cluster name when used in backups. Also known as serverName.",
-                  "type": "string"
+                  "required": []
                 },
                 "destinationPath": {
                   "default": "",
-                  "description": "Overrides the provider specific default path. Defaults to:\nS3: s3://\u003cbucket\u003e\u003cpath\u003e\nAzure: https://\u003cstorageAccount\u003e.\u003cserviceName\u003e.core.windows.net/\u003ccontainerName\u003e\u003cpath\u003e\nGoogle: gs://\u003cbucket\u003e\u003cpath\u003e",
-                  "type": "string"
+                  "description": "Overrides the provider specific default path. Defaults to: S3: s3://\u003cbucket\u003e\u003cpath\u003e Azure: https://\u003cstorageAccount\u003e.\u003cserviceName\u003e.core.windows.net/\u003ccontainerName\u003e\u003cpath\u003e Google: gs://\u003cbucket\u003e\u003cpath\u003e",
+                  "required": []
                 },
                 "endpointCA": {
                   "description": "Specifies a CA bundle to validate a privately signed certificate.",
                   "properties": {
                     "create": {
-                      "default": false,
+                      "default": "false",
                       "description": "Creates a secret with the given value if true, otherwise uses an existing secret.",
-                      "type": "boolean"
+                      "required": []
                     },
                     "key": {
                       "default": "",
@@ -1179,8 +1163,7 @@
                       "type": "string"
                     }
                   },
-                  "required": [],
-                  "type": "object"
+                  "required": []
                 },
                 "google": {
                   "properties": {
@@ -1207,7 +1190,7 @@
                 "provider": {
                   "default": "",
                   "description": "One of `s3`, `azure` or `google`",
-                  "type": "string"
+                  "required": []
                 },
                 "s3": {
                   "properties": {
@@ -1220,9 +1203,9 @@
                       "type": "string"
                     },
                     "inheritFromIAMRole": {
-                      "default": false,
+                      "default": "false",
                       "description": "Use the role based authentication without providing explicitly the keys",
-                      "type": "boolean"
+                      "required": []
                     },
                     "path": {
                       "default": "/",
@@ -1243,14 +1226,14 @@
                 "secret": {
                   "properties": {
                     "create": {
-                      "default": true,
+                      "default": "true",
                       "description": "Whether to create a secret for the backup credentials",
-                      "type": "boolean"
+                      "required": []
                     },
                     "name": {
                       "default": "",
                       "description": "Name of the backup credentials secret",
-                      "type": "string"
+                      "required": []
                     }
                   },
                   "required": [],
@@ -1349,17 +1332,17 @@
         "primary": {
           "default": "",
           "description": "Primary defines which Cluster is defined to be the primary in the distributed PostgreSQL cluster, based on the topology specified in externalClusters",
-          "type": "string"
+          "required": []
         },
         "promotionToken": {
           "default": "",
           "description": "A demotion token generated by an external cluster used to check if the promotion requirements are met.",
-          "type": "string"
+          "required": []
         },
         "self": {
           "default": "",
-          "description": " Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.",
-          "type": "string"
+          "description": "Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.",
+          "required": []
         }
       },
       "required": [],
@@ -1367,25 +1350,25 @@
     },
     "type": {
       "default": "postgresql",
-      "description": "##\nType of the CNPG database. Available types:\n* `postgresql`\n* `postgis`\n* `timescaledb`",
-      "type": "string"
+      "description": "Type of the CNPG database. Available types: * `postgresql` * `postgis` * `timescaledb`",
+      "required": []
     },
     "version": {
       "properties": {
         "postgis": {
           "default": "3.4",
           "description": "If using PostGIS, specify the version",
-          "type": "string"
+          "required": []
         },
         "postgresql": {
           "default": "16",
           "description": "PostgreSQL major version to use",
-          "type": "string"
+          "required": []
         },
         "timescaledb": {
           "default": "2.15",
           "description": "If using TimescaleDB, specify the version",
-          "type": "string"
+          "required": []
         }
       },
       "required": [],

@@ -1,11 +1,13 @@
 .DEFAULT_GOAL := help
 
-LOCALBIN ?= $(shell pwd)/bin
+# behave identically regardless of the caller's working directory
+PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
+LOCALBIN    ?= $(PROJECT_DIR)/bin
 # renovate: datasource=github-releases depName=norwoodj/helm-docs
 HELM_DOCS_VERSION ?= v1.14.2
 # renovate: datasource=github-releases depName=dadav/helm-schema
 HELM_SCHEMA_VERSION ?= 0.23.4
-HELM_SCHEMA_FLAGS ?= -a --no-dependencies --skip-auto-generation title,required,additionalProperties
+HELM_SCHEMA_FLAGS ?= -a -p --no-dependencies --skip-auto-generation title,required,additionalProperties
 
 # Credits: https://gist.github.com/prwhite/8168133
 .PHONY: help
@@ -39,12 +41,11 @@ HELM_DOCS = $(LOCALBIN)/helm-docs
 helm-docs: ## Download helm-docs locally if necessary.
 	$(call go-install-tool,$(HELM_DOCS),github.com/norwoodj/helm-docs/cmd/helm-docs@$(HELM_DOCS_VERSION))
 
-PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 # go-install-tool will 'go install' any package $2 and install it to $1.
 define go-install-tool
 @[ -f $(1) ] || { \
 set -e ;\
 echo "Downloading $(2)" ;\
-GOBIN=$(PROJECT_DIR)/bin go install $(2) ;\
+GOBIN=$(LOCALBIN) go install $(2) ;\
 }
 endef

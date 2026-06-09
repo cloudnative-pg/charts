@@ -11,7 +11,7 @@
     },
     "additionalEnv": {
       "additionalProperties": true,
-      "description": "Array containing extra environment variables which can be templated.\nFor example:\n - name: RELEASE_NAME\n   value: \"{{ .Release.Name }}\"\n - name: MY_VAR\n   value: \"mySpecialKey\"",
+      "description": "Array containing extra environment variables which can be templated. For example:  - name: RELEASE_NAME    value: \"{{ .Release.Name }}\"  - name: MY_VAR    value: \"mySpecialKey\"",
       "items": {
         "required": []
       },
@@ -25,29 +25,29 @@
     "certificate": {
       "properties": {
         "createClientCertificate": {
-          "default": true,
+          "default": "true",
           "description": "Specifies whether the client certificate should be created.",
-          "type": "boolean"
+          "required": []
         },
         "createServerCertificate": {
-          "default": true,
+          "default": "true",
           "description": "Specifies whether the server certificate should be created.",
-          "type": "boolean"
+          "required": []
         },
         "duration": {
           "default": "2160h",
           "description": "The duration of the certificates.",
-          "type": "string"
+          "required": []
         },
         "issuerName": {
           "default": "selfsigned-issuer",
           "description": "The name of the issuer to use for the certificates.",
-          "type": "string"
+          "required": []
         },
         "renewBefore": {
           "default": "360h",
           "description": "The renew before time for the certificates.",
-          "type": "string"
+          "required": []
         }
       },
       "required": [],
@@ -105,15 +105,14 @@
           "type": "object"
         }
       },
-      "required": [],
-      "type": "object"
+      "required": []
     },
     "crds": {
       "properties": {
         "create": {
-          "default": true,
+          "default": "true",
           "description": "Specifies whether the CRDs should be created when installing the chart.",
-          "type": "boolean"
+          "required": []
         }
       },
       "required": [],
@@ -153,7 +152,7 @@
         "tag": {
           "default": "",
           "description": "Overrides the image tag whose default is the chart appVersion.",
-          "type": "string"
+          "required": []
         }
       },
       "required": [],
@@ -161,6 +160,7 @@
     },
     "imagePullSecrets": {
       "additionalProperties": true,
+      "description": " additionalProperties: true @schema",
       "items": {
         "required": []
       },
@@ -207,20 +207,19 @@
           "type": "object"
         }
       },
-      "required": [],
-      "type": "object"
+      "required": []
     },
     "priorityClassName": {
       "default": "",
       "description": "Priority indicates the importance of a Pod relative to other Pods.",
-      "type": "string"
+      "required": []
     },
     "rbac": {
       "properties": {
         "create": {
-          "default": true,
+          "default": "true",
           "description": "Specifies whether Role and RoleBinding should be created.",
-          "type": "boolean"
+          "required": []
         }
       },
       "required": [],
@@ -232,6 +231,7 @@
     },
     "resources": {
       "additionalProperties": true,
+      "description": " additionalProperties: true @schema",
       "required": []
     },
     "service": {
@@ -250,12 +250,12 @@
         "ipFamilyPolicy": {
           "default": "",
           "description": "Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services)",
-          "type": "string"
+          "required": []
         },
         "name": {
           "default": "barman-cloud",
-          "description": "DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate\nand can not be configured",
-          "type": "string"
+          "description": "DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate and can not be configured",
+          "required": []
         },
         "port": {
           "default": 9090,
@@ -268,14 +268,14 @@
     "serviceAccount": {
       "properties": {
         "create": {
-          "default": true,
+          "default": "true",
           "description": "Specifies whether the service account should be created.",
-          "type": "boolean"
+          "required": []
         },
         "name": {
           "default": "",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template.",
-          "type": "string"
+          "description": "The name of the service account to use. If not set and create is true, a name is generated using the fullname template.",
+          "required": []
         }
       },
       "required": [],
@@ -294,7 +294,7 @@
         "tag": {
           "default": "",
           "description": "Overrides the image tag whose default is the chart appVersion.",
-          "type": "string"
+          "required": []
         }
       },
       "required": [],
@@ -318,7 +318,7 @@
     },
     "updateStrategy": {
       "additionalProperties": true,
-      "description": "Update strategy for the operator.\nref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy\nFor example:\n type: RollingUpdate\n rollingUpdate:\n   maxSurge: 25%\n   maxUnavailable: 25%\n\nWARNING: the RollingUpdate strategy is not supported by the operator yet so it can\ncurrently only use the Recreate strategy.",
+      "description": "Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy For example:  type: RollingUpdate  rollingUpdate:    maxSurge: 25%    maxUnavailable: 25%  WARNING: the RollingUpdate strategy is not supported by the operator yet so it can currently only use the Recreate strategy.",
       "required": []
     }
   },
