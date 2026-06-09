@@ -48,10 +48,12 @@ recovery:
   database: app
   # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
   owner: ""
-  # -- Overrides the provider specific default endpoint. Defaults to:
+  # -- Overrides the provider specific default endpoint.
+  endpointURL: ""
+  # Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
   # Leave empty if using the default S3 endpoint
-  endpointURL: ""
+
   # -- Specifies a CA bundle to validate a privately signed certificate.
   endpointCA:
     # -- Creates a secret with the given value if true, otherwise uses an existing secret.
@@ -59,11 +61,13 @@ recovery:
     name: ""
     key: ""
     value: ""
-  # -- Overrides the provider specific default path. Defaults to:
+  # -- Overrides the provider specific default path.
+  destinationPath: ""
+  # Defaults to:
   # S3: s3://<bucket><path>
   # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
   # Google: gs://<bucket><path>
-  destinationPath: ""
+
   # -- One of `s3`, `azure` or `google`
   provider: s3
   s3:
@@ -418,9 +422,12 @@ backups:
   # -- You need to configure backups manually, so backups are disabled by default.
   enabled: false
 
-  # -- Overrides the provider specific default endpoint. Defaults to:
+  # -- Overrides the provider specific default endpoint.
+  endpointURL: ""
+  # Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
-  endpointURL: ""  # Leave empty if using the default S3 endpoint
+  # Leave empty if using the default S3 endpoint
+
   # -- Specifies a CA bundle to validate a privately signed certificate.
   endpointCA:
     # -- Creates a secret with the given value if true, otherwise uses an existing secret.
@@ -429,11 +436,13 @@ backups:
     key: ""
     value: ""
 
-  # -- Overrides the provider specific default path. Defaults to:
+  # -- Overrides the provider specific default path.
+  destinationPath: ""
+  # Defaults to:
   # S3: s3://<bucket><path>
   # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
   # Google: gs://<bucket><path>
-  destinationPath: ""
+
   # -- One of `s3`, `azure` or `google`
   provider: s3
   s3:
@@ -515,11 +524,13 @@ replica:
     objectStore:
       # -- The original cluster name when used in backups. Also known as serverName.
       clusterName: ""
-      # -- Overrides the provider specific default path. Defaults to:
+      # -- Overrides the provider specific default path.
+      destinationPath: ""
+      # Defaults to:
       # S3: s3://<bucket><path>
       # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
       # Google: gs://<bucket><path>
-      destinationPath: ""
+
       # -- Specifies a CA bundle to validate a privately signed certificate.
       endpointCA:
         # -- Creates a secret with the given value if true, otherwise uses an existing secret.

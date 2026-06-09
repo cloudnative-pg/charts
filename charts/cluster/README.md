@@ -127,11 +127,11 @@ Kubernetes: `>=1.29.0-0`
 | backups.data.compression | string | `"gzip"` | Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backups.data.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backups.data.jobs | int | `2` | Number of data files to be archived or restored in parallel. |
-| backups.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| backups.destinationPath | string | `""` | Overrides the provider specific default path. |
 | backups.enabled | bool | `false` | You need to configure backups manually, so backups are disabled by default. |
 | backups.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
 | backups.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
-| backups.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" |
+| backups.endpointURL | string | `""` | Overrides the provider specific default endpoint. |
 | backups.google.applicationCredentials | string | `""` |  |
 | backups.google.bucket | string | `""` |  |
 | backups.google.gkeEnvironment | bool | `false` |  |
@@ -222,10 +222,10 @@ Kubernetes: `>=1.29.0-0`
 | recovery.backupName | string | `""` | Backup Recovery Method |
 | recovery.clusterName | string | `""` | The original cluster name when used in backups. Also known as serverName. |
 | recovery.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
-| recovery.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| recovery.destinationPath | string | `""` | Overrides the provider specific default path. |
 | recovery.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
 | recovery.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
-| recovery.endpointURL | string | `""` | Overrides the provider specific default endpoint. Defaults to: S3: https://s3.<region>.amazonaws.com" Leave empty if using the default S3 endpoint |
+| recovery.endpointURL | string | `""` | Overrides the provider specific default endpoint. |
 | recovery.google.applicationCredentials | string | `""` |  |
 | recovery.google.bucket | string | `""` |  |
 | recovery.google.gkeEnvironment | bool | `false` |  |
@@ -297,7 +297,7 @@ Kubernetes: `>=1.29.0-0`
 | replica.origin.objectStore.azure.storageKey | string | `""` |  |
 | replica.origin.objectStore.azure.storageSasToken | string | `""` |  |
 | replica.origin.objectStore.clusterName | string | `""` | The original cluster name when used in backups. Also known as serverName. |
-| replica.origin.objectStore.destinationPath | string | `""` | Overrides the provider specific default path. Defaults to: S3: s3://<bucket><path> Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path> Google: gs://<bucket><path> |
+| replica.origin.objectStore.destinationPath | string | `""` | Overrides the provider specific default path. |
 | replica.origin.objectStore.endpointCA | object | `{"create":false,"key":"","name":"","value":""}` | Specifies a CA bundle to validate a privately signed certificate. |
 | replica.origin.objectStore.endpointCA.create | bool | `false` | Creates a secret with the given value if true, otherwise uses an existing secret. |
 | replica.origin.objectStore.google.applicationCredentials | string | `""` |  |

@@ -64,7 +64,7 @@
         },
         "destinationPath": {
           "default": "",
-          "description": "Overrides the provider specific default path. Defaults to:\nS3: s3://\u003cbucket\u003e\u003cpath\u003e\nAzure: https://\u003cstorageAccount\u003e.\u003cserviceName\u003e.core.windows.net/\u003ccontainerName\u003e\u003cpath\u003e\nGoogle: gs://\u003cbucket\u003e\u003cpath\u003e",
+          "description": "Overrides the provider specific default path.",
           "type": "string"
         },
         "enabled": {
@@ -98,7 +98,7 @@
         },
         "endpointURL": {
           "default": "",
-          "description": "Overrides the provider specific default endpoint. Defaults to:\nS3: https://s3.\u003cregion\u003e.amazonaws.com\"",
+          "description": "Overrides the provider specific default endpoint.",
           "type": "string"
         },
         "google": {
@@ -679,7 +679,7 @@
         },
         "destinationPath": {
           "default": "",
-          "description": "Overrides the provider specific default path. Defaults to:\nS3: s3://\u003cbucket\u003e\u003cpath\u003e\nAzure: https://\u003cstorageAccount\u003e.\u003cserviceName\u003e.core.windows.net/\u003ccontainerName\u003e\u003cpath\u003e\nGoogle: gs://\u003cbucket\u003e\u003cpath\u003e",
+          "description": "Overrides the provider specific default path.",
           "type": "string"
         },
         "endpointCA": {
@@ -708,7 +708,7 @@
         },
         "endpointURL": {
           "default": "",
-          "description": "Overrides the provider specific default endpoint. Defaults to:\nS3: https://s3.\u003cregion\u003e.amazonaws.com\"\nLeave empty if using the default S3 endpoint",
+          "description": "Overrides the provider specific default endpoint.",
           "type": "string"
         },
         "google": {
@@ -1155,7 +1155,7 @@
                 },
                 "destinationPath": {
                   "default": "",
-                  "description": "Overrides the provider specific default path. Defaults to:\nS3: s3://\u003cbucket\u003e\u003cpath\u003e\nAzure: https://\u003cstorageAccount\u003e.\u003cserviceName\u003e.core.windows.net/\u003ccontainerName\u003e\u003cpath\u003e\nGoogle: gs://\u003cbucket\u003e\u003cpath\u003e",
+                  "description": "Overrides the provider specific default path.",
                   "type": "string"
                 },
                 "endpointCA": {
