@@ -29,7 +29,7 @@ Kubernetes: `>=1.29.0-0`
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | additionalArgs | list | `[]` | Additional arguments to be added to the operator's args list. |
-| additionalEnv | list | `[]` | Array containing extra environment variables which can be templated. For example:  - name: RELEASE_NAME    value: "{{ .Release.Name }}"  - name: MY_VAR    value: "mySpecialKey" |
+| additionalEnv | list | `[]` | Array containing extra environment variables which can be templated. |
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
 | config.clusterWide | bool | `true` | This option determines if the operator is responsible for observing events across the entire Kubernetes cluster or if its focus should be narrowed down to the specific namespace within which it has been deployed. |
@@ -52,8 +52,8 @@ Kubernetes: `>=1.29.0-0`
 | monitoring.grafanaDashboard.create | bool | `false` |  |
 | monitoring.grafanaDashboard.labels | object | `{}` | Labels that ConfigMaps should have to get configured in Grafana. |
 | monitoring.grafanaDashboard.namespace | string | `""` | Allows overriding the namespace where the ConfigMap will be created, defaulting to the same one as the Release. |
-| monitoring.grafanaDashboard.sidecarLabel | string | `"grafana_dashboard"` | Label that ConfigMaps should have to be loaded as dashboards.  DEPRECATED: Use labels instead. |
-| monitoring.grafanaDashboard.sidecarLabelValue | string | `"1"` | Label value that ConfigMaps should have to be loaded as dashboards.  DEPRECATED: Use labels instead. |
+| monitoring.grafanaDashboard.sidecarLabel | string | `"grafana_dashboard"` | Label that ConfigMaps should have to be loaded as dashboards. DEPRECATED: Use labels instead. |
+| monitoring.grafanaDashboard.sidecarLabelValue | string | `"1"` | Label value that ConfigMaps should have to be loaded as dashboards. DEPRECATED: Use labels instead. |
 | monitoring.podMonitorAdditionalLabels | object | `{}` | Additional labels for the podMonitor |
 | monitoring.podMonitorEnabled | bool | `false` | Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs. |
 | monitoring.podMonitorMetricRelabelings | list | `[]` | Metrics relabel configurations to apply to samples before ingestion. |
@@ -73,12 +73,12 @@ Kubernetes: `>=1.29.0-0`
 | resources | object | `{}` |  |
 | service.ipFamilies | list | `[]` | Sets the families that should be supported and the order in which they should be applied to ClusterIP as well. Can be IPv4 and/or IPv6. |
 | service.ipFamilyPolicy | string | `""` | Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services) |
-| service.name | string | `"cnpg-webhook-service"` | DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate and can not be configured |
+| service.name | string | `"cnpg-webhook-service"` | The name of the Webhook Service. |
 | service.port | int | `443` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.create | bool | `true` | Specifies whether the service account should be created. |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template. |
 | tolerations | list | `[]` | Tolerations for the operator to be installed. |
 | topologySpreadConstraints | list | `[]` | Topology Spread Constraints for the operator to be installed. |
-| updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy For example:  type: RollingUpdate  rollingUpdate:    maxSurge: 25%    maxUnavailable: 25% |
+| updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy |
 | webhook | object | `{"livenessProbe":{"initialDelaySeconds":3},"mutating":{"create":true,"failurePolicy":"Fail"},"port":9443,"readinessProbe":{"initialDelaySeconds":3},"startupProbe":{"failureThreshold":6,"periodSeconds":5},"validating":{"create":true,"failurePolicy":"Fail"}}` | The webhook configuration. |

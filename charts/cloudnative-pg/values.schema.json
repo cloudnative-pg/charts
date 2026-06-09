@@ -9,7 +9,7 @@
       "type": "array"
     },
     "additionalEnv": {
-      "description": "Array containing extra environment variables which can be templated.\nFor example:\n - name: RELEASE_NAME\n   value: \"{{ .Release.Name }}\"\n - name: MY_VAR\n   value: \"mySpecialKey\"",
+      "description": "Array containing extra environment variables which can be templated.",
       "items": {
         "required": []
       },
@@ -195,12 +195,12 @@
             },
             "sidecarLabel": {
               "default": "grafana_dashboard",
-              "description": "Label that ConfigMaps should have to be loaded as dashboards.  DEPRECATED: Use labels instead.",
+              "description": "Label that ConfigMaps should have to be loaded as dashboards. DEPRECATED: Use labels instead.",
               "type": "string"
             },
             "sidecarLabelValue": {
               "default": "1",
-              "description": "Label value that ConfigMaps should have to be loaded as dashboards.  DEPRECATED: Use labels instead.",
+              "description": "Label value that ConfigMaps should have to be loaded as dashboards. DEPRECATED: Use labels instead.",
               "type": "string"
             }
           },
@@ -341,7 +341,7 @@
         },
         "name": {
           "default": "cnpg-webhook-service",
-          "description": "DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate\nand can not be configured",
+          "description": "The name of the Webhook Service.",
           "type": "string"
         },
         "port": {
@@ -387,7 +387,7 @@
       "type": "array"
     },
     "updateStrategy": {
-      "description": "Update strategy for the operator.\nref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy\nFor example:\n type: RollingUpdate\n rollingUpdate:\n   maxSurge: 25%\n   maxUnavailable: 25%",
+      "description": "Update strategy for the operator.\nref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy",
       "required": [],
       "type": "object"
     },
