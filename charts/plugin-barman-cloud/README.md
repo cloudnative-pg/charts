@@ -19,8 +19,8 @@ the [CloudNativePG](https://cloudnative-pg.io) plugin that adds backup and resto
 Please refer to the cert-manager
 [installation page](https://cert-manager.io/docs/installation/helm/) for more information.
 
-The chart deploys the plugin only. It does **not** install the CloudNativePG operator — use the companion
-[`cloudnative-pg`](https://github.com/cloudnative-pg/charts/tree/main/charts/cloudnative-pg) chart for that —
+The chart deploys the plugin only. It does **not** install the CloudNativePG operator (use the companion
+[`cloudnative-pg`](https://github.com/cloudnative-pg/charts/tree/main/charts/cloudnative-pg) chart for that),
 and it does not create any `Cluster` resource. To provision a PostgreSQL cluster that uses this plugin, use
 the [`cluster`](https://github.com/cloudnative-pg/charts/tree/main/charts/cluster) chart
 (see the [Cluster chart README](https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/README.md) for details)
@@ -28,6 +28,12 @@ or apply your own `Cluster` manifest.
 
 Getting Started
 ---------------
+
+### Prerequisites
+
+This chart requires [cert-manager](https://cert-manager.io/) to issue the plugin's TLS certificates.
+Install it and wait until it is ready **before** installing this chart, otherwise the install fails because
+the certificates cannot be issued.
 
 ### Add the chart repository
 
@@ -43,6 +49,27 @@ helm upgrade --install plugin-barman-cloud \
   --namespace cnpg-system \
   cnpg/plugin-barman-cloud
 ```
+
+See the [Values](#values) section below for the full list of configurable parameters.
+
+### Verify the installation
+
+```console
+kubectl -n cnpg-system get deploy
+kubectl -n cnpg-system rollout status deploy/plugin-barman-cloud
+```
+
+Uninstalling
+------------
+
+```console
+helm uninstall plugin-barman-cloud --namespace cnpg-system
+```
+
+> **Warning**
+> Uninstalling the chart does not remove the plugin's CRDs (for example `ObjectStore`). Deleting them removes
+> every `ObjectStore` resource and the backup configuration it holds, so only delete the CRDs if you are sure
+> no resource depends on them.
 
 ## Source Code
 
@@ -96,7 +123,7 @@ Kubernetes: `>=1.29.0-0`
 | sidecarImage.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | tolerations | list | `[]` | Tolerations for the operator to be installed. |
 | topologySpreadConstraints | list | `[]` | Topology Spread Constraints for the operator to be installed. |
-| updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy For example:  type: RollingUpdate  rollingUpdate:    maxSurge: 25%    maxUnavailable: 25%  WARNING: the RollingUpdate strategy is not supported by the operator yet so it can currently only use the Recreate strategy. |
+| updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy |
 
 ## Maintainers
 
@@ -106,8 +133,13 @@ Kubernetes: `>=1.29.0-0`
 | quantumenigmaa | <thibaud.vaisseau@gmail.com> |  |
 | quentinbisson | <quentin.bisson@gmail.com> |  |
 
+Contributing
+------------
+
+Please read the [code of conduct](https://github.com/cloudnative-pg/charts/blob/main/CODE-OF-CONDUCT.md) and the
+[guidelines](https://github.com/cloudnative-pg/charts/blob/main/CONTRIBUTING.md) to contribute to the project.
+
 Copyright
 ---------
 
-Helm charts for CloudNativePG are distributed under [Apache License 2.0](../../LICENSE).
-
+Helm charts for CloudNativePG are distributed under [Apache License 2.0](./LICENSE).

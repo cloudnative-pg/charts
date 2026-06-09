@@ -95,8 +95,9 @@ helm uninstall cnpg --namespace cnpg-system
 ```
 
 > **Warning**
-> Uninstalling the chart does not remove the CRDs. Delete them manually only if you are sure no `Cluster`
-> resources remain.
+> Uninstalling the chart does not remove the CRDs. Deleting them cascade-deletes every `Cluster` (and other
+> CloudNativePG) resource across the whole cluster, together with the PostgreSQL data stored in their PVCs.
+> This is irreversible, so only delete the CRDs if you intend to permanently remove all managed databases.
 
 ## Source Code
 
@@ -178,10 +179,10 @@ Kubernetes: `>=1.29.0-0`
 Contributing
 ------------
 
-Please read the [code of conduct](../../CODE-OF-CONDUCT.md) and the
-[guidelines](../../CONTRIBUTING.md) to contribute to the project.
+Please read the [code of conduct](https://github.com/cloudnative-pg/charts/blob/main/CODE-OF-CONDUCT.md) and the
+[guidelines](https://github.com/cloudnative-pg/charts/blob/main/CONTRIBUTING.md) to contribute to the project.
 
 Copyright
 ---------
 
-Helm charts for CloudNativePG are distributed under [Apache License 2.0](../../LICENSE).
+Helm charts for CloudNativePG are distributed under [Apache License 2.0](./LICENSE).
