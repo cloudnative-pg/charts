@@ -5,7 +5,6 @@ fullnameOverride: ""
 # -- Override the namespace of the chart
 namespaceOverride: ""
 
-###
 # -- Type of the CNPG database. Available types:
 # * `postgresql`
 # * `postgis`
@@ -20,7 +19,6 @@ version:
   # -- If using PostGIS, specify the version
   postgis: "3.4"
 
-###
 # -- Cluster mode of operation. Available modes:
 # * `standalone` - default mode. Creates new or updates an existing CNPG cluster.
 # * `replica` - Creates a replica cluster from an existing CNPG cluster.
@@ -28,7 +26,6 @@ version:
 mode: standalone
 
 recovery:
-  ##
   # -- Available recovery methods:
   # * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.
   # * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported).
@@ -37,16 +34,14 @@ recovery:
   # * `import` - Import one or more databases from an existing Postgres cluster.
   method: backup
 
-  ## -- Point in time recovery target. Specify one of the following:
+  # -- Point in time recovery target. Specify one of the following:
   pitrTarget:
     # -- Time in RFC3339 format
     time: ""
 
-  ##
   # -- Backup Recovery Method
   backupName: ""  # Name of the backup to recover from. Required if method is `backup`.
 
-  ##
   # -- The original cluster name when used in backups. Also known as serverName.
   clusterName: ""
   # -- Name of the database used by the application. Default: `app`.
@@ -345,6 +340,7 @@ cluster:
     #      - ratio:
     #          usage: GAUGE
     #          description: "Cache hit ratio"
+
     # -- The list of secrets containing the custom queries
     customQueriesSecret: []
     #  - name: custom-queries-secret
@@ -354,19 +350,24 @@ cluster:
     # -- PostgreSQL configuration options (postgresql.conf)
     parameters: {}
       # max_connections: 300
+
     # -- Quorum-based Synchronous Replication
     synchronous: {}
      # method: any
      # number: 1
+
     # -- PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
     pg_hba: []
       # - host all all 10.244.0.0/16 md5
+
     # -- PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file)
     pg_ident: []
       # - mymap   /^(.*)@mydomain\.com$      \1
+
     # -- Lists of shared preload libraries to add to the default ones
     shared_preload_libraries: []
       # - pgaudit
+
     # -- PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)
     ldap: {}
       # https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration
@@ -573,8 +574,8 @@ replica:
       passwordSecret:
         name: ""
         key: ""
-##
-# Database management configuration
+
+# -- Database management configuration.
 databases: []
  # - name: app                      # -- Name of the database to be created.
  #   ensure: present                # -- Ensure the PostgreSQL database is present or absent - defaults to "present".
