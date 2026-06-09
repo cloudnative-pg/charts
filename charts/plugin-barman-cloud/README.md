@@ -27,7 +27,7 @@ Kubernetes: `>=1.29.0-0`
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | additionalArgs | list | `[]` | Additional arguments to be added to the operator's args list. |
-| additionalEnv | list | `[]` | Array containing extra environment variables which can be templated. For example:  - name: RELEASE_NAME    value: "{{ .Release.Name }}"  - name: MY_VAR    value: "mySpecialKey" |
+| additionalEnv | list | `[]` | Array containing extra environment variables which can be templated. |
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | certificate.createClientCertificate | bool | `true` | Specifies whether the client certificate should be created. |
 | certificate.createServerCertificate | bool | `true` | Specifies whether the server certificate should be created. |
@@ -66,4 +66,4 @@ Kubernetes: `>=1.29.0-0`
 | sidecarImage.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | tolerations | list | `[]` | Tolerations for the operator to be installed. |
 | topologySpreadConstraints | list | `[]` | Topology Spread Constraints for the operator to be installed. |
-| updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy For example:  type: RollingUpdate  rollingUpdate:    maxSurge: 25%    maxUnavailable: 25%  WARNING: the RollingUpdate strategy is not supported by the operator yet so it can currently only use the Recreate strategy. |
+| updateStrategy | object | `{}` | Update strategy for the operator. ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy |
