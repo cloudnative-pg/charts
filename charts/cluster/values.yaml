@@ -656,6 +656,9 @@ poolers: []
   #   # -- Custom PgBouncer deployment template.
   #   # Use to override image, specify resources, etc.
   #   template: {}
+  #   # -- Custom PgBouncer service template.
+  #   # Use to override pooler service annotations, type, etc.
+  #   serviceTemplate: {}
   # -
   #   # -- Pooler name
   #   name: ro
@@ -687,3 +690,6 @@ poolers: []
   #   # -- Custom PgBouncer deployment template.
   #   # Use to override image, specify resources, etc.
   #   template: {}
+  #   # -- Custom PgBouncer service template.
+  #   # Use to override pooler service annotations, type, etc.
+  #   serviceTemplate: {}
