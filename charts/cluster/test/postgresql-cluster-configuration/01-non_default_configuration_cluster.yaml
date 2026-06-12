@@ -104,6 +104,7 @@ cluster:
     pg_ident:
       - mymap   /^(.*)@mydomain\.com$      \1
     shared_preload_libraries:
+      - pg_stat_statements
       - pgaudit
     synchronous:
       method: any
