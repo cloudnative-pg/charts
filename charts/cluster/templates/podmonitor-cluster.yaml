@@ -21,6 +21,15 @@ spec:
       cnpg.io/podRole: instance
   podMetricsEndpoints:
     - port: metrics
+      {{- if .Values.cluster.monitoring.tls.enabled }}
+      scheme: https
+      tlsConfig:
+        ca:
+          secret:
+            name: {{ include "cluster.fullname" . }}-ca
+            key: ca.crt
+        serverName: {{ include "cluster.fullname" . }}-rw
+      {{- end }}
       {{- with .Values.cluster.monitoring.podMonitor.relabelings }}
       relabelings:
         {{- toYaml . | nindent 8 }}

@@ -12,6 +12,8 @@ spec:
     size: 256Mi
     storageClass: standard
   monitoring:
+      tls:
+        enabled: true
       disableDefaultQueries: true
       customQueriesConfigMap:
         - name: monitoring-cluster-monitoring
@@ -31,7 +33,15 @@ spec:
       cnpg.io/cluster: monitoring-cluster
       cnpg.io/podRole: instance
   podMetricsEndpoints:
-    - relabelings:
+    - port: metrics
+      scheme: https
+      tlsConfig:
+        ca:
+          secret:
+            name: monitoring-cluster-ca
+            key: ca.crt
+        serverName: monitoring-cluster-rw
+      relabelings:
         - targetLabel: environment
           replacement: test
         - targetLabel: team
