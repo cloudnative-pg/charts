@@ -422,6 +422,18 @@
               },
               "required": [],
               "type": "object"
+            },
+            "tls": {
+              "description": "TLS usage for monitoring",
+              "properties": {
+                "enabled": {
+                  "default": false,
+                  "description": "Whether to enable TLS on the metrics port.",
+                  "type": "boolean"
+                }
+              },
+              "required": [],
+              "type": "object"
             }
           },
           "required": [],
