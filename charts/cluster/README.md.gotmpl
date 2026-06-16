@@ -105,6 +105,16 @@ Each backup adapter takes it's own set of parameters, listed in the [Configurati
 section. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backups.s3`,
 `backups.azure`, or `backups.google`.
 
+### Barman Cloud Plugin integration
+
+The chart can configure a cluster to use the CNPG-I Barman Cloud plugin as the WAL archiver by enabling
+`barmanCloudPlugin.enabled`. This renders a plugin `ObjectStore`, configures `spec.plugins` on the `Cluster`, and can
+optionally create plugin-based scheduled backups. The Barman Cloud plugin and its CRDs must already be installed, for
+example with the `plugin-barman-cloud` chart.
+
+`barmanCloudPlugin.enabled` is mutually exclusive with `backups.enabled`, because the CloudNativePG API does not allow a
+WAL archiver plugin and `spec.backup.barmanObjectStore` to be configured at the same time.
+
 
 Recovery
 --------

@@ -1,0 +1,76 @@
+{{- if .Values.barmanCloudPlugin.enabled }}
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ include "cluster.barmanCloudPlugin.objectStoreName" . }}
+  namespace: {{ include "cluster.namespace" . }}
+  labels:
+  {{- include "cluster.labels" . | nindent 4 }}
+  {{- with .Values.barmanCloudPlugin.objectStore.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.barmanCloudPlugin.retentionPolicy }}
+  retentionPolicy: {{ . | quote }}
+  {{- end }}
+  configuration:
+    {{- if .Values.barmanCloudPlugin.destinationPath }}
+    destinationPath: {{ .Values.barmanCloudPlugin.destinationPath | quote }}
+    {{- else }}
+    destinationPath: {{ printf "s3://%s%s" (required ".Values.barmanCloudPlugin.s3.bucket is required when barmanCloudPlugin is enabled and destinationPath is empty." .Values.barmanCloudPlugin.s3.bucket) .Values.barmanCloudPlugin.s3.path | quote }}
+    {{- end }}
+    {{- if .Values.barmanCloudPlugin.endpointURL }}
+    endpointURL: {{ .Values.barmanCloudPlugin.endpointURL | quote }}
+    {{- else if .Values.barmanCloudPlugin.s3.region }}
+    endpointURL: {{ printf "https://s3.%s.amazonaws.com" .Values.barmanCloudPlugin.s3.region | quote }}
+    {{- end }}
+    {{- with .Values.barmanCloudPlugin.endpointCA }}
+    endpointCA:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    s3Credentials:
+      {{- if .Values.barmanCloudPlugin.s3.inheritFromIAMRole }}
+      inheritFromIAMRole: true
+      {{- else }}
+      accessKeyId:
+        name: {{ include "cluster.barmanCloudPlugin.secretName" . }}
+        key: {{ .Values.barmanCloudPlugin.s3.secret.accessKeyIdKey }}
+      secretAccessKey:
+        name: {{ include "cluster.barmanCloudPlugin.secretName" . }}
+        key: {{ .Values.barmanCloudPlugin.s3.secret.secretAccessKeyKey }}
+      {{- end }}
+    {{- $wal := .Values.barmanCloudPlugin.wal }}
+    {{- if or $wal.compression $wal.encryption $wal.maxParallel }}
+    wal:
+      {{- with $wal.compression }}
+      compression: {{ . }}
+      {{- end }}
+      {{- with $wal.encryption }}
+      encryption: {{ . }}
+      {{- end }}
+      {{- with $wal.maxParallel }}
+      maxParallel: {{ . }}
+      {{- end }}
+    {{- end }}
+    {{- $data := .Values.barmanCloudPlugin.data }}
+    {{- if or $data.compression $data.encryption $data.jobs }}
+    data:
+      {{- with $data.compression }}
+      compression: {{ . }}
+      {{- end }}
+      {{- with $data.encryption }}
+      encryption: {{ . }}
+      {{- end }}
+      {{- with $data.jobs }}
+      jobs: {{ . }}
+      {{- end }}
+    {{- end }}
+    {{- with .Values.barmanCloudPlugin.additionalConfiguration }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.barmanCloudPlugin.instanceSidecarConfiguration }}
+  instanceSidecarConfiguration:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

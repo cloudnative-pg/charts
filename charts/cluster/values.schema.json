@@ -239,6 +239,332 @@
       "required": [],
       "type": "object"
     },
+    "barmanCloudPlugin": {
+      "properties": {
+        "additionalConfiguration": {
+          "description": "Additional fields rendered under ObjectStore spec.configuration.",
+          "required": [],
+          "type": "object"
+        },
+        "additionalPluginParameters": {
+          "description": "Additional plugin parameters rendered under spec.plugins[].parameters.",
+          "required": [],
+          "type": "object"
+        },
+        "data": {
+          "properties": {
+            "compression": {
+              "default": "",
+              "description": "Data compression method. One of `` (for no compression), `gzip`, `bzip2`, `lz4` or `snappy`.",
+              "type": "string"
+            },
+            "encryption": {
+              "default": "",
+              "description": "Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`.",
+              "type": "string"
+            },
+            "jobs": {
+              "default": 0,
+              "description": "Number of data files to be archived in parallel. Set to 0 to omit the field.",
+              "type": "integer"
+            }
+          },
+          "required": [],
+          "type": "object"
+        },
+        "destinationPath": {
+          "default": "",
+          "description": "Full object store destination path. If empty, s3.bucket and s3.path are used.",
+          "type": "string"
+        },
+        "enabled": {
+          "default": false,
+          "description": "Enable the Barman Cloud CNPG-I plugin integration.",
+          "type": "boolean"
+        },
+        "endpointCA": {
+          "description": "Optional endpoint CA reference.",
+          "required": [],
+          "type": "object"
+        },
+        "endpointURL": {
+          "default": "",
+          "description": "Object store endpoint URL. If empty and s3.region is set, AWS S3 endpoint is derived.",
+          "type": "string"
+        },
+        "instanceSidecarConfiguration": {
+          "description": "Optional ObjectStore spec.instanceSidecarConfiguration.",
+          "required": [],
+          "type": "object"
+        },
+        "objectStore": {
+          "properties": {
+            "annotations": {
+              "required": [],
+              "type": "object"
+            },
+            "name": {
+              "default": "",
+              "description": "Name of the ObjectStore resource. Defaults to \u003crelease\u003e-barman-store.",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "type": "object"
+        },
+        "pluginName": {
+          "default": "barman-cloud.cloudnative-pg.io",
+          "description": "Name of the installed CNPG-I plugin.",
+          "type": "string"
+        },
+        "retentionPolicy": {
+          "default": "30d",
+          "description": "ObjectStore retention policy.",
+          "type": "string"
+        },
+        "s3": {
+          "properties": {
+            "accessKey": {
+              "default": "",
+              "description": "Access key value, only used when s3.secret.create is true.",
+              "type": "string"
+            },
+            "bucket": {
+              "default": "",
+              "description": "S3 bucket used when destinationPath is empty.",
+              "type": "string"
+            },
+            "externalSecret": {
+              "properties": {
+                "annotations": {
+                  "required": [],
+                  "type": "object"
+                },
+                "enabled": {
+                  "default": false,
+                  "description": "Whether the chart should create an ExternalSecret for S3 credentials.",
+                  "type": "boolean"
+                },
+                "labels": {
+                  "required": [],
+                  "type": "object"
+                },
+                "name": {
+                  "default": "",
+                  "description": "Name of the ExternalSecret resource. Defaults to \u003csecret name\u003e-external-secret.",
+                  "type": "string"
+                },
+                "refreshInterval": {
+                  "default": "168h",
+                  "type": "string"
+                },
+                "remoteRefs": {
+                  "properties": {
+                    "accessKeyId": {
+                      "properties": {
+                        "conversionStrategy": {
+                          "default": "Default",
+                          "type": "string"
+                        },
+                        "decodingStrategy": {
+                          "default": "None",
+                          "type": "string"
+                        },
+                        "key": {
+                          "default": "",
+                          "type": "string"
+                        },
+                        "metadataPolicy": {
+                          "default": "None",
+                          "type": "string"
+                        },
+                        "property": {
+                          "default": "",
+                          "type": "string"
+                        }
+                      },
+                      "required": [],
+                      "type": "object"
+                    },
+                    "secretAccessKey": {
+                      "properties": {
+                        "conversionStrategy": {
+                          "default": "Default",
+                          "type": "string"
+                        },
+                        "decodingStrategy": {
+                          "default": "None",
+                          "type": "string"
+                        },
+                        "key": {
+                          "default": "",
+                          "type": "string"
+                        },
+                        "metadataPolicy": {
+                          "default": "None",
+                          "type": "string"
+                        },
+                        "property": {
+                          "default": "",
+                          "type": "string"
+                        }
+                      },
+                      "required": [],
+                      "type": "object"
+                    }
+                  },
+                  "required": [],
+                  "type": "object"
+                },
+                "secretStoreRef": {
+                  "properties": {
+                    "kind": {
+                      "default": "ClusterSecretStore",
+                      "type": "string"
+                    },
+                    "name": {
+                      "default": "",
+                      "type": "string"
+                    }
+                  },
+                  "required": [],
+                  "type": "object"
+                },
+                "target": {
+                  "properties": {
+                    "creationPolicy": {
+                      "default": "Owner",
+                      "type": "string"
+                    },
+                    "deletionPolicy": {
+                      "default": "Retain",
+                      "type": "string"
+                    },
+                    "name": {
+                      "default": "",
+                      "description": "Target Secret name. Defaults to barmanCloudPlugin.s3.secret.name or \u003crelease\u003e-barman-s3-creds.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [],
+                  "type": "object"
+                }
+              },
+              "required": [],
+              "type": "object"
+            },
+            "inheritFromIAMRole": {
+              "default": false,
+              "description": "Use role-based authentication instead of explicit credentials.",
+              "type": "boolean"
+            },
+            "path": {
+              "default": "/",
+              "description": "S3 path used when destinationPath is empty.",
+              "type": "string"
+            },
+            "region": {
+              "default": "",
+              "description": "AWS region used to derive the default S3 endpoint when endpointURL is empty.",
+              "type": "string"
+            },
+            "secret": {
+              "properties": {
+                "accessKeyIdKey": {
+                  "default": "ACCESS_KEY_ID",
+                  "type": "string"
+                },
+                "create": {
+                  "default": false,
+                  "description": "Whether the chart should create a Kubernetes Secret for S3 credentials.",
+                  "type": "boolean"
+                },
+                "name": {
+                  "default": "",
+                  "description": "Name of the Secret containing S3 credentials. Defaults to \u003crelease\u003e-barman-s3-creds.",
+                  "type": "string"
+                },
+                "secretAccessKeyKey": {
+                  "default": "ACCESS_SECRET_KEY",
+                  "type": "string"
+                }
+              },
+              "required": [],
+              "type": "object"
+            },
+            "secretKey": {
+              "default": "",
+              "description": "Secret key value, only used when s3.secret.create is true.",
+              "type": "string"
+            }
+          },
+          "required": [],
+          "type": "object"
+        },
+        "scheduledBackups": {
+          "items": {
+            "anyOf": [
+              {
+                "properties": {
+                  "backupOwnerReference": {
+                    "default": "self",
+                    "description": "Backup owner reference",
+                    "type": "string"
+                  },
+                  "name": {
+                    "default": "daily-backup",
+                    "description": "Scheduled backup name",
+                    "type": "string"
+                  },
+                  "pluginName": {
+                    "default": "",
+                    "description": "Plugin name override. Defaults to barmanCloudPlugin.pluginName.",
+                    "type": "string"
+                  },
+                  "schedule": {
+                    "default": "0 0 0 * * *",
+                    "description": "Schedule in cron format",
+                    "type": "string"
+                  }
+                },
+                "required": [],
+                "type": "object"
+              }
+            ],
+            "required": []
+          },
+          "type": "array"
+        },
+        "serverName": {
+          "default": "",
+          "description": "Optional server name plugin parameter. Leave empty for the cluster name default.",
+          "type": "string"
+        },
+        "wal": {
+          "properties": {
+            "compression": {
+              "default": "",
+              "description": "WAL compression method. One of `` (for no compression), `gzip`, `bzip2`, `lz4`, `snappy`, `xz` or `zstd`.",
+              "type": "string"
+            },
+            "encryption": {
+              "default": "",
+              "description": "Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`.",
+              "type": "string"
+            },
+            "maxParallel": {
+              "default": 0,
+              "description": "Number of WAL files to be archived or restored in parallel. Set to 0 to omit the field.",
+              "type": "integer"
+            }
+          },
+          "required": [],
+          "type": "object"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
     "cluster": {
       "properties": {
         "additionalLabels": {

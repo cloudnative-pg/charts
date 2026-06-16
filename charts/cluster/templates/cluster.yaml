@@ -53,6 +53,22 @@ spec:
   {{- if .Values.cluster.priorityClassName }}
   priorityClassName: {{ .Values.cluster.priorityClassName }}
   {{- end }}
+  {{- if and .Values.barmanCloudPlugin.enabled .Values.backups.enabled }}
+  {{- fail "barmanCloudPlugin.enabled and backups.enabled cannot both be true because a WAL archiver plugin cannot be used with spec.backup.barmanObjectStore." }}
+  {{- end }}
+  {{- if .Values.barmanCloudPlugin.enabled }}
+  plugins:
+    - name: {{ .Values.barmanCloudPlugin.pluginName }}
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: {{ include "cluster.barmanCloudPlugin.objectStoreName" . }}
+        {{- with .Values.barmanCloudPlugin.serverName }}
+        serverName: {{ . }}
+        {{- end }}
+        {{- with .Values.barmanCloudPlugin.additionalPluginParameters }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+  {{- end }}
 
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}

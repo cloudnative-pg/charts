@@ -1,21 +1,20 @@
-{{ if .Values.backups.enabled }}
+{{- if .Values.barmanCloudPlugin.enabled }}
 {{ $context := . -}}
-{{ range .Values.backups.scheduledBackups -}}
+{{ range .Values.barmanCloudPlugin.scheduledBackups -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: {{ include "cluster.fullname" $context  }}-{{ .name }}
+  name: {{ include "cluster.fullname" $context }}-{{ .name }}
   namespace: {{ include "cluster.namespace" $ }}
-  labels: {{ include "cluster.labels" $context | nindent 4 }}
+  labels:
+  {{- include "cluster.labels" $context | nindent 4 }}
 spec:
   immediate: true
   schedule: {{ .schedule | quote }}
-  method: {{ .method }}
-  {{- if eq .method "plugin" }}
+  method: plugin
   pluginConfiguration:
-    name: {{ default $.Values.barmanCloudPlugin.pluginName .pluginName }}
-  {{- end }}
+    name: {{ default $context.Values.barmanCloudPlugin.pluginName .pluginName }}
   backupOwnerReference: {{ .backupOwnerReference }}
   cluster:
     name: {{ include "cluster.fullname" $context }}

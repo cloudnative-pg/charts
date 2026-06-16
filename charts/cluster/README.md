@@ -97,6 +97,16 @@ Each backup adapter takes it's own set of parameters, listed in the [Configurati
 section. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backups.s3`,
 `backups.azure`, or `backups.google`.
 
+### Barman Cloud Plugin integration
+
+The chart can configure a cluster to use the CNPG-I Barman Cloud plugin as the WAL archiver by enabling
+`barmanCloudPlugin.enabled`. This renders a plugin `ObjectStore`, configures `spec.plugins` on the `Cluster`, and can
+optionally create plugin-based scheduled backups. The Barman Cloud plugin and its CRDs must already be installed, for
+example with the `plugin-barman-cloud` chart.
+
+`barmanCloudPlugin.enabled` is mutually exclusive with `backups.enabled`, because the CloudNativePG API does not allow a
+WAL archiver plugin and `spec.backup.barmanObjectStore` to be configured at the same time.
+
 Recovery
 --------
 
@@ -153,6 +163,58 @@ Kubernetes: `>=1.29.0-0`
 | backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backups.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
+| barmanCloudPlugin.additionalConfiguration | object | `{}` | Additional fields rendered under ObjectStore spec.configuration. |
+| barmanCloudPlugin.additionalPluginParameters | object | `{}` | Additional plugin parameters rendered under spec.plugins[].parameters. |
+| barmanCloudPlugin.data.compression | string | `""` | Data compression method. One of `` (for no compression), `gzip`, `bzip2`, `lz4` or `snappy`. |
+| barmanCloudPlugin.data.encryption | string | `""` | Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
+| barmanCloudPlugin.data.jobs | int | `0` | Number of data files to be archived in parallel. Set to 0 to omit the field. |
+| barmanCloudPlugin.destinationPath | string | `""` | Full object store destination path. If empty, s3.bucket and s3.path are used. |
+| barmanCloudPlugin.enabled | bool | `false` | Enable the Barman Cloud CNPG-I plugin integration. |
+| barmanCloudPlugin.endpointCA | object | `{}` | Optional endpoint CA reference. |
+| barmanCloudPlugin.endpointURL | string | `""` | Object store endpoint URL. If empty and s3.region is set, AWS S3 endpoint is derived. |
+| barmanCloudPlugin.instanceSidecarConfiguration | object | `{}` | Optional ObjectStore spec.instanceSidecarConfiguration. |
+| barmanCloudPlugin.objectStore.annotations | object | `{}` |  |
+| barmanCloudPlugin.objectStore.name | string | `""` | Name of the ObjectStore resource. Defaults to <release>-barman-store. |
+| barmanCloudPlugin.pluginName | string | `"barman-cloud.cloudnative-pg.io"` | Name of the installed CNPG-I plugin. |
+| barmanCloudPlugin.retentionPolicy | string | `"30d"` | ObjectStore retention policy. |
+| barmanCloudPlugin.s3.accessKey | string | `""` | Access key value, only used when s3.secret.create is true. |
+| barmanCloudPlugin.s3.bucket | string | `""` | S3 bucket used when destinationPath is empty. |
+| barmanCloudPlugin.s3.externalSecret.annotations | object | `{}` |  |
+| barmanCloudPlugin.s3.externalSecret.enabled | bool | `false` | Whether the chart should create an ExternalSecret for S3 credentials. |
+| barmanCloudPlugin.s3.externalSecret.labels | object | `{}` |  |
+| barmanCloudPlugin.s3.externalSecret.name | string | `""` | Name of the ExternalSecret resource. Defaults to <secret name>-external-secret. |
+| barmanCloudPlugin.s3.externalSecret.refreshInterval | string | `"168h"` |  |
+| barmanCloudPlugin.s3.externalSecret.remoteRefs.accessKeyId.conversionStrategy | string | `"Default"` |  |
+| barmanCloudPlugin.s3.externalSecret.remoteRefs.accessKeyId.decodingStrategy | string | `"None"` |  |
+| barmanCloudPlugin.s3.externalSecret.remoteRefs.accessKeyId.key | string | `""` |  |
+| barmanCloudPlugin.s3.externalSecret.remoteRefs.accessKeyId.metadataPolicy | string | `"None"` |  |
+| barmanCloudPlugin.s3.externalSecret.remoteRefs.accessKeyId.property | string | `""` |  |
+| barmanCloudPlugin.s3.externalSecret.remoteRefs.secretAccessKey.conversionStrategy | string | `"Default"` |  |
+| barmanCloudPlugin.s3.externalSecret.remoteRefs.secretAccessKey.decodingStrategy | string | `"None"` |  |
+| barmanCloudPlugin.s3.externalSecret.remoteRefs.secretAccessKey.key | string | `""` |  |
+| barmanCloudPlugin.s3.externalSecret.remoteRefs.secretAccessKey.metadataPolicy | string | `"None"` |  |
+| barmanCloudPlugin.s3.externalSecret.remoteRefs.secretAccessKey.property | string | `""` |  |
+| barmanCloudPlugin.s3.externalSecret.secretStoreRef.kind | string | `"ClusterSecretStore"` |  |
+| barmanCloudPlugin.s3.externalSecret.secretStoreRef.name | string | `""` |  |
+| barmanCloudPlugin.s3.externalSecret.target.creationPolicy | string | `"Owner"` |  |
+| barmanCloudPlugin.s3.externalSecret.target.deletionPolicy | string | `"Retain"` |  |
+| barmanCloudPlugin.s3.externalSecret.target.name | string | `""` | Target Secret name. Defaults to barmanCloudPlugin.s3.secret.name or <release>-barman-s3-creds. |
+| barmanCloudPlugin.s3.inheritFromIAMRole | bool | `false` | Use role-based authentication instead of explicit credentials. |
+| barmanCloudPlugin.s3.path | string | `"/"` | S3 path used when destinationPath is empty. |
+| barmanCloudPlugin.s3.region | string | `""` | AWS region used to derive the default S3 endpoint when endpointURL is empty. |
+| barmanCloudPlugin.s3.secret.accessKeyIdKey | string | `"ACCESS_KEY_ID"` |  |
+| barmanCloudPlugin.s3.secret.create | bool | `false` | Whether the chart should create a Kubernetes Secret for S3 credentials. |
+| barmanCloudPlugin.s3.secret.name | string | `""` | Name of the Secret containing S3 credentials. Defaults to <release>-barman-s3-creds. |
+| barmanCloudPlugin.s3.secret.secretAccessKeyKey | string | `"ACCESS_SECRET_KEY"` |  |
+| barmanCloudPlugin.s3.secretKey | string | `""` | Secret key value, only used when s3.secret.create is true. |
+| barmanCloudPlugin.scheduledBackups[0].backupOwnerReference | string | `"self"` | Backup owner reference |
+| barmanCloudPlugin.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
+| barmanCloudPlugin.scheduledBackups[0].pluginName | string | `""` | Plugin name override. Defaults to barmanCloudPlugin.pluginName. |
+| barmanCloudPlugin.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
+| barmanCloudPlugin.serverName | string | `""` | Optional server name plugin parameter. Leave empty for the cluster name default. |
+| barmanCloudPlugin.wal.compression | string | `""` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2`, `lz4`, `snappy`, `xz` or `zstd`. |
+| barmanCloudPlugin.wal.encryption | string | `""` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
+| barmanCloudPlugin.wal.maxParallel | int | `0` | Number of WAL files to be archived or restored in parallel. Set to 0 to omit the field. |
 | cluster.additionalLabels | object | `{}` |  |
 | cluster.affinity | object | `{"topologyKey":"topology.kubernetes.io/zone"}` | Affinity/Anti-affinity rules for Pods. See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration |
 | cluster.annotations | object | `{}` |  |
