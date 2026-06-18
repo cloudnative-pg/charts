@@ -248,6 +248,9 @@
                             "properties": {
                                 "logicalReplication": {
                                     "type": "boolean"
+                                },
+                                "pgStatStatements": {
+                                    "type": "boolean"
                                 }
                             }
                         },
