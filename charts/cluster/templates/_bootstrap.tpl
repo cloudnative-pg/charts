@@ -10,7 +10,7 @@ bootstrap:
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
-    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (not (empty .Values.cluster.initdb.postInitApplicationSQL)) }}
+    {{- if or (eq .Values.type "postgis") (eq .Values.type "timescaledb") (not (empty .Values.cluster.initdb.postInitApplicationSQL)) .Values.cluster.monitoring.instrumentation.pgStatStatements }}
     postInitApplicationSQL:
       {{- if eq .Values.type "postgis" }}
       - CREATE EXTENSION IF NOT EXISTS postgis;
@@ -20,7 +20,9 @@ bootstrap:
       {{- else if eq .Values.type "timescaledb" }}
       - CREATE EXTENSION IF NOT EXISTS timescaledb;
       {{- end }}
+      {{- if .Values.cluster.monitoring.instrumentation.pgStatStatements }}
       - CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+      {{- end }}
       {{- with .Values.cluster.initdb }}
           {{- range .postInitApplicationSQL }}
             {{- printf "- %s" . | nindent 6 }}
