@@ -174,6 +174,7 @@ Kubernetes: `>=1.29.0-0`
 | cluster.monitoring.disableDefaultQueries | bool | `false` | Whether the default queries should be injected. Set it to true if you don't want to inject default queries into the cluster. |
 | cluster.monitoring.enabled | bool | `false` | Whether to enable monitoring |
 | cluster.monitoring.instrumentation.logicalReplication | bool | `true` | Enable logical replication metrics |
+| cluster.monitoring.instrumentation.pgStatStatements | bool | `false` | Enable planning and execution statistics for all SQL statements. Increases shared memory usage. |
 | cluster.monitoring.podMonitor.enabled | bool | `true` | Whether to enable the PodMonitor |
 | cluster.monitoring.podMonitor.labels | object | `{}` | Additional labels to set on the generated PodMonitor resource. Add labels your monitoring stack requires (for example `team-name`). |
 | cluster.monitoring.podMonitor.metricRelabelings | list | `[]` | The list of metric relabelings for the PodMonitor. Applied to samples before ingestion. |
