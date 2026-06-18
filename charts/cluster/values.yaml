@@ -347,7 +347,7 @@ cluster:
     #          usage: GAUGE
     #          description: "Cache hit ratio"
 
-    # -- TLS usage for monitoring
+    # TLS usage for monitoring
     tls:
       # -- Whether to enable TLS on the metrics port.
       enabled: false
