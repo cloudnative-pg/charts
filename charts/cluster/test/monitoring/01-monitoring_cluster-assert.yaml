@@ -17,6 +17,13 @@ spec:
         - name: monitoring-cluster-monitoring
           key: custom-queries
       enablePodMonitor: false
+  bootstrap:
+    initdb:
+      postInitApplicationSQL:
+        - CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+  postgresql:
+    shared_preload_libraries:
+      - pg_stat_statements
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
@@ -114,3 +121,14 @@ data:
         - ratio:
             description: Cache hit ratio
             usage: GAUGE
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-cluster-monitoring-logical-replication
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-cluster-monitoring-pg-stat-statements
