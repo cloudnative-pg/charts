@@ -327,6 +327,8 @@ cluster:
     instrumentation:
       # -- Enable logical replication metrics
       logicalReplication: true
+      # -- Enable planning and execution statistics for all SQL statements. Increases shared memory usage.
+      pgStatStatements: false
     # -- Whether the default queries should be injected.
     # Set it to true if you don't want to inject default queries into the cluster.
     disableDefaultQueries: false
