@@ -390,6 +390,20 @@ cluster:
           # key: 'data'
         # searchAttribute: 'uid'
 
+  # -- Replication slot management. To make logical decoding slots survive
+  # failover for CDC consumers (e.g. Debezium), enable
+  # `highAvailability.synchronizeLogicalDecoding`, set
+  # `cluster.postgresql.parameters.hot_standby_feedback: "on"` and
+  # `cluster.postgresql.parameters.sync_replication_slots: "on"`, and ensure
+  # the CDC client creates its logical slot with `failover = true`.
+  # Requires CloudNativePG 1.27+ and PostgreSQL 17+ for native failover slots.
+  # See: https://cloudnative-pg.io/documentation/current/replication/#replication-slots
+  replicationSlots: {}
+    # highAvailability:
+    #   enabled: true
+    #   slotPrefix: "_cnpg_"
+    #   synchronizeLogicalDecoding: true
+    # updateInterval: 30
 
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
