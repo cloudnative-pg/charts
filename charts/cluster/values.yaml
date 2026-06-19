@@ -327,6 +327,8 @@ cluster:
     instrumentation:
       # -- Enable logical replication metrics
       logicalReplication: true
+      # -- Enable planning and execution statistics for all SQL statements. Increases shared memory usage.
+      pgStatStatements: false
     # -- Whether the default queries should be injected.
     # Set it to true if you don't want to inject default queries into the cluster.
     disableDefaultQueries: false
@@ -345,6 +347,10 @@ cluster:
     #          usage: GAUGE
     #          description: "Cache hit ratio"
 
+    # TLS usage for monitoring
+    tls:
+      # -- Whether to enable TLS on the metrics port.
+      enabled: false
     # -- The list of secrets containing the custom queries
     customQueriesSecret: []
     #  - name: custom-queries-secret
@@ -384,6 +390,20 @@ cluster:
           # key: 'data'
         # searchAttribute: 'uid'
 
+  # -- Replication slot management. To make logical decoding slots survive
+  # failover for CDC consumers (e.g. Debezium), enable
+  # `highAvailability.synchronizeLogicalDecoding`, set
+  # `cluster.postgresql.parameters.hot_standby_feedback: "on"` and
+  # `cluster.postgresql.parameters.sync_replication_slots: "on"`, and ensure
+  # the CDC client creates its logical slot with `failover = true`.
+  # Requires CloudNativePG 1.27+ and PostgreSQL 17+ for native failover slots.
+  # See: https://cloudnative-pg.io/documentation/current/replication/#replication-slots
+  replicationSlots: {}
+    # highAvailability:
+    #   enabled: true
+    #   slotPrefix: "_cnpg_"
+    #   synchronizeLogicalDecoding: true
+    # updateInterval: 30
 
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
@@ -503,7 +523,7 @@ backups:
   retentionPolicy: "30d"
 
 replica:
-  # --  Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.
+  # -- Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.
   self: ""
   # -- Primary defines which Cluster is defined to be the primary in the distributed PostgreSQL cluster, based on the topology specified in externalClusters
   primary: ""
@@ -512,7 +532,7 @@ replica:
   # -- When replica mode is enabled, this parameter allows you to replay transactions only when the system time is at least the configured time past the commit time. This provides an opportunity to correct data loss errors. Note that when this parameter is set, a promotion token cannot be used.
   minApplyDelay: ""
   bootstrap:
-    # --  One of `object_store` or `pg_basebackup`. Method to use for bootstrap.
+    # -- One of `object_store` or `pg_basebackup`. Method to use for bootstrap.
     source: ""
     # -- Name of the database used by the application
     database: ""

@@ -68,10 +68,13 @@ spec:
   {{ end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
   postgresql:
-    {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
+    {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) .Values.cluster.monitoring.instrumentation.pgStatStatements }}
     shared_preload_libraries:
       {{- if eq .Values.type "timescaledb" }}
       - timescaledb
+      {{- end }}
+      {{- if .Values.cluster.monitoring.instrumentation.pgStatStatements }}
+      - pg_stat_statements
       {{- end }}
       {{- with .Values.cluster.postgresql.shared_preload_libraries }}
       {{- toYaml . | nindent 6 }}
@@ -97,6 +100,11 @@ spec:
     parameters:
       {{- toYaml . | nindent 6 }}
     {{- end }}
+
+  {{- with .Values.cluster.replicationSlots }}
+  replicationSlots:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 
   {{- if not (and (empty .Values.cluster.roles) (empty .Values.cluster.services)) }}
   managed:
@@ -138,6 +146,8 @@ spec:
       {{- toYaml . | nindent 6 }}
     {{ end }}
     {{- end }}
+    tls:
+      enabled: {{ .Values.cluster.monitoring.tls.enabled }}
   {{ include "cluster.bootstrap" . | nindent 2 }}
   {{ include "cluster.externalClusters" . | nindent 2 }}
   {{ include "cluster.backup" . | nindent 2 }}

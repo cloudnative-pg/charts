@@ -370,6 +370,11 @@
                   "default": true,
                   "description": "Enable logical replication metrics",
                   "type": "boolean"
+                },
+                "pgStatStatements": {
+                  "default": false,
+                  "description": "Enable planning and execution statistics for all SQL statements. Increases shared memory usage.",
+                  "type": "boolean"
                 }
               },
               "required": [],
@@ -418,6 +423,18 @@
                     "required": []
                   },
                   "type": "array"
+                }
+              },
+              "required": [],
+              "type": "object"
+            },
+            "tls": {
+              "description": "TLS usage for monitoring",
+              "properties": {
+                "enabled": {
+                  "default": false,
+                  "description": "Whether to enable TLS on the metrics port.",
+                  "type": "boolean"
                 }
               },
               "required": [],
@@ -497,6 +514,11 @@
         "priorityClassName": {
           "default": "",
           "type": "string"
+        },
+        "replicationSlots": {
+          "description": "Replication slot management. To make logical decoding slots survive\nfailover for CDC consumers (e.g. Debezium), enable\n`highAvailability.synchronizeLogicalDecoding`, set\n`cluster.postgresql.parameters.hot_standby_feedback: \"on\"` and\n`cluster.postgresql.parameters.sync_replication_slots: \"on\"`, and ensure\nthe CDC client creates its logical slot with `failover = true`.\nRequires CloudNativePG 1.27+ and PostgreSQL 17+ for native failover slots.\nSee: https://cloudnative-pg.io/documentation/current/replication/#replication-slots",
+          "required": [],
+          "type": "object"
         },
         "resources": {
           "description": "Resources requirements of every generated Pod.\nPlease refer to https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/ for more information.\nWe strongly advise you use the same setting for limits and requests so that your cluster pods are given a Guaranteed QoS.\nSee: https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/",
@@ -1094,7 +1116,7 @@
             },
             "source": {
               "default": "",
-              "description": " One of `object_store` or `pg_basebackup`. Method to use for bootstrap.",
+              "description": "One of `object_store` or `pg_basebackup`. Method to use for bootstrap.",
               "type": "string"
             }
           },
@@ -1358,7 +1380,7 @@
         },
         "self": {
           "default": "",
-          "description": " Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.",
+          "description": "Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.",
           "type": "string"
         }
       },
