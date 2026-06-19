@@ -91,6 +91,8 @@ bootstrap:
       name: {{ .Values.recovery.backupName }}
     {{- else if eq .Values.recovery.method "object_store" }}
     source: objectStoreRecoveryCluster
+    {{- else if eq .Values.recovery.method "plugin" }}
+    source: pluginRecoveryCluster
     {{- end }}
   {{- end }}
 {{- else if eq .Values.mode "replica" }}

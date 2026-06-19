@@ -87,7 +87,7 @@ Configuration
 │ Instances         │ {{ include (printf "%s%s" "cluster.color-" $redundancyColor) (printf "%-56s" (toString .Values.cluster.instances)) }} │
 │ Backups           │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.backups.enabled)) (printf "%-56s" (ternary "Enabled" "Disabled" .Values.backups.enabled)) }} │
 {{- if .Values.backups.enabled }}
-│ Backup Provider   │ {{ printf "%-56s" (title .Values.backups.provider) }} │
+│ Backup Provider   │ {{ printf "%-56s" (cat (title .Values.backups.method) (eq .Values.backups.method "plugin" | ternary (get (include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "isWALArchiver" true))) | fromYaml) "name") "")) }} │
 │ Scheduled Backups │ {{ printf "%-56s" $scheduledBackups }} │
 {{- end }}
 │ Storage           │ {{ printf "%-56s" .Values.cluster.storage.size }} │
