@@ -16,5 +16,9 @@ spec:
   backupOwnerReference: {{ .backupOwnerReference }}
   cluster:
     name: {{ include "cluster.fullname" $context }}
+  {{- with .pluginConfiguration }}
+  pluginConfiguration:
+    {{- toYaml . | nindent 4 }}
+  {{ end }}
 {{ end -}}
 {{ end }}
