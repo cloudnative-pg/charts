@@ -148,11 +148,13 @@ spec:
     {{- end }}
     tls:
       enabled: {{ .Values.cluster.monitoring.tls.enabled }}
-  {{ include "cluster.bootstrap" . | nindent 2 }}
-  {{ include "cluster.externalClusters" . | nindent 2 }}
-  {{ include "cluster.backup" . | nindent 2 }}
 
-  {{- with .Values.cluster.plugins }}
+  {{ include "cluster.bootstrap" . | nindent 2 -}}
+  {{ include "cluster.externalClusters" . | nindent 2 -}}
+  {{ include "cluster.backup" . | nindent 2 -}}
+
+  {{- $plugins := len .Values.cluster.plugins -}}
+  {{- if and (gt $plugins 0) (or (gt $plugins 1) (and .Values.backups.enabled (eq (include "cluster.barmanPluginEnabled" .) "true") (eq .Values.backups.method "plugin"))) }}
   plugins:
     {{ $pluginsWithoutBarman := include "helpers.omitKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYamlArray }}
     {{- range $pluginsWithoutBarman -}}
@@ -168,6 +170,6 @@ spec:
         {{ with $parameters }}
         {{ toYaml . | indent 8 | trim }}
         {{- end }}
-        barmanObjectName: {{ include "cluster.fullname" . }}-backup
+        barmanObjectName: {{ include "cluster.fullname" . }}-backups
     {{- end }}
   {{- end }}
