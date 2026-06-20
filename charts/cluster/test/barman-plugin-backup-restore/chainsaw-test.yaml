@@ -1,0 +1,120 @@
+##
+# This test CNPG Cluster backups and PITR recovery with the Barman Cloud CNPG-I plugin
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: barman-plugin-backup-restore
+spec:
+  timeouts:
+    apply: 1s
+    assert: 7m
+    cleanup: 1m
+  steps:
+    - name: Clear the MinIO bucket
+      try:
+        - apply:
+            file: ./00-minio_cleanup.yaml
+        - assert:
+            file: ./00-minio_cleanup-assert.yaml
+    - name: Install a standalone CNPG Cluster
+      try:
+        - script:
+            content: |
+              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n kube-system get configmaps kube-root-ca.crt -o jsonpath='{.data.ca\.crt}')" --dry-run=client -o yaml | kubectl apply -f -
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-barman-plugin-backup-restore_cluster.yaml \
+                --wait \
+                barman-plugin-backup-restore ../../
+        - assert:
+            file: ./01-barman-plugin-backup-restore_cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+        - podLogs:
+            selector: cnpg.io/cluster=barman-plugin-backup-restore-cluster
+    - name: Write some data to the cluster
+      timeouts:
+        apply: 1s
+        assert: 30s
+      try:
+        - apply:
+            file: ./02-data_write.yaml
+        - assert:
+            file: ./02-data_write-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test
+    - name: Create a backup
+      try:
+        - apply:
+            file: ./03-backup.yaml
+        - apply:
+            file: ./03-checkpoint.yaml
+        - assert:
+            file: ./03-backup_completed-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Backup
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+        - podLogs:
+            selector: cnpg.io/cluster=barman-plugin-backup-restore-cluster
+    - name: Write more data to the database after the backup
+      try:
+        - apply:
+            file: ./04-post_backup_data_write.yaml
+        - assert:
+            file: ./04-post_backup_data_write-assert.yaml
+      timeouts:
+        apply: 1s
+        assert: 10m
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Backup
+    - name: Create a recovery cluster from backup with a PITR target
+      try:
+        - script:
+            content: |
+              DATE_NO_BAD_TABLE=$(kubectl -n $NAMESPACE get configmap date-no-bad-table -o 'jsonpath={.data.date}')
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./05-recovery_backup_pitr_cluster.yaml \
+                --set recovery.pitrTarget.time="$DATE_NO_BAD_TABLE" \
+                --wait \
+                recovery-backup-pitr ../../
+        - assert:
+            file: ./05-recovery_backup_pitr_cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+        - podLogs:
+            selector: cnpg.io/cluster=recovery-backup-pitr-cluster
+    - name: Verify the pre-backup data on the recovery cluster exists but not the post-backup data
+      try:
+        - apply:
+            file: ./06-data_test.yaml
+        - assert:
+            file: ./06-data_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+            selector: batch.kubernetes.io/job-name=data-test-backup-pitr
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test-backup-pitr
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE barman-plugin-backup-restore
