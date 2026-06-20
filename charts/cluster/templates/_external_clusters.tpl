@@ -17,12 +17,12 @@ externalClusters:
       serverName: {{ .Values.recovery.clusterName }}
       {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
       {{- include "cluster.barmanObjectStoreConfig" $d | nindent 4 }}
-  {{- else if eq .Values.recovery.method "plugin" }}
+  {{- else if and (eq .Values.recovery.method "plugin") (eq .Values.recovery.pluginConfiguration.name "barman-cloud.cloudnative-pg.io") }}
   - name: pluginRecoveryCluster
     plugin:
       {{- omit .Values.recovery.pluginConfiguration "parameters" | toYaml | nindent 6 }}
       parameters:
-        {{- $pluginConfigurationParameters := omit (coalesce .Values.recovery.pluginConfiguration.parameters dict) "barmanObjectName" -}}
+        {{- $pluginConfigurationParameters := omit (coalesce .Values.recovery.pluginConfiguration.parameters dict) "barmanObjectName" "serverName" -}}
         {{ with $pluginConfigurationParameters }}
         {{- toYaml . | nindent 8 -}}
         {{ end }}
