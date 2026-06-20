@@ -194,6 +194,10 @@
                     "description": "Scheduled backup name",
                     "type": "string"
                   },
+                  "pluginConfiguration": {
+                    "required": [],
+                    "type": "object"
+                  },
                   "schedule": {
                     "default": "0 0 0 * * *",
                     "description": "Schedule in cron format",

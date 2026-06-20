@@ -149,6 +149,7 @@ Kubernetes: `>=1.29.0-0`
 | backups.scheduledBackups[0].backupOwnerReference | string | `"self"` | Backup owner reference |
 | backups.scheduledBackups[0].method | string | `"barmanObjectStore"` | Backup method, can be `barmanObjectStore` (default), `volumeSnapshot` or `plugin`. |
 | backups.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
+| backups.scheduledBackups[0].pluginConfiguration | object | `{}` |  |
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
 | backups.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | backups.secret.name | string | `""` | Name of the backup credentials secret |

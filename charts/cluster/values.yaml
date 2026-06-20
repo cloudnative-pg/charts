@@ -51,9 +51,9 @@ recovery:
   owner: ""
 
   pluginConfiguration: {}
-    #name: barman-cloud.cloudnative-pg.io
-    #parameters:
-    #  serverName: cluster-example
+#    name: barman-cloud.cloudnative-pg.io
+#    parameters:
+#      serverName: cluster-example
 
   # Barman Object Store configuration applicable to both `barmanObjectStore` and `plugin` methods when using
   # the `barman-cloud.cloudnative-pg.io` plugin.
@@ -548,8 +548,8 @@ backups:
       backupOwnerReference: self
       # -- Backup method, can be `barmanObjectStore` (default), `volumeSnapshot` or `plugin`.
       method: barmanObjectStore
-      #pluginConfiguration:
-      #  name: barman-cloud.cloudnative-pg.io
+      pluginConfiguration: {}
+#        name: barman-cloud.cloudnative-pg.io
 
   # -- Retention policy for backups
   retentionPolicy: "30d"
