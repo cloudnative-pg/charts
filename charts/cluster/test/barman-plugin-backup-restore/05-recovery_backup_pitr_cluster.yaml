@@ -36,21 +36,20 @@ recovery:
 backups:
   enabled: true
   method: plugin
-  barmanObjectStore:
-    provider: s3
-    endpointURL: "https://minio.minio.svc.cluster.local"
-    endpointCA:
-      name: kube-root-ca.crt
-      key: ca.crt
-    wal:
-      encryption: ""
-    data:
-      encryption: ""
-    s3:
-      bucket: "mybucket"
-      path: "/barman-plugin-backup-restore/v2"
-      accessKey: "minio"
-      secretKey: "minio123"
-      region: "local"
+  provider: s3
+  endpointURL: "https://minio.minio.svc.cluster.local"
+  endpointCA:
+    name: kube-root-ca.crt
+    key: ca.crt
+  wal:
+    encryption: ""
+  data:
+    encryption: ""
+  s3:
+    bucket: "mybucket"
+    path: "/barman-plugin-backup-restore/v2"
+    accessKey: "minio"
+    secretKey: "minio123"
+    region: "local"
   scheduledBackups: []
   retentionPolicy: "30d"

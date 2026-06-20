@@ -1062,8 +1062,8 @@
           "type": "object"
         },
         "pluginConfiguration": {
-          "default": "",
-          "type": "null"
+          "required": [],
+          "type": "object"
         },
         "provider": {
           "default": "s3",

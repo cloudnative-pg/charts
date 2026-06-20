@@ -281,7 +281,7 @@ Kubernetes: `>=1.29.0-0`
 | recovery.pgBaseBackup.source.username | string | `""` |  |
 | recovery.pitrTarget | object | `{"time":""}` | Point in time recovery target. Specify one of the following: |
 | recovery.pitrTarget.time | string | `""` | Time in RFC3339 format |
-| recovery.pluginConfiguration | string | `nil` |  |
+| recovery.pluginConfiguration | object | `{}` |  |
 | recovery.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | recovery.s3.accessKey | string | `""` |  |
 | recovery.s3.bucket | string | `""` |  |
