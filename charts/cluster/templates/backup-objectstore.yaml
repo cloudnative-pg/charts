@@ -2,7 +2,7 @@
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: {{ include "cluster.fullname" . }}-backup
+  name: {{ include "cluster.fullname" . }}-backups
   namespace: {{ include "cluster.namespace" . }}
   {{- with .Values.cluster.annotations }}
   annotations:
