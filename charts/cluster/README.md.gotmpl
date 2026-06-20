@@ -76,7 +76,7 @@ Depending on the type the chart will use a different Docker image and fill in so
 
 The chart has three modes of operation. These are configured via the `mode` parameter:
 * `standalone` - Creates new or updates an existing CNPG cluster. This is the default mode.
-* `replica` - Creates a replica cluster from an existing CNPG cluster. **_Note_ that this mode is not yet supported.**
+* `replica` - Creates a replica cluster from an existing CNPG cluster.
 * `recovery` - Recovers a CNPG cluster from a backup, object store or via pg_basebackup.
 
 ### Backup configuration
@@ -101,9 +101,9 @@ backups:
       backupOwnerReference: self
 ```
 
-Each backup adapter takes it's own set of parameters, listed in the [Configuration options](#Configuration-options) section
-below. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backup.s3`,
-`backup.azure`, or `backup.google`.
+Each backup adapter takes it's own set of parameters, listed in the [Configuration options](#Configuration-options)
+section. Refer to the table for the full list of parameters and place the configuration under the appropriate key: `backups.s3`,
+`backups.azure`, or `backups.google`.
 
 
 Recovery
@@ -116,7 +116,7 @@ Examples
 --------
 
 There are several configuration examples in the [examples](examples) directory. Refer to them for a basic setup and
-refer to  the [CloudNativePG Documentation](https://cloudnative-pg.io/documentation/current/) for more advanced configurations.
+refer to the [CloudNativePG Documentation](https://cloudnative-pg.io/documentation/current/) for more advanced configurations.
 
 
 {{ template "chart.requirementsSection" . }}

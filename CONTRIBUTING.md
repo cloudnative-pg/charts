@@ -1,22 +1,10 @@
-# Contributing to Helm Charts
+# Contributing to CloudNativePG
 
-Please read the [code of conduct](CODE-OF-CONDUCT.md) first.
+Thank you for your interest in contributing! 💖
 
-## How to report a new issue
+To ensure consistency across the project, all CloudNativePG repositories follow
+a common set of guidelines regarding code of conduct, AI usage, and
+contribution workflows.
 
-Before reporting a new issue, please make sure you have:
-
-- read the documentation
-- checked that a similar issue has not been opened in the past
-
-## How to contribute
-
-You can contribute to charts by submitting a new pull request.
-
-Please:
-
-1. Open a new issue providing information about the feature you want to add
-2. Fork the project, develop the feature as a branch with the issue ID (e.g. dev/43) and test the code
-3. Submit a pull request
-
-Thank you.
+Please review the [CloudNativePG Project contributing guidelines](https://github.com/cloudnative-pg/governance/blob/main/CONTRIBUTING.md)
+before searching for issues, reporting bugs, or submitting a pull request.

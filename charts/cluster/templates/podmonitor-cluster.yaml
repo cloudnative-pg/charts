@@ -1,0 +1,41 @@
+{{- if and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ include "cluster.fullname" . }}-cluster-podmonitor
+  namespace: {{ include "cluster.namespace" . }}
+  labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+    {{- include "cluster.labels" . | nindent 4 }}
+    {{- with .Values.cluster.monitoring.podMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.cluster.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: {{ include "cluster.fullname" . }}
+      cnpg.io/podRole: instance
+  podMetricsEndpoints:
+    - port: metrics
+      {{- if .Values.cluster.monitoring.tls.enabled }}
+      scheme: https
+      tlsConfig:
+        ca:
+          secret:
+            name: {{ include "cluster.fullname" . }}-ca
+            key: ca.crt
+        serverName: {{ include "cluster.fullname" . }}-rw
+      {{- end }}
+      {{- with .Values.cluster.monitoring.podMonitor.relabelings }}
+      relabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.cluster.monitoring.podMonitor.metricRelabelings }}
+      metricRelabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

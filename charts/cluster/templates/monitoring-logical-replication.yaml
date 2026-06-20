@@ -1,0 +1,103 @@
+{{- if .Values.cluster.monitoring.instrumentation.logicalReplication }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cluster.fullname" . }}-monitoring-logical-replication
+  namespace: {{ include "cluster.namespace" . }}
+  labels:
+    cnpg.io/reload: ""
+    {{- include "cluster.labels" . | nindent 4 }}
+data:
+  custom-queries: |
+    pg_stat_subscription:
+      query: |
+        SELECT current_database() AS datname
+             , s.oid AS subid
+             , s.subname AS subname
+             , subenabled AS enabled
+             , worker_type
+             , relid
+             , pg_wal_lsn_diff(received_lsn, '0/0') AS received_lsn
+             , last_msg_send_time
+             , last_msg_receipt_time
+             , pg_wal_lsn_diff(latest_end_lsn, '0/0') AS latest_end_lsn
+             , latest_end_time
+             , apply_error_count
+             , sync_error_count
+             , stats_reset
+             , ss.pid
+             , CASE
+                 WHEN received_lsn IS NOT NULL AND latest_end_lsn IS NOT NULL
+                 THEN GREATEST(0, pg_wal_lsn_diff(received_lsn, latest_end_lsn))
+                 ELSE NULL
+               END AS buffered_lag_bytes
+             , CASE
+                 WHEN last_msg_receipt_time IS NOT NULL
+                 THEN EXTRACT(EPOCH FROM (NOW() - last_msg_receipt_time))
+                 ELSE NULL
+               END AS receipt_lag_seconds
+             , CASE
+                 WHEN latest_end_time IS NOT NULL
+                 THEN EXTRACT(EPOCH FROM (NOW() - latest_end_time))
+                 ELSE NULL
+               END AS apply_lag_seconds
+        FROM pg_subscription s
+        LEFT JOIN pg_stat_subscription ss ON s.oid = ss.subid
+        LEFT JOIN pg_stat_subscription_stats sss ON s.oid = sss.subid;
+      target_databases: ["*"]
+      metrics:
+        - datname:
+            description: Name of the database
+            usage: LABEL
+        - subid:
+            description: ID of the subscription
+            usage: LABEL
+        - subname:
+            description: Name of the subscription
+            usage: LABEL
+        - worker_type:
+            description: Type of the worker
+            usage: LABEL
+        - relid:
+            description: OID of the relation
+            usage: LABEL
+        - received_lsn:
+            description: Last written LSN received from the publisher
+            usage: GAUGE
+        - last_msg_send_time:
+            description: Timestamp of the last message sent
+            usage: GAUGE
+        - last_msg_receipt_time:
+            description: Timestamp of the last message receipt
+            usage: GAUGE
+        - latest_end_lsn:
+            description: Latest end LSN received
+            usage: GAUGE
+        - latest_end_time:
+            description: Timestamp of the latest end LSN processed
+            usage: GAUGE
+        - enabled:
+            description: Subscription status (enabled/disabled)
+            usage: GAUGE
+        - apply_error_count:
+            description: Number of times an error occurred while applying changes
+            usage: GAUGE
+        - sync_error_count:
+            description: Number of times an error occurred during the initial table synchronization
+            usage: GAUGE
+        - stats_reset:
+            description: Time at which these statistics were last reset
+            usage: GAUGE
+        - pid:
+            description: Process ID of the subscription worker process
+            usage: GAUGE
+        - buffered_lag_bytes:
+            description: Bytes buffered but not yet applied (received_lsn - latest_end_lsn)
+            usage: GAUGE
+        - receipt_lag_seconds:
+            description: Seconds since last message receipt
+            usage: GAUGE
+        - apply_lag_seconds:
+            description: Seconds since last apply operation
+            usage: GAUGE
+{{- end }}

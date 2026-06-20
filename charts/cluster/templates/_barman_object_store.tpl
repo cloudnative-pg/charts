@@ -6,7 +6,7 @@
 
 {{- if or (.scope.endpointCA.create) (.scope.endpointCA.name) }}
   endpointCA:
-    name: {{.scope.endpointCA.name }}
+    name: {{ .scope.endpointCA.name }}
     key: {{ .scope.endpointCA.key }}
 {{- end }}
 

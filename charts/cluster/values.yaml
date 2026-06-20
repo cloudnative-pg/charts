@@ -5,7 +5,6 @@ fullnameOverride: ""
 # -- Override the namespace of the chart
 namespaceOverride: ""
 
-###
 # -- Type of the CNPG database. Available types:
 # * `postgresql`
 # * `postgis`
@@ -20,7 +19,6 @@ version:
   # -- If using PostGIS, specify the version
   postgis: "3.4"
 
-###
 # -- Cluster mode of operation. Available modes:
 # * `standalone` - default mode. Creates new or updates an existing CNPG cluster.
 # * `replica` - Creates a replica cluster from an existing CNPG cluster.
@@ -28,7 +26,6 @@ version:
 mode: standalone
 
 recovery:
-  ##
   # -- Available recovery methods:
   # * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.
   # * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported).
@@ -37,26 +34,26 @@ recovery:
   # * `import` - Import one or more databases from an existing Postgres cluster.
   method: backup
 
-  ## -- Point in time recovery target. Specify one of the following:
+  # -- Point in time recovery target. Specify one of the following:
   pitrTarget:
     # -- Time in RFC3339 format
     time: ""
 
-  ##
   # -- Backup Recovery Method
   backupName: ""  # Name of the backup to recover from. Required if method is `backup`.
 
-  ##
   # -- The original cluster name when used in backups. Also known as serverName.
   clusterName: ""
   # -- Name of the database used by the application. Default: `app`.
   database: app
   # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
   owner: ""
-  # -- Overrides the provider specific default endpoint. Defaults to:
+  # -- Overrides the provider specific default endpoint.
+  endpointURL: ""
+  # Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
   # Leave empty if using the default S3 endpoint
-  endpointURL: ""
+
   # -- Specifies a CA bundle to validate a privately signed certificate.
   endpointCA:
     # -- Creates a secret with the given value if true, otherwise uses an existing secret.
@@ -64,11 +61,13 @@ recovery:
     name: ""
     key: ""
     value: ""
-  # -- Overrides the provider specific default path. Defaults to:
+  # -- Overrides the provider specific default path.
+  destinationPath: ""
+  # Defaults to:
   # S3: s3://<bucket><path>
   # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
   # Google: gs://<bucket><path>
-  destinationPath: ""
+
   # -- One of `s3`, `azure` or `google`
   provider: s3
   s3:
@@ -309,6 +308,9 @@ cluster:
     podMonitor:
       # -- Whether to enable the PodMonitor
       enabled: true
+      # -- Additional labels to set on the generated PodMonitor resource.
+      # Add labels your monitoring stack requires (for example `team-name`).
+      labels: {}
       # --The list of relabelings for the PodMonitor.
       # Applied to samples before scraping.
       relabelings: []
@@ -321,6 +323,12 @@ cluster:
       # -- Exclude specified rules
       excludeRules: []
         # - CNPGClusterZoneSpreadWarning
+    # Additional instrumentation via custom metrics
+    instrumentation:
+      # -- Enable logical replication metrics
+      logicalReplication: true
+      # -- Enable planning and execution statistics for all SQL statements. Increases shared memory usage.
+      pgStatStatements: false
     # -- Whether the default queries should be injected.
     # Set it to true if you don't want to inject default queries into the cluster.
     disableDefaultQueries: false
@@ -338,6 +346,11 @@ cluster:
     #      - ratio:
     #          usage: GAUGE
     #          description: "Cache hit ratio"
+
+    # TLS usage for monitoring
+    tls:
+      # -- Whether to enable TLS on the metrics port.
+      enabled: false
     # -- The list of secrets containing the custom queries
     customQueriesSecret: []
     #  - name: custom-queries-secret
@@ -347,19 +360,24 @@ cluster:
     # -- PostgreSQL configuration options (postgresql.conf)
     parameters: {}
       # max_connections: 300
+
     # -- Quorum-based Synchronous Replication
     synchronous: {}
      # method: any
      # number: 1
+
     # -- PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file)
     pg_hba: []
       # - host all all 10.244.0.0/16 md5
+
     # -- PostgreSQL User Name Maps rules (lines to be appended to the pg_ident.conf file)
     pg_ident: []
       # - mymap   /^(.*)@mydomain\.com$      \1
+
     # -- Lists of shared preload libraries to add to the default ones
     shared_preload_libraries: []
       # - pgaudit
+
     # -- PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)
     ldap: {}
       # https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration
@@ -372,6 +390,20 @@ cluster:
           # key: 'data'
         # searchAttribute: 'uid'
 
+  # -- Replication slot management. To make logical decoding slots survive
+  # failover for CDC consumers (e.g. Debezium), enable
+  # `highAvailability.synchronizeLogicalDecoding`, set
+  # `cluster.postgresql.parameters.hot_standby_feedback: "on"` and
+  # `cluster.postgresql.parameters.sync_replication_slots: "on"`, and ensure
+  # the CDC client creates its logical slot with `failover = true`.
+  # Requires CloudNativePG 1.27+ and PostgreSQL 17+ for native failover slots.
+  # See: https://cloudnative-pg.io/documentation/current/replication/#replication-slots
+  replicationSlots: {}
+    # highAvailability:
+    #   enabled: true
+    #   slotPrefix: "_cnpg_"
+    #   synchronizeLogicalDecoding: true
+    # updateInterval: 30
 
   # -- BootstrapInitDB is the configuration of the bootstrap process when initdb is used.
   # See: https://cloudnative-pg.io/documentation/current/bootstrap/
@@ -391,17 +423,31 @@ cluster:
   # -- Configure the metadata of the generated service account
   serviceAccountTemplate: {}
 
+  # -- Configure the Pod Security Context.
+  # See: https://cloudnative-pg.io/documentation/preview/security/
+  podSecurityContext: {}
+
+  # -- Configure Container Security Context.
+  # See: https://cloudnative-pg.io/documentation/preview/security/
+  securityContext: {}
+
   additionalLabels: {}
   annotations: {}
 
+  console:
+    # -- Deploys a console StatefulSet to run long-running commands against the cluster (e.g. `CREATE INDEX`).
+    enabled: false
 
 backups:
   # -- You need to configure backups manually, so backups are disabled by default.
   enabled: false
 
-  # -- Overrides the provider specific default endpoint. Defaults to:
+  # -- Overrides the provider specific default endpoint.
+  endpointURL: ""
+  # Defaults to:
   # S3: https://s3.<region>.amazonaws.com"
-  endpointURL: ""  # Leave empty if using the default S3 endpoint
+  # Leave empty if using the default S3 endpoint
+
   # -- Specifies a CA bundle to validate a privately signed certificate.
   endpointCA:
     # -- Creates a secret with the given value if true, otherwise uses an existing secret.
@@ -410,11 +456,13 @@ backups:
     key: ""
     value: ""
 
-  # -- Overrides the provider specific default path. Defaults to:
+  # -- Overrides the provider specific default path.
+  destinationPath: ""
+  # Defaults to:
   # S3: s3://<bucket><path>
   # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
   # Google: gs://<bucket><path>
-  destinationPath: ""
+
   # -- One of `s3`, `azure` or `google`
   provider: s3
   s3:
@@ -475,7 +523,7 @@ backups:
   retentionPolicy: "30d"
 
 replica:
-  # --  Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.
+  # -- Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.
   self: ""
   # -- Primary defines which Cluster is defined to be the primary in the distributed PostgreSQL cluster, based on the topology specified in externalClusters
   primary: ""
@@ -484,7 +532,7 @@ replica:
   # -- When replica mode is enabled, this parameter allows you to replay transactions only when the system time is at least the configured time past the commit time. This provides an opportunity to correct data loss errors. Note that when this parameter is set, a promotion token cannot be used.
   minApplyDelay: ""
   bootstrap:
-    # --  One of `object_store` or `pg_basebackup`. Method to use for bootstrap.
+    # -- One of `object_store` or `pg_basebackup`. Method to use for bootstrap.
     source: ""
     # -- Name of the database used by the application
     database: ""
@@ -496,11 +544,13 @@ replica:
     objectStore:
       # -- The original cluster name when used in backups. Also known as serverName.
       clusterName: ""
-      # -- Overrides the provider specific default path. Defaults to:
+      # -- Overrides the provider specific default path.
+      destinationPath: ""
+      # Defaults to:
       # S3: s3://<bucket><path>
       # Azure: https://<storageAccount>.<serviceName>.core.windows.net/<containerName><path>
       # Google: gs://<bucket><path>
-      destinationPath: ""
+
       # -- Specifies a CA bundle to validate a privately signed certificate.
       endpointCA:
         # -- Creates a secret with the given value if true, otherwise uses an existing secret.
@@ -555,8 +605,8 @@ replica:
       passwordSecret:
         name: ""
         key: ""
-##
-# Database management configuration
+
+# -- Database management configuration.
 databases: []
  # - name: app                      # -- Name of the database to be created.
  #   ensure: present                # -- Ensure the PostgreSQL database is present or absent - defaults to "present".
@@ -614,6 +664,15 @@ poolers: []
   #     podMonitor:
   #         # -- Whether to enable the PodMonitor
   #       enabled: true
+  #       # -- Additional labels to set on the generated PodMonitor resource.
+  #       # Add labels your monitoring stack requires (for example `team-name`).
+  #       labels: {}
+  #       # --The list of relabelings for the PodMonitor.
+  #       # Applied to samples before scraping.
+  #       relabelings: []
+  #       # -- The list of metric relabelings for the PodMonitor.
+  #       # Applied to samples before ingestion.
+  #       metricRelabelings: []
   #   # -- Custom PgBouncer deployment template.
   #   # Use to override image, specify resources, etc.
   #   template: {}
@@ -636,6 +695,15 @@ poolers: []
   #     podMonitor:
   #         # -- Whether to enable the PodMonitor
   #       enabled: true
+  #       # -- Additional labels to set on the generated PodMonitor resource.
+  #       # Add labels your monitoring stack requires (for example `team-name`).
+  #       labels: {}
+  #       # --The list of relabelings for the PodMonitor.
+  #       # Applied to samples before scraping.
+  #       relabelings: []
+  #       # -- The list of metric relabelings for the PodMonitor.
+  #       # Applied to samples before ingestion.
+  #       metricRelabelings: []
   #   # -- Custom PgBouncer deployment template.
   #   # Use to override image, specify resources, etc.
   #   template: {}
