@@ -1,0 +1,31 @@
+# Tests the Barman Cloud CNPG-I Plugin with ScheduledBackups
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: barman-plugin-scheduledbackups
+spec:
+  timeouts:
+    apply: 1s
+    assert: 2m
+    cleanup: 5m
+  steps:
+    - name: Install the cluster with ScheduledBackups
+      try:
+        - script:
+            content: |
+              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n kube-system get configmaps kube-root-ca.crt -o jsonpath='{.data.ca\.crt}')" --dry-run=client -o yaml | kubectl apply -f -
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-scheduledbackups_cluster.yaml \
+                --wait \
+                scheduledbackups ../../
+        - assert:
+            file: ./01-scheduledbackups_cluster-assert.yaml
+        - apply:
+            file: ./01.1-checkpoint.yaml
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE scheduledbackups
