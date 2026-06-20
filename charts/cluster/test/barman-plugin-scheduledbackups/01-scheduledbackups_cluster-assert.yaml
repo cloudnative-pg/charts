@@ -53,6 +53,11 @@ spec:
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Backup
+metadata:
+  ownerReferences:
+  - apiVersion: postgresql.cnpg.io/v1
+    kind: ScheduledBackup
+    name: scheduledbackups-cluster-daily-backup
 spec:
   method: plugin
   cluster:
@@ -60,3 +65,4 @@ spec:
   pluginConfiguration:
     name: barman-cloud.cloudnative-pg.io
 status:
+  phase: started
