@@ -50,7 +50,7 @@ recovery:
   # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
   owner: ""
 
-  pluginConfiguration:
+  pluginConfiguration: {}
     #name: barman-cloud.cloudnative-pg.io
     #parameters:
     #  serverName: cluster-example
