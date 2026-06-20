@@ -136,6 +136,7 @@ Kubernetes: `>=1.29.0-0`
 | backups.google.bucket | string | `""` |  |
 | backups.google.gkeEnvironment | bool | `false` |  |
 | backups.google.path | string | `"/"` |  |
+| backups.instanceSidecarConfiguration | object | `{}` | The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration |
 | backups.method | string | `"barmanObjectStore"` | One of `barmanObjectStore` (default) or `plugin` |
 | backups.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | backups.retentionPolicy | string | `"30d"` | Retention policy for backups |
@@ -257,6 +258,7 @@ Kubernetes: `>=1.29.0-0`
 | recovery.import.source.sslRootCertSecret.name | string | `""` |  |
 | recovery.import.source.username | string | `""` |  |
 | recovery.import.type | string | `"microservice"` | One of `microservice` or `monolith.` See: https://cloudnative-pg.io/documentation/current/database_import/#how-it-works |
+| recovery.instanceSidecarConfiguration | object | `{}` | The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration |
 | recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `plugin` - Recovers a CNPG cluster from a backup taken with a CloudNativePG plugin (e.g. barman-cloud). * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. * `import` - Import one or more databases from an existing Postgres cluster. |
 | recovery.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
 | recovery.pgBaseBackup.database | string | `"app"` | Name of the database used by the application. Default: `app`. |

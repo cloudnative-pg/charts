@@ -108,6 +108,9 @@ recovery:
     # -- Name of the backup credentials secret
     name: ""
 
+  # -- The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration
+  instanceSidecarConfiguration: {}
+
   # See https://cloudnative-pg.io/documentation/current/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
   pgBaseBackup:
     # -- Name of the database used by the application. Default: `app`.
@@ -516,6 +519,9 @@ backups:
     create: true
     # -- Name of the backup credentials secret
     name: ""
+
+  # -- The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration
+  instanceSidecarConfiguration: {}
 
   wal:
     # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
