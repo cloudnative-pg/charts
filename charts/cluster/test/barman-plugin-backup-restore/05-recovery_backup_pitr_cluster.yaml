@@ -29,7 +29,7 @@ recovery:
     accessKey: "minio"
     secretKey: "minio123"
     region: "local"
-  clusterName: "barman-plugin-backup-restore"
+  clusterName: "barman-plugin-backup-restore-cluster"
   retentionPolicy: "30d"
   scheduledBackups: []
 
