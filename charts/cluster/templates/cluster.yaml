@@ -123,6 +123,10 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 
+  {{- with .Values.cluster.plugins }}
+  plugins:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.cluster.podSecurityContext }}
   podSecurityContext:
     {{- toYaml . | nindent 4 }}

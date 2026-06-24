@@ -1,0 +1,14 @@
+{{- if .Values.cluster.objectStore.enabled }}
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ .Values.cluster.objectStore.name | default (printf "%s-object-store" (include "cluster.fullname" .)) }}
+  namespace: {{ include "cluster.namespace" . }}
+spec:
+  retentionPolicy: {{ .Values.cluster.objectStore.retentionPolicy }}
+  {{- if .Values.cluster.objectStore.instanceSidecarConfiguration }}
+  {{- toYaml .Values.cluster.objectStore.instanceSidecarConfiguration | nindent 2 }}
+  {{- end }}
+  {{- toYaml .Values.cluster.objectStore.configuration | nindent 2 }}
+{{- end }}

@@ -15,13 +15,10 @@ annotations:
   runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/{{ $alert }}.md
 expr: |
   (
-    # Receipt lag - time since last message received
     label_replace(max by (namespace, job, subname) (cnpg_pg_stat_subscription_receipt_lag_seconds), "cluster", "$1", "job", ".+/(.+)") > 60
   ) or (
-    # Apply lag - time delay in applying changes
     label_replace(max by (namespace, job, subname) (cnpg_pg_stat_subscription_apply_lag_seconds), "cluster", "$1", "job", ".+/(.+)") > 60
   ) or (
-    # LSN distance - bytes pending to be applied
     label_replace(max by (namespace, job, subname) (cnpg_pg_stat_subscription_buffered_lag_bytes), "cluster", "$1", "job", ".+/(.+)") / 1024^3 > 1
   )
 for: 5m

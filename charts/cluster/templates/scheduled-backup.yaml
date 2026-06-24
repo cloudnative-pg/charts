@@ -1,0 +1,30 @@
+{{- if .Values.cluster.scheduledBackup.enabled }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: {{ include "cluster.fullname" . }}-scheduled-backup
+  namespace: {{ include "cluster.namespace" . }}
+spec:
+  backupOwnerReference: {{ .Values.cluster.scheduledBackup.backupOwnerReference }}
+  cluster:
+    name: {{ include "cluster.fullname" . }}
+  immediate: {{ .Values.cluster.scheduledBackup.immediate }}
+  method: {{ .Values.cluster.scheduledBackup.method }}
+  {{- if .Values.cluster.scheduledBackup.online }}
+  online: {{ .Values.cluster.scheduledBackup.online }}
+  {{- end }}
+  {{- if .Values.cluster.scheduledBackup.onlineConfiguration }}
+  {{- toYaml .Values.cluster.scheduledBackup.onlineConfiguration | nindent 2 }}
+  {{- end }}
+  {{- if .Values.cluster.scheduledBackup.pluginConfiguration }}
+  {{- toYaml .Values.cluster.scheduledBackup.pluginConfiguration | nindent 2 }}
+  {{- end }}
+  schedule: {{ .Values.cluster.scheduledBackup.schedule }}
+  {{- if .Values.cluster.scheduledBackup.suspend }}
+  suspend: {{ .Values.cluster.scheduledBackup.suspend }}
+  {{- end }}
+  {{- if .Values.cluster.scheduledBackup.target }}
+  target: {{ .Values.cluster.scheduledBackup.target }}
+  {{- end }}
+{{- end }}
