@@ -133,6 +133,10 @@
           "description": "One of `barmanObjectStore` (default) or `plugin`",
           "type": "string"
         },
+        "pluginConfiguration": {
+          "required": [],
+          "type": "object"
+        },
         "provider": {
           "default": "s3",
           "description": "One of `s3`, `azure` or `google`",
