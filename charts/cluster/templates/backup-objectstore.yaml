@@ -6,6 +6,7 @@ metadata:
   namespace: {{ include "cluster.namespace" . }}
   {{- with .Values.cluster.annotations }}
   annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
