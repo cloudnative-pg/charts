@@ -28,4 +28,6 @@ spec:
       try:
         - script:
             content: |
-              helm uninstall --namespace $NAMESPACE scheduledbackups
+              kubectl --namespace $NAMESPACE delete scheduledbackups.postgresql.cnpg.io --all
+              kubectl --namespace $NAMESPACE delete backups.postgresql.cnpg.io --all
+              helm --namespace $NAMESPACE uninstall scheduledbackups
