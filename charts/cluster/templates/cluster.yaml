@@ -153,16 +153,15 @@ spec:
   {{ include "cluster.externalClusters" . | nindent 2 -}}
   {{ include "cluster.backup" . | nindent 2 -}}
 
-  {{- $plugins := len .Values.cluster.plugins -}}
-  {{- if and (gt $plugins 0) (or (gt $plugins 1) (and .Values.backups.enabled (eq (include "cluster.barmanPluginEnabled" .) "true") (eq .Values.backups.method "plugin"))) }}
+  {{- if gt (len .Values.cluster.plugins) 0 }}
   plugins:
     {{ $pluginsWithoutBarman := include "helpers.omitKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYamlArray }}
     {{- range $pluginsWithoutBarman -}}
     - {{ toYaml . | indent 6 | trim }}
     {{- end }}
-    {{- if and .Values.backups.enabled (eq (include "cluster.barmanPluginEnabled" .) "true") (eq .Values.backups.method "plugin") }}
+    {{- if and (eq (include "cluster.barmanPluginEnabled" .) "true") (and .Values.backups.enabled (eq .Values.backups.method "plugin") (eq .Values.backups.pluginConfiguration.name "barman-cloud.cloudnative-pg.io")) }}
     {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml -}}
-    - name: {{ $barmanPlugin.name }}
+    - name: barman-cloud.cloudnative-pg.io
       enabled: true
       isWALArchiver: true
       parameters:
