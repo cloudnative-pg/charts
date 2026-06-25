@@ -90,6 +90,9 @@ spec:
             content: sleep 1
         - assert:
             file: ./04.2-barman-plugin-migration_cluster-assert.yaml
+      catch:
+        - podLogs:
+            selector: cnpg.io/cluster=barman-plugin-migration-cluster
     - name: Create a buckup with the Barman CNPG-I plugin
       try:
         - apply:
