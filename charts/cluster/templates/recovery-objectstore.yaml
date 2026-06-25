@@ -17,7 +17,6 @@ spec:
   configuration:
     {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
     {{- include "cluster.barmanObjectStoreConfig" $d | indent 2 }}
-  retentionPolicy: {{ .Values.recovery.retentionPolicy }}
   instanceSidecarConfiguration:
     {{- .Values.recovery.instanceSidecarConfiguration | toYaml | nindent 4 }}
 {{- end }}
