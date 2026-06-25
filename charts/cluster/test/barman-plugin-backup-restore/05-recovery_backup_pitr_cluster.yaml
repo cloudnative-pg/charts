@@ -5,15 +5,12 @@ cluster:
   instances: 2
   storage:
     size: 256Mi
-  plugins:
-    - name: barman-cloud.cloudnative-pg.io
-      enabled: true
-      isWALArchiver: true
 
 recovery:
   method: plugin
   pluginConfiguration:
     name: barman-cloud.cloudnative-pg.io
+  clusterName: "barman-plugin-backup-restore-cluster"
   provider: s3
   endpointURL: "https://minio.minio.svc.cluster.local"
   endpointCA:
@@ -29,13 +26,14 @@ recovery:
     accessKey: "minio"
     secretKey: "minio123"
     region: "local"
-  clusterName: "barman-plugin-backup-restore-cluster"
-  retentionPolicy: "30d"
   scheduledBackups: []
+  retentionPolicy: "30d"
 
 backups:
-  enabled: true
+  enabled: false
   method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
   provider: s3
   endpointURL: "https://minio.minio.svc.cluster.local"
   endpointCA:
