@@ -1,4 +1,4 @@
-{{- if and (eq .Values.mode "recovery" ) (eq .Values.recovery.provider "s3") (not .Values.recovery.s3.inheritFromIAMRole) .Values.recovery.secret.create }}
+{{- if and (eq .Values.mode "recovery" ) (eq .Values.recovery.provider "s3") (has .Values.recovery.method (list "backup" "import" "pg_basebackup")) (not .Values.recovery.s3.inheritFromIAMRole) .Values.recovery.secret.create }}
 apiVersion: v1
 kind: Secret
 metadata:
