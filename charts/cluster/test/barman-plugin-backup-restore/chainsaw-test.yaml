@@ -35,29 +35,16 @@ spec:
             kind: Cluster
         - podLogs:
             selector: cnpg.io/cluster=barman-plugin-backup-restore-cluster
-    - name: Write some data to the cluster
-      timeouts:
-        apply: 1s
-        assert: 30s
-      try:
-        - apply:
-            file: ./02-data_write.yaml
-        - assert:
-            file: ./02-data_write-assert.yaml
-      catch:
-        - describe:
-            apiVersion: batch/v1
-            kind: Job
-        - podLogs:
-            selector: batch.kubernetes.io/job-name=data-test
     - name: Create a backup
       try:
         - apply:
-            file: ./03-backup.yaml
+            file: ./02-backup.yaml
         - apply:
-            file: ./03-checkpoint.yaml
+            file: ./02-checkpoint.yaml
         - assert:
-            file: ./03-backup_completed-assert.yaml
+            file: ./02-backup_running-assert.yaml
+        - assert:
+            file: ./02-backup_completed-assert.yaml
       catch:
         - describe:
             apiVersion: postgresql.cnpg.io/v1
@@ -67,6 +54,21 @@ spec:
             kind: Cluster
         - podLogs:
             selector: cnpg.io/cluster=barman-plugin-backup-restore-cluster
+    - name: Write some data to the cluster
+      timeouts:
+        apply: 1s
+        assert: 30s
+      try:
+        - apply:
+            file: ./03-data_write.yaml
+        - assert:
+            file: ./03-data_write-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test
     - name: Write more data to the database after the backup
       try:
         - apply:
