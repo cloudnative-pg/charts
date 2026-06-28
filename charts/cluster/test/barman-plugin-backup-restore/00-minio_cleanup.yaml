@@ -8,7 +8,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: minio-cleanup
-        image: minio/mc
+        image: minio/mc:latest
         command: ['sh', '-c']
         args:
          - |
