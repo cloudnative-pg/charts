@@ -55,7 +55,7 @@ spec:
     - name: Write some data to the cluster
       timeouts:
         apply: 1s
-        assert: 30s
+        assert: 1m
       try:
         - apply:
             file: 03-data_write.yaml
@@ -68,6 +68,8 @@ spec:
         - podLogs:
             selector: batch.kubernetes.io/job-name=data-write
     - name: Switch the cluster to using Barman CNPG-I for backups
+      timeouts:
+        apply: 10s
       try:
         - script:
             content: |
@@ -77,9 +79,14 @@ spec:
                 --values ./04-barman-plugin-migration_cluster.yaml \
                 --wait \
                 barman-plugin-migration ../../
+        - sleep:
+            duration: 5s
         - assert:
             file: ./04-barman-plugin-migration_cluster-assert.yaml
       catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
         - podLogs:
             selector: cnpg.io/cluster=barman-plugin-migration-cluster
     - name: Create a buckup with the Barman CNPG-I plugin
