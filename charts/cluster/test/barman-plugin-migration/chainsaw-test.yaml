@@ -74,22 +74,11 @@ spec:
               kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n kube-system get configmaps kube-root-ca.crt -o jsonpath='{.data.ca\.crt}')" --dry-run=client -o yaml | kubectl apply -f -
               helm upgrade \
                 --namespace $NAMESPACE \
-                --values ./04.1-barman-plugin-migration_cluster.yaml \
+                --values ./04-barman-plugin-migration_cluster.yaml \
                 --wait \
                 barman-plugin-migration ../../
         - assert:
-            file: ./04.1-barman-plugin-migration_cluster-assert.yaml
-        - script:
-            content: |
-              helm upgrade \
-                --namespace $NAMESPACE \
-                --values ./04.2-barman-plugin-migration_cluster.yaml \
-                --wait \
-                barman-plugin-migration ../../
-        - script:
-            content: sleep 1
-        - assert:
-            file: ./04.2-barman-plugin-migration_cluster-assert.yaml
+            file: ./04-barman-plugin-migration_cluster-assert.yaml
       catch:
         - podLogs:
             selector: cnpg.io/cluster=barman-plugin-migration-cluster
