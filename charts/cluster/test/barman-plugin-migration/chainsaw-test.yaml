@@ -173,4 +173,6 @@ spec:
       try:
         - script:
             content: |
+              kubectl --namespace $NAMESPACE delete scheduledbackups.postgresql.cnpg.io --all
+              kubectl --namespace $NAMESPACE delete backups.postgresql.cnpg.io --all
               helm uninstall --namespace $NAMESPACE barman-plugin-migration
