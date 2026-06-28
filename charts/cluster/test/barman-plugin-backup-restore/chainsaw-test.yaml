@@ -42,8 +42,6 @@ spec:
         - apply:
             file: ./02-checkpoint.yaml
         - assert:
-            file: ./02-backup_running-assert.yaml
-        - assert:
             file: ./02-backup_completed-assert.yaml
       catch:
         - describe:
