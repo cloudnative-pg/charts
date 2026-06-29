@@ -1,0 +1,41 @@
+# Tests the Barman Cloud CNPG-I Plugin with explicit plugin configuration
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: barman-plugin-explicit
+spec:
+  timeouts:
+    apply: 1s
+    assert: 5s
+    cleanup: 1m
+  steps:
+    - name: Install a cluster with a custom plugin section
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-barman_plugin_explicit_config_cluster.yaml \
+                --wait \
+                barman-plugin-explicit-config ../../
+        - assert:
+            file: ./01-barman_plugin_explicit_config_cluster-assert.yaml
+    - name: Install the cluster with a custom plugin section that overrides the default configuration
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./02-barman_plugin_config_override_cluster.yaml \
+                --wait \
+                barman-plugin-config-override ../../
+        - assert:
+            file: ./02-barman_plugin_config_override_cluster-assert.yaml
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm --namespace $NAMESPACE uninstall barman-plugin-explicit-config
+              helm --namespace $NAMESPACE uninstall  barman-plugin-config-override
