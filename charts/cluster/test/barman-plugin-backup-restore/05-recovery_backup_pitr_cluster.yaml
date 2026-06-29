@@ -30,7 +30,7 @@ recovery:
   retentionPolicy: "30d"
 
 backups:
-  enabled: false
+  enabled: true
   method: plugin
   pluginConfiguration:
     name: barman-cloud.cloudnative-pg.io
