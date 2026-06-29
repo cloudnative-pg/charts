@@ -230,3 +230,13 @@ Given a list of objects, returns the first item that matches the key value pairs
 {{- define "cluster.barmanPluginEnabled" -}}
   {{- eq (include "helpers.hasKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io") (list "isWALArchiver" true)))) "true" -}}
 {{- end -}}
+
+{{- define "cluster.barmanPluginRequired" -}}
+  {{- $required := false -}}
+  {{- if and .Values.backups.enabled (eq .Values.backups.method "plugin") -}}
+    {{- if eq .Values.backups.pluginConfiguration.name "barman-cloud.cloudnative-pg.io" -}}
+      {{- $required = true -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $required -}}
+{{- end -}}
