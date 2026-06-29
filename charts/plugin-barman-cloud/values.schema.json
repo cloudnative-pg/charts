@@ -123,6 +123,13 @@
       "default": "",
       "type": "string"
     },
+    "extraObjects": {
+      "description": "Extra Kubernetes manifests to deploy alongside the barman cloud plugin.\nEach entry is passed through `tpl`, so Helm templating is supported.",
+      "items": {
+        "required": []
+      },
+      "type": "array"
+    },
     "fullnameOverride": {
       "default": "",
       "type": "string"
