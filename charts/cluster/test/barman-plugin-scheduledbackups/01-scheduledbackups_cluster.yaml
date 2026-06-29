@@ -4,10 +4,6 @@ cluster:
   instances: 1
   storage:
     size: 256Mi
-  plugins:
-    - name: barman-cloud.cloudnative-pg.io
-      enabled: true
-      isWALArchiver: true
 
 backups:
   enabled: true
