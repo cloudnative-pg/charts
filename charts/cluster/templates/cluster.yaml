@@ -153,22 +153,23 @@ spec:
   {{ include "cluster.externalClusters" . | nindent 2 -}}
   {{ include "cluster.backup" . | nindent 2 -}}
 
-  {{- if gt (len .Values.cluster.plugins) 0 }}
+  {{- if or (gt (len .Values.cluster.plugins) 0) (eq (include "cluster.barmanPluginRequired" .) "true") }}
   plugins:
     {{ $pluginsWithoutBarman := include "helpers.omitKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYamlArray }}
     {{- range $pluginsWithoutBarman -}}
     - {{ toYaml . | indent 6 | trim }}
     {{- end }}
     {{- if or (eq (include "cluster.barmanPluginEnabled" .) "true") (eq (include "cluster.barmanPluginRequired" .) "true") }}
-    {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml -}}
+    {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml }}
     - name: barman-cloud.cloudnative-pg.io
-      enabled: {{ eq (include "cluster.barmanPluginRequired" .) "true" | default $barmanPlugin.enabled }}
-      isWALArchiver: {{ eq (include "cluster.barmanPluginRequired" .) "true" | default $barmanPlugin.isWALArchiver }}
+      enabled: {{ eq $barmanPlugin.enabled nil | ternary (eq (include "cluster.barmanPluginRequired" .) "true") $barmanPlugin.enabled }}
+      isWALArchiver: {{ eq $barmanPlugin.isWALArchiver nil | ternary (eq (include "cluster.barmanPluginRequired" .) "true") $barmanPlugin.isWALArchiver }}
       parameters:
-        {{- $parameters := (omit (coalesce $barmanPlugin.parameters dict) "barmanObjectName") -}}
-        {{ with $parameters }}
-        {{ toYaml . | indent 8 | trim }}
+        {{- $parameters := (coalesce $barmanPlugin.parameters dict) -}}
+        {{- $parametersWithoutObjectName := (omit $parameters "barmanObjectName") }}
+        {{ with $parametersWithoutObjectName }}
+          {{- toYaml . | indent 8 | trim }}
         {{- end }}
-        barmanObjectName: {{ printf "%s-backups" (include "cluster.fullname" .) | default $barmanPlugin.barmanObjectName }}-backups
+        barmanObjectName: {{ $parameters.barmanObjectName | default (printf "%s-backups" (include "cluster.fullname" .)) }}
     {{- end }}
   {{- end }}
