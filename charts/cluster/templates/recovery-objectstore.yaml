@@ -4,11 +4,11 @@ kind: ObjectStore
 metadata:
   name: {{ include "cluster.fullname" . }}-recovery
   namespace: {{ include "cluster.namespace" . }}
-  {{- with .Values.cluster.annotations }}
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- with .Values.cluster.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
   labels:
   {{- include "cluster.labels" . | nindent 4 }}
   {{- with .Values.cluster.additionalLabels }}
