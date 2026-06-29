@@ -1,0 +1,13 @@
+{{- if and .Values.barmanCloudPlugin.enabled (not .Values.barmanCloudPlugin.s3.inheritFromIAMRole) .Values.barmanCloudPlugin.s3.secret.create }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "cluster.barmanCloudPlugin.secretName" . }}
+  namespace: {{ include "cluster.namespace" . }}
+  labels:
+  {{- include "cluster.labels" . | nindent 4 }}
+type: Opaque
+data:
+  {{ .Values.barmanCloudPlugin.s3.secret.accessKeyIdKey }}: {{ required ".Values.barmanCloudPlugin.s3.accessKey is required when barmanCloudPlugin.s3.secret.create is true." .Values.barmanCloudPlugin.s3.accessKey | b64enc | quote }}
+  {{ .Values.barmanCloudPlugin.s3.secret.secretAccessKeyKey }}: {{ required ".Values.barmanCloudPlugin.s3.secretKey is required when barmanCloudPlugin.s3.secret.create is true." .Values.barmanCloudPlugin.s3.secretKey | b64enc | quote }}
+{{- end }}

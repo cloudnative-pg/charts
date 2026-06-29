@@ -1,0 +1,25 @@
+type: postgresql
+mode: standalone
+
+cluster:
+  instances: 3
+  storage:
+    size: 8Gi
+
+barmanCloudPlugin:
+  enabled: true
+  s3:
+    region: eu-west-1
+    bucket: mybucket
+    path: /cluster
+    inheritFromIAMRole: true
+  wal:
+    compression: gzip
+    maxParallel: 2
+  data:
+    compression: gzip
+    jobs: 2
+  scheduledBackups:
+    - name: daily-backup
+      schedule: "0 0 0 * * *"
+      backupOwnerReference: self

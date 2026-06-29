@@ -522,6 +522,105 @@ backups:
   # -- Retention policy for backups
   retentionPolicy: "30d"
 
+barmanCloudPlugin:
+  # -- Enable the Barman Cloud CNPG-I plugin integration.
+  enabled: false
+  # -- Name of the installed CNPG-I plugin.
+  pluginName: barman-cloud.cloudnative-pg.io
+  # -- Optional server name plugin parameter. Leave empty for the cluster name default.
+  serverName: ""
+  # -- Additional plugin parameters rendered under spec.plugins[].parameters.
+  additionalPluginParameters: {}
+  objectStore:
+    # -- Name of the ObjectStore resource. Defaults to <release>-barman-store.
+    name: ""
+    annotations: {}
+  # -- ObjectStore retention policy.
+  retentionPolicy: "30d"
+  # -- Full object store destination path. If empty, s3.bucket and s3.path are used.
+  destinationPath: ""
+  # -- Object store endpoint URL. If empty and s3.region is set, AWS S3 endpoint is derived.
+  endpointURL: ""
+  # -- Optional endpoint CA reference.
+  endpointCA: {}
+  s3:
+    # -- AWS region used to derive the default S3 endpoint when endpointURL is empty.
+    region: ""
+    # -- S3 bucket used when destinationPath is empty.
+    bucket: ""
+    # -- S3 path used when destinationPath is empty.
+    path: "/"
+    # -- Use role-based authentication instead of explicit credentials.
+    inheritFromIAMRole: false
+    # -- Access key value, only used when s3.secret.create is true.
+    accessKey: ""
+    # -- Secret key value, only used when s3.secret.create is true.
+    secretKey: ""
+    secret:
+      # -- Whether the chart should create a Kubernetes Secret for S3 credentials.
+      create: false
+      # -- Name of the Secret containing S3 credentials. Defaults to <release>-barman-s3-creds.
+      name: ""
+      accessKeyIdKey: ACCESS_KEY_ID
+      secretAccessKeyKey: ACCESS_SECRET_KEY
+    externalSecret:
+      # -- Whether the chart should create an ExternalSecret for S3 credentials.
+      enabled: false
+      # -- Name of the ExternalSecret resource. Defaults to <secret name>-external-secret.
+      name: ""
+      annotations: {}
+      labels: {}
+      refreshInterval: 168h
+      secretStoreRef:
+        kind: ClusterSecretStore
+        name: ""
+      target:
+        creationPolicy: Owner
+        deletionPolicy: Retain
+        # -- Target Secret name. Defaults to barmanCloudPlugin.s3.secret.name or <release>-barman-s3-creds.
+        name: ""
+      remoteRefs:
+        accessKeyId:
+          key: ""
+          property: ""
+          conversionStrategy: Default
+          decodingStrategy: None
+          metadataPolicy: None
+        secretAccessKey:
+          key: ""
+          property: ""
+          conversionStrategy: Default
+          decodingStrategy: None
+          metadataPolicy: None
+  wal:
+    # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2`, `lz4`, `snappy`, `xz` or `zstd`.
+    compression: ""
+    # -- Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`.
+    encryption: ""
+    # -- Number of WAL files to be archived or restored in parallel. Set to 0 to omit the field.
+    maxParallel: 0
+  data:
+    # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2`, `lz4` or `snappy`.
+    compression: ""
+    # -- Whether to instruct the storage provider to encrypt data files. One of `` (use the storage container default), `AES256` or `aws:kms`.
+    encryption: ""
+    # -- Number of data files to be archived in parallel. Set to 0 to omit the field.
+    jobs: 0
+  scheduledBackups:
+    -
+      # -- Scheduled backup name
+      name: daily-backup
+      # -- Schedule in cron format
+      schedule: "0 0 0 * * *"
+      # -- Backup owner reference
+      backupOwnerReference: self
+      # -- Plugin name override. Defaults to barmanCloudPlugin.pluginName.
+      pluginName: ""
+  # -- Additional fields rendered under ObjectStore spec.configuration.
+  additionalConfiguration: {}
+  # -- Optional ObjectStore spec.instanceSidecarConfiguration.
+  instanceSidecarConfiguration: {}
+
 replica:
   # -- Defines the name of this cluster. It is used to determine if this is a primary or a replica cluster, comparing it with primary. Leave empty by default.
   self: ""
