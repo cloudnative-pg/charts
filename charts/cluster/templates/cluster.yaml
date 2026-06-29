@@ -162,8 +162,8 @@ spec:
     {{- if or (eq (include "cluster.barmanPluginEnabled" .) "true") (eq (include "cluster.barmanPluginRequired" .) "true") }}
     {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml -}}
     - name: barman-cloud.cloudnative-pg.io
-      enabled: {{ or (eq (include "cluster.barmanPluginRequired" .) "true") $barmanPlugin.enabled }}
-      isWALArchiver: {{ or (eq (include "cluster.barmanPluginRequired" .) "true") $barmanPlugin.isWALArchiver }}
+      enabled: {{ eq (include "cluster.barmanPluginRequired" .) "true" | default $barmanPlugin.enabled }}
+      isWALArchiver: {{ eq (include "cluster.barmanPluginRequired" .) "true" | default $barmanPlugin.isWALArchiver }}
       parameters:
         {{- $parameters := (omit (coalesce $barmanPlugin.parameters dict) "barmanObjectName") -}}
         {{ with $parameters }}
