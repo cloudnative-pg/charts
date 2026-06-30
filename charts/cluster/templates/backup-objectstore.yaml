@@ -1,4 +1,4 @@
-{{- if and .Values.backups.enabled (eq (include "cluster.barmanPluginEnabled" .) "true") }}
+{{- if eq (include "cluster.barmanPluginRequired" .) "true" }}
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
