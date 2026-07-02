@@ -10,6 +10,8 @@ spec:
     - name: barman-cloud.cloudnative-pg.io
       enabled: true
       isWALArchiver: true
+      parameters:
+        barmanObjectName: barman-plugin-migration-cluster-backups
 ---
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
