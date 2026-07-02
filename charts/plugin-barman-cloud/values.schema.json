@@ -221,6 +221,12 @@
           "default": true,
           "description": "Specifies whether Role and RoleBinding should be created.",
           "type": "boolean"
+        },
+        "aggregateClusterRoles": {
+          "default": false,
+          "description": "Specifies whether ClusterRoles should be aggregated to standard user roles",
+          "required": [],
+          "type": "boolean"
         }
       },
       "required": [],
