@@ -1,12 +1,7 @@
-apiVersion: postgresql.cnpg.io/v1
-kind: Backup
-metadata:
+apiVersion: v1
+kind: Event
+reason: Starting
+involvedObject:
+  apiVersion: postgresql.cnpg.io/v1
+  kind: Backup
   name: post-migrate-backup
-spec:
-  cluster:
-    name: barman-plugin-migration-cluster
-  method: plugin
-  pluginConfiguration:
-    name: barman-cloud.cloudnative-pg.io
-status:
-  phase: running
