@@ -86,6 +86,10 @@ bootstrap:
     {{ with .Values.recovery.owner }}
     owner: {{ . }}
     {{- end }}
+    {{ with .Values.recovery.secret.name }}
+    secret:
+      name: {{ . }}
+    {{- end }}
     {{- if eq .Values.recovery.method "backup" }}
     backup:
       name: {{ .Values.recovery.backupName }}
