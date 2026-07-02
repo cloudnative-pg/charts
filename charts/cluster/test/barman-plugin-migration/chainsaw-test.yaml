@@ -81,7 +81,9 @@ spec:
         - sleep:
             duration: 5s
         - assert:
-            file: ./04-barman-plugin-migration_cluster-assert.yaml
+            file: ./04-barman-plugin-migration_cluster-upgrading-assert.yaml
+        - assert:
+            file: ./04-barman-plugin-migration_cluster-healthy-assert.yaml
       catch:
         - describe:
             apiVersion: postgresql.cnpg.io/v1
