@@ -18,8 +18,11 @@ spec:
       restartPolicy: Never
       containers:
         - name: alpine
-          image: alpine:3.17
-          command: [ 'sh' ]
+          image: {{ required "Missing .Values.tests.ping.image" .Values.tests.ping.image }}
+          {{- with .Values.tests.ping.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           env:
             - name: PGUSER
               valueFrom:
@@ -37,8 +40,7 @@ spec:
                   name: {{ include "cluster.fullname" . }}-app
                   key: dbname
                   optional: true
+          {{- with .Values.tests.ping.args }}
           args:
-            - "-c"
-            - >-
-              apk add postgresql-client &&
-              psql "postgresql://$PGUSER:$PGPASS@{{ include "cluster.fullname" . }}-rw.{{ include "cluster.namespace" . }}.svc.cluster.local:5432/${PGDBNAME:-$PGUSER}" -c 'SELECT 1'
+            {{- tpl (toYamlPretty .) $ | nindent 12 }}
+          {{- end }}
