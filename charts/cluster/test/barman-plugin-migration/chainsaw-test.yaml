@@ -68,8 +68,6 @@ spec:
         - podLogs:
             selector: batch.kubernetes.io/job-name=data-write
     - name: Switch the cluster to using Barman CNPG-I for backups
-      timeouts:
-        apply: 10s
       try:
         - script:
             content: |
@@ -78,8 +76,6 @@ spec:
                 --values ./04-barman-plugin-migration_cluster.yaml \
                 --wait \
                 barman-plugin-migration ../../
-        - sleep:
-            duration: 5s
         - assert:
             file: ./04-barman-plugin-migration_cluster-upgrading-assert.yaml
         - assert:
