@@ -27,13 +27,12 @@ spec:
   commonName: {{ .Values.service.name }}
   dnsNames:
   - {{ .Values.service.name }}
-  duration: {{ .Values.certificate.duration | default "2160h" }}
-  isCA: false
+  duration: {{ .Values.certificate.duration | default "2160h0m0s" }}
   issuerRef:
     group: cert-manager.io
     kind: Issuer
     name: {{ include "plugin-barman-cloud.fullname" . }}-selfsigned-issuer
-  renewBefore: {{ .Values.certificate.renewBefore | default "360h" }}
+  renewBefore: {{ .Values.certificate.renewBefore | default "360h0m0s" }}
   secretName: barman-cloud-server-tls
   usages:
     - server auth
