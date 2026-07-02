@@ -5,7 +5,7 @@ metadata:
   name: {{ include "cluster.fullname" . }}-recovery
   namespace: {{ include "cluster.namespace" . }}
   annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook": pre-install,pre-upgrade,pre-rollback
     {{- with .Values.cluster.annotations }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
