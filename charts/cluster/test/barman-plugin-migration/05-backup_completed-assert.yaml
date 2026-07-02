@@ -1,0 +1,12 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: post-migrate-backup
+spec:
+  cluster:
+    name: barman-plugin-migration-cluster
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+status:
+  phase: completed

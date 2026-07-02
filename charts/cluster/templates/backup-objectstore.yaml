@@ -1,9 +1,22 @@
-{{- define "cluster.backup" -}}
-{{- if and .Values.backups.enabled ((eq .Values.backups.method "barmanObjectStore")) }}
-backup:
-  target: "prefer-standby"
+{{- if eq (include "cluster.barmanPluginRequired" .) "true" }}
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ include "cluster.fullname" . }}-backups
+  namespace: {{ include "cluster.namespace" . }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade,pre-rollback
+    {{- with .Values.cluster.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  labels:
+  {{- include "cluster.labels" . | nindent 4 }}
+  {{- with .Values.cluster.additionalLabels }}
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
   retentionPolicy: {{ .Values.backups.retentionPolicy }}
-  barmanObjectStore:
+  configuration:
     wal:
       compression: {{ .Values.backups.wal.compression }}
       {{- if .Values.backups.wal.encryption }}
@@ -16,8 +29,8 @@ backup:
       encryption: {{ .Values.backups.data.encryption }}
       {{- end }}
       jobs: {{ .Values.backups.data.jobs }}
-
     {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.backups "secretPrefix" "backup" }}
     {{- include "cluster.barmanObjectStoreConfig" $d | nindent 2 }}
-{{- end }}
+  instanceSidecarConfiguration:
+    {{- .Values.backups.instanceSidecarConfiguration | toYaml | nindent 4 }}
 {{- end }}

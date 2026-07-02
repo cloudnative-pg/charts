@@ -123,6 +123,20 @@
           "required": [],
           "type": "object"
         },
+        "instanceSidecarConfiguration": {
+          "description": "The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration",
+          "required": [],
+          "type": "object"
+        },
+        "method": {
+          "default": "barmanObjectStore",
+          "description": "One of `barmanObjectStore` (default) or `plugin`",
+          "type": "string"
+        },
+        "pluginConfiguration": {
+          "required": [],
+          "type": "object"
+        },
         "provider": {
           "default": "s3",
           "description": "One of `s3`, `azure` or `google`",
@@ -176,13 +190,17 @@
                   },
                   "method": {
                     "default": "barmanObjectStore",
-                    "description": "Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`",
+                    "description": "Backup method, can be `barmanObjectStore` (default), `volumeSnapshot` or `plugin`.",
                     "type": "string"
                   },
                   "name": {
                     "default": "daily-backup",
                     "description": "Scheduled backup name",
                     "type": "string"
+                  },
+                  "pluginConfiguration": {
+                    "required": [],
+                    "type": "object"
                   },
                   "schedule": {
                     "default": "0 0 0 * * *",
@@ -443,6 +461,13 @@
           },
           "required": [],
           "type": "object"
+        },
+        "plugins": {
+          "description": "Plugins\nWhen adding `barman-cloud.cloudnative-pg.io`, just specify the plugin name and set `isWALArchiver` to true. The\nchart will then provision an `ObjectStore` resource with the configuration from the `backups.barmanObjectStore` section.",
+          "items": {
+            "required": []
+          },
+          "type": "array"
         },
         "podSecurityContext": {
           "description": "Configure the Pod Security Context.\nSee: https://cloudnative-pg.io/documentation/preview/security/",
@@ -901,9 +926,14 @@
           "required": [],
           "type": "object"
         },
+        "instanceSidecarConfiguration": {
+          "description": "The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration",
+          "required": [],
+          "type": "object"
+        },
         "method": {
           "default": "backup",
-          "description": "Available recovery methods:\n* `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.\n* `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported).\n* `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to\n       migrate databases to CloudNativePG, even from outside Kubernetes.\n* `import` - Import one or more databases from an existing Postgres cluster.",
+          "description": "Available recovery methods:\n* `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.\n* `plugin` - Recovers a CNPG cluster from a backup taken with a CloudNativePG plugin (e.g. barman-cloud).\n* `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported).\n* `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to\n       migrate databases to CloudNativePG, even from outside Kubernetes.\n* `import` - Import one or more databases from an existing Postgres cluster.",
           "type": "string"
         },
         "owner": {
@@ -1036,6 +1066,10 @@
               "type": "string"
             }
           },
+          "required": [],
+          "type": "object"
+        },
+        "pluginConfiguration": {
           "required": [],
           "type": "object"
         },
