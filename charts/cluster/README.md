@@ -26,6 +26,42 @@ That being said, we welcome PRs that improve the chart, but please keep in mind 
 single configuration that the operator provides and we may reject PRs that add too much complexity and maintenance
 difficulty to the chart.
 
+Migrating to the Barman Cloud Plugin
+------------------------------------
+
+> [!WARNING]  
+> Starting with version 1.26, native backup and recovery capabilities are
+> being **progressively phased out** of the core operator and moved to official
+> CNPG-I plugins. This transition aligns with CloudNativePG's shift towards a
+> **backup-agnostic architecture**, enabled by its extensible
+> interface—**CNPG-I**—which standardizes the management of **WAL archiving**,
+> **physical base backups**, and corresponding **recovery processes**.
+
+Migrating from the Built-in CloudNativePG Backup to the Barman Cloud CNPG-I 
+plugin is a straightforward, single step process, as the chart creates the 
+necessary `ObjectStore` resource as a helm hook before the cluster is updated.
+
+All you have to do is change the backup method from `barmanObjectStore` to 
+`plugin` and specify the plugin name. The same change should also be applied to
+your scheduled backups.
+
+```diff
+backups:
+  enabled: true
+- method: barmanObjectStore
++ method: plugin
++ pluginConfiguration:
++   name: barman-cloud.cloudnative-pg.io
+  scheduledBackups:
+    - name: daily-backup
+      schedule: "0 0 0 * * *"
+      backupOwnerReference: self
+-      method: barmanObjectStore
++     method: plugin
++     pluginConfiguration:
++       name: barman-cloud.cloudnative-pg.io
+```
+
 Getting Started
 ---------------
 
