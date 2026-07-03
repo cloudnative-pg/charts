@@ -56,7 +56,7 @@ backups:
     - name: daily-backup
       schedule: "0 0 0 * * *"
       backupOwnerReference: self
--      method: barmanObjectStore
+-     method: barmanObjectStore
 +     method: plugin
 +     pluginConfiguration:
 +       name: barman-cloud.cloudnative-pg.io
