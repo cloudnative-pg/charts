@@ -536,6 +536,12 @@
           "description": "Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been\nsuccessfully updated: it can be automated (unsupervised - default) or manual (supervised)",
           "type": "string"
         },
+        "stopDelay": {
+          "default": 1800,
+          "description": "The time in seconds that is allowed for the instance to wait for the shutdown to complete before being forcefully\nterminated. Also sets the pod's terminationGracePeriodSeconds. Defaults to 1800 (30m) when unset.",
+          "minimum": 1,
+          "type": "integer"
+        },
         "priorityClassName": {
           "default": "",
           "type": "string"
