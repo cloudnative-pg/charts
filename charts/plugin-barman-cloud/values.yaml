@@ -92,6 +92,9 @@ serviceAccount:
 rbac:
   # -- Specifies whether Role and RoleBinding should be created.
   create: true
+  # -- Aggregate ClusterRoles to Kubernetes default user-facing roles.
+  # Ref: https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles
+  aggregateClusterRoles: false
 
 # @schema
 # additionalProperties: true
