@@ -109,6 +109,7 @@ Kubernetes: `>=1.29.0-0`
 | podLabels | object | `{}` | Labels to be added to the pod. |
 | podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security Context for the whole pod. |
 | priorityClassName | string | `""` | Priority indicates the importance of a Pod relative to other Pods. |
+| rbac.cnpgGroup | string | `"postgresql.cnpg.io"` | The API group of the Cluster CRD the plugin is granted access to (get/list/watch on backups, update on clusters/finalizers). Override this if you run a CloudNativePG-based operator whose Cluster CRD lives under a different API group. |
 | rbac.create | bool | `true` | Specifies whether Role and RoleBinding should be created. |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
