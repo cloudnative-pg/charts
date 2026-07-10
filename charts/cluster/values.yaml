@@ -243,6 +243,9 @@ cluster:
   # -- The instances' log level, one of the following values: error, warning, info (default), debug, trace
   logLevel: "info"
 
+  # -- Tolerations for Pods.
+  tolerations: []
+
   # -- Affinity/Anti-affinity rules for Pods.
   # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-AffinityConfiguration
   affinity:

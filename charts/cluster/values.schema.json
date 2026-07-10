@@ -565,6 +565,13 @@
           "default": "",
           "type": "string"
         },
+        "tolerations": {
+          "description": "Tolerations for Pods.",
+          "items": {
+            "required": []
+          },
+          "type": "array"
+        },
         "walStorage": {
           "properties": {
             "enabled": {
