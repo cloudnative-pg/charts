@@ -12,6 +12,10 @@ poolers:
     type: rw
     instances: 2
     poolMode: transaction
+    serviceTemplate:
+      metadata:
+        labels:
+          cnpg.io/pooler-service: "true"
   - name: ro
     type: ro
     instances: 2

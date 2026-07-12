@@ -23,6 +23,10 @@ spec:
   pgbouncer:
     poolMode: transaction
   type: rw
+  serviceTemplate:
+    metadata:
+      labels:
+        cnpg.io/pooler-service: "true"
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
