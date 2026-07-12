@@ -5,7 +5,8 @@ metadata:
   name: {{ include "cluster.fullname" . }}-monitoring-logical-replication
   namespace: {{ include "cluster.namespace" . }}
   labels:
-    cnpg.io/reload: ""
+    cnpg.io/reload: "true"
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
     {{- include "cluster.labels" . | nindent 4 }}
 data:
   custom-queries: |
