@@ -10,10 +10,11 @@ metadata:
       {{- toYaml . | nindent 4 }}
     {{- end }}
   labels:
-  {{- include "cluster.labels" . | nindent 4 }}
-  {{- with .Values.cluster.additionalLabels }}
-    {{ toYaml . | nindent 4 }}
-  {{- end }}
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+    {{- include "cluster.labels" . | nindent 4 }}
+    {{- with .Values.cluster.additionalLabels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   retentionPolicy: {{ .Values.backups.retentionPolicy }}
   configuration:

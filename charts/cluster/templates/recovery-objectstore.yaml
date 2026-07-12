@@ -10,10 +10,11 @@ metadata:
       {{- toYaml . | nindent 4 }}
     {{- end }}
   labels:
-  {{- include "cluster.labels" . | nindent 4 }}
-  {{- with .Values.cluster.additionalLabels }}
-    {{ toYaml . | nindent 4 }}
-  {{- end }}
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+    {{- include "cluster.labels" . | nindent 4 }}
+    {{- with .Values.cluster.additionalLabels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   configuration:
     {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.recovery "secretPrefix" "recovery" -}}
