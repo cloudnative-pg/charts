@@ -256,7 +256,7 @@ cluster:
   # -- The time in seconds that is allowed for the instance to wait for the shutdown
   # to complete before being forcefully terminated. Also sets the pod's terminationGracePeriodSeconds.
   # Defaults to 1800 (30m) when unset, per the operator default.
-  # stopDelay: 1800
+  stopDelay: 1800
 
   # -- The instances' log level, one of the following values: error, warning, info (default), debug, trace
   logLevel: "info"
