@@ -33,6 +33,18 @@ spec:
                 barman-plugin-config-override ../../
         - assert:
             file: ./02-barman_plugin_config_override_cluster-assert.yaml
+    - name: Install the cluster with a custom plugin section and backups disabled
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./03-barman_plugin_config_backups_disabled.yaml \
+                --wait \
+                barman-plugin-config-backups-disabled ../../
+        - assert:
+            file: ./03-barman_plugin_config_backups_disabled-assert.yaml
     - name: Cleanup
       try:
         - script:
