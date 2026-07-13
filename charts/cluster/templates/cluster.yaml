@@ -158,9 +158,9 @@ spec:
 
   {{- if or (gt (len .Values.cluster.plugins) 0) (eq (include "cluster.barmanPluginRequired" .) "true") }}
   plugins:
-    {{ $pluginsWithoutBarman := include "helpers.omitKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYamlArray }}
-    {{- range $pluginsWithoutBarman -}}
-    - {{ toYaml . | indent 6 | trim }}
+    {{- $pluginsWithoutBarman := include "helpers.omitKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYamlArray }}
+    {{- with $pluginsWithoutBarman }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
     {{- if or (eq (include "cluster.barmanPluginEnabled" .) "true") (eq (include "cluster.barmanPluginRequired" .) "true") }}
     {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml }}
