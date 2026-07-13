@@ -75,6 +75,14 @@ Configuration
   {{- $image = $image.imageName -}}
 {{- end }}
 
+{{- $backupPlugin := "" -}}
+{{- if eq .Values.backups.method "plugin" -}}
+  {{- $backupPlugin = (get (include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "isWALArchiver" true))) | fromYaml) "name") -}}
+  {{- if and (empty $backupPlugin)  (eq (include "cluster.barmanPluginRequired" .) "true") -}}
+  {{- $backupPlugin = "barman-cloud.cloudnative-pg.io" -}}
+  {{- end -}}
+{{- end }}
+
 ╭───────────────────┬──────────────────────────────────────────────────────────╮
 │ Configuration     │ Value                                                    │
 ┝━━━━━━━━━━━━━━━━━━━┿━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┥
@@ -88,6 +96,7 @@ Configuration
 │ Backups           │ {{ include (printf "%s%s" "cluster.color-" (ternary "ok" "error" .Values.backups.enabled)) (printf "%-56s" (ternary "Enabled" "Disabled" .Values.backups.enabled)) }} │
 {{- if .Values.backups.enabled }}
 │ Backup Provider   │ {{ printf "%-56s" (title .Values.backups.provider) }} │
+│ Backup Method     │ {{ printf "%-56s" (cat (title .Values.backups.method) (empty $backupPlugin | ternary "" (printf "(%s)" $backupPlugin))) }} │
 │ Scheduled Backups │ {{ printf "%-56s" $scheduledBackups }} │
 {{- end }}
 │ Storage           │ {{ printf "%-56s" .Values.cluster.storage.size }} │

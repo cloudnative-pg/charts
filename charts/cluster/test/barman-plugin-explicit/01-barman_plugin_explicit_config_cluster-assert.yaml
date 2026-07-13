@@ -1,0 +1,14 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: barman-plugin-explicit-config-cluster
+spec:
+  plugins:
+  - name: foo.example.com
+    enabled: true
+    isWALArchiver: false
+    parameters:
+      foo: bar
+  - name: barman-cloud.cloudnative-pg.io
+    enabled: true
+    isWALArchiver: true
