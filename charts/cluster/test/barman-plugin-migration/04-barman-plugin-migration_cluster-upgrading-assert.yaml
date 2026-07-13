@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Event
+reason: UpgradingInstance
+involvedObject:
+  apiVersion: postgresql.cnpg.io/v1
+  kind: Cluster
+  name: barman-plugin-migration-cluster
