@@ -175,7 +175,7 @@ SHOW max_replication_slots;
 
 ```bash
 # Check replication status
-kubectl exec -n <namespace> services/<cluster_name>-w -- psql -c "SELECT * FROM pg_stat_replication;"
+kubectl exec -n <namespace> services/<cluster_name>-rw -- psql -c "SELECT * FROM pg_stat_replication;"
 
 # Check resource usage
 kubectl top pods -n <namespace> -l cnpg.io/podRole=instance
