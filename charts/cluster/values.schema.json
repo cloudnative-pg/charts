@@ -572,6 +572,11 @@
           "required": [],
           "type": "object"
         },
+        "stopDelay": {
+          "default": 1800,
+          "description": "The time in seconds that is allowed for the instance to wait for the shutdown\nto complete before being forcefully terminated. Also sets the pod's terminationGracePeriodSeconds.\nDefaults to 1800 (30m) when unset, per the operator default.",
+          "type": "integer"
+        },
         "storage": {
           "properties": {
             "size": {
