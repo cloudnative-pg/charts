@@ -1,6 +1,5 @@
 {{- define "cluster.externalClusters" -}}
-{{- if eq .Values.mode "standalone" }}
-{{- else }}
+{{- if or (ne .Values.mode "standalone") (not (empty .Values.cluster.externalClusters)) }}
 externalClusters:
 {{- if eq .Values.mode "recovery" }}
   {{- if eq .Values.recovery.method "pg_basebackup" }}
@@ -27,8 +26,12 @@ externalClusters:
   {{- if not (empty .Values.replica.origin.pg_basebackup.host) }}
     {{- include "cluster.externalSourceCluster" .Values.replica.origin.pg_basebackup | nindent 4 }}
   {{- end }}
+{{- else if eq .Values.mode "standalone" }}
+  {{- with .Values.cluster.externalClusters }}
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
 {{- else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}
 {{- end }}
-{{ end }}
+{{- end }}
