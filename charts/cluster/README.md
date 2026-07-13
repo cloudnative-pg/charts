@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.8.0](https://img.shields.io/badge/Version-0.8.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -29,7 +29,7 @@ difficulty to the chart.
 Migrating to the Barman Cloud Plugin
 ------------------------------------
 
-> [!WARNING]  
+> [!WARNING]
 > Starting with version 1.26, native backup and recovery capabilities are
 > being **progressively phased out** of the core operator and moved to official
 > CNPG-I plugins. This transition aligns with CloudNativePG's shift towards a
@@ -37,11 +37,11 @@ Migrating to the Barman Cloud Plugin
 > interface—**CNPG-I**—which standardizes the management of **WAL archiving**,
 > **physical base backups**, and corresponding **recovery processes**.
 
-Migrating from the Built-in CloudNativePG Backup to the Barman Cloud CNPG-I 
-plugin is a straightforward, single step process, as the chart creates the 
+Migrating from the Built-in CloudNativePG Backup to the Barman Cloud CNPG-I
+plugin is a straightforward, single step process, as the chart creates the
 necessary `ObjectStore` resource as a helm hook before the cluster is updated.
 
-All you have to do is change the backup method from `barmanObjectStore` to 
+All you have to do is change the backup method from `barmanObjectStore` to
 `plugin` and specify the plugin name. The same change should also be applied to
 your scheduled backups.
 
@@ -241,6 +241,7 @@ Kubernetes: `>=1.29.0-0`
 | cluster.securityContext | object | `{}` | Configure Container Security Context. See: https://cloudnative-pg.io/documentation/preview/security/ |
 | cluster.serviceAccountTemplate | object | `{}` | Configure the metadata of the generated service account |
 | cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/ |
+| cluster.stopDelay | int | `1800` | The time in seconds that is allowed for the instance to wait for the shutdown to complete before being forcefully terminated. Also sets the pod's terminationGracePeriodSeconds. Defaults to 1800 (30m) when unset, per the operator default. |
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
