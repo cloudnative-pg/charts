@@ -56,6 +56,9 @@ spec:
 
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
+  {{- with .Values.cluster.stopDelay }}
+  stopDelay: {{ . }}
+  {{- end }}
   logLevel: {{ .Values.cluster.logLevel }}
   {{- with .Values.cluster.certificates }}
   certificates:
@@ -148,6 +151,28 @@ spec:
     {{- end }}
     tls:
       enabled: {{ .Values.cluster.monitoring.tls.enabled }}
-  {{ include "cluster.bootstrap" . | nindent 2 }}
-  {{ include "cluster.externalClusters" . | nindent 2 }}
-  {{ include "cluster.backup" . | nindent 2 }}
+
+  {{ include "cluster.bootstrap" . | nindent 2 -}}
+  {{ include "cluster.externalClusters" . | nindent 2 -}}
+  {{ include "cluster.backup" . | nindent 2 -}}
+
+  {{- if or (gt (len .Values.cluster.plugins) 0) (eq (include "cluster.barmanPluginRequired" .) "true") }}
+  plugins:
+    {{- $pluginsWithoutBarman := include "helpers.omitKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYamlArray }}
+    {{- with $pluginsWithoutBarman }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- if or (eq (include "helpers.hasKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io")))) "true") (eq (include "cluster.barmanPluginRequired" .) "true") }}
+    {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml }}
+    - name: barman-cloud.cloudnative-pg.io
+      enabled: {{ eq $barmanPlugin.enabled nil | ternary (eq (include "cluster.barmanPluginRequired" .) "true") $barmanPlugin.enabled }}
+      isWALArchiver: {{ eq $barmanPlugin.isWALArchiver nil | ternary (eq (include "cluster.barmanPluginRequired" .) "true") $barmanPlugin.isWALArchiver }}
+      parameters:
+        {{- $parameters := (coalesce $barmanPlugin.parameters dict) -}}
+        {{- $parametersWithoutObjectName := (omit $parameters "barmanObjectName") }}
+        {{ with $parametersWithoutObjectName }}
+          {{- toYaml . | indent 8 | trim }}
+        {{- end }}
+        barmanObjectName: {{ $parameters.barmanObjectName | default (printf "%s-backups" (include "cluster.fullname" .)) }}
+    {{- end }}
+  {{- end }}

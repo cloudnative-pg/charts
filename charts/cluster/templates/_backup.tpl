@@ -1,5 +1,5 @@
 {{- define "cluster.backup" -}}
-{{- if .Values.backups.enabled }}
+{{- if and .Values.backups.enabled ((eq .Values.backups.method "barmanObjectStore")) }}
 backup:
   target: "prefer-standby"
   retentionPolicy: {{ .Values.backups.retentionPolicy }}
