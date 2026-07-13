@@ -1,4 +1,4 @@
-{{- if and .Values.backups.enabled (or ((eq .Values.backups.method "barmanObjectStore")) (eq (include "cluster.barmanPluginEnabled" .) "true")) }}
+{{- if and .Values.backups.enabled (or ((eq .Values.backups.method "barmanObjectStore")) (eq (include "cluster.barmanPluginEnabled" .) "true") (eq (include "cluster.barmanPluginRequired" .) "true")) }}
 {{- if .Values.backups.endpointCA.create }}
 apiVersion: v1
 kind: Secret
