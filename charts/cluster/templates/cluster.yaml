@@ -162,7 +162,7 @@ spec:
     {{- with $pluginsWithoutBarman }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-    {{- if or (eq (include "cluster.barmanPluginEnabled" .) "true") (eq (include "cluster.barmanPluginRequired" .) "true") }}
+    {{- if or (eq (include "helpers.hasKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io")))) "true") (eq (include "cluster.barmanPluginRequired" .) "true") }}
     {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml }}
     - name: barman-cloud.cloudnative-pg.io
       enabled: {{ eq $barmanPlugin.enabled nil | ternary (eq (include "cluster.barmanPluginRequired" .) "true") $barmanPlugin.enabled }}
