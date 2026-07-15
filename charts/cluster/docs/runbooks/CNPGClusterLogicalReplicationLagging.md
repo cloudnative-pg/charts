@@ -28,17 +28,19 @@ Connect to the subscriber and check the current state:
 ```bash
 kubectl exec -it svc/SUBSCRIBER-CLUSTER-rw -n NAMESPACE -- psql -c "
 SELECT
-    subname,
-    enabled,
-    EXTRACT(EPOCH FROM (NOW() - last_msg_receipt_time)) as receipt_lag_seconds,
-    EXTRACT(EPOCH FROM (NOW() - latest_end_time)) as apply_lag_seconds,
-    pg_wal_lsn_diff(received_lsn, latest_end_lsn) as pending_bytes,
+    s.subname,
+    s.subenabled AS enabled,
+    EXTRACT(EPOCH FROM (NOW() - ss.last_msg_receipt_time)) AS receipt_lag_seconds,
+    EXTRACT(EPOCH FROM (NOW() - ss.latest_end_time)) AS apply_lag_seconds,
+    COALESCE(pg_wal_lsn_diff(ss.received_lsn, ss.latest_end_lsn), 0) AS pending_bytes,
     CASE
-        WHEN EXTRACT(EPOCH FROM (NOW() - last_msg_receipt_time)) > 60 THEN 'High receipt lag'
-        WHEN EXTRACT(EPOCH FROM (NOW() - latest_end_time)) > 60 THEN 'High apply lag'
-        WHEN pg_wal_lsn_diff(received_lsn, latest_end_lsn) > 1024^3 THEN 'High LSN distance'
+        WHEN EXTRACT(EPOCH FROM (NOW() - ss.last_msg_receipt_time)) > 60 THEN 'High receipt lag'
+        WHEN EXTRACT(EPOCH FROM (NOW() - ss.latest_end_time)) > 60 THEN 'High apply lag'
+        WHEN COALESCE(pg_wal_lsn_diff(ss.received_lsn, ss.latest_end_lsn), 0) > 1024^3 THEN 'High LSN distance'
+        ELSE 'Healthy'
     END as primary_issue
-FROM pg_stat_subscription;
+FROM pg_subscription s
+LEFT JOIN pg_stat_subscription ss ON s.oid = ss.subid;
 "
 ```
 

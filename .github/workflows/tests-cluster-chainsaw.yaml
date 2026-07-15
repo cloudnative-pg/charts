@@ -42,6 +42,15 @@ jobs:
       - name: Deploy the operator
         uses: ./.github/actions/deploy-operator
 
+      - name: Install cert-manager
+        uses: ./.github/actions/deploy-cert-manager
+
+      - name: Install Barman CNPG-I plugin
+        run: |
+          helm upgrade --install plugin-barman-cloud \
+            --namespace cnpg-system \
+            ./charts/plugin-barman-cloud
+
       - name: Install Prometheus CRDs
         run: |
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts

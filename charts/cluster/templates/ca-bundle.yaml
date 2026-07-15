@@ -1,3 +1,4 @@
+{{- if and .Values.backups.enabled (or ((eq .Values.backups.method "barmanObjectStore")) (eq (include "cluster.barmanPluginEnabled" .) "true") (eq (include "cluster.barmanPluginRequired" .) "true")) }}
 {{- if .Values.backups.endpointCA.create }}
 apiVersion: v1
 kind: Secret
@@ -6,4 +7,5 @@ metadata:
   namespace: {{ include "cluster.namespace" . }}
 data:
   {{ .Values.backups.endpointCA.key | default "ca-bundle.crt" | quote }}: {{ .Values.backups.endpointCA.value }}
+{{- end }}
 {{- end }}
