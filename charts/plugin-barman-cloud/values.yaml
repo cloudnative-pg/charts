@@ -194,8 +194,10 @@ certificate:
   createClientCertificate: true
   # -- Specifies whether the server certificate should be created.
   createServerCertificate: true
+  # -- Specifies whether the issuer should be created.
+  createIssuer: true
   # -- The name of the issuer to use for the certificates.
-  issuerName: selfsigned-issuer
+  issuerName: ""
   # -- The duration of the certificates.
   duration: 2160h
   # -- The renew before time for the certificates.

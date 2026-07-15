@@ -87,9 +87,10 @@ Kubernetes: `>=1.29.0-0`
 | additionalEnv | list | `[]` | Array containing extra environment variables which can be templated. |
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | certificate.createClientCertificate | bool | `true` | Specifies whether the client certificate should be created. |
+| certificate.createIssuer | bool | `true` | Specifies whether the issuer should be created. |
 | certificate.createServerCertificate | bool | `true` | Specifies whether the server certificate should be created. |
 | certificate.duration | string | `"2160h"` | The duration of the certificates. |
-| certificate.issuerName | string | `"selfsigned-issuer"` | The name of the issuer to use for the certificates. |
+| certificate.issuerName | string | `""` | The name of the issuer to use for the certificates. |
 | certificate.renewBefore | string | `"360h"` | The renew before time for the certificates. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
 | containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container Security Context. |

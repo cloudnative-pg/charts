@@ -29,6 +29,11 @@
           "description": "Specifies whether the client certificate should be created.",
           "type": "boolean"
         },
+        "createIssuer": {
+          "default": true,
+          "description": "Specifies whether the issuer should be created.",
+          "type": "boolean"
+        },
         "createServerCertificate": {
           "default": true,
           "description": "Specifies whether the server certificate should be created.",
@@ -40,7 +45,7 @@
           "type": "string"
         },
         "issuerName": {
-          "default": "selfsigned-issuer",
+          "default": "",
           "description": "The name of the issuer to use for the certificates.",
           "type": "string"
         },
