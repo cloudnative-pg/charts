@@ -12,6 +12,12 @@ spec:
   postgresUID: 1001
   postgresGID: 1002
   instances: 2
+  replicationSlots:
+    highAvailability:
+      enabled: true
+      slotPrefix: "_cnpg_"
+      synchronizeLogicalDecoding: true
+    updateInterval: 30
   postgresql:
     ldap:
       server: 'openldap.default.svc.cluster.local'
@@ -23,7 +29,9 @@ spec:
           key: 'data'
         searchAttribute: 'uid'
     parameters:
+      hot_standby_feedback: "on"
       max_connections: "42"
+      sync_replication_slots: "on"
     pg_hba:
       - host all 1.2.3.4/32 trust
     pg_ident:
