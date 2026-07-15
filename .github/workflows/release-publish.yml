@@ -80,10 +80,21 @@ jobs:
             if [ -z "${pkg:-}" ]; then
               break
             fi
-            helm push "${pkg}" oci://ghcr.io/"${GITHUB_REPOSITORY}"
             file=${pkg##*/}
             name=${file%-*}
             version=${file%.*}
             version=${version##*-}
+
+            # cr packages any chart with files changed since the last tag, not
+            # just ones whose version was bumped, and CR_SKIP_EXISTING only gates
+            # the GitHub release. Skip versions already in GHCR, otherwise an
+            # unrelated edit republishes a chart under an unchanged tag with a
+            # new digest.
+            if helm show chart oci://ghcr.io/"${GITHUB_REPOSITORY}"/"${name}" --version "${version}" > /dev/null 2>&1; then
+              echo "Skipping ${name} ${version}: already published to GHCR"
+              continue
+            fi
+
+            helm push "${pkg}" oci://ghcr.io/"${GITHUB_REPOSITORY}"
             cosign sign --yes ghcr.io/"${GITHUB_REPOSITORY}"/"${name}":"${version}"
           done
