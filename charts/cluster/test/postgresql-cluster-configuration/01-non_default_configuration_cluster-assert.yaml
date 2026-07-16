@@ -154,3 +154,11 @@ spec:
         - NET_BIND_SERVICE
     readOnlyRootFilesystem: true
     runAsNonRoot: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    foo: bar
+    cnpg.io/reload: "true"
+    cnpg.io/cluster: non-default-configuration-cluster

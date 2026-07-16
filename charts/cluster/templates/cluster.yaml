@@ -8,10 +8,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-  {{- include "cluster.labels" . | nindent 4 }}
-  {{- with .Values.cluster.additionalLabels }}
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- include "cluster.labels" . | nindent 4 }}
 spec:
   instances: {{ .Values.cluster.instances }}
   {{- include "cluster.image" . | trim | nindent 2 }}
