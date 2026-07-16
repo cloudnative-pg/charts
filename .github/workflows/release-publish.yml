@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+# Two quick merges/pushes to main can cause a chart publish race condition
+concurrency:
+  group: chart-release
+  cancel-in-progress: false
+
 permissions: read-all
 
 jobs:
@@ -77,22 +82,25 @@ jobs:
         run: |
           shopt -s nullglob
           for pkg in .cr-release-packages/*.tgz; do
-            if [ -z "${pkg:-}" ]; then
-              break
-            fi
-            file=${pkg##*/}
-            name=${file%-*}
-            version=${file%.*}
-            version=${version##*-}
+            name=$(helm show chart "${pkg}" | yq -r '.name')
+            version=$(helm show chart "${pkg}" | yq -r '.version')
+            repo="${GITHUB_REPOSITORY}/${name}"
 
             # cr packages any chart with files changed since the last tag, not
             # just ones whose version was bumped, and CR_SKIP_EXISTING only gates
             # the GitHub release. Skip versions already in GHCR, otherwise an
             # unrelated edit republishes a chart under an unchanged tag with a
             # new digest.
-            if helm show chart oci://ghcr.io/"${GITHUB_REPOSITORY}"/"${name}" --version "${version}" > /dev/null 2>&1; then
-              echo "Skipping ${name} ${version}: already published to GHCR"
+            if output=$(helm show chart oci://ghcr.io/"${GITHUB_REPOSITORY}"/"${name}" \
+                --version "${version}" 2>&1); then
+              echo "::notice::Skipping ${name} ${version}: already published to GHCR"
               continue
+            elif grep -q "not found" <<< "${output}"; then
+              : # genuinely absent — fall through to push and sign
+            else
+              echo "::error::Cannot verify ${name} ${version} in GHCR; refusing to push blind"
+              echo "${output}"
+              exit 1
             fi
 
             helm push "${pkg}" oci://ghcr.io/"${GITHUB_REPOSITORY}"
