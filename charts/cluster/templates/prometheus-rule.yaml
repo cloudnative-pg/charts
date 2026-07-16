@@ -3,10 +3,8 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
     {{- include "cluster.labels" . | nindent 4 }}
-    {{- with .Values.cluster.additionalLabels }}
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
   name: {{ include "cluster.fullname" . }}-alert-rules
   namespace: {{ include "cluster.namespace" . }}
 spec:
