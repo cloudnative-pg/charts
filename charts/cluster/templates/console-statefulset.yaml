@@ -9,10 +9,8 @@ metadata:
     {{- toYaml . | nindent 8 }}
   {{- end }}
   labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
     {{- include "cluster.labels" . | nindent 4 }}
-    {{- with .Values.cluster.additionalLabels }}
-      {{- toYaml . | nindent 4 }}
-    {{- end }}
     app.kubernetes.io/component: console
 spec:
   replicas: 1
@@ -37,9 +35,6 @@ spec:
       {{- end }}
       labels:
         {{- include "cluster.labels" . | nindent 8 }}
-        {{- with .Values.cluster.additionalLabels }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
         app.kubernetes.io/component: console
     spec:
       terminationGracePeriodSeconds: 2
