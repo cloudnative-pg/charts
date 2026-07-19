@@ -441,6 +441,9 @@
                     "required": []
                   },
                   "type": "array"
+                },
+                "additionalLabels": {
+                  "type": "object"
                 }
               },
               "required": [],
