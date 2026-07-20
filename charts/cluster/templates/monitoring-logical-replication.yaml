@@ -1,4 +1,5 @@
 {{- if .Values.cluster.monitoring.instrumentation.logicalReplication }}
+{{- $pgVersion := include "cluster.postgresqlMajor" . | int -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -16,16 +17,20 @@ data:
              , s.oid AS subid
              , s.subname AS subname
              , subenabled AS enabled
+             {{- if ge $pgVersion 17 }}
              , worker_type
+             {{- end }}
              , relid
              , pg_wal_lsn_diff(received_lsn, '0/0') AS received_lsn
              , last_msg_send_time
              , last_msg_receipt_time
              , pg_wal_lsn_diff(latest_end_lsn, '0/0') AS latest_end_lsn
              , latest_end_time
+             {{- if ge $pgVersion 15 }}
              , apply_error_count
              , sync_error_count
              , stats_reset
+             {{- end }}
              , ss.pid
              , CASE
                  WHEN received_lsn IS NOT NULL AND latest_end_lsn IS NOT NULL
@@ -44,7 +49,9 @@ data:
                END AS apply_lag_seconds
         FROM pg_subscription s
         LEFT JOIN pg_stat_subscription ss ON s.oid = ss.subid
-        LEFT JOIN pg_stat_subscription_stats sss ON s.oid = sss.subid;
+        {{- if ge $pgVersion 15 }}
+        LEFT JOIN pg_stat_subscription_stats sss ON s.oid = sss.subid
+        {{- end }};
       target_databases: ["*"]
       metrics:
         - datname:
@@ -56,9 +63,11 @@ data:
         - subname:
             description: Name of the subscription
             usage: LABEL
+        {{- if ge $pgVersion 17 }}
         - worker_type:
             description: Type of the worker
             usage: LABEL
+        {{- end }}
         - relid:
             description: OID of the relation
             usage: LABEL
@@ -80,6 +89,7 @@ data:
         - enabled:
             description: Subscription status (enabled/disabled)
             usage: GAUGE
+        {{- if ge $pgVersion 15 }}
         - apply_error_count:
             description: Number of times an error occurred while applying changes
             usage: GAUGE
@@ -89,6 +99,7 @@ data:
         - stats_reset:
             description: Time at which these statistics were last reset
             usage: GAUGE
+        {{- end }}
         - pid:
             description: Process ID of the subscription worker process
             usage: GAUGE
@@ -102,3 +113,4 @@ data:
             description: Seconds since last apply operation
             usage: GAUGE
 {{- end }}
+
