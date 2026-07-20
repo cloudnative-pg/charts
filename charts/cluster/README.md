@@ -319,7 +319,9 @@ Kubernetes: `>=1.29.0-0`
 | recovery.pgBaseBackup.source.sslRootCertSecret.key | string | `""` |  |
 | recovery.pgBaseBackup.source.sslRootCertSecret.name | string | `""` |  |
 | recovery.pgBaseBackup.source.username | string | `""` |  |
-| recovery.pitrTarget | object | `{"time":""}` | Point in time recovery target. Specify one of the following: |
+| recovery.pitrTarget | object | `{"backupID":"","name":"","time":""}` | Point in time recovery target. Specify at most one of `time` or `name`. |
+| recovery.pitrTarget.backupID | string | `""` | Backup to start replay from (a Backup's `.status.backupId`); required with `name`, not `time` |
+| recovery.pitrTarget.name | string | `""` | Named restore point (from `pg_create_restore_point`) to recover to; an alternative to `time` |
 | recovery.pitrTarget.time | string | `""` | Time in RFC3339 format |
 | recovery.pluginConfiguration | object | `{}` |  |
 | recovery.provider | string | `"s3"` | One of `s3`, `azure` or `google` |

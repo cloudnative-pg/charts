@@ -19,7 +19,7 @@ To begin, create a `values.yaml` that contains the following:
 1. Set `mode: recovery` to indicate that you want to bootstrap the new cluster from an existing one.
 2. Set the `recovery.method` to the type of recovery you want to perform.
 3. Set either the `recovery.backupName` or the Barman Object Store configuration - i.e. `recovery.provider` and appropriate S3, Azure or GCS configuration. In case of `pg_basebackup` complete the `recovery.pgBaseBackup` section.
-4. Optionally set the `recovery.pitrTarget.time` in RFC3339 format to perform a point-in-time recovery (not applicable for `pgBaseBackup`).
+4. Optionally perform a point-in-time recovery (not applicable for `pgBaseBackup`) by setting either `recovery.pitrTarget.time` (an RFC3339 timestamp) or `recovery.pitrTarget.name` (a named restore point created with `pg_create_restore_point`). A named target also requires `recovery.pitrTarget.backupID` (the barman backup ID to start the replay from), because (unlike a time) CloudNativePG cannot resolve it to a base backup automatically.
 5. Retain the identical PostgreSQL version and configuration as the original cluster.
 6. Make sure you don't use the same backup section name as the original cluster. We advise you change the `path` within the storage location if you want to reuse the same storage location/bucket.
     One pattern is adding a version number at the end of the path, e.g. `/v1` or `/v2` after each recovery procedure.

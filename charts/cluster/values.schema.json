@@ -1066,8 +1066,18 @@
           "type": "object"
         },
         "pitrTarget": {
-          "description": "Point in time recovery target. Specify one of the following:",
+          "description": "Point in time recovery target. Specify at most one of `time` or `name`.",
           "properties": {
+            "backupID": {
+              "default": "",
+              "description": "Backup to start replay from (a Backup's `.status.backupId`); required with `name`, not `time`",
+              "type": "string"
+            },
+            "name": {
+              "default": "",
+              "description": "Named restore point (from `pg_create_restore_point`) to recover to; an alternative to `time`",
+              "type": "string"
+            },
             "time": {
               "default": "",
               "description": "Time in RFC3339 format",
