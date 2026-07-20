@@ -1,27 +1,39 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
   ],
-  "prConcurrentLimit": 5,
-  "semanticCommits": "enabled",
-  "regexManagers": [
+  prConcurrentLimit: 5,
+  semanticCommits: 'enabled',
+  customManagers: [
     {
-      "fileMatch": ["charts\\/cloudnative-pg\\/Chart\\.yaml$"],
-      "matchStrings": [
-        "appVersion: \"(?<currentValue>.*?)\"",
+      customType: 'regex',
+      managerFilePatterns: [
+        '/charts\\/cloudnative-pg\\/Chart\\.yaml$/',
       ],
-      "datasourceTemplate": "docker",
-      "depNameTemplate": "ghcr.io/cloudnative-pg/cloudnative-pg",
-      "versioningTemplate": "loose"
+      matchStrings: [
+        'appVersion: "(?<currentValue>.*?)"',
+      ],
+      datasourceTemplate: 'docker',
+      depNameTemplate: 'ghcr.io/cloudnative-pg/cloudnative-pg',
+      versioningTemplate: 'loose',
+    },
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^Makefile$/',
+      ],
+      matchStrings: [
+        '# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*\\??=\\s*["\']?(?<currentValue>.+?)["\']?\\s',
+      ],
     },
   ],
-  "packageRules": [
+  packageRules: [
     {
-      "matchDepTypes": [
-        "action"
+      matchDepTypes: [
+        'action',
       ],
-      "pinDigests": true
+      pinDigests: true,
     },
-  ]
+  ],
 }

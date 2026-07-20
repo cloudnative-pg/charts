@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-write
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-write
+        env:
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: source-cluster-superuser
+                key: username
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: source-cluster-superuser
+                key: password
+          - name: DB_URI
+            value: postgres://$(DB_USER):$(DB_PASS)@source-cluster-rw:5432
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+         - |
+           apk --no-cache add postgresql-client
+           psql "$DB_URI" -c "CREATE DATABASE mygooddb;"
+           psql "$DB_URI/mygooddb" -c "CREATE TABLE mygoodtable (id serial PRIMARY KEY);"

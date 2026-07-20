@@ -5,13 +5,20 @@ metadata:
   name: {{ include "cluster.fullname" . }}-monitoring
   namespace: {{ include "cluster.namespace" . }}
   labels:
-    cnpg.io/reload: ""
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
     {{- include "cluster.labels" . | nindent 4 }}
+    cnpg.io/reload: "true"
 data:
   custom-queries: |
     {{- range .Values.cluster.monitoring.customQueries }}
     {{ .name }}:
       query: {{ .query | quote }}
+      {{- with .target_databases }}
+      target_databases: {{ . | toJson }}
+      {{- end }}
+      {{- with .predicate_query }}
+      predicate_query: {{ tpl . $ | quote }}
+      {{- end }}
       metrics:
         {{- .metrics | toYaml | nindent 8 }}
     {{- end }}

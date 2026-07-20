@@ -1,0 +1,68 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: scheduledbackups-cluster
+status:
+  readyInstances: 1
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: scheduledbackups-cluster-backups
+spec:
+  retentionPolicy: 30d
+  configuration:
+    destinationPath: s3://mybucket/barman-plugin-scheduledbackups/v1
+    endpointCA:
+      key: ca.crt
+      name: kube-root-ca.crt
+    endpointURL: https://minio.minio.svc.cluster.local
+    s3Credentials:
+      accessKeyId:
+        key: ACCESS_KEY_ID
+        name: scheduledbackups-cluster-backup-s3-creds
+      secretAccessKey:
+        key: ACCESS_SECRET_KEY
+        name: scheduledbackups-cluster-backup-s3-creds
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: scheduledbackups-cluster-daily-backup
+spec:
+  immediate: true
+  schedule: "0 0 0 * * *"
+  method: plugin
+  backupOwnerReference: self
+  cluster:
+    name: scheduledbackups-cluster
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: scheduledbackups-cluster-weekly-backup
+spec:
+  immediate: true
+  schedule: "0 0 0 * * 1"
+  method: plugin
+  backupOwnerReference: self
+  cluster:
+    name: scheduledbackups-cluster
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  ownerReferences:
+  - apiVersion: postgresql.cnpg.io/v1
+    kind: ScheduledBackup
+    name: scheduledbackups-cluster-daily-backup
+spec:
+  method: plugin
+  cluster:
+    name: scheduledbackups-cluster
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+status:
+  phase: started

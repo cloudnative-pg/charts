@@ -1,0 +1,126 @@
+##
+# This test create a source CNPG cluster with MinIO backups and then creates a replica cluster bootstrapped with
+# pg_basebackup, object store, and a hybrid one, using both.
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: replica
+spec:
+  timeouts:
+    apply: 1s
+    assert: 3m
+    cleanup: 1m
+  steps:
+    - name: Clear the MinIO bucket
+      try:
+        - apply:
+            file: ./00-minio_cleanup.yaml
+        - assert:
+            file: ./00-minio_cleanup-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=minio_cleanup
+    - name: Install a source cluster
+      try:
+        - script:
+            content: |
+              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n kube-system get configmaps kube-root-ca.crt -o jsonpath='{.data.ca\.crt}')" --dry-run=client -o yaml | kubectl apply -f -
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-source_cluster.yaml \
+                --wait \
+                source ../../
+        - assert:
+            file: 01-source_cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+    - name: Write some data to the cluster
+      try:
+        - apply:
+            file: ./02-data_write.yaml
+        - assert:
+            file: ./02-data_write-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-write
+    - name: Create a backup
+      try:
+        - apply:
+            file: ./03-backup.yaml
+        - assert:
+            file: ./03-backup_running-assert.yaml
+        - apply:
+            file: ./03-checkpoint.yaml
+        - assert:
+            file: ./03-backup_completed-assert.yaml
+    - name: Create a replica cluster from pg_basebackup
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./04-replica_cluster.yaml \
+                --wait \
+                replica ../../
+        - assert:
+            file: ./04-replica_cluster-assert.yaml
+    - name: Verify the data on the replica cluster exists
+      try:
+        - apply:
+            file: 05-data_test.yaml
+        - assert:
+            file: 05-data_test-assert.yaml
+    - name: Create a replica cluster from object store
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./06-replica_object_store_cluster.yaml \
+                --wait \
+                replica-object-store ../../
+        - assert:
+            file: ./06-replica_object_store_cluster-assert.yaml
+    - name: Verify the data on the object store replica cluster exists
+      try:
+        - apply:
+            file: 07-data_test.yaml
+        - assert:
+            file: 07-data_test-assert.yaml
+    - name: Create a hybrid replica cluster
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./08-replica_hybrid_cluster.yaml \
+                --wait \
+                replica-hybrid ../../
+        - assert:
+            file: ./08-replica_hybrid_cluster-assert.yaml
+    - name: Verify the data on the hybrid replica cluster exists
+      try:
+        - apply:
+            file: 09-data_test.yaml
+        - assert:
+            file: 09-data_test-assert.yaml
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE source
+              helm uninstall --namespace $NAMESPACE replica
+              helm uninstall --namespace $NAMESPACE replica-object-store
+              helm uninstall --namespace $NAMESPACE replica-hybrid
