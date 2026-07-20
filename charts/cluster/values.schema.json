@@ -629,6 +629,13 @@
       },
       "type": "array"
     },
+    "extraObjects": {
+      "description": "Extra Kubernetes manifests to deploy alongside the cluster.\nEach entry is passed through `tpl`, so Helm templating is supported.",
+      "items": {
+        "required": []
+      },
+      "type": "array"
+    },
     "fullnameOverride": {
       "default": "",
       "description": "Override the full name of the chart",

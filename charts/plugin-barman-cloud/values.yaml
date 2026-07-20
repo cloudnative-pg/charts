@@ -202,3 +202,23 @@ certificate:
   duration: 2160h
   # -- The renew before time for the certificates.
   renewBefore: 360h
+
+# -- Extra Kubernetes manifests to deploy alongside this chart. Each entry is passed through `tpl`, so Helm templating is supported.
+extraObjects: []
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: "{{ include \"plugin-barman-cloud.fullname\" . }}-grafana-dashboard"
+#     labels:
+#       grafana_dashboard: "1"
+#   data:
+#     plugin-barman-cloud-dashboard.json: |-
+#       { ... }
+# - |
+#     apiVersion: v1
+#     kind: Secret
+#     type: Opaque
+#     metadata:
+#       name: plugin-barman-cloud-secret
+#     data:
+#       { ... }
