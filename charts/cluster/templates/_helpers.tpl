@@ -51,6 +51,9 @@ helm.sh/chart: {{ include "cluster.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.cluster.additionalLabels }}
+{{ toYaml . }}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -143,4 +146,100 @@ Postgres GID
   {{- else -}}
     {{- 26 -}}
   {{- end -}}
+{{- end -}}
+
+
+{{/*
+Check if a list of objects has a set key value pairs
+*/}}
+{{- /* Usage: {{ include "helpers.hasKeyValue" (list .Values.list (list (list "key" "value"))) }} */}}
+{{- /* Returns the string true if the list has an item matching the key value pairs */}}
+{{- define "helpers.hasKeyValue" -}}
+  {{- $list := index . 0 }}
+  {{- $kvPairs := index . 1 }}
+
+  {{- range $list }}
+    {{- $item := . }}
+    {{- $valid := true }}
+    {{- range $kvPairs }}
+      {{- $key := index . 0 -}}
+      {{- $value := index . 1 -}}
+      {{- if or (not (hasKey $item $key)) (not (eq (get $item $key) $value)) -}}
+        {{- $valid = false -}}
+        {{- break -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if $valid -}}
+      {{- "true" -}}
+      {{- break -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Similar to the omit function, returns a list of items that do not match the key value pairs
+*/}}
+{{- /* Usage: {{ include "helpers.omitKeyValue" (list .Values.list (list (list "key" "value"))) }} */}}
+{{- /* Returns a YAML list without the items matching the key value pairs */}}
+{{- define "helpers.omitKeyValue" -}}
+  {{- $list := index . 0 }}
+  {{- $kvPairs := index . 1 }}
+  {{- $newList := list }}
+
+  {{- range $list }}
+    {{- $item := . }}
+    {{- $shouldOmit := false }}
+    {{- range $kvPairs }}
+      {{- $key := index . 0 -}}
+      {{- $value := index . 1 -}}
+      {{- if and (hasKey $item $key) (eq (get $item $key) $value) -}}
+        {{- $shouldOmit = true -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if not $shouldOmit -}}
+      {{- $newList = append $newList $item -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $newList | toYaml }}
+{{ end -}}
+
+
+{{/*
+Given a list of objects, returns the first item that matches the key value pairs specified
+*/}}
+{{- /* Usage: {{ include "helpers.fetchKeyValue" (list .Values.list (list (list "key" "value"))) }} */}}
+{{- /* Returns a YAML object of the first item in the list has an item matching the key value pairs */}}
+{{- define "helpers.fetchKeyValue" -}}
+  {{- $list := index . 0 }}
+  {{- $kvPairs := index . 1 }}
+  {{- range $list }}
+    {{- $item := . }}
+    {{- $valid := true }}
+    {{- range $kvPairs }}
+      {{- $key := index . 0 -}}
+      {{- $value := index . 1 -}}
+      {{- if or (not (hasKey $item $key)) (not (eq (get $item $key) $value)) -}}
+        {{- $valid = false -}}
+        {{- break -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if $valid -}}
+      {{- toYaml $item -}}
+      {{- break -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "cluster.barmanPluginEnabled" -}}
+  {{- eq (include "helpers.hasKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io") (list "isWALArchiver" true)))) "true" -}}
+{{- end -}}
+
+{{- define "cluster.barmanPluginRequired" -}}
+  {{- $required := false -}}
+  {{- if and .Values.backups.enabled (eq .Values.backups.method "plugin") -}}
+    {{- if eq .Values.backups.pluginConfiguration.name "barman-cloud.cloudnative-pg.io" -}}
+      {{- $required = true -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $required -}}
 {{- end -}}

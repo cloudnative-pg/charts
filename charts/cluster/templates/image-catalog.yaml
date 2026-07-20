@@ -4,6 +4,9 @@ kind: ImageCatalog
 metadata:
   name: {{ include "cluster.fullname" . }}
   namespace: {{ include "cluster.namespace" . }}
+  labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+    {{- include "cluster.labels" . | nindent 4 }}
 spec:
   images:
     {{- range $image := .Values.imageCatalog.images }}

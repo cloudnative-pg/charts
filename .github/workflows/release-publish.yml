@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+# Two quick merges/pushes to main can cause a chart publish race condition
+concurrency:
+  group: chart-release
+  cancel-in-progress: false
+
 permissions: read-all
 
 jobs:
@@ -36,7 +41,7 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
         with:
-          version: v3.21.2
+          version: v4.2.3
 
       - name: Add chart dependencies
         run: |
@@ -77,13 +82,26 @@ jobs:
         run: |
           shopt -s nullglob
           for pkg in .cr-release-packages/*.tgz; do
-            if [ -z "${pkg:-}" ]; then
-              break
+            name=$(helm show chart "${pkg}" | yq -r '.name')
+            version=$(helm show chart "${pkg}" | yq -r '.version')
+            repo="ghcr.io/${GITHUB_REPOSITORY}/${name}"
+
+            # cr packages any chart with files changed since the last tag, not
+            # just ones whose version was bumped, and CR_SKIP_EXISTING only gates
+            # the GitHub release. Skip versions already in GHCR, otherwise an
+            # unrelated edit republishes a chart under an unchanged tag with a
+            # new digest.
+            if output=$(helm show chart oci://"${repo}" --version "${version}" 2>&1); then
+              echo "::notice::Skipping ${name} ${version}: already published to GHCR"
+              continue
+            elif grep -q "not found" <<< "${output}"; then
+              : # genuinely absent — fall through to push and sign
+            else
+              echo "::error::Cannot verify ${name} ${version} in GHCR; refusing to push blind"
+              echo "${output}"
+              exit 1
             fi
+
             helm push "${pkg}" oci://ghcr.io/"${GITHUB_REPOSITORY}"
-            file=${pkg##*/}
-            name=${file%-*}
-            version=${file%.*}
-            version=${version##*-}
-            cosign sign --yes ghcr.io/"${GITHUB_REPOSITORY}"/"${name}":"${version}"
+            cosign sign --yes "${repo}:${version}"
           done

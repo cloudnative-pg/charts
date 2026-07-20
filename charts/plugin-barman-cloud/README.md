@@ -87,9 +87,10 @@ Kubernetes: `>=1.29.0-0`
 | additionalEnv | list | `[]` | Array containing extra environment variables which can be templated. |
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | certificate.createClientCertificate | bool | `true` | Specifies whether the client certificate should be created. |
+| certificate.createIssuer | bool | `true` | Specifies whether the issuer should be created. |
 | certificate.createServerCertificate | bool | `true` | Specifies whether the server certificate should be created. |
 | certificate.duration | string | `"2160h"` | The duration of the certificates. |
-| certificate.issuerName | string | `"selfsigned-issuer"` | The name of the issuer to use for the certificates. |
+| certificate.issuerName | string | `""` | The name of the issuer to use for the certificates. |
 | certificate.renewBefore | string | `"360h"` | The renew before time for the certificates. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
 | containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container Security Context. |
@@ -109,6 +110,7 @@ Kubernetes: `>=1.29.0-0`
 | podLabels | object | `{}` | Labels to be added to the pod. |
 | podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security Context for the whole pod. |
 | priorityClassName | string | `""` | Priority indicates the importance of a Pod relative to other Pods. |
+| rbac.cnpgGroup | string | `"postgresql.cnpg.io"` | The API group of the Cluster CRD the plugin is granted access to (get/list/watch on backups, update on clusters/finalizers). Override this if you run a CloudNativePG-based operator whose Cluster CRD lives under a different API group. |
 | rbac.create | bool | `true` | Specifies whether Role and RoleBinding should be created. |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |

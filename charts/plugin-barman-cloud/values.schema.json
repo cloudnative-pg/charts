@@ -29,6 +29,11 @@
           "description": "Specifies whether the client certificate should be created.",
           "type": "boolean"
         },
+        "createIssuer": {
+          "default": true,
+          "description": "Specifies whether the issuer should be created.",
+          "type": "boolean"
+        },
         "createServerCertificate": {
           "default": true,
           "description": "Specifies whether the server certificate should be created.",
@@ -40,7 +45,7 @@
           "type": "string"
         },
         "issuerName": {
-          "default": "selfsigned-issuer",
+          "default": "",
           "description": "The name of the issuer to use for the certificates.",
           "type": "string"
         },
@@ -217,6 +222,11 @@
     },
     "rbac": {
       "properties": {
+        "cnpgGroup": {
+          "default": "postgresql.cnpg.io",
+          "description": "The API group of the Cluster CRD the plugin is granted access to\n(get/list/watch on backups, update on clusters/finalizers). Override\nthis if you run a CloudNativePG-based operator whose Cluster CRD lives\nunder a different API group.",
+          "type": "string"
+        },
         "create": {
           "default": true,
           "description": "Specifies whether Role and RoleBinding should be created.",
