@@ -22,6 +22,8 @@
 
 replicaCount: 1
 
+revisionHistoryLimit: 10
+
 image:
   repository: ghcr.io/cloudnative-pg/cloudnative-pg
   pullPolicy: IfNotPresent
@@ -180,7 +182,6 @@ tolerations: []
 affinity: {}
 
 monitoring:
-
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
   podMonitorEnabled: false
   # -- Metrics relabel configurations to apply to samples before ingestion.
