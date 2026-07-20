@@ -1338,12 +1338,22 @@
                 },
                 "passwordSecret": {
                   "properties": {
+                    "create": {
+                      "default": false,
+                      "description": "Whether to create a secret for the password",
+                      "type": "boolean"
+                    },
                     "key": {
                       "default": "",
                       "type": "string"
                     },
                     "name": {
                       "default": "",
+                      "type": "string"
+                    },
+                    "value": {
+                      "default": "",
+                      "description": "The password value to use when creating the secret",
                       "type": "string"
                     }
                   },
