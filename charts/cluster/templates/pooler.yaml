@@ -5,6 +5,10 @@ kind: Pooler
 metadata:
   name: {{ include "cluster.fullname" $  }}-pooler-{{ .name }}
   namespace: {{ include "cluster.namespace" $ }}
+  labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" $ }}
+    {{- include "cluster.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: pooler
 spec:
   cluster:
     name: {{ include "cluster.fullname" $ }}
