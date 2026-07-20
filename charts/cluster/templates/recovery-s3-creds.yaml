@@ -8,6 +8,6 @@ metadata:
     cnpg.io/cluster: {{ include "cluster.fullname" . }}
     {{- include "cluster.labels" . | nindent 4 }}
 data:
-  ACCESS_KEY_ID: {{ required ".Values.recovery.s3.accessKey is required, but not specified." .Values.recovery.s3.accessKey | b64enc | quote }}
-  ACCESS_SECRET_KEY: {{ required ".Values.recovery.s3.secretKey is required, but not specified." .Values.recovery.s3.secretKey | b64enc | quote }}
+  {{ .Values.recovery.secret.accessKeyIdField | default "ACCESS_KEY_ID" }}: {{ required ".Values.recovery.s3.accessKey is required, but not specified." .Values.recovery.s3.accessKey | b64enc | quote }}
+  {{ .Values.recovery.secret.secretAccessKeyField | default "ACCESS_SECRET_KEY" }}: {{ required ".Values.recovery.s3.secretKey is required, but not specified." .Values.recovery.s3.secretKey | b64enc | quote }}
 {{- end }}
