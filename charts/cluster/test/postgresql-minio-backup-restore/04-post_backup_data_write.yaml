@@ -52,6 +52,7 @@ spec:
            apk --no-cache add postgresql-client kubectl coreutils
            DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
            DATE_NO_BAD_TABLE=$(date --rfc-3339=ns)
+           psql "$DB_URI" -c "SELECT pg_create_restore_point('no-bad-table');"
            sleep 30
            psql "$DB_URI" -c "CREATE TABLE mybadtable (id serial PRIMARY KEY);"
            kubectl create configmap date-no-bad-table --from-literal=date="$DATE_NO_BAD_TABLE"
