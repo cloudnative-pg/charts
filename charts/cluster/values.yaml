@@ -478,6 +478,14 @@ backups:
   pluginConfiguration: {}
 #    name: barman-cloud.cloudnative-pg.io
 
+  objectStore:
+    # -- Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before
+    # the Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources
+    helmHook: true
+    # -- Extra annotations for the plugin `ObjectStore` resources only. Handy
+    # for e.g. `argocd.argoproj.io/sync-wave: "-1"` when helmHook above is set to false.
+    annotations: {}
+
   # Barman Object Store configuration applicable to both `barmanObjectStore` and `plugin` methods when using
   # the `barman-cloud.cloudnative-pg.io` plugin.
 

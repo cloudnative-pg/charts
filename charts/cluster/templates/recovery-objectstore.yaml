@@ -4,11 +4,18 @@ kind: ObjectStore
 metadata:
   name: {{ include "cluster.fullname" . }}-recovery
   namespace: {{ include "cluster.namespace" . }}
+  {{- if or .Values.backups.objectStore.helmHook .Values.cluster.annotations .Values.backups.objectStore.annotations }}
   annotations:
+    {{- if .Values.backups.objectStore.helmHook }}
     "helm.sh/hook": pre-install,pre-upgrade,pre-rollback
+    {{- end }}
     {{- with .Values.cluster.annotations }}
       {{- toYaml . | nindent 4 }}
     {{- end }}
+    {{- with .Values.backups.objectStore.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
   labels:
     cnpg.io/cluster: {{ include "cluster.fullname" . }}
     {{- include "cluster.labels" . | nindent 4 }}
