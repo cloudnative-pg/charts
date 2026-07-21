@@ -133,6 +133,23 @@
           "description": "One of `barmanObjectStore` (default) or `plugin`",
           "type": "string"
         },
+        "objectStore": {
+          "properties": {
+            "annotations": {
+              "default": {},
+              "description": "Extra annotations for the plugin `ObjectStore` resources only (unlike `cluster.annotations`, these are not applied to the Cluster). Handy for `argocd.argoproj.io/sync-wave: \"-1\"` when helmHook is false.",
+              "required": [],
+              "type": "object"
+            },
+            "helmHook": {
+              "default": true,
+              "description": "Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before the Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources.",
+              "type": "boolean"
+            }
+          },
+          "required": [],
+          "type": "object"
+        },
         "pluginConfiguration": {
           "required": [],
           "type": "object"
