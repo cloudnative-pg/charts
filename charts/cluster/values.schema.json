@@ -135,9 +135,20 @@
         },
         "objectStore": {
           "properties": {
+            "annotations": {
+              "default": {},
+              "description": "Extra annotations for the plugin `ObjectStore` resources only (unlike `cluster.annotations`, these are not applied to the Cluster). Handy for `argocd.argoproj.io/sync-wave: \"-1\"` when helmHook is false.",
+              "required": [],
+              "type": "object"
+            },
             "create": {
               "default": true,
               "description": "Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin. Its name comes from the plugin's `barmanObjectName` parameter (see `cluster.plugins`), defaulting to `\u003cfullname\u003e-backups`. Set to `false` to reference an ObjectStore managed outside of this chart, leaving it untouched.",
+              "type": "boolean"
+            },
+            "helmHook": {
+              "default": true,
+              "description": "Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before the Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources.",
               "type": "boolean"
             }
           },
