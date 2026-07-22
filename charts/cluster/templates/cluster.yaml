@@ -8,13 +8,10 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-  {{- include "cluster.labels" . | nindent 4 }}
-  {{- with .Values.cluster.additionalLabels }}
-    {{ toYaml . | nindent 4 }}
-  {{- end }}
+    {{- include "cluster.labels" . | nindent 4 }}
 spec:
   instances: {{ .Values.cluster.instances }}
-  {{- include "cluster.image" . | nindent 2 }}
+  {{- include "cluster.image" . | trim | nindent 2 }}
   imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
   {{- with .Values.cluster.imagePullSecrets }}
   imagePullSecrets:
@@ -37,7 +34,7 @@ spec:
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
   {{- with .Values.cluster.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
@@ -56,22 +53,28 @@ spec:
 
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
+  {{- with .Values.cluster.stopDelay }}
+  stopDelay: {{ . }}
+  {{- end }}
   logLevel: {{ .Values.cluster.logLevel }}
   {{- with .Values.cluster.certificates }}
   certificates:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
   enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
   {{- with .Values.cluster.superuserSecret }}
   superuserSecret:
     name: {{ . }}
-  {{ end }}
+  {{- end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
   postgresql:
-    {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) }}
+    {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) .Values.cluster.monitoring.instrumentation.pgStatStatements }}
     shared_preload_libraries:
       {{- if eq .Values.type "timescaledb" }}
       - timescaledb
+      {{- end }}
+      {{- if .Values.cluster.monitoring.instrumentation.pgStatStatements }}
+      - pg_stat_statements
       {{- end }}
       {{- with .Values.cluster.postgresql.shared_preload_libraries }}
       {{- toYaml . | nindent 6 }}
@@ -92,22 +95,27 @@ spec:
     {{- with .Values.cluster.postgresql.synchronous }}
     synchronous:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
     {{- with .Values.cluster.postgresql.parameters }}
     parameters:
       {{- toYaml . | nindent 6 }}
     {{- end }}
+
+  {{- with .Values.cluster.replicationSlots }}
+  replicationSlots:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 
   {{- if not (and (empty .Values.cluster.roles) (empty .Values.cluster.services)) }}
   managed:
     {{- with .Values.cluster.services }}
     services:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
     {{- with .Values.cluster.roles }}
     roles:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
   {{- end }}
 
   {{- with .Values.cluster.serviceAccountTemplate }}
@@ -118,15 +126,14 @@ spec:
   {{- with .Values.cluster.podSecurityContext }}
   podSecurityContext:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
 
   {{- with .Values.cluster.securityContext }}
   securityContext:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
 
   monitoring:
-    enablePodMonitor: {{ and .Values.cluster.monitoring.enabled .Values.cluster.monitoring.podMonitor.enabled }}
     disableDefaultQueries: {{ .Values.cluster.monitoring.disableDefaultQueries }}
     {{- if not (empty .Values.cluster.monitoring.customQueries) }}
     customQueriesConfigMap:
@@ -137,20 +144,32 @@ spec:
     {{- with .Values.cluster.monitoring.customQueriesSecret }}
     customQueriesSecret:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
     {{- end }}
-    {{- if not (empty .Values.cluster.monitoring.podMonitor.relabelings) }}
-    {{- with .Values.cluster.monitoring.podMonitor.relabelings }}
-    podMonitorRelabelings:
-      {{- toYaml . | nindent 6 }}
-    {{ end }}
     {{- end }}
-    {{- if not (empty .Values.cluster.monitoring.podMonitor.metricRelabelings) }}
-    {{- with .Values.cluster.monitoring.podMonitor.metricRelabelings }}
-    podMonitorMetricRelabelings:
-      {{- toYaml . | nindent 6 }}
-    {{ end }}
+    tls:
+      enabled: {{ .Values.cluster.monitoring.tls.enabled }}
+
+  {{ include "cluster.bootstrap" . | nindent 2 -}}
+  {{ include "cluster.externalClusters" . | nindent 2 -}}
+  {{ include "cluster.backup" . | nindent 2 -}}
+
+  {{- if or (gt (len .Values.cluster.plugins) 0) (eq (include "cluster.barmanPluginRequired" .) "true") }}
+  plugins:
+    {{- $pluginsWithoutBarman := include "helpers.omitKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYamlArray }}
+    {{- with $pluginsWithoutBarman }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{ include "cluster.bootstrap" . | nindent 2 }}
-  {{ include "cluster.externalClusters" . | nindent 2 }}
-  {{ include "cluster.backup" . | nindent 2 }}
+    {{- if or (eq (include "helpers.hasKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io")))) "true") (eq (include "cluster.barmanPluginRequired" .) "true") }}
+    {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml }}
+    - name: barman-cloud.cloudnative-pg.io
+      enabled: {{ eq $barmanPlugin.enabled nil | ternary (eq (include "cluster.barmanPluginRequired" .) "true") $barmanPlugin.enabled }}
+      isWALArchiver: {{ eq $barmanPlugin.isWALArchiver nil | ternary (eq (include "cluster.barmanPluginRequired" .) "true") $barmanPlugin.isWALArchiver }}
+      parameters:
+        {{- $parameters := (coalesce $barmanPlugin.parameters dict) -}}
+        {{- $parametersWithoutObjectName := (omit $parameters "barmanObjectName") }}
+        {{ with $parametersWithoutObjectName }}
+          {{- toYaml . | indent 8 | trim }}
+        {{- end }}
+        barmanObjectName: {{ $parameters.barmanObjectName | default (printf "%s-backups" (include "cluster.fullname" .)) }}
+    {{- end }}
+  {{- end }}

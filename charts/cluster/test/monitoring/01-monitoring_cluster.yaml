@@ -8,6 +8,15 @@ cluster:
   monitoring:
     enabled: true
     disableDefaultQueries: true
+    instrumentation:
+      logicalReplication: true
+      pgStatStatements: true
+    tls:
+      enabled: true
+    prometheusRule:
+      additionalLabels:
+        environment: staging
+        oncall: "false"
     customQueries:
       - name: "pg_cache_hit_ratio"
         query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
@@ -21,6 +30,9 @@ cluster:
               usage: GAUGE
               description: "Cache hit ratio"
     podMonitor:
+      labels:
+        team-name: test-team
+        environment: test
       relabelings:
         - targetLabel: environment
           replacement: test

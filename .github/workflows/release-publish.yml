@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+# Two quick merges/pushes to main can cause a chart publish race condition
+concurrency:
+  group: chart-release
+  cancel-in-progress: false
+
 permissions: read-all
 
 jobs:
@@ -16,7 +21,7 @@ jobs:
       id-token: write # Required for signing
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 0 # important for fetching all history to run comparison against
 
@@ -34,9 +39,9 @@ jobs:
           echo "${{ secrets.PGP_KEY_PASSPHRASE }}" > /tmp/passphrase-file.txt
 
       - name: Set up Helm
-        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4.3.1
+        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
         with:
-          version: v3.16.2
+          version: v4.2.3
 
       - name: Add chart dependencies
         run: |
@@ -59,14 +64,14 @@ jobs:
         run: shred --remove=wipesync /tmp/keyring.gpg /tmp/passphrase-file.txt
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install sigstore/cosign
-        uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
 
       - name: Push charts to GHCR
         env:
@@ -77,13 +82,26 @@ jobs:
         run: |
           shopt -s nullglob
           for pkg in .cr-release-packages/*.tgz; do
-            if [ -z "${pkg:-}" ]; then
-              break
+            name=$(helm show chart "${pkg}" | yq -r '.name')
+            version=$(helm show chart "${pkg}" | yq -r '.version')
+            repo="ghcr.io/${GITHUB_REPOSITORY}/${name}"
+
+            # cr packages any chart with files changed since the last tag, not
+            # just ones whose version was bumped, and CR_SKIP_EXISTING only gates
+            # the GitHub release. Skip versions already in GHCR, otherwise an
+            # unrelated edit republishes a chart under an unchanged tag with a
+            # new digest.
+            if output=$(helm show chart oci://"${repo}" --version "${version}" 2>&1); then
+              echo "::notice::Skipping ${name} ${version}: already published to GHCR"
+              continue
+            elif grep -q "not found" <<< "${output}"; then
+              : # genuinely absent — fall through to push and sign
+            else
+              echo "::error::Cannot verify ${name} ${version} in GHCR; refusing to push blind"
+              echo "${output}"
+              exit 1
             fi
+
             helm push "${pkg}" oci://ghcr.io/"${GITHUB_REPOSITORY}"
-            file=${pkg##*/}
-            name=${file%-*}
-            version=${file%.*}
-            version=${version##*-}
-            cosign sign --yes ghcr.io/"${GITHUB_REPOSITORY}"/"${name}":"${version}"
+            cosign sign --yes "${repo}:${version}"
           done
