@@ -126,7 +126,8 @@ imageName: {{ include "cluster.imageName" . }}
 Postgres UID
 */}}
 {{- define "cluster.postgresUID" -}}
-  {{- if ge (int .Values.cluster.postgresUID) 0 -}}
+  // -1 is a special value meaning UID must not be defined in SCC.
+  {{- if ge (int .Values.cluster.postgresUID) -1 -}}
     {{- .Values.cluster.postgresUID }}
   {{- else if and (eq (include "cluster.useTimescaleDBDefaults" .) "true") (eq .Values.type "timescaledb") -}}
     {{- 1000 -}}
@@ -139,7 +140,8 @@ Postgres UID
 Postgres GID
 */}}
 {{- define "cluster.postgresGID" -}}
-  {{- if ge (int .Values.cluster.postgresGID) 0 -}}
+  // -1 is a special value meaning GID must not be defined in SCC.
+  {{- if ge (int .Values.cluster.postgresGID) -1 -}}
     {{- .Values.cluster.postgresGID }}
   {{- else if and (eq (include "cluster.useTimescaleDBDefaults" .) "true") (eq .Values.type "timescaledb") -}}
     {{- 1000 -}}
