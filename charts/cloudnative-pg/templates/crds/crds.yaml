@@ -5118,13 +5118,13 @@ spec:
               postgresGID:
                 default: 26
                 description: The GID of the `postgres` user inside the image, defaults
-                  to `26`
+                  to `26`. `-1` is a special value meaning `runAsGroup` and `fsGroup` of `podSecurityContext` must not be defined.
                 format: int64
                 type: integer
               postgresUID:
                 default: 26
                 description: The UID of the `postgres` user inside the image, defaults
-                  to `26`
+                  to `26`. `-1` is a special value meaning `runAsUser` of `podSecurityContext` must not be defined.
                 format: int64
                 type: integer
               postgresql:
