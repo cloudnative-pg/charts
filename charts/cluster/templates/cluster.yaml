@@ -56,6 +56,18 @@ spec:
   {{- with .Values.cluster.stopDelay }}
   stopDelay: {{ . }}
   {{- end }}
+  {{- with .Values.cluster.smartShutdownTimeout }}
+  smartShutdownTimeout: {{ . }}
+  {{- end }}
+  {{- with .Values.cluster.switchoverDelay }}
+  switchoverDelay: {{ . }}
+  {{- end }}
+  {{- with .Values.cluster.startDelay }}
+  startDelay: {{ . }}
+  {{- end }}
+  {{- with .Values.cluster.failoverDelay }}
+  failoverDelay: {{ . }}
+  {{- end }}
   logLevel: {{ .Values.cluster.logLevel }}
   {{- with .Values.cluster.certificates }}
   certificates:

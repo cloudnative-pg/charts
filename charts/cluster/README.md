@@ -202,6 +202,7 @@ Kubernetes: `>=1.29.0-0`
 | cluster.enableSuperuserAccess | bool | `true` | When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password. If the secret is not present, the operator will automatically create one. When this option is disabled, the operator will ignore the SuperuserSecret content, delete it when automatically created, and then blank the password of the postgres user by setting it to NULL. |
 | cluster.env | list | `[]` | Env follows the Env format to pass environment variables to the pods created in the cluster |
 | cluster.envFrom | list | `[]` | EnvFrom follows the EnvFrom format to pass environment variables sources to the pods to be used by Env |
+| cluster.failoverDelay | int | `0` | The amount of time in seconds to wait before triggering a failover after the primary instance was detected to be unhealthy. Defaults to 0 (immediate failover) when unset, per the operator default. |
 | cluster.imageCatalogRef | object | `{}` | Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName` |
 | cluster.imageName | string | `""` | Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments: <image>:<tag>@sha256:<digestValue> |
 | cluster.imagePullPolicy | string | `"IfNotPresent"` | Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images |
@@ -242,10 +243,13 @@ Kubernetes: `>=1.29.0-0`
 | cluster.securityContext | object | `{}` | Configure Container Security Context. See: https://cloudnative-pg.io/documentation/preview/security/ |
 | cluster.serviceAccountTemplate | object | `{}` | Configure the metadata of the generated service account |
 | cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/ |
+| cluster.smartShutdownTimeout | int | `180` | The time in seconds reserved for the smart shutdown of Postgres to complete before the operator requests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout). Defaults to 180 when unset, per the operator default. |
+| cluster.startDelay | int | `3600` | The time in seconds that is allowed for a PostgreSQL instance to successfully start up. The startup probe failure threshold is derived from this value using the formula ceiling(startDelay / 10). Defaults to 3600 when unset, per the operator default. |
 | cluster.stopDelay | int | `1800` | The time in seconds that is allowed for the instance to wait for the shutdown to complete before being forcefully terminated. Also sets the pod's terminationGracePeriodSeconds. Defaults to 1800 (30m) when unset, per the operator default. |
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
+| cluster.switchoverDelay | int | `3600` | The time in seconds that is allowed for a primary instance to gracefully shut down during a switchover. Defaults to 3600 (1h) when unset, per the operator default. |
 | cluster.walStorage.enabled | bool | `false` |  |
 | cluster.walStorage.size | string | `"1Gi"` |  |
 | cluster.walStorage.storageClass | string | `""` |  |
