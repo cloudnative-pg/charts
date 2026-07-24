@@ -318,6 +318,11 @@
           },
           "type": "array"
         },
+        "failoverDelay": {
+          "default": 0,
+          "description": "The amount of time in seconds to wait before triggering a failover after the primary instance was\ndetected to be unhealthy. Defaults to 0 (immediate failover) when unset, per the operator default.",
+          "type": "integer"
+        },
         "imageCatalogRef": {
           "description": "Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName`",
           "required": [],
@@ -577,6 +582,16 @@
           "required": [],
           "type": "object"
         },
+        "smartShutdownTimeout": {
+          "default": 180,
+          "description": "The time in seconds reserved for the smart shutdown of Postgres to complete before the operator\nrequests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout).\nDefaults to 180 when unset, per the operator default.",
+          "type": "integer"
+        },
+        "startDelay": {
+          "default": 3600,
+          "description": "The time in seconds that is allowed for a PostgreSQL instance to successfully start up. The startup\nprobe failure threshold is derived from this value using the formula ceiling(startDelay / 10).\nDefaults to 3600 when unset, per the operator default.",
+          "type": "integer"
+        },
         "stopDelay": {
           "default": 1800,
           "description": "The time in seconds that is allowed for the instance to wait for the shutdown\nto complete before being forcefully terminated. Also sets the pod's terminationGracePeriodSeconds.\nDefaults to 1800 (30m) when unset, per the operator default.",
@@ -599,6 +614,11 @@
         "superuserSecret": {
           "default": "",
           "type": "string"
+        },
+        "switchoverDelay": {
+          "default": 3600,
+          "description": "The time in seconds that is allowed for a primary instance to gracefully shut down during a switchover.\nDefaults to 3600 (1h) when unset, per the operator default.",
+          "type": "integer"
         },
         "walStorage": {
           "properties": {
