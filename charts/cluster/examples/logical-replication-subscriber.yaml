@@ -1,0 +1,37 @@
+# Declarative logical replication — subscriber side.
+#
+# A cluster that continuously replicates from an existing "publisher" Postgres via a CNPG
+# Subscription, so you can sync first and cut over once caught up (near-zero-downtime migration into
+# CloudNativePG). The publisher can be any reachable Postgres; to pair this with the publisher in
+# logical-replication-publisher.yaml, point `host` at that cluster's `-rw` service.
+#
+# Note: logical replication copies data, not schema — the target tables must already exist on this
+# subscriber before the initial sync.
+type: postgresql
+mode: standalone
+
+cluster:
+  instances: 1
+
+# The external "publisher" the subscription reads from. Passed through verbatim to the CNPG
+# Cluster's `externalClusters`, so any connection/TLS option CNPG supports is available here.
+externalClusters:
+  - name: publisher
+    connectionParameters:
+      host: source-postgres.example.com
+      port: "5432"
+      user: postgres
+      dbname: app
+      sslmode: verify-full
+    password:
+      name: publisher-credentials
+      key: password
+
+subscriptions:
+  - name: migration
+    dbname: app
+    externalClusterName: publisher
+    publicationName: migration
+
+backups:
+  enabled: false

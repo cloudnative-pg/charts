@@ -629,6 +629,13 @@
       },
       "type": "array"
     },
+    "externalClusters": {
+      "description": "Externally managed clusters, referenced by declarative `subscriptions` (and by CNPG's replica/import bootstraps)",
+      "items": {
+        "required": []
+      },
+      "type": "array"
+    },
     "fullnameOverride": {
       "default": "",
       "description": "Override the full name of the chart",
@@ -674,6 +681,13 @@
     },
     "poolers": {
       "description": "List of PgBouncer poolers",
+      "items": {
+        "required": []
+      },
+      "type": "array"
+    },
+    "publications": {
+      "description": "Declarative logical replication publications (CNPG `Publication` resources)",
       "items": {
         "required": []
       },
@@ -1430,6 +1444,13 @@
       },
       "required": [],
       "type": "object"
+    },
+    "subscriptions": {
+      "description": "Declarative logical replication subscriptions (CNPG `Subscription` resources)",
+      "items": {
+        "required": []
+      },
+      "type": "array"
     },
     "type": {
       "default": "postgresql",

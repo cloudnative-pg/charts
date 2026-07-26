@@ -1,10 +1,11 @@
 {{- define "cluster.externalClusters" -}}
-{{- if eq .Values.mode "standalone" }}
-{{- else }}
-{{- if not (and (eq .Values.mode "recovery") (eq .Values.recovery.method "backup")) }}
+{{- $userClusters := .Values.externalClusters | default list -}}
+{{- $bootstrapCluster := and (ne .Values.mode "standalone") (not (and (eq .Values.mode "recovery") (eq .Values.recovery.method "backup"))) -}}
+{{- if or $bootstrapCluster (gt (len $userClusters) 0) }}
 externalClusters:
 {{- end }}
-{{- if eq .Values.mode "recovery" }}
+{{- if eq .Values.mode "standalone" }}
+{{- else if eq .Values.mode "recovery" }}
   {{- if eq .Values.recovery.method "pg_basebackup" }}
   - name: pgBaseBackupSource
      {{- include "cluster.externalSourceCluster" .Values.recovery.pgBaseBackup.source | nindent 4 }}
@@ -43,5 +44,7 @@ externalClusters:
 {{- else }}
   {{ fail "Invalid cluster mode!" }}
 {{- end }}
+{{- range $userClusters }}
+  {{- toYaml (list .) | nindent 2 }}
 {{- end }}
 {{- end }}

@@ -1,0 +1,39 @@
+type: postgresql
+mode: standalone
+cluster:
+  instances: 1
+  storage:
+    size: 256Mi
+  initdb:
+    # Logical replication replicates data, not DDL: the target table must already exist on the
+    # subscriber (with a matching definition) before the subscription performs its initial copy.
+    postInitApplicationSQL:
+      - CREATE TABLE IF NOT EXISTS t (id integer PRIMARY KEY, val text)
+backups:
+  enabled: false
+
+# Reach the external "publisher" cluster. In `standalone` mode this is only possible because the
+# chart now injects user-defined `externalClusters` into the Cluster spec.
+externalClusters:
+  - name: publisher
+    connectionParameters:
+      host: publisher-cluster-rw
+      port: "5432"
+      user: postgres
+      dbname: app
+      sslmode: require
+    password:
+      name: publisher-cluster-superuser
+      key: password
+    sslKey:
+      name: publisher-cluster-replication
+      key: tls.key
+    sslCert:
+      name: publisher-cluster-replication
+      key: tls.crt
+
+subscriptions:
+  - name: mysub
+    dbname: app
+    externalClusterName: publisher
+    publicationName: mypub

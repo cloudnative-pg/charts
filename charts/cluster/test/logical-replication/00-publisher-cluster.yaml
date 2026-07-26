@@ -1,0 +1,24 @@
+type: postgresql
+mode: standalone
+cluster:
+  instances: 1
+  superuserSecret: publisher-cluster-superuser
+  storage:
+    size: 256Mi
+  initdb:
+    # Create the table to publish at bootstrap so the declarative Publication
+    # (which targets `public.t` by name) can be reconciled before any data is written.
+    postInitApplicationSQL:
+      - CREATE TABLE IF NOT EXISTS t (id integer PRIMARY KEY, val text)
+backups:
+  enabled: false
+
+# Publish a single, explicitly named table, exercising the `target.objects` path.
+publications:
+  - name: mypub
+    dbname: app
+    target:
+      objects:
+        - table:
+            name: t
+            schema: public

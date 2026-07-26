@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-test
+spec:
+  backoffLimit: 6
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-test
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: subscriber-cluster-superuser
+                key: uri
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+         - |
+           set -e
+           apk --no-cache add postgresql-client
+           DB_URI=$(echo $DB_URI | sed "s|/\*|/|" )
+           # Initial data sync is asynchronous, so poll until the row published on the source
+           # cluster shows up on this subscriber (or time out and fail the job).
+           for i in $(seq 1 60); do
+             if [ "$(psql "${DB_URI}app" -t -c 'SELECT val FROM t WHERE id = 314159265' --csv -q 2>/dev/null)" = "hello" ]; then
+               echo "row replicated to subscriber"
+               exit 0
+             fi
+             echo "waiting for replication... ($i)"
+             sleep 2
+           done
+           echo "timed out waiting for replication"
+           exit 1

@@ -1,0 +1,23 @@
+# Declarative logical replication — publisher side.
+#
+# A cluster that publishes its changes so a subscriber can consume them (for example, a
+# near-zero-downtime migration where this cluster is the source, or feeding another system
+# downstream). Pair it with the subscriber in logical-replication-subscriber.yaml, which points an
+# `externalClusters` entry at this cluster's `-rw` service and references the `migration`
+# publication declared below.
+type: postgresql
+mode: standalone
+
+cluster:
+  instances: 1
+
+publications:
+  - name: migration
+    dbname: app
+    target:
+      # Publish every table in the database, including ones created later. To publish only specific
+      # tables or schemas instead, use `target.objects` (see the `publications` docs in values.yaml).
+      allTables: true
+
+backups:
+  enabled: false
