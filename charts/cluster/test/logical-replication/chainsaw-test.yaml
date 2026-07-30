@@ -1,0 +1,92 @@
+##
+# This test provisions a "publisher" cluster that declaratively publishes a table via a CNPG
+# `Publication`, and a "subscriber" cluster that consumes it via a CNPG `Subscription` pointing at
+# the publisher through a user-defined `externalClusters` entry. It verifies that a row written on
+# the publisher is replicated to the subscriber.
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: logical-replication
+spec:
+  timeouts:
+    apply: 1s
+    assert: 2m
+    cleanup: 1m
+  steps:
+    - name: Install the publisher cluster and its publication
+      timeouts:
+        assert: 5m
+      try:
+        - apply:
+            file: ./00-publisher-superuser-password.yaml
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./00-publisher-cluster.yaml \
+                --wait \
+                publisher ../../
+        - assert:
+            file: ./00-publisher-cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Publication
+    - name: Write data on the publisher
+      try:
+        - apply:
+            file: ./01-data_write.yaml
+        - assert:
+            file: ./01-data_write-assert.yaml
+      catch:
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-write
+    - name: Install the subscriber cluster and its subscription
+      timeouts:
+        assert: 5m
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./02-subscriber-cluster.yaml \
+                --wait \
+                subscriber ../../
+        - assert:
+            file: ./02-subscriber-cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Subscription
+    - name: Verify the data replicated to the subscriber
+      try:
+        - apply:
+            file: ./03-data_test.yaml
+        - assert:
+            file: ./03-data_test-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Subscription
+        - describe:
+            apiVersion: batch/v1
+            kind: Job
+        - podLogs:
+            selector: batch.kubernetes.io/job-name=data-test
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE subscriber
+              helm uninstall --namespace $NAMESPACE publisher

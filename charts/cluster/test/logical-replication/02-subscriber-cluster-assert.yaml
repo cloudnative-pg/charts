@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: subscriber-cluster
+status:
+  readyInstances: 1
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Subscription
+metadata:
+  name: subscriber-cluster-mysub
+status:
+  applied: true

@@ -1,0 +1,32 @@
+{{- range .Values.subscriptions }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Subscription
+metadata:
+  name: {{ include "cluster.fullname" $ }}-{{ .name | replace "_" "-" }}
+  namespace: {{ include "cluster.namespace" $ }}
+  {{- with $.Values.cluster.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    cnpg.io/cluster: {{ .cluster | default (include "cluster.fullname" $) }}
+    {{- include "cluster.labels" $ | nindent 4 }}
+spec:
+  name: {{ .name }}
+  cluster:
+    name: {{ .cluster | default (include "cluster.fullname" $) }}
+  dbname: {{ required "Each entry in .Values.subscriptions must set a 'dbname'." .dbname }}
+  externalClusterName: {{ required "Each entry in .Values.subscriptions must set an 'externalClusterName'." .externalClusterName }}
+  publicationName: {{ required "Each entry in .Values.subscriptions must set a 'publicationName'." .publicationName }}
+  {{- with .publicationDBName }}
+  publicationDBName: {{ . }}
+  {{- end }}
+  {{- with .subscriptionReclaimPolicy }}
+  subscriptionReclaimPolicy: {{ . }}
+  {{- end }}
+  {{- with .parameters }}
+  parameters:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

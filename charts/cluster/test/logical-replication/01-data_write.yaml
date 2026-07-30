@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-write
+spec:
+  backoffLimit: 6
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: data-write
+        env:
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: publisher-cluster-superuser
+                key: username
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: publisher-cluster-superuser
+                key: password
+          - name: DB_URI
+            value: postgres://$(DB_USER):$(DB_PASS)@publisher-cluster-rw:5432
+        image: alpine:3.19
+        command: ['sh', '-c']
+        args:
+         - |
+           set -e
+           apk --no-cache add postgresql-client
+           psql "$DB_URI/app" -c "CREATE TABLE IF NOT EXISTS t (id integer PRIMARY KEY, val text);"
+           psql "$DB_URI/app" -c "INSERT INTO t VALUES (314159265, 'hello') ON CONFLICT DO NOTHING;"

@@ -679,6 +679,47 @@ databases: []
  #   builtinLocale: ""              # -- Maps to the BUILTIN_LOCALE parameter. Available from PostgreSQL 17.
  #   collationVersion: ""           # -- Maps to the COLLATION_VERSION parameter.
 
+# -- Externally managed clusters, referenced by declarative `subscriptions` (and by CNPG's replica/import bootstraps)
+externalClusters: []
+ # - name: publisher                          # -- Name referenced by `subscriptions[].externalClusterName`.
+ #   connectionParameters:
+ #     host: source-postgres.example.com      # -- Host of the external "publisher" Postgres.
+ #     port: "5432"
+ #     user: postgres
+ #     dbname: app
+ #     sslmode: verify-full
+ #   password:                                # -- Secret holding the connection password.
+ #     name: publisher-credentials
+ #     key: password
+
+# -- Declarative logical replication publications (CNPG `Publication` resources)
+publications: []
+ # - name: migration                   # -- Name of the publication inside PostgreSQL.
+ #   dbname: app                       # -- Database in this cluster the publication is created in.
+ #   cluster: ""                       # -- Publisher cluster name. Defaults to this chart's cluster.
+ #   publicationReclaimPolicy: retain  # -- One of: retain / delete (retain by default).
+ #   parameters: {}                    # -- Parameters for the `WITH` clause of `CREATE PUBLICATION`.
+ #   target:                           # -- What to publish. Set exactly one of `allTables` or `objects`.
+ #     allTables: true                 # -- Publish all tables in the database (`FOR ALL TABLES`).
+ #     # objects:                      # -- Or publish a specific set of schemas/tables.
+ #     #   - tablesInSchema: public
+ #     #   - table:
+ #     #       name: orders
+ #     #       schema: public
+ #     #       columns: []
+
+# -- Declarative logical replication subscriptions (CNPG `Subscription` resources)
+subscriptions: []
+ # - name: migration                    # -- Name of the subscription inside PostgreSQL.
+ #   dbname: app                        # -- Database in this cluster the subscription is created in.
+ #   externalClusterName: publisher     # -- Name of the `externalClusters` entry hosting the publication.
+ #   publicationName: migration         # -- Name of the publication on the external "publisher" cluster.
+ #   publicationDBName: ""              # -- Database on the external cluster holding the publication. Defaults
+ #                                      #    to the one in the external cluster definition.
+ #   cluster: ""                        # -- Subscriber cluster name. Defaults to this chart's cluster.
+ #   subscriptionReclaimPolicy: retain  # -- One of: retain / delete (retain by default).
+ #   parameters: {}                     # -- Parameters for the `WITH` clause of `CREATE SUBSCRIPTION`.
+
 imageCatalog:
   # -- Whether to provision an image catalog. If imageCatalog.images is empty this option will be ignored.
   create: true

@@ -1,0 +1,37 @@
+{{- range .Values.publications }}
+{{- $target := .target | default dict }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Publication
+metadata:
+  name: {{ include "cluster.fullname" $ }}-{{ .name | replace "_" "-" }}
+  namespace: {{ include "cluster.namespace" $ }}
+  {{- with $.Values.cluster.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    cnpg.io/cluster: {{ .cluster | default (include "cluster.fullname" $) }}
+    {{- include "cluster.labels" $ | nindent 4 }}
+spec:
+  name: {{ .name }}
+  cluster:
+    name: {{ .cluster | default (include "cluster.fullname" $) }}
+  dbname: {{ required "Each entry in .Values.publications must set a 'dbname'." .dbname }}
+  {{- with .publicationReclaimPolicy }}
+  publicationReclaimPolicy: {{ . }}
+  {{- end }}
+  {{- with .parameters }}
+  parameters:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  target:
+    {{- if $target.allTables }}
+    allTables: true
+    {{- else if $target.objects }}
+    objects:
+      {{- toYaml $target.objects | nindent 6 }}
+    {{- else }}
+    {{- fail "Each entry in .Values.publications must set 'target.allTables: true' or a non-empty 'target.objects' list." }}
+    {{- end }}
+{{- end }}
