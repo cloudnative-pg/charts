@@ -1,7 +1,12 @@
-# The CODEOWNERS file is used to define individuals or teams that are
-# responsible for code in a repository. For details, please refer to
-# https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/about-code-owners
+# This file is generated from componentowners-policy.yaml in
+# cloudnative-pg/cnpg-infra — do not hand-edit, propose changes there instead.
+#
+# Path-scoped rules below always include the repo's own general owners
+# (the "*" line) in addition to their own specific teams/users, since
+# CODEOWNERS only honors the LAST matching pattern for a given path —
+# it does not merge an earlier, less-specific rule into a later one.
 
-*               @fcanovai @gbartolini @leonardoce @mnencia @itay-grudev
-/.github        @fcanovai @gbartolini @leonardoce @mnencia @itay-grudev
-/charts/cluster @itay-grudev @phisco
+* @cloudnative-pg/charts-owners
+/charts/cloudnative-pg/ @cloudnative-pg/charts-owners
+/charts/cluster/ @cloudnative-pg/charts-owners
+/charts/plugin-barman-cloud/ @cloudnative-pg/charts-owners
