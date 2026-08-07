@@ -171,6 +171,11 @@
       },
       "required": []
     },
+    "logLevel": {
+      "default": "debug",
+      "description": "Log verbosity level for the plugin operator.",
+      "type": "string"
+    },
     "nameOverride": {
       "default": "",
       "type": "string"

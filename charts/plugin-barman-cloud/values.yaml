@@ -22,6 +22,8 @@
 
 replicaCount: 1
 
+logLevel: debug
+
 image:
   registry: ghcr.io
   repository: cloudnative-pg/plugin-barman-cloud
