@@ -464,6 +464,16 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
+  # -- Mount custom files in the PostgreSQL Pods through `spec.projectedVolumeTemplate`.
+  # See: https://cloudnative-pg.io/documentation/current/cluster_conf/#projected-volumes
+  projectedVolumeTemplate: {}
+    # sources:
+    #   - secret:
+    #       name: sample-secret
+    #       items:
+    #         - key: tls.crt
+    #           path: certificate/tls.crt
+
   console:
     # -- Deploys a console StatefulSet to run long-running commands against the cluster (e.g. `CREATE INDEX`).
     enabled: false
