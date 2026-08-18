@@ -22,6 +22,12 @@
 
 replicaCount: 1
 
+# @schema
+# type: string
+# enum: [error, warning, info, debug, trace]
+# default: debug
+# @schema
+# -- Log verbosity level for the plugin barman cloud with values: [error, warning, info, debug, trace].
 logLevel: debug
 
 image:
