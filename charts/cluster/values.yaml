@@ -761,3 +761,6 @@ poolers: []
   #   # -- Custom PgBouncer deployment template.
   #   # Use to override image, specify resources, etc.
   #   template: {}
+
+test:
+  imageName: alpine:3.17
