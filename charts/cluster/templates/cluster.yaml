@@ -133,6 +133,11 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 
+  {{- with .Values.cluster.projectedVolumeTemplate }}
+  projectedVolumeTemplate:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
   monitoring:
     disableDefaultQueries: {{ .Values.cluster.monitoring.disableDefaultQueries }}
     {{- if not (empty .Values.cluster.monitoring.customQueries) }}
