@@ -2,7 +2,9 @@
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: {{ include "cluster.fullname" . }}-backups
+  {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml }}
+  {{- $parameters := coalesce $barmanPlugin.parameters dict }}
+  name: {{ $parameters.barmanObjectName | default (printf "%s-backups" (include "cluster.fullname" .)) | quote }}
   namespace: {{ include "cluster.namespace" . }}
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,pre-rollback
