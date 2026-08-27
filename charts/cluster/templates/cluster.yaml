@@ -175,6 +175,6 @@ spec:
         {{ with $parametersWithoutObjectName }}
           {{- toYaml . | indent 8 | trim }}
         {{- end }}
-        barmanObjectName: {{ $parameters.barmanObjectName | default (printf "%s-backups" (include "cluster.fullname" .)) }}
+        barmanObjectName: {{ $parameters.barmanObjectName | default (printf "%s-backups" (include "cluster.fullname" .)) | quote }}
     {{- end }}
   {{- end }}
