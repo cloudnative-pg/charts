@@ -243,3 +243,12 @@ Given a list of objects, returns the first item that matches the key value pairs
   {{- end -}}
   {{- $required -}}
 {{- end -}}
+
+{{/*
+Name of the plugin's barmanObject Nameparameter when set, otherwise defaults to "<fullname>-backups".
+*/}}
+{{- define "cluster.barmanObjectName" -}}
+  {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml -}}
+  {{- $parameters := coalesce $barmanPlugin.parameters dict -}}
+  {{- $parameters.barmanObjectName | default (printf "%s-backups" (include "cluster.fullname" .)) -}}
+{{- end -}}
