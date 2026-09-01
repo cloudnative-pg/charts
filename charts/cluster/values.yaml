@@ -222,6 +222,17 @@ cluster:
     size: 1Gi
     storageClass: ""
 
+  # -- Override the default emptyDir used by CNPG for temporary storage.
+  # See: https://cloudnative-pg.io/documentation/current/cluster_conf/#ephemeral-volumes
+  ephemeralVolumeSource: {}
+    # volumeClaimTemplate:
+    #   spec:
+    #     accessModes: ["ReadWriteOnce"]
+    #     storageClassName: "scratch-storage-class"
+    #     resources:
+    #       requests:
+    #         storage: 1Gi
+
   # -- The UID of the postgres user inside the image, defaults to 26
   postgresUID: -1
 
