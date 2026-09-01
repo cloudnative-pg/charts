@@ -4,13 +4,17 @@ on:
   pull_request:
     branches-ignore:
       - 'gh-pages'
-  workflow_dispatch:
+  push:
+    branches-ignore:
+      - 'main'
+      - 'gh-pages'
 
 permissions: read-all
 
 jobs:
   deploy_operator:
     name: Deploy the operator in cluster-wide mode
+    if: github.event_name != 'push' || github.repository_owner != 'cloudnative-pg'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -35,6 +39,7 @@ jobs:
 
   deploy_operator_single_namespace:
     name: Deploy the operator in single-namespace mode
+    if: github.event_name != 'push' || github.repository_owner != 'cloudnative-pg'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
