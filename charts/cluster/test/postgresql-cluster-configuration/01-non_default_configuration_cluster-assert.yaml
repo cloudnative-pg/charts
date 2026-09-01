@@ -70,6 +70,15 @@ spec:
   walStorage:
     size: 256Mi
     storageClass: standard
+  ephemeralVolumeSource:
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: scratch-storage-class
+        resources:
+          requests:
+            storage: 1Gi
   affinity:
     topologyKey: kubernetes.io/hostname
     nodeAffinity:

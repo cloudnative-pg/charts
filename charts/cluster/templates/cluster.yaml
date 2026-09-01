@@ -31,6 +31,10 @@ spec:
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
     {{- end }}
   {{- end }}
+  {{- with .Values.cluster.ephemeralVolumeSource }}
+  ephemeralVolumeSource:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
