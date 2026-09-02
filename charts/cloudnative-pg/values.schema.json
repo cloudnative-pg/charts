@@ -238,6 +238,13 @@
     "monitoringQueriesConfigMap": {
       "description": "Default monitoring queries",
       "properties": {
+        "excludeQueries": {
+          "description": "List of query names to exclude from default monitoring queries.",
+          "items": {
+            "required": []
+          },
+          "type": "array"
+        },
         "name": {
           "default": "cnpg-default-monitoring",
           "description": "The name of the default monitoring configmap.",
