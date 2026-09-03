@@ -2,7 +2,7 @@
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: {{ include "cluster.fullname" . }}-backups
+  name: {{ include "cluster.barmanObjectName" . | quote }}
   namespace: {{ include "cluster.namespace" . }}
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,pre-rollback
