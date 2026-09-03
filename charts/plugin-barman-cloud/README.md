@@ -103,6 +103,7 @@ Kubernetes: `>=1.29.0-0`
 | image.repository | string | `"cloudnative-pg/plugin-barman-cloud"` |  |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` |  |
+| logLevel | string | `"info"` | Log verbosity level for the plugin barman cloud with values: [error, warning, info, debug, trace]. |
 | nameOverride | string | `""` |  |
 | namespaceOverride | string | `""` |  |
 | nodeSelector | object | `{}` | Nodeselector for the operator to be installed. |
