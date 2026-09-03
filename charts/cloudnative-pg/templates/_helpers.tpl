@@ -62,6 +62,17 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Cluster-scoped resource name, unique per namespace when namespacedWebhooks is enabled.
+*/}}
+{{- define "cloudnative-pg.clusterResourceName" -}}
+{{- if .Values.config.namespacedWebhooks -}}
+{{- printf "%s-%s" (include "cloudnative-pg.fullname" .) (include "cloudnative-pg.namespace" .) | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- include "cloudnative-pg.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "cloudnative-pg.serviceAccountName" -}}
