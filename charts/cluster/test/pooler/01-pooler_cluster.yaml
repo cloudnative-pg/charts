@@ -15,3 +15,15 @@ poolers:
   - name: ro
     type: ro
     instances: 2
+  - name: lb-rw
+    type: rw
+    instances: 2
+    poolMode: transaction
+    serviceTemplate:
+      metadata:
+        annotations:
+          metallb.universe.tf/address-pool: loadbalanced
+          metallb.universe.tf/allow-shared-ip: loadbalanced
+          metallb.universe.tf/ip-allocated-from-pool: loadbalanced
+      spec:
+        type: LoadBalancer
