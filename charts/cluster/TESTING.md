@@ -9,7 +9,7 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
 1. Create a kind cluster.
 
     ```bash
-    kind create cluster
+    kind create cluster --name chart-test
     ```
 
 2. Install the CloudNativePG operator
@@ -18,9 +18,9 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
     helm dependency update charts/cloudnative-pg
     helm upgrade \
       --install \
-      --namespace $NAMESPACE \
+      --namespace cnpg-system \
       --create-namespace \
-      --set config.clusterWide=$CLUSTER_WIDE \
+      --set config.clusterWide=true \
       --wait \
       cnpg charts/cloudnative-pg
     ```
@@ -32,7 +32,24 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
     helm install prometheus-crds prometheus-community/prometheus-operator-crds
     ```
 
-4. Install MinIO (optional, but required for backup/recovery tests).
+4. Install Cert-Manager and Barman plugin (optional, but required for backup/recovery tests).
+
+    ```bash
+    helm repo add jetstack https://charts.jetstack.io
+    helm install \
+       cert-manager jetstack/cert-manager \
+       --namespace cert-manager \
+       --create-namespace \
+       --version v1.18.2 \
+       --set crds.enabled=true
+    ```
+    ```bash
+    helm upgrade --install plugin-barman-cloud \
+       --namespace cnpg-system \
+       charts/plugin-barman-cloud
+    ```
+
+5. Install MinIO (optional, but required for backup/recovery tests).
 
     ```bash
     helm repo add minio-operator https://operator.min.io
@@ -52,9 +69,9 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
       tenant minio-operator/tenant
     ```
 
-5. Install Kyverno Chainsaw
+6. Install Kyverno Chainsaw
 
-    Refer to the [Kyverno Chainsaw Installation](https://kyverno.io/blog/2023/12/12/kyverno-chainsaw-the-ultimate-end-to-end-testing-tool/#install-chainsaw) documentation for platform specific instructions.
+    Refer to the [Kyverno Chainsaw Installation](https://kyverno.github.io/chainsaw/latest/quick-start/install/) documentation for platform specific instructions.
 
     You can also install Kyverno Chainsaw from source if you have _Go_ installed:
 
@@ -62,7 +79,7 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
     go install github.com/kyverno/chainsaw@latest
     ```
 
-6. Run the tests
+7. Run the tests
 
     To run the whole test suite:
 
