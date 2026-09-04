@@ -4,12 +4,17 @@ on:
   pull_request:
     branches-ignore:
       - 'gh-pages'
+  push:
+    branches-ignore:
+      - 'main'
+      - 'gh-pages'
 
 permissions: read-all
 
 jobs:
   test-list:
     runs-on: ubuntu-24.04
+    if: github.event_name != 'push' || github.repository_owner != 'cloudnative-pg'
     outputs:
       tests: ${{ steps.listTests.outputs.tests }}
     steps:
