@@ -140,10 +140,19 @@ spec:
 
   monitoring:
     disableDefaultQueries: {{ .Values.cluster.monitoring.disableDefaultQueries }}
-    {{- if not (empty .Values.cluster.monitoring.customQueries) }}
+    {{- if or (not (empty .Values.cluster.monitoring.customQueries)) (or .Values.cluster.monitoring.instrumentation.pgStatStatements .Values.cluster.monitoring.instrumentation.logicalReplication) }}
     customQueriesConfigMap:
+    {{- if not (empty .Values.cluster.monitoring.customQueries) }}
       - name: {{ include "cluster.fullname" . }}-monitoring
         key: custom-queries
+    {{- end }}
+    {{- if not (not .Values.cluster.monitoring.instrumentation.pgStatStatements) }}
+      - name: {{ include "cluster.fullname" . }}-monitoring-pg-stat-statements
+        key: custom-queries
+    {{- end }}
+    {{- if .Values.cluster.monitoring.instrumentation.logicalReplication }}
+    - name: {{ include "cluster.fullname" . }}-monitoring-logical-replication
+      key: custom-queries
     {{- end }}
     {{- if not (empty .Values.cluster.monitoring.customQueriesSecret) }}
     {{- with .Values.cluster.monitoring.customQueriesSecret }}
