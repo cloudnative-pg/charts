@@ -2,5 +2,8 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: standalone-cluster
+spec:
+  backup:
+    target: primary
 status:
   readyInstances: 2
