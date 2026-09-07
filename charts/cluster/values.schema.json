@@ -1436,6 +1436,16 @@
       "required": [],
       "type": "object"
     },
+    "test": {
+      "properties": {
+        "imageName": {
+          "default": "alpine:3.17",
+          "type": "string"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
     "type": {
       "default": "postgresql",
       "description": "Type of the CNPG database. Available types:\n* `postgresql`\n* `postgis`\n* `timescaledb`",
