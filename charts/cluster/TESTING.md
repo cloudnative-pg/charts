@@ -40,7 +40,7 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
        cert-manager jetstack/cert-manager \
        --namespace cert-manager \
        --create-namespace \
-       --version v1.18.2 \
+       --version v1.21.1 \
        --set crds.enabled=true
     ```
     ```bash
