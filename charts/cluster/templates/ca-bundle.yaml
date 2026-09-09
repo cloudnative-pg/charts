@@ -5,6 +5,10 @@ kind: Secret
 metadata:
   name: {{ .Values.backups.endpointCA.name | default (printf "%s-ca-bundle" (include "cluster.fullname" .)) | quote }}
   namespace: {{ include "cluster.namespace" . }}
+  labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+    {{- include "cluster.labels" . | nindent 4 }}
+    cnpg.io/reload: "true"
 data:
   {{ .Values.backups.endpointCA.key | default "ca-bundle.crt" | quote }}: {{ .Values.backups.endpointCA.value }}
 {{- end }}

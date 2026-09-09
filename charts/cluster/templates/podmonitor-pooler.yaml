@@ -16,6 +16,7 @@ metadata:
     {{- with $.Values.cluster.monitoring.podMonitor.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
+    app.kubernetes.io/component: pooler
   {{- with $.Values.cluster.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}

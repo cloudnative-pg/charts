@@ -1,0 +1,21 @@
+{{- $alert := "CNPGInstanceMetricsAbsent" -}}
+{{- if not (has $alert .excludeRules) -}}
+alert: {{ $alert }}
+annotations:
+  summary: CNPG instance metrics exporter is hung
+  description: |-
+    CloudNativePG instance "{{ .namespace }}/{{ .labels.pod }}" has had an unreachable metrics endpoint for 10 minutes, so its metrics exporter is hung.
+
+    The lag, HA and replication alerts all read from this exporter and will not fire while it is down. A hung exporter has previously coincided with a frozen standby, so physical replication may be stuck and unmonitored. Check the instance directly.
+  runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/{{ $alert }}.md
+expr: |
+  up{namespace="{{ .namespace }}",pod=~"{{ .podSelector }}"} == 0
+for: 10m
+labels:
+  severity: critical
+  namespace: {{ .namespace }}
+  cnpg_cluster: {{ .cluster }}
+{{- range $key, $val := .additionalLabels }}
+  {{ $key }}: {{ $val | toString | quote }}
+{{- end }}
+{{- end -}}

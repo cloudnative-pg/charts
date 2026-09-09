@@ -4,6 +4,9 @@ kind: ImageCatalog
 metadata:
   name: {{ include "cluster.fullname" . }}-timescaledb-ha
   namespace: {{ include "cluster.namespace" . }}
+  labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+    {{- include "cluster.labels" . | nindent 4 }}
 spec:
   images:
     - major: 12
@@ -18,4 +21,6 @@ spec:
       image: timescale/timescaledb-ha:pg16-ts{{ .Values.version.timescaledb }}
     - major: 17
       image: timescale/timescaledb-ha:pg17-ts{{ .Values.version.timescaledb }}
+    - major: 18
+      image: timescale/timescaledb-ha:pg18-ts{{ .Values.version.timescaledb }}
 {{ end }}

@@ -4,6 +4,10 @@ kind: Secret
 metadata:
   name: {{ default (printf "%s-backup-google-creds" (include "cluster.fullname" .)) .Values.backups.secret.name }}
   namespace: {{ include "cluster.namespace" . }}
+  labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+    {{- include "cluster.labels" . | nindent 4 }}
+    cnpg.io/reload: "true"
 data:
   APPLICATION_CREDENTIALS: {{ .Values.backups.google.applicationCredentials | b64enc | quote }}
 {{- end }}

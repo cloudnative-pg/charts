@@ -1,6 +1,6 @@
 # plugin-barman-cloud
 
-![Version: 0.7.0](https://img.shields.io/badge/Version-0.7.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.13.0](https://img.shields.io/badge/AppVersion-v0.13.0-informational?style=flat-square)
+![Version: 0.8.0](https://img.shields.io/badge/Version-0.8.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.15.0](https://img.shields.io/badge/AppVersion-v0.15.0-informational?style=flat-square)
 
 Helm Chart for CloudNativePG's CNPG-I backup plugin using Barman Cloud
 
@@ -87,9 +87,10 @@ Kubernetes: `>=1.29.0-0`
 | additionalEnv | list | `[]` | Array containing extra environment variables which can be templated. |
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | certificate.createClientCertificate | bool | `true` | Specifies whether the client certificate should be created. |
+| certificate.createIssuer | bool | `true` | Specifies whether the issuer should be created. |
 | certificate.createServerCertificate | bool | `true` | Specifies whether the server certificate should be created. |
 | certificate.duration | string | `"2160h"` | The duration of the certificates. |
-| certificate.issuerName | string | `"selfsigned-issuer"` | The name of the issuer to use for the certificates. |
+| certificate.issuerName | string | `""` | The name of the issuer to use for the certificates. |
 | certificate.renewBefore | string | `"360h"` | The renew before time for the certificates. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
 | containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container Security Context. |
@@ -102,6 +103,7 @@ Kubernetes: `>=1.29.0-0`
 | image.repository | string | `"cloudnative-pg/plugin-barman-cloud"` |  |
 | image.tag | string | `""` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` |  |
+| logLevel | string | `"info"` | Log verbosity level for the plugin barman cloud with values: [error, warning, info, debug, trace]. |
 | nameOverride | string | `""` |  |
 | namespaceOverride | string | `""` |  |
 | nodeSelector | object | `{}` | Nodeselector for the operator to be installed. |
