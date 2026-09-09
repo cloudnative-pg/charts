@@ -12,6 +12,8 @@ runs:
       shell: bash
       env:
         NAMESPACE: ${{ inputs.namespace }}
+        # renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io
+        CERT_MANAGER_VERSION: v1.21.1
       run: |
         helm repo add jetstack https://charts.jetstack.io
 
@@ -19,5 +21,5 @@ runs:
           cert-manager jetstack/cert-manager \
           --namespace $NAMESPACE \
           --create-namespace \
-          --version v1.18.2 \
+          --version $CERT_MANAGER_VERSION \
           --set crds.enabled=true

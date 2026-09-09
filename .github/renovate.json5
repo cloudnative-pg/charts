@@ -27,6 +27,20 @@
         '# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*\\??=\\s*["\']?(?<currentValue>.+?)["\']?\\s',
       ],
     },
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^\\.github\\/actions\\/deploy-cert-manager\\/action\\.yml$/',
+        '/^charts\\/cluster\\/TESTING\\.md$/',
+      ],
+      matchStrings: [
+        '# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?) registryUrl=(?<registryUrl>[^\\s]+?)\\s+[A-Za-z0-9_]+?_VERSION: ["\']?(?<currentValue>[^"\'\\s]+)',
+        'jetstack\\/cert-manager[\\s\\S]*?--version (?<currentValue>v?\\d\\S*)'
+      ],
+      datasourceTemplate: 'helm',
+      depNameTemplate: 'cert-manager',
+      registryUrlTemplate: 'https://charts.jetstack.io',
+    },
   ],
   packageRules: [
     {
