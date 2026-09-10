@@ -13,6 +13,15 @@ cluster:
     enabled: true
     size: 256Mi
     storageClass: standard
+  ephemeralVolumeSource:
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: scratch-storage-class
+        resources:
+          requests:
+            storage: 1Gi
   postgresUID: 1001
   postgresGID: 1002
   resources:
