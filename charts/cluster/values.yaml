@@ -258,6 +258,24 @@ cluster:
   # Defaults to 1800 (30m) when unset, per the operator default.
   stopDelay: 1800
 
+  # -- The time in seconds reserved for the smart shutdown of Postgres to complete before the operator
+  # requests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout).
+  # Defaults to 180 when unset, per the operator default.
+  smartShutdownTimeout: 180
+
+  # -- The time in seconds that is allowed for a primary instance to gracefully shut down during a switchover.
+  # Defaults to 3600 (1h) when unset, per the operator default.
+  switchoverDelay: 3600
+
+  # -- The time in seconds that is allowed for a PostgreSQL instance to successfully start up. The startup
+  # probe failure threshold is derived from this value using the formula ceiling(startDelay / 10).
+  # Defaults to 3600 when unset, per the operator default.
+  startDelay: 3600
+
+  # -- The amount of time in seconds to wait before triggering a failover after the primary instance was
+  # detected to be unhealthy. Defaults to 0 (immediate failover) when unset, per the operator default.
+  failoverDelay: 0
+
   # -- The instances' log level, one of the following values: error, warning, info (default), debug, trace
   logLevel: "info"
 
