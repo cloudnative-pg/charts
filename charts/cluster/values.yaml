@@ -568,6 +568,8 @@ backups:
       schedule: "0 0 0 * * *"
       # -- Backup owner reference
       backupOwnerReference: self
+      # -- The policy to decide which instance should perform this backup, one of `primary` or `prefer-standby`. If empty, it defaults to `cluster.spec.backup.target`.
+      target: ""
       # -- Backup method, can be `barmanObjectStore` (default), `volumeSnapshot` or `plugin`.
       method: barmanObjectStore
       pluginConfiguration: {}

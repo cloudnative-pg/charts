@@ -188,6 +188,7 @@ Kubernetes: `>=1.29.0-0`
 | backups.scheduledBackups[0].name | string | `"daily-backup"` | Scheduled backup name |
 | backups.scheduledBackups[0].pluginConfiguration | object | `{}` |  |
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
+| backups.scheduledBackups[0].target | string | `""` | The policy to decide which instance should perform this backup, one of `primary` or `prefer-standby`. If empty, it defaults to `cluster.spec.backup.target`. |
 | backups.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | backups.secret.name | string | `""` | Name of the backup credentials secret |
 | backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
