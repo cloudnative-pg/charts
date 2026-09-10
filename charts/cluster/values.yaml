@@ -107,6 +107,10 @@ recovery:
     create: true
     # -- Name of the backup credentials secret
     name: ""
+    # -- Definable accessKeyIdField to use (Left blank defaults to ACCESS_KEY_ID)
+    accessKeyIdField: ""
+    # -- Definable accessKeyIdField to use (Left blank defaults to ACCESS_SECRET_KEY)
+    secretAccessKeyField: ""
 
   # -- The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration
   instanceSidecarConfiguration: {}
@@ -541,6 +545,10 @@ backups:
     create: true
     # -- Name of the backup credentials secret
     name: ""
+    # -- Definable accessKeyIdField to use (Left blank defaults to ACCESS_KEY_ID)
+    accessKeyIdField: ""
+    # -- Definable secretAccessKeyField to use (Left blank defaults to ACCESS_SECRET_KEY)
+    secretAccessKeyField: ""
 
   # -- The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration
   instanceSidecarConfiguration: {}
@@ -552,6 +560,7 @@ backups:
     encryption: AES256
     # -- Number of WAL files to be archived or restored in parallel.
     maxParallel: 1
+    additionalCommandArgs: []
   data:
     # -- Data compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
     compression: gzip
@@ -559,6 +568,7 @@ backups:
     encryption: AES256
     # -- Number of data files to be archived or restored in parallel.
     jobs: 2
+    additionalCommandArgs: []
 
   scheduledBackups:
     -
