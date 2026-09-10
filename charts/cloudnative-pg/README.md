@@ -151,6 +151,11 @@ Kubernetes: `>=1.29.0-0`
 | namespaceOverride | string | `""` |  |
 | nodeSelector | object | `{}` | Nodeselector for the operator to be installed. |
 | podAnnotations | object | `{}` | Annotations to be added to the pod. |
+| podDisruptionBudget | object | `{"enabled":false,"maxUnavailable":null,"minAvailable":1,"unhealthyPodEvictionPolicy":""}` | Pod disruption budget for the operator. Exactly one of `minAvailable` or `maxUnavailable` must be set when enabled. This does not configure the disruption budgets managed by CloudNativePG for database clusters. |
+| podDisruptionBudget.enabled | bool | `false` | Specifies whether the pod disruption budget should be created. |
+| podDisruptionBudget.maxUnavailable | string | `nil` | Maximum number or percentage of operator pods that may be unavailable. Mutually exclusive with `minAvailable`. |
+| podDisruptionBudget.minAvailable | int | `1` | Minimum number or percentage of operator pods that must remain available. Mutually exclusive with `maxUnavailable`. |
+| podDisruptionBudget.unhealthyPodEvictionPolicy | string | `""` | Policy for evicting unhealthy operator pods. An empty value uses the Kubernetes default (`IfHealthyBudget`). |
 | podLabels | object | `{}` | Labels to be added to the pod. |
 | podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Security Context for the whole pod. |
 | priorityClassName | string | `""` | Priority indicates the importance of a Pod relative to other Pods. |

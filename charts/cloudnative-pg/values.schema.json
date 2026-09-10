@@ -270,6 +270,74 @@
       "required": [],
       "type": "object"
     },
+    "podDisruptionBudget": {
+      "description": "Pod disruption budget for the operator. Exactly one of `minAvailable` or\n`maxUnavailable` must be set when enabled. This does not configure the\ndisruption budgets managed by CloudNativePG for database clusters.",
+      "not": {
+        "properties": {
+          "maxUnavailable": {
+            "required": [],
+            "type": [
+              "integer",
+              "string"
+            ]
+          },
+          "minAvailable": {
+            "required": [],
+            "type": [
+              "integer",
+              "string"
+            ]
+          }
+        },
+        "required": [
+          "minAvailable",
+          "maxUnavailable"
+        ]
+      },
+      "properties": {
+        "enabled": {
+          "default": false,
+          "description": "Specifies whether the pod disruption budget should be created.",
+          "type": "boolean"
+        },
+        "maxUnavailable": {
+          "default": "null",
+          "description": "Maximum number or percentage of operator pods that may be unavailable.\nMutually exclusive with `minAvailable`.",
+          "minimum": 0,
+          "pattern": "^([0-9]|[1-9][0-9]|100)%$",
+          "required": [],
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        },
+        "minAvailable": {
+          "default": 1,
+          "description": "Minimum number or percentage of operator pods that must remain available.\nMutually exclusive with `maxUnavailable`.",
+          "minimum": 0,
+          "pattern": "^([0-9]|[1-9][0-9]|100)%$",
+          "required": [],
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        },
+        "unhealthyPodEvictionPolicy": {
+          "default": "",
+          "description": "Policy for evicting unhealthy operator pods. An empty value uses the\nKubernetes default (`IfHealthyBudget`).",
+          "enum": [
+            "",
+            "IfHealthyBudget",
+            "AlwaysAllow"
+          ],
+          "required": []
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
     "podLabels": {
       "description": "Labels to be added to the pod.",
       "required": [],
