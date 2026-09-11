@@ -1,0 +1,29 @@
+# Tests that the plugin ObjectStore can opt out of the Helm hook (for GitOps tools like ArgoCD)
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: barman-plugin-objectstore-hook
+spec:
+  timeouts:
+    apply: 1s
+    assert: 2m
+    cleanup: 5m
+  steps:
+    - name: Install a cluster with the ObjectStore Helm hook disabled and a custom annotation
+      try:
+        - script:
+            content: |
+              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n kube-system get configmaps kube-root-ca.crt -o jsonpath='{.data.ca\.crt}')" --dry-run=client -o yaml | kubectl apply -f -
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-objectstore_hook_disabled_cluster.yaml \
+                --wait \
+                objectstore-hook-cluster ../../
+        - assert:
+            file: ./01-objectstore_hook_disabled_cluster-assert.yaml
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm --namespace $NAMESPACE uninstall objectstore-hook-cluster
