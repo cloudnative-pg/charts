@@ -56,8 +56,9 @@ spec:
   {{- with .Values.cluster.stopDelay }}
   stopDelay: {{ . }}
   {{- end }}
-  {{- with .Values.cluster.smartShutdownTimeout }}
-  smartShutdownTimeout: {{ . }}
+  {{- /* smartShutdownTimeout accepts 0 (skip the smart phase), which `with` would drop, so test for the key */}}
+  {{- if hasKey .Values.cluster "smartShutdownTimeout" }}
+  smartShutdownTimeout: {{ .Values.cluster.smartShutdownTimeout }}
   {{- end }}
   {{- with .Values.cluster.switchoverDelay }}
   switchoverDelay: {{ . }}

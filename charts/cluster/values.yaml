@@ -260,6 +260,7 @@ cluster:
 
   # -- The time in seconds reserved for the smart shutdown of Postgres to complete before the operator
   # requests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout).
+  # Set to 0 to skip the smart phase entirely and request a fast shutdown right away.
   # Defaults to 180 when unset, per the operator default.
   smartShutdownTimeout: 180
 

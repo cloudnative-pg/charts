@@ -244,7 +244,7 @@ Kubernetes: `>=1.29.0-0`
 | cluster.securityContext | object | `{}` | Configure Container Security Context. See: https://cloudnative-pg.io/documentation/preview/security/ |
 | cluster.serviceAccountTemplate | object | `{}` | Configure the metadata of the generated service account |
 | cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/ |
-| cluster.smartShutdownTimeout | int | `180` | The time in seconds reserved for the smart shutdown of Postgres to complete before the operator requests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout). Defaults to 180 when unset, per the operator default. |
+| cluster.smartShutdownTimeout | int | `180` | The time in seconds reserved for the smart shutdown of Postgres to complete before the operator requests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout). Set to 0 to skip the smart phase entirely and request a fast shutdown right away. Defaults to 180 when unset, per the operator default. |
 | cluster.startDelay | int | `3600` | The time in seconds that is allowed for a PostgreSQL instance to successfully start up. The startup probe failure threshold is derived from this value using the formula ceiling(startDelay / 10). Defaults to 3600 when unset, per the operator default. |
 | cluster.stopDelay | int | `1800` | The time in seconds that is allowed for the instance to wait for the shutdown to complete before being forcefully terminated. Also sets the pod's terminationGracePeriodSeconds. Defaults to 1800 (30m) when unset, per the operator default. |
 | cluster.storage.size | string | `"8Gi"` |  |

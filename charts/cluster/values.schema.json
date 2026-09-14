@@ -589,7 +589,7 @@
         },
         "smartShutdownTimeout": {
           "default": 180,
-          "description": "The time in seconds reserved for the smart shutdown of Postgres to complete before the operator\nrequests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout).\nDefaults to 180 when unset, per the operator default.",
+          "description": "The time in seconds reserved for the smart shutdown of Postgres to complete before the operator\nrequests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout).\nSet to 0 to skip the smart phase entirely and request a fast shutdown right away.\nDefaults to 180 when unset, per the operator default.",
           "type": "integer"
         },
         "startDelay": {
