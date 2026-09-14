@@ -6,7 +6,7 @@ LOCALBIN    ?= $(PROJECT_DIR)/bin
 # renovate: datasource=github-releases depName=norwoodj/helm-docs
 HELM_DOCS_VERSION ?= v1.14.2
 # renovate: datasource=github-releases depName=dadav/helm-schema
-HELM_SCHEMA_VERSION ?= 0.23.4
+HELM_SCHEMA_VERSION ?= 0.23.5
 HELM_SCHEMA_FLAGS ?= -a --no-dependencies --skip-auto-generation title,required,additionalProperties
 
 # Credits: https://gist.github.com/prwhite/8168133
