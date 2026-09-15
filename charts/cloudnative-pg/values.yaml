@@ -179,6 +179,45 @@ tolerations: []
 # -- Affinity for the operator to be installed.
 affinity: {}
 
+# @schema
+# type: object
+# not:
+#   properties:
+#     minAvailable:
+#       type: [integer, string]
+#     maxUnavailable:
+#       type: [integer, string]
+#   required: [minAvailable, maxUnavailable]
+# @schema
+# -- Pod disruption budget for the operator. Exactly one of `minAvailable` or
+# `maxUnavailable` must be set when enabled. This does not configure the
+# disruption budgets managed by CloudNativePG for database clusters.
+podDisruptionBudget:
+  # -- Specifies whether the pod disruption budget should be created.
+  enabled: false
+  # @schema
+  # type: [integer, string, null]
+  # minimum: 0
+  # pattern: ^([0-9]|[1-9][0-9]|100)%$
+  # @schema
+  # -- Minimum number or percentage of operator pods that must remain available.
+  # Mutually exclusive with `maxUnavailable`.
+  minAvailable: 1
+  # @schema
+  # type: [integer, string, null]
+  # minimum: 0
+  # pattern: ^([0-9]|[1-9][0-9]|100)%$
+  # @schema
+  # -- Maximum number or percentage of operator pods that may be unavailable.
+  # Mutually exclusive with `minAvailable`.
+  maxUnavailable: null
+  # @schema
+  # enum: ["", IfHealthyBudget, AlwaysAllow]
+  # @schema
+  # -- Policy for evicting unhealthy operator pods. An empty value uses the
+  # Kubernetes default (`IfHealthyBudget`).
+  unhealthyPodEvictionPolicy: ""
+
 monitoring:
 
   # -- Specifies whether the monitoring should be enabled. Requires Prometheus Operator CRDs.
