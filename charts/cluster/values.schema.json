@@ -318,6 +318,11 @@
           },
           "type": "array"
         },
+        "ephemeralVolumeSource": {
+          "description": "Override the default emptyDir used by CNPG for temporary storage.\nSee: https://cloudnative-pg.io/documentation/current/cluster_conf/#ephemeral-volumes",
+          "required": [],
+          "type": "object"
+        },
         "imageCatalogRef": {
           "description": "Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName`",
           "required": [],

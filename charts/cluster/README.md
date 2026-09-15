@@ -202,6 +202,7 @@ Kubernetes: `>=1.29.0-0`
 | cluster.enableSuperuserAccess | bool | `true` | When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password. If the secret is not present, the operator will automatically create one. When this option is disabled, the operator will ignore the SuperuserSecret content, delete it when automatically created, and then blank the password of the postgres user by setting it to NULL. |
 | cluster.env | list | `[]` | Env follows the Env format to pass environment variables to the pods created in the cluster |
 | cluster.envFrom | list | `[]` | EnvFrom follows the EnvFrom format to pass environment variables sources to the pods to be used by Env |
+| cluster.ephemeralVolumeSource | object | `{}` | Override the default emptyDir used by CNPG for temporary storage. See: https://cloudnative-pg.io/documentation/current/cluster_conf/#ephemeral-volumes |
 | cluster.imageCatalogRef | object | `{}` | Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName` |
 | cluster.imageName | string | `""` | Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments: <image>:<tag>@sha256:<digestValue> |
 | cluster.imagePullPolicy | string | `"IfNotPresent"` | Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images |
