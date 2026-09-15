@@ -56,6 +56,19 @@ spec:
   {{- with .Values.cluster.stopDelay }}
   stopDelay: {{ . }}
   {{- end }}
+  {{- /* smartShutdownTimeout accepts 0 (skip the smart phase), which `with` would drop, so test for the key */}}
+  {{- if hasKey .Values.cluster "smartShutdownTimeout" }}
+  smartShutdownTimeout: {{ .Values.cluster.smartShutdownTimeout }}
+  {{- end }}
+  {{- with .Values.cluster.switchoverDelay }}
+  switchoverDelay: {{ . }}
+  {{- end }}
+  {{- with .Values.cluster.startDelay }}
+  startDelay: {{ . }}
+  {{- end }}
+  {{- with .Values.cluster.failoverDelay }}
+  failoverDelay: {{ . }}
+  {{- end }}
   logLevel: {{ .Values.cluster.logLevel }}
   {{- with .Values.cluster.certificates }}
   certificates:
