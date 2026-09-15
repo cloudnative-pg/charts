@@ -30,4 +30,16 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 data:
+  {{- if .Values.monitoringQueriesConfigMap.excludeQueries }}
+  {{- $queries := fromYaml .Values.monitoringQueriesConfigMap.queries }}
+  {{- $filteredQueries := dict }}
+  {{- range $key, $value := $queries }}
+    {{- if not (has $key $.Values.monitoringQueriesConfigMap.excludeQueries) }}
+      {{- $_ := set $filteredQueries $key $value }}
+    {{- end }}
+  {{- end }}
+  queries: |-
+    {{- toYaml $filteredQueries | nindent 4 }}
+  {{- else }}
   queries: {{- toYaml .Values.monitoringQueriesConfigMap.queries | nindent 4 }}
+  {{- end }}

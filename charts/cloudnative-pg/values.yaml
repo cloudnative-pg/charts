@@ -209,6 +209,8 @@ monitoring:
 monitoringQueriesConfigMap:
   # -- The name of the default monitoring configmap.
   name: cnpg-default-monitoring
+  # -- List of query names to exclude from default monitoring queries.
+  excludeQueries: []
   # -- A string representation of a YAML defining monitoring queries.
   queries: |
     backends:
