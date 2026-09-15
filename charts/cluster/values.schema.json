@@ -206,6 +206,11 @@
                     "default": "0 0 0 * * *",
                     "description": "Schedule in cron format",
                     "type": "string"
+                  },
+                  "target": {
+                    "default": "",
+                    "description": "The policy to decide which instance should perform this backup, one of `primary` or `prefer-standby`. If empty, it defaults to `cluster.spec.backup.target`.",
+                    "type": "string"
                   }
                 },
                 "required": [],
