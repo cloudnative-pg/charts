@@ -36,7 +36,7 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
 
     ```bash
     # renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io
-    CERT_MANAGER_VERSION=v1.21.1
+    CERT_MANAGER_VERSION=v1.21.2
     helm repo add jetstack https://charts.jetstack.io
     helm install \
        cert-manager jetstack/cert-manager \
