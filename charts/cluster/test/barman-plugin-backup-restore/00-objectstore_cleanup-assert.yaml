@@ -1,0 +1,6 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: objectstore-cleanup
+status:
+  succeeded: 1

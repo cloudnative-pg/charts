@@ -25,12 +25,38 @@
       managerFilePatterns: [
         '/^Makefile$/',
         '/^\\.github\\/actions\\/deploy-cert-manager\\/action\\.yml$/',
+        '/^\\.github\\/workflows\\/tests-cluster-chainsaw\\.yaml$/',
+        '/^\\.github\\/workflows\\/tests-plugin-barman-cloud\\.yaml$/',
         '/^charts\\/cluster\\/TESTING\\.md$/',
       ],
       matchStrings: [
         '# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*\\??[:=]\\s*["\']?(?<currentValue>[^"\'\\s]+)',
       ],
     },
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^\\.github\\/chainsaw-values\\.yaml$/',
+        '/^\\.github\\/rustfs-bucket-init\\.yaml$/',
+      ],
+      matchStrings: [
+        '(?:awsCliImage|alpineImage|image): (?<depName>[\\w./-]+):(?<currentValue>[\\w.-]+)',
+      ],
+      datasourceTemplate: 'docker',
+      versioningTemplate: 'docker',
+    },
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^\\.github\\/rustfs\\.yaml$/',
+      ],
+      matchStrings: [
+        'tag: "(?<currentValue>[^"]+)"',
+      ],
+      datasourceTemplate: 'docker',
+      depNameTemplate: 'docker.io/rustfs/rustfs',
+      versioningTemplate: 'docker',
+    }
   ],
   packageRules: [
     {

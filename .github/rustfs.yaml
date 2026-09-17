@@ -1,0 +1,52 @@
+fullnameOverride: object-store
+
+mode:
+  standalone:
+    enabled: true
+  distributed:
+    enabled: false
+replicaCount: 1
+
+image:
+  rustfs:
+    tag: "1.0.0-rc.5-glibc"
+
+secret:
+  rustfs:
+    access_key: objectstore
+    secret_key: objectstore123
+
+config:
+  rustfs:
+    console_enable: "false"
+
+ingress:
+  enabled: false
+
+livenessProbe:
+  enabled: false
+readinessProbe:
+  enabled: false
+
+# RustFS enables TLS when it finds rustfs_cert.pem and
+# rustfs_key.pem in RUSTFS_TLS_PATH.
+extraEnv:
+  - name: RUSTFS_TLS_PATH
+    value: /etc/secrets/certs
+extraVolumes:
+  - name: tls
+    secret:
+      secretName: object-store-tls-secret
+      items:
+        - key: tls.crt
+          path: rustfs_cert.pem
+        - key: tls.key
+          path: rustfs_key.pem
+extraVolumeMounts:
+  - name: tls
+    mountPath: /etc/secrets/certs
+
+storageclass:
+  name: standard
+  dataStorageSize: 4Gi
+  logStorageSize: 256Mi
