@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run code spelling check
-        uses: codespell-project/actions-codespell@8f01853be192eb0f849a5c7d721450e7a467c579 # v2.2
+        uses: codespell-project/actions-codespell@e3258cca84ce02b0bb36a3d41f2c18f719a0cc1a # v2.4.3
         with:
           ignore_words_list: notin
 
