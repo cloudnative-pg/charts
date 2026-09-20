@@ -35,12 +35,14 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
 4. Install Cert-Manager and Barman plugin (optional, but required for backup/recovery tests).
 
     ```bash
+    # renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io
+    CERT_MANAGER_VERSION=v1.21.1
     helm repo add jetstack https://charts.jetstack.io
     helm install \
        cert-manager jetstack/cert-manager \
        --namespace cert-manager \
        --create-namespace \
-       --version v1.21.1 \
+       --version $CERT_MANAGER_VERSION \
        --set crds.enabled=true
     ```
     ```bash
