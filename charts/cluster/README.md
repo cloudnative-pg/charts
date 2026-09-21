@@ -174,6 +174,7 @@ Kubernetes: `>=1.29.0-0`
 | backups.google.path | string | `"/"` |  |
 | backups.instanceSidecarConfiguration | object | `{}` | The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration |
 | backups.method | string | `"barmanObjectStore"` | One of `barmanObjectStore` (default) or `plugin` |
+| backups.objectStore.create | bool | `true` | Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin. Its name comes from the plugin's `barmanObjectName` parameter (see `cluster.plugins`), defaulting to `<fullname>-backups`. Set to `false` to reference an ObjectStore managed outside of this chart, leaving it untouched. |
 | backups.pluginConfiguration | object | `{}` |  |
 | backups.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | backups.retentionPolicy | string | `"30d"` | Retention policy for backups |

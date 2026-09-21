@@ -133,6 +133,17 @@
           "description": "One of `barmanObjectStore` (default) or `plugin`",
           "type": "string"
         },
+        "objectStore": {
+          "properties": {
+            "create": {
+              "default": true,
+              "description": "Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin. Its name comes from the plugin's `barmanObjectName` parameter (see `cluster.plugins`), defaulting to `\u003cfullname\u003e-backups`. Set to `false` to reference an ObjectStore managed outside of this chart, leaving it untouched.",
+              "type": "boolean"
+            }
+          },
+          "required": [],
+          "type": "object"
+        },
         "pluginConfiguration": {
           "required": [],
           "type": "object"
