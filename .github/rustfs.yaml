@@ -9,7 +9,7 @@ replicaCount: 1
 
 image:
   rustfs:
-    tag: "1.0.0-rc.5-glibc"
+    tag: "1.0.0-glibc"
 
 secret:
   rustfs:
