@@ -7,9 +7,9 @@ recovery:
   owner: me
   s3:
     bucket: "mybucket"
-    accessKey: "minio"
-    secretKey: "minio123"
-    region: "local"
+    accessKey: "objectstore"
+    secretKey: "objectstore123"
+    region: "us-east-1"
 
 backups:
   enabled: false
