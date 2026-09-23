@@ -10,17 +10,21 @@ spec:
     assert: 7m
     cleanup: 1m
   steps:
-    - name: Clear the MinIO bucket
+    - name: Create the object store CA secret
+      try:
+        - script:
+            content: |
+              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n object-store get secret object-store-tls-secret -o jsonpath='{.data.ca\.crt}' | base64 -d)" --dry-run=client -o yaml | kubectl apply -f -
+    - name: Clear the object store bucket
       try:
         - apply:
-            file: ./00-minio_cleanup.yaml
+            file: ./00-objectstore_cleanup.yaml
         - assert:
-            file: ./00-minio_cleanup-assert.yaml
+            file: ./00-objectstore_cleanup-assert.yaml
     - name: Install a standalone CNPG Cluster
       try:
         - script:
             content: |
-              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n kube-system get configmaps kube-root-ca.crt -o jsonpath='{.data.ca\.crt}')" --dry-run=client -o yaml | kubectl apply -f -
               helm upgrade \
                 --install \
                 --namespace $NAMESPACE \
