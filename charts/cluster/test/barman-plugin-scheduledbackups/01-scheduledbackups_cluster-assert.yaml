@@ -16,7 +16,7 @@ spec:
     endpointCA:
       key: ca.crt
       name: kube-root-ca.crt
-    endpointURL: https://minio.minio.svc.cluster.local
+    endpointURL: https://object-store-svc.object-store.svc.cluster.local:9000
     s3Credentials:
       accessKeyId:
         key: ACCESS_KEY_ID

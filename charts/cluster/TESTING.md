@@ -1,8 +1,8 @@
 # Testing
 
-This chart uses Kyverno Chainsaw and implements end-to-end (E2E) tests for common features. Not everything is tested because of inadequate tooling — for example, local simulation of Azure and Google Cloud Storage. We do test S3 via MinIO. Our aim is that every critical feature that is technically feasible to test is covered.
+This chart uses Kyverno Chainsaw and implements end-to-end (E2E) tests for common features. Not everything is tested because of inadequate tooling — for example, local simulation of Azure and Google Cloud Storage. We do test S3 via RustFS. Our aim is that every critical feature that is technically feasible to test is covered.
 
-We use a local kind cluster (minikube also works) and provision prerequisites such as the CloudNativePG operator, Prometheus CRDs, and MinIO. Then we run the `chainsaw` utility, which executes the individual tests. It can run tests in parallel, which is essential because some tests take over five minutes to complete.
+We use a local kind cluster (minikube also works) and provision prerequisites such as the CloudNativePG operator, Prometheus CRDs, and RustFS. Then we run the `chainsaw` utility, which executes the individual tests. It can run tests in parallel, which is essential because some tests take over five minutes to complete.
 
 ## Procedure
 
@@ -51,24 +51,23 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
        charts/plugin-barman-cloud
     ```
 
-5. Install MinIO (optional, but required for backup/recovery tests).
+5. Install RustFS (optional, but required for backup/recovery tests; needs cert-manager from step 4 for its TLS certificates).
 
     ```bash
-    helm repo add minio-operator https://operator.min.io
+    # renovate: datasource=helm depName=rustfs registryUrl=https://charts.rustfs.com
+    RUSTFS_CHART_VERSION=1.0.0
+    kubectl apply -f ./.github/rustfs-prereqs.yaml
+    kubectl -n object-store wait --for=condition=Ready certificate/object-store-tls --timeout=120s
+    helm repo add rustfs https://charts.rustfs.com
     helm upgrade \
       --install \
-      --namespace minio-system \
-      --create-namespace \
+      --namespace object-store \
+      --version "$RUSTFS_CHART_VERSION" \
+      --values ./.github/rustfs.yaml \
       --wait \
-      operator minio-operator/operator
-
-    helm upgrade \
-      --install \
-      --namespace minio \
-      --create-namespace \
-      --wait \
-      --values ./.github/minio.yaml \
-      tenant minio-operator/tenant
+      rustfs rustfs/rustfs
+    kubectl apply -f ./.github/rustfs-bucket-init.yaml
+    kubectl -n object-store wait --for=condition=complete job/rustfs-bucket-init --timeout=180s
     ```
 
 6. Install Kyverno Chainsaw
@@ -83,16 +82,21 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
 
 7. Run the tests
 
+    Run chainsaw from the repository root and always pass the shared values
+    file (it provides the container images the test manifests reference via
+    `($values.*)` — without it, those tests fail with an unresolved
+    expression).
+
     To run the whole test suite:
 
     ```bash
-    chainsaw test charts/cluster
+    chainsaw test --values .github/chainsaw-values.yaml charts/cluster
     ```
 
     To run a specific test, specify its directory path. Example:
 
     ```bash
-    chainsaw test charts/cluster/test/postgresql-cluster-configuration
+    chainsaw test --values .github/chainsaw-values.yaml charts/cluster/test/postgresql-cluster-configuration
     ```
 
 ## Test structure

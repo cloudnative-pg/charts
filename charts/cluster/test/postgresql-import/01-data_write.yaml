@@ -21,7 +21,7 @@ spec:
                 key: password
           - name: DB_URI
             value: postgres://$(DB_USER):$(DB_PASS)@source-cluster-rw:5432
-        image: alpine:3.19
+        image: ($values.alpineImage)
         command: ['sh', '-c']
         args:
          - |
