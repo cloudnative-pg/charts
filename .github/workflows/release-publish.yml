@@ -14,7 +14,7 @@ permissions: read-all
 
 jobs:
   release:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: write # Required for pushing the Helm charts to the gh-pages branch
       packages: write # Required for GHCR access
