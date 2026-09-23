@@ -22,6 +22,19 @@ spec:
           value: when_required
         - name: AWS_RESPONSE_CHECKSUM_VALIDATION
           value: when_required
+        - name: AWS_CA_BUNDLE
+          value: /etc/ssl/objectstore/ca.crt
         command: ['sh', '-c']
         args:
-         - aws --no-verify-ssl s3 rm --recursive "s3://mybucket/barman-plugin-migration"
+         - aws s3 rm --recursive "s3://mybucket/barman-plugin-migration"
+        volumeMounts:
+        - name: ca
+          mountPath: /etc/ssl/objectstore
+          readOnly: true
+      volumes:
+      - name: ca
+        secret:
+          secretName: kube-root-ca.crt
+          items:
+          - key: ca.crt
+            path: ca.crt

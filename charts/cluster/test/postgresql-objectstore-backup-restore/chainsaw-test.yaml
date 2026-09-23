@@ -11,6 +11,11 @@ spec:
     assert: 2m
     cleanup: 1m
   steps:
+    - name: Create the object store CA secret
+      try:
+        - script:
+            content: |
+              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n object-store get secret object-store-tls-secret -o jsonpath='{.data.ca\.crt}' | base64 -d)" --dry-run=client -o yaml | kubectl apply -f -
     - name: Clear the Rustfs bucket
       try:
         - apply:
@@ -27,7 +32,6 @@ spec:
       try:
         - script:
             content: |
-              kubectl -n $NAMESPACE create secret generic kube-root-ca.crt --from-literal=ca.crt="$(kubectl -n object-store get secret object-store-tls-secret -o jsonpath='{.data.ca\.crt}' | base64 -d)" --dry-run=client -o yaml | kubectl apply -f -
               helm upgrade \
                 --install \
                 --namespace $NAMESPACE \

@@ -24,6 +24,19 @@ spec:
               value: when_required
             - name: AWS_RESPONSE_CHECKSUM_VALIDATION
               value: when_required
+            - name: AWS_CA_BUNDLE
+              value: /etc/ssl/objectstore/ca.crt
           command: ["sh", "-c"]
           args:
-            - aws --no-verify-ssl s3api create-bucket --bucket mybucket || aws --no-verify-ssl s3api head-bucket --bucket mybucket
+            - aws s3api create-bucket --bucket mybucket || aws s3api head-bucket --bucket mybucket
+          volumeMounts:
+            - name: ca
+              mountPath: /etc/ssl/objectstore
+              readOnly: true
+      volumes:
+        - name: ca
+          secret:
+            secretName: object-store-tls-secret
+            items:
+              - key: ca.crt
+                path: ca.crt
