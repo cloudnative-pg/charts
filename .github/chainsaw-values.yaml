@@ -1,5 +1,5 @@
 # Shared chainsaw values for the E2E test suites of all charts.
 # Pass with: chainsaw test --values .github/chainsaw-values.yaml <suite>
 # Referenced in templated resources as ($values.<key>).
-awsCliImage: docker.io/amazon/aws-cli:2.36.39
+awsCliImage: docker.io/amazon/aws-cli:2.37.0
 alpineImage: alpine:3.19
