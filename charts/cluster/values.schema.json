@@ -133,6 +133,17 @@
           "description": "One of `barmanObjectStore` (default) or `plugin`",
           "type": "string"
         },
+        "objectStore": {
+          "properties": {
+            "create": {
+              "default": true,
+              "description": "Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin. Its name comes from the plugin's `barmanObjectName` parameter (see `cluster.plugins`), defaulting to `\u003cfullname\u003e-backups`. Set to `false` to reference an ObjectStore managed outside of this chart, leaving it untouched.",
+              "type": "boolean"
+            }
+          },
+          "required": [],
+          "type": "object"
+        },
         "pluginConfiguration": {
           "required": [],
           "type": "object"
@@ -955,6 +966,17 @@
           "default": "backup",
           "description": "Available recovery methods:\n* `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.\n* `plugin` - Recovers a CNPG cluster from a backup taken with a CloudNativePG plugin (e.g. barman-cloud).\n* `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported).\n* `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to\n       migrate databases to CloudNativePG, even from outside Kubernetes.\n* `import` - Import one or more databases from an existing Postgres cluster.",
           "type": "string"
+        },
+        "objectStore": {
+          "properties": {
+            "create": {
+              "default": true,
+              "description": "Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin for recovery. Its name comes from `recovery.pluginConfiguration.parameters.barmanObjectName`, defaulting to `\u003cfullname\u003e-recovery`. Set to `false` to recover from an ObjectStore managed outside of this chart (e.g. the source cluster's), leaving it untouched.",
+              "type": "boolean"
+            }
+          },
+          "required": [],
+          "type": "object"
         },
         "owner": {
           "default": "",
