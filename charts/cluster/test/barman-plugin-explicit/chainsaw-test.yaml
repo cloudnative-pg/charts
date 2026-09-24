@@ -45,9 +45,22 @@ spec:
                 barman-plugin-config-backups-disabled ../../
         - assert:
             file: ./03-barman_plugin_config_backups_disabled-assert.yaml
+    - name: Install a recovery cluster whose plugin configuration overrides the recovery ObjectStore name
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./04-barman_plugin_recovery_object_name_override.yaml \
+                --wait \
+                barman-plugin-recovery-override ../../
+        - assert:
+            file: ./04-barman_plugin_recovery_object_name_override-assert.yaml
     - name: Cleanup
       try:
         - script:
             content: |
               helm --namespace $NAMESPACE uninstall barman-plugin-explicit-config
               helm --namespace $NAMESPACE uninstall  barman-plugin-config-override
+              helm --namespace $NAMESPACE uninstall barman-plugin-recovery-override

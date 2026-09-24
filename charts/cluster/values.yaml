@@ -55,6 +55,10 @@ recovery:
 #    parameters:
 #      serverName: cluster-example
 
+  objectStore:
+    # -- Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin for recovery. Its name comes from `recovery.pluginConfiguration.parameters.barmanObjectName`, defaulting to `<fullname>-recovery`. Set to `false` to recover from an ObjectStore managed outside of this chart (e.g. the source cluster's), leaving it untouched.
+    create: true
+
   # Barman Object Store configuration applicable to both `barmanObjectStore` and `plugin` methods when using
   # the `barman-cloud.cloudnative-pg.io` plugin.
 

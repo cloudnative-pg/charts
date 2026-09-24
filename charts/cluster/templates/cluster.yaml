@@ -175,6 +175,6 @@ spec:
         {{ with $parametersWithoutObjectName }}
           {{- toYaml . | indent 8 | trim }}
         {{- end }}
-        barmanObjectName: {{ include "cluster.barmanObjectName" . | quote }}
+        barmanObjectName: {{ include "cluster.barmanObjectName" (dict "context" . "suffix" "backups") | quote }}
     {{- end }}
   {{- end }}
