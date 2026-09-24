@@ -174,6 +174,8 @@ Kubernetes: `>=1.29.0-0`
 | backups.google.path | string | `"/"` |  |
 | backups.instanceSidecarConfiguration | object | `{}` | The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration |
 | backups.method | string | `"barmanObjectStore"` | One of `barmanObjectStore` (default) or `plugin` |
+| backups.objectStore.annotations | object | `{}` | Extra annotations for the plugin `ObjectStore` resources only (unlike `cluster.annotations`, these are not applied to the Cluster). Handy for `argocd.argoproj.io/sync-wave: "-1"` when helmHook is false. |
+| backups.objectStore.helmHook | bool | `true` | Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before the Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources: as a hook the ObjectStore gets pruned and WAL archiving breaks. When false, order the ObjectStore yourself via the annotations below (e.g. an ArgoCD sync-wave). |
 | backups.pluginConfiguration | object | `{}` |  |
 | backups.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | backups.retentionPolicy | string | `"30d"` | Retention policy for backups |
