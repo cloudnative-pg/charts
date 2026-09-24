@@ -25,12 +25,38 @@
       managerFilePatterns: [
         '/^Makefile$/',
         '/^\\.github\\/actions\\/deploy-cert-manager\\/action\\.yml$/',
+        '/^\\.github\\/workflows\\/tests-cluster-chainsaw\\.yaml$/',
+        '/^\\.github\\/workflows\\/tests-plugin-barman-cloud\\.yaml$/',
         '/^charts\\/cluster\\/TESTING\\.md$/',
       ],
       matchStrings: [
         '# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*\\??[:=]\\s*["\']?(?<currentValue>[^"\'\\s]+)',
       ],
     },
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^\\.github\\/chainsaw-values\\.yaml$/',
+        '/^\\.github\\/rustfs-bucket-init\\.yaml$/',
+      ],
+      matchStrings: [
+        '(?:awsCliImage|alpineImage|image): (?<depName>[\\w./-]+):(?<currentValue>[\\w.-]+)',
+      ],
+      datasourceTemplate: 'docker',
+      versioningTemplate: 'docker',
+    },
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/^\\.github\\/rustfs\\.yaml$/',
+      ],
+      matchStrings: [
+        'tag: "(?<currentValue>[^"]+)"',
+      ],
+      datasourceTemplate: 'docker',
+      depNameTemplate: 'docker.io/rustfs/rustfs',
+      versioningTemplate: 'docker',
+    }
   ],
   packageRules: [
     {
@@ -38,6 +64,22 @@
         'action',
       ],
       pinDigests: true,
+    },
+    {
+      // RustFS's default image is Alpine/musl, slower than glibc
+      // (rustfs/rustfs#1662). A bare `-glibc` suffix isn't a safe pin:
+      // a stale prerelease tag like `1.0.0-rc.6-glibc` can still outrank
+      // the final `1.0.0-glibc`. Restrict to final MAJOR.MINOR.PATCH-glibc
+      // tags so RC/beta builds never enter the comparison, and a missing
+      // glibc tag just stalls the update instead of falling back to musl
+      // or an old RC. Mirrors cloudnative-pg/cloudnative-pg's renovate.json5.
+      matchFileNames: [
+        '.github/rustfs.yaml',
+      ],
+      matchPackageNames: [
+        'docker.io/rustfs/rustfs',
+      ],
+      allowedVersions: '/^\\d+\\.\\d+\\.\\d+-glibc$/',
     },
   ],
 }
