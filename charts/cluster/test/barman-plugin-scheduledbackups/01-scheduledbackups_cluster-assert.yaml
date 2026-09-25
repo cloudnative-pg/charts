@@ -34,6 +34,7 @@ spec:
   schedule: "0 0 0 * * *"
   method: plugin
   backupOwnerReference: self
+  target: prefer-standby
   cluster:
     name: scheduledbackups-cluster
 ---
@@ -46,6 +47,7 @@ spec:
   schedule: "0 0 0 * * 1"
   method: plugin
   backupOwnerReference: self
+  target: primary
   cluster:
     name: scheduledbackups-cluster
   pluginConfiguration:
