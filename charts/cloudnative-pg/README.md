@@ -128,6 +128,7 @@ Kubernetes: `>=1.29.0-0`
 | containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container Security Context. |
 | crds.create | bool | `true` | Specifies whether the CRDs should be created when installing the chart. |
 | dnsPolicy | string | `""` |  |
+| extraObjects | list | `[]` | Extra Kubernetes manifests to deploy alongside this chart. Each entry is passed through `tpl`, so Helm templating is supported. |
 | fullnameOverride | string | `""` |  |
 | hostNetwork | bool | `false` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
