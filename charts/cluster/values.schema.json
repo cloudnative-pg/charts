@@ -243,6 +243,11 @@
           "required": [],
           "type": "object"
         },
+        "target": {
+          "default": "prefer-standby",
+          "description": "Which instance takes the backups. One of `prefer-standby` (default) or `primary`.\nOnly applies to the `barmanObjectStore` method.",
+          "type": "string"
+        },
         "wal": {
           "properties": {
             "compression": {

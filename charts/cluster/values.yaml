@@ -497,11 +497,10 @@ backups:
   # -- You need to configure backups manually, so backups are disabled by default.
   enabled: false
 
-  ## -- Choose to take backups from either the primary or standby.
-  # One of: `prefer-standby` or `primary`.
+  # -- Which instance takes the backups. One of `prefer-standby` (default) or `primary`.
+  # Only applies to the `barmanObjectStore` method.
   target: "prefer-standby"
 
-  # -- Overrides the provider specific default endpoint. Defaults to:
   # -- One of `barmanObjectStore` (default) or `plugin`
   method: barmanObjectStore
 
