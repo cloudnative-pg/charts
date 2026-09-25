@@ -191,7 +191,7 @@ Kubernetes: `>=1.29.0-0`
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
 | backups.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | backups.secret.name | string | `""` | Name of the backup credentials secret |
-| backups.target | string | `"prefer-standby"` | Which instance takes the backups. One of `prefer-standby` (default) or `primary`. Only applies to the `barmanObjectStore` method. |
+| backups.target | string | `"prefer-standby"` | Which instance takes the backups. One of `prefer-standby` (default) or `primary`. |
 | backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backups.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |

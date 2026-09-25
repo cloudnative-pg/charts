@@ -1,7 +1,8 @@
 {{- define "cluster.backup" -}}
-{{- if and .Values.backups.enabled ((eq .Values.backups.method "barmanObjectStore")) }}
+{{- if .Values.backups.enabled }}
 backup:
   target: {{ .Values.backups.target }}
+  {{- if eq .Values.backups.method "barmanObjectStore" }}
   retentionPolicy: {{ .Values.backups.retentionPolicy }}
   barmanObjectStore:
     wal:
@@ -19,5 +20,6 @@ backup:
 
     {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.backups "secretPrefix" "backup" }}
     {{- include "cluster.barmanObjectStoreConfig" $d | trimPrefix "\n" | nindent 2 }}
+  {{- end }}
 {{- end }}
 {{- end }}

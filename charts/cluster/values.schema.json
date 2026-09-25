@@ -245,7 +245,11 @@
         },
         "target": {
           "default": "prefer-standby",
-          "description": "Which instance takes the backups. One of `prefer-standby` (default) or `primary`.\nOnly applies to the `barmanObjectStore` method.",
+          "description": "Which instance takes the backups. One of `prefer-standby` (default) or `primary`.",
+          "enum": [
+            "prefer-standby",
+            "primary"
+          ],
           "type": "string"
         },
         "wal": {

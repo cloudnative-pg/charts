@@ -497,8 +497,11 @@ backups:
   # -- You need to configure backups manually, so backups are disabled by default.
   enabled: false
 
+  # @schema
+  # type: string
+  # enum: [prefer-standby, primary]
+  # @schema
   # -- Which instance takes the backups. One of `prefer-standby` (default) or `primary`.
-  # Only applies to the `barmanObjectStore` method.
   target: "prefer-standby"
 
   # -- One of `barmanObjectStore` (default) or `plugin`
