@@ -176,6 +176,8 @@ Kubernetes: `>=1.29.0-0`
 | Name | Email | Url |
 | ---- | ------ | --- |
 | phisco | <p.scorsolini@gmail.com> |  |
+| mnencia | <marco.nenciarini@enterprisedb.com> |  |
+| gbartolini | <gabriele.bartolini@enterprisedb.com> |  |
 
 Contributing
 ------------
