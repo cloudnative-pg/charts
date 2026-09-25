@@ -40,6 +40,10 @@ home: https://cloudnative-pg.io
 maintainers:
   - name: phisco
     email: p.scorsolini@gmail.com
+  - name: mnencia
+    email: marco.nenciarini@enterprisedb.com
+  - name: gbartolini
+    email: gabriele.bartolini@enterprisedb.com
 dependencies:
   - name: cluster
     alias: monitoring
