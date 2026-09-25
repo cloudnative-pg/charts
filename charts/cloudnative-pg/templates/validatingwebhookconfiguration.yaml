@@ -21,7 +21,7 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: cnpg-validating-webhook-configuration
+  name: cnpg-validating-webhook-configuration{{- if .Values.config.namespacedWebhooks }}-{{ include "cloudnative-pg.namespace" . }}{{- end }}
   labels:
     {{- include "cloudnative-pg.labels" . | nindent 4 }}
   {{- with .Values.rbac.annotations }}
@@ -39,6 +39,11 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
   name: vbackup.cnpg.io
+  {{- if .Values.config.namespacedWebhooks }}
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- end }}
   rules:
   - apiGroups:
     - postgresql.cnpg.io
@@ -60,6 +65,11 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
   name: vcluster.cnpg.io
+  {{- if .Values.config.namespacedWebhooks }}
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- end }}
   rules:
   - apiGroups:
     - postgresql.cnpg.io
@@ -81,6 +91,11 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
   name: vscheduledbackup.cnpg.io
+  {{- if .Values.config.namespacedWebhooks }}
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- end }}
   rules:
   - apiGroups:
     - postgresql.cnpg.io
@@ -102,6 +117,11 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
   name: vdatabase.cnpg.io
+  {{- if .Values.config.namespacedWebhooks }}
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- end }}
   rules:
   - apiGroups:
     - postgresql.cnpg.io
@@ -123,6 +143,11 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
   name: vpooler.cnpg.io
+  {{- if .Values.config.namespacedWebhooks }}
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- end }}
   rules:
     - apiGroups:
         - postgresql.cnpg.io
