@@ -1,0 +1,31 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: barman-plugin-recovery-override-cluster
+spec:
+  bootstrap:
+    recovery:
+      source: pluginRecoveryCluster
+  externalClusters:
+  - name: pluginRecoveryCluster
+    plugin:
+      name: barman-cloud.cloudnative-pg.io
+      parameters:
+        barmanObjectName: recovery-asd
+        serverName: source-cluster
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: recovery-asd
+spec:
+  configuration:
+    destinationPath: s3://mybucket/barman-plugin-recovery-override/v1
+    endpointURL: https://object-store-svc.object-store.svc.cluster.local:9000
+    s3Credentials:
+      accessKeyId:
+        key: ACCESS_KEY_ID
+        name: barman-plugin-recovery-override-cluster-recovery-s3-creds
+      secretAccessKey:
+        key: ACCESS_SECRET_KEY
+        name: barman-plugin-recovery-override-cluster-recovery-s3-creds

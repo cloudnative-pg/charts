@@ -9,7 +9,7 @@ permissions: read-all
 
 jobs:
   test-list:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       tests: ${{ steps.listTests.outputs.tests }}
     steps:
@@ -22,7 +22,7 @@ jobs:
           echo "tests=$(ls charts/cluster/test -1 | jq -cRn '{ include: [inputs | { test: "\(.)" }]}')" >> $GITHUB_OUTPUT
   test:
     needs: test-list
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.test-list.outputs.tests) }}
@@ -61,24 +61,25 @@ jobs:
         with:
           verify: true
 
-      - name: Setup MinIO
+      - name: Setup RustFS
+        env:
+          # renovate: datasource=helm depName=rustfs registryUrl=https://charts.rustfs.com
+          RUSTFS_CHART_VERSION: "1.0.0"
         run: |
-          helm repo add minio-operator https://operator.min.io
+          kubectl apply -f ./.github/rustfs-prereqs.yaml
+          kubectl -n object-store wait --for=condition=Ready certificate/object-store-tls --timeout=120s
+          helm repo add rustfs https://charts.rustfs.com
           helm upgrade \
             --install \
-            --namespace minio-system \
-            --create-namespace \
+            --namespace object-store \
+            --version $RUSTFS_CHART_VERSION \
+            --values ./.github/rustfs.yaml \
             --wait \
-            operator minio-operator/operator
-          helm upgrade \
-            --install \
-            --namespace minio \
-            --create-namespace \
-            --wait \
-            --values ./.github/minio.yaml \
-            tenant minio-operator/tenant
+            rustfs rustfs/rustfs
+          kubectl apply -f ./.github/rustfs-bucket-init.yaml
+          kubectl -n object-store wait --for=condition=complete job/rustfs-bucket-init --timeout=180s
 
       - name: Run Kyverno/Chainsaw
         env:
           MATRIX_TEST: ${{ matrix.test }}
-        run: chainsaw test "charts/cluster/test/${MATRIX_TEST}"
+        run: chainsaw test --values .github/chainsaw-values.yaml "charts/cluster/test/${MATRIX_TEST}"

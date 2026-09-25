@@ -31,6 +31,10 @@ spec:
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
     {{- end }}
   {{- end }}
+  {{- with .Values.cluster.ephemeralVolumeSource }}
+  ephemeralVolumeSource:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
@@ -184,6 +188,6 @@ spec:
         {{ with $parametersWithoutObjectName }}
           {{- toYaml . | indent 8 | trim }}
         {{- end }}
-        barmanObjectName: {{ $parameters.barmanObjectName | default (printf "%s-backups" (include "cluster.fullname" .)) }}
+        barmanObjectName: {{ include "cluster.barmanObjectName" (dict "context" . "suffix" "backups") | quote }}
     {{- end }}
   {{- end }}

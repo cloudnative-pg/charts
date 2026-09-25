@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rustfs-bucket-init
+  namespace: object-store
+spec:
+  backoffLimit: 20
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: mkbucket
+          image: docker.io/amazon/aws-cli:2.37.2
+          env:
+            - name: AWS_ENDPOINT_URL
+              value: https://object-store-svc.object-store:9000
+            - name: AWS_ACCESS_KEY_ID
+              value: objectstore
+            - name: AWS_SECRET_ACCESS_KEY
+              value: objectstore123
+            - name: AWS_DEFAULT_REGION
+              value: us-east-1
+            - name: AWS_REQUEST_CHECKSUM_CALCULATION
+              value: when_required
+            - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+              value: when_required
+            - name: AWS_CA_BUNDLE
+              value: /etc/ssl/objectstore/ca.crt
+          command: ["sh", "-c"]
+          args:
+            - aws s3api create-bucket --bucket mybucket || aws s3api head-bucket --bucket mybucket
+          volumeMounts:
+            - name: ca
+              mountPath: /etc/ssl/objectstore
+              readOnly: true
+      volumes:
+        - name: ca
+          secret:
+            secretName: object-store-tls-secret
+            items:
+              - key: ca.crt
+                path: ca.crt
