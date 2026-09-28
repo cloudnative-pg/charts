@@ -55,6 +55,10 @@ recovery:
 #    parameters:
 #      serverName: cluster-example
 
+  objectStore:
+    # -- Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin for recovery. Its name comes from `recovery.pluginConfiguration.parameters.barmanObjectName`, defaulting to `<fullname>-recovery`. Set to `false` to recover from an ObjectStore managed outside of this chart (e.g. the source cluster's), leaving it untouched.
+    create: true
+
   # Barman Object Store configuration applicable to both `barmanObjectStore` and `plugin` methods when using
   # the `barman-cloud.cloudnative-pg.io` plugin.
 
@@ -221,6 +225,17 @@ cluster:
     enabled: false
     size: 1Gi
     storageClass: ""
+
+  # -- Override the default emptyDir used by CNPG for temporary storage.
+  # See: https://cloudnative-pg.io/documentation/current/cluster_conf/#ephemeral-volumes
+  ephemeralVolumeSource: {}
+    # volumeClaimTemplate:
+    #   spec:
+    #     accessModes: ["ReadWriteOnce"]
+    #     storageClassName: "scratch-storage-class"
+    #     resources:
+    #       requests:
+    #         storage: 1Gi
 
   # -- The UID of the postgres user inside the image, defaults to 26
   postgresUID: -1
@@ -487,6 +502,10 @@ backups:
 
   pluginConfiguration: {}
 #    name: barman-cloud.cloudnative-pg.io
+
+  objectStore:
+    # -- Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin. Its name comes from the plugin's `barmanObjectName` parameter (see `cluster.plugins`), defaulting to `<fullname>-backups`. Set to `false` to reference an ObjectStore managed outside of this chart, leaving it untouched.
+    create: true
 
   # Barman Object Store configuration applicable to both `barmanObjectStore` and `plugin` methods when using
   # the `barman-cloud.cloudnative-pg.io` plugin.

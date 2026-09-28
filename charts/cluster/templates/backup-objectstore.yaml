@@ -1,8 +1,8 @@
-{{- if eq (include "cluster.barmanPluginRequired" .) "true" }}
+{{- if and (eq (include "cluster.barmanPluginRequired" .) "true") .Values.backups.objectStore.create }}
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: {{ include "cluster.fullname" . }}-backups
+  name: {{ include "cluster.barmanObjectName" (dict "context" . "suffix" "backups") | quote }}
   namespace: {{ include "cluster.namespace" . }}
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,pre-rollback

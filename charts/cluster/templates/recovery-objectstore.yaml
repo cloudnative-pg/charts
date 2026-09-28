@@ -1,8 +1,8 @@
-{{- if and (eq .Values.mode "recovery") (eq .Values.recovery.method "plugin") (eq .Values.recovery.pluginConfiguration.name "barman-cloud.cloudnative-pg.io") }}
+{{- if and (eq .Values.mode "recovery") (eq .Values.recovery.method "plugin") (eq .Values.recovery.pluginConfiguration.name "barman-cloud.cloudnative-pg.io") .Values.recovery.objectStore.create }}
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: {{ include "cluster.fullname" . }}-recovery
+  name: {{ include "cluster.barmanObjectName" (dict "context" . "suffix" "recovery") | quote }}
   namespace: {{ include "cluster.namespace" . }}
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,pre-rollback

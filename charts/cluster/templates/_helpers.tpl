@@ -243,3 +243,21 @@ Given a list of objects, returns the first item that matches the key value pairs
   {{- end -}}
   {{- $required -}}
 {{- end -}}
+
+{{/*
+Name of the ObjectStore used by the barman-cloud.cloudnative-pg.io plugin.
+Returns the plugin's `barmanObjectName` parameter when set, otherwise defaults to "<fullname>-<suffix>".
+Expects a dict with:
+  - context: the root scope
+  - suffix: "backups" (reads parameters from the cluster.plugins entry) or "recovery" (reads recovery.pluginConfiguration.parameters)
+*/}}
+{{- define "cluster.barmanObjectName" -}}
+  {{- $parameters := dict -}}
+  {{- if eq .suffix "recovery" -}}
+    {{- $parameters = coalesce .context.Values.recovery.pluginConfiguration.parameters dict -}}
+  {{- else -}}
+    {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .context.Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml -}}
+    {{- $parameters = coalesce $barmanPlugin.parameters dict -}}
+  {{- end -}}
+  {{- $parameters.barmanObjectName | default (printf "%s-%s" (include "cluster.fullname" .context) .suffix) -}}
+{{- end -}}
