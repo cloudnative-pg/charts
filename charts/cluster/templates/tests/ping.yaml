@@ -20,7 +20,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: alpine
-          image: alpine:3.17
+          image: "{{ .Values.test.imageName }}"
           command: [ 'sh' ]
           env:
             - name: PGUSER
