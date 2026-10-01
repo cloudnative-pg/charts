@@ -1,0 +1,19 @@
+##
+# `smartShutdownTimeout: 0` is a valid setting that makes the operator skip the
+# smart shutdown phase entirely. It differs from the operator default of 180, so
+# it has to survive templating: a `with` guard treats 0 as empty, drops the key,
+# and the CRD default silently puts it back at 180.
+# Same non-runnable image as 01 — this only verifies spec propagation.
+type: postgresql
+mode: standalone
+
+cluster:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/crazycustomimage:99.99
+  storage:
+    size: 256Mi
+    storageClass: standard
+  smartShutdownTimeout: 0
+
+backups:
+  enabled: false
