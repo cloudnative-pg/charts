@@ -15,6 +15,20 @@
       },
       "type": "array"
     },
+    "additionalVolumeMounts": {
+      "description": "Array containing extra volume mounts to be added to the operator container, which can be templated.",
+      "items": {
+        "required": []
+      },
+      "type": "array"
+    },
+    "additionalVolumes": {
+      "description": "Array containing extra volumes to be added to the operator pod, which can be templated.",
+      "items": {
+        "required": []
+      },
+      "type": "array"
+    },
     "affinity": {
       "description": "Affinity for the operator to be installed.",
       "required": [],
@@ -230,6 +244,16 @@
             "required": []
           },
           "type": "array"
+        },
+        "podMonitorScheme": {
+          "default": "",
+          "description": "Scheme to use when scraping the metrics endpoint. Set it to `https` when\nTLS is enabled on the operator metrics server through `METRICS_CERT_DIR`.",
+          "type": "string"
+        },
+        "podMonitorTLSConfig": {
+          "description": "TLS configuration to use when scraping the metrics endpoint, which can be templated.",
+          "required": [],
+          "type": "object"
         }
       },
       "required": [],

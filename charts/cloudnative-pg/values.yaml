@@ -100,6 +100,22 @@ additionalEnv: []
 #  - name: MY_VAR
 #    value: "mySpecialKey"
 
+# -- Array containing extra volumes to be added to the operator pod, which can be templated.
+additionalVolumes: []
+# For example, to serve the metrics endpoint over TLS:
+#  - name: metrics-certificates
+#    secret:
+#      secretName: "{{ .Release.Name }}-metrics-cert"
+#      defaultMode: 420
+
+# -- Array containing extra volume mounts to be added to the operator container, which can be templated.
+additionalVolumeMounts: []
+# For example, to serve the metrics endpoint over TLS, together with a
+# `METRICS_CERT_DIR` entry in `additionalEnv` pointing to the same path:
+#  - name: metrics-certificates
+#    mountPath: /run/secrets/cnpg.io/metrics
+#    readOnly: true
+
 serviceAccount:
   # -- Specifies whether the service account should be created.
   create: true
@@ -193,6 +209,16 @@ monitoring:
   podMonitorRelabelings: []
   # -- Additional labels for the podMonitor
   podMonitorAdditionalLabels: {}
+  # -- Scheme to use when scraping the metrics endpoint. Set it to `https` when
+  # TLS is enabled on the operator metrics server through `METRICS_CERT_DIR`.
+  podMonitorScheme: ""
+  # -- TLS configuration to use when scraping the metrics endpoint, which can be templated.
+  podMonitorTLSConfig: {}
+  # For example:
+  #  ca:
+  #    secret:
+  #      name: "{{ .Release.Name }}-metrics-cert"
+  #      key: ca.crt
 
   grafanaDashboard:
     create: false
