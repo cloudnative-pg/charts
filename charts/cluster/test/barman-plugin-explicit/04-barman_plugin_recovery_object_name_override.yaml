@@ -1,25 +1,17 @@
 type: postgresql
-mode: standalone
+mode: recovery
 cluster:
   instances: 1
   storage:
     size: 256Mi
-  plugins:
-  - name: foo.example.com
-    enabled: true
-    isWALArchiver: false
-    parameters:
-      foo: bar
-  - name: barman-cloud.cloudnative-pg.io
-    enabled: true
-    isWALArchiver: true
 
-backups:
-  enabled: true
+recovery:
   method: plugin
-  target: primary
   pluginConfiguration:
     name: barman-cloud.cloudnative-pg.io
+    parameters:
+      barmanObjectName: recovery-asd
+  clusterName: "source-cluster"
   provider: s3
   endpointURL: "https://object-store-svc.object-store.svc.cluster.local:9000"
   endpointCA:
@@ -31,8 +23,10 @@ backups:
     encryption: ""
   s3:
     bucket: "mybucket"
-    path: "/barman-plugin-scheduledbackups/v1"
+    path: "/barman-plugin-recovery-override/v1"
     accessKey: "objectstore"
     secretKey: "objectstore123"
     region: "us-east-1"
-  retentionPolicy: "30d"
+
+backups:
+  enabled: false
