@@ -9,7 +9,7 @@ permissions: read-all
 
 jobs:
   test-list:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       tests: ${{ steps.listTests.outputs.tests }}
     steps:
@@ -22,7 +22,7 @@ jobs:
           echo "tests=$(ls charts/cluster/test -1 | jq -cRn '{ include: [inputs | { test: "\(.)" }]}')" >> $GITHUB_OUTPUT
   test:
     needs: test-list
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.test-list.outputs.tests) }}
