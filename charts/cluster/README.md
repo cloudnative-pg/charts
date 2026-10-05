@@ -174,6 +174,9 @@ Kubernetes: `>=1.29.0-0`
 | backups.google.path | string | `"/"` |  |
 | backups.instanceSidecarConfiguration | object | `{}` | The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration |
 | backups.method | string | `"barmanObjectStore"` | One of `barmanObjectStore` (default) or `plugin` |
+| backups.objectStore.annotations | object | `{}` | Extra annotations for the plugin `ObjectStore` resources only (unlike `cluster.annotations`, these are not applied to the Cluster). Handy for `argocd.argoproj.io/sync-wave: "-1"` when helmHook is false. |
+| backups.objectStore.create | bool | `true` | Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin. Its name comes from the plugin's `barmanObjectName` parameter (see `cluster.plugins`), defaulting to `<fullname>-backups`. Set to `false` to reference an ObjectStore managed outside of this chart, leaving it untouched. |
+| backups.objectStore.helmHook | bool | `true` | Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before the Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources: as a hook the ObjectStore gets pruned and WAL archiving breaks. When false, order the ObjectStore yourself via the annotations below (e.g. an ArgoCD sync-wave). |
 | backups.pluginConfiguration | object | `{}` |  |
 | backups.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | backups.retentionPolicy | string | `"30d"` | Retention policy for backups |
@@ -190,6 +193,7 @@ Kubernetes: `>=1.29.0-0`
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
 | backups.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | backups.secret.name | string | `""` | Name of the backup credentials secret |
+| backups.target | string | `"prefer-standby"` | Which instance takes the backups. One of `prefer-standby` (default) or `primary`. |
 | backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backups.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
@@ -302,6 +306,7 @@ Kubernetes: `>=1.29.0-0`
 | recovery.import.type | string | `"microservice"` | One of `microservice` or `monolith.` See: https://cloudnative-pg.io/documentation/current/database_import/#how-it-works |
 | recovery.instanceSidecarConfiguration | object | `{}` | The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration |
 | recovery.method | string | `"backup"` | Available recovery methods: * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace. * `plugin` - Recovers a CNPG cluster from a backup taken with a CloudNativePG plugin (e.g. barman-cloud). * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported). * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to        migrate databases to CloudNativePG, even from outside Kubernetes. * `import` - Import one or more databases from an existing Postgres cluster. |
+| recovery.objectStore.create | bool | `true` | Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin for recovery. Its name comes from `recovery.pluginConfiguration.parameters.barmanObjectName`, defaulting to `<fullname>-recovery`. Set to `false` to recover from an ObjectStore managed outside of this chart (e.g. the source cluster's), leaving it untouched. |
 | recovery.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |
 | recovery.pgBaseBackup.database | string | `"app"` | Name of the database used by the application. Default: `app`. |
 | recovery.pgBaseBackup.owner | string | `""` | Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key. |

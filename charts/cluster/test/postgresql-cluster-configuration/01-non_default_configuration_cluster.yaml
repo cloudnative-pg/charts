@@ -168,4 +168,21 @@ cluster:
               path: crt/ca-01.pem
 
 backups:
-  enabled: false
+  enabled: true
+  target: primary
+  provider: s3
+  endpointURL: "https://object-store-svc.object-store.svc.cluster.local:9000"
+  endpointCA:
+    name: kube-root-ca.crt
+    key: ca.crt
+  wal:
+    encryption: ""
+  data:
+    encryption: ""
+  s3:
+    bucket: "mybucket"
+    path: "/non-default/v1"
+    accessKey: "objectstore"
+    secretKey: "objectstore123"
+    region: "us-east-1"
+  retentionPolicy: "60d"
