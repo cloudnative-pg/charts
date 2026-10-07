@@ -6,7 +6,7 @@
 # CODEOWNERS only honors the LAST matching pattern for a given path —
 # it does not merge an earlier, less-specific rule into a later one.
 
-* @cloudnative-pg/charts-owners
-/charts/cloudnative-pg/ @cloudnative-pg/charts-owners
-/charts/cluster/ @cloudnative-pg/charts-owners
-/charts/plugin-barman-cloud/ @cloudnative-pg/charts-owners
+* @cloudnative-pg/charts-owners @danishedb
+/charts/cloudnative-pg/ @cloudnative-pg/charts-owners @danishedb
+/charts/cluster/ @cloudnative-pg/charts-owners @danishedb
+/charts/plugin-barman-cloud/ @cloudnative-pg/charts-owners @danishedb
