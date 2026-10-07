@@ -248,6 +248,10 @@
         "podMonitorScheme": {
           "default": "",
           "description": "Scheme to use when scraping the metrics endpoint. Set it to `https` when\nTLS is enabled on the operator metrics server through `METRICS_CERT_DIR`.",
+          "enum": [
+            "",
+            "https"
+          ],
           "type": "string"
         },
         "podMonitorTLSConfig": {

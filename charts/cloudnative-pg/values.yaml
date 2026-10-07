@@ -209,6 +209,10 @@ monitoring:
   podMonitorRelabelings: []
   # -- Additional labels for the podMonitor
   podMonitorAdditionalLabels: {}
+  # @schema
+  # type: string
+  # enum: ["", https]
+  # @schema
   # -- Scheme to use when scraping the metrics endpoint. Set it to `https` when
   # TLS is enabled on the operator metrics server through `METRICS_CERT_DIR`.
   podMonitorScheme: ""
