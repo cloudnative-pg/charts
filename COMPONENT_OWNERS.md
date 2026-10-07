@@ -35,7 +35,7 @@ available.
 
 | Reviewer | Paths |
 | :--- | :--- |
-| Danish Khan ([@danishedb](https://github.com/danishedb)) | `*`, `/charts/cloudnative-pg/`, `/charts/cluster/`, `/charts/plugin-barman-cloud/` |
+| Danish Khan ([@danishk](https://github.com/danishk)) | `*`, `/charts/cloudnative-pg/`, `/charts/cluster/`, `/charts/plugin-barman-cloud/` |
 
 Component Owner is a rung of the CloudNativePG contributor ladder. A new
 owner is added by a ⅔ vote of this repository's existing Component Owners,
