@@ -14,7 +14,7 @@ permissions: read-all
 
 jobs:
   chart-yaml-unchanged:
-    if: ${{ !startsWith(github.head_ref, 'release/') }}
+    if: ${{ !(startsWith(github.head_ref, 'release/') && github.event.pull_request.head.repo.full_name == github.repository) }}
     runs-on: ubuntu-26.04
     steps:
       - name: Fail on Chart.yaml changes
