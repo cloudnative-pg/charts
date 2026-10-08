@@ -55,7 +55,7 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
 
     ```bash
     # renovate: datasource=helm depName=rustfs registryUrl=https://charts.rustfs.com
-    RUSTFS_CHART_VERSION=1.0.0
+    RUSTFS_CHART_VERSION=1.0.1
     kubectl apply -f ./.github/rustfs-prereqs.yaml
     kubectl -n object-store wait --for=condition=Ready certificate/object-store-tls --timeout=120s
     helm repo add rustfs https://charts.rustfs.com
