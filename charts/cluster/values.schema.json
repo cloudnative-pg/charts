@@ -532,6 +532,11 @@
         },
         "postgresql": {
           "properties": {
+            "extensions": {
+              "description": "[Image volume extensions](https://cloudnative-pg.io/docs/1.29/imagevolume_extensions/) to load in the cluster pod",
+              "required": [],
+              "type": "object"
+            },
             "ldap": {
               "description": "PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)",
               "required": [],

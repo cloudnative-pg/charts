@@ -117,6 +117,10 @@ spec:
     parameters:
       {{- toYaml . | nindent 6 }}
     {{- end }}
+    {{- with .Values.cluster.postgresql.extensions }}
+    extensions:
+      {{- toYaml . | nindent 6 }}
+    {{ end }}
 
   {{- with .Values.cluster.replicationSlots }}
   replicationSlots:
