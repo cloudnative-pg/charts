@@ -37,11 +37,13 @@ backups:
       schedule: "0 0 0 * * *"
       backupOwnerReference: self
       method: plugin
+      target: prefer-standby
       pluginConfiguration:
         name: barman-cloud.cloudnative-pg.io
     - name: weekly-backup
       schedule: "0 0 0 * * 1"
       backupOwnerReference: self
       method: plugin
+      target: primary
       pluginConfiguration:
         name: barman-cloud.cloudnative-pg.io
