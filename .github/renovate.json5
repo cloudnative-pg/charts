@@ -11,18 +11,6 @@
     {
       customType: 'regex',
       managerFilePatterns: [
-        '/charts\\/cloudnative-pg\\/Chart\\.yaml$/',
-      ],
-      matchStrings: [
-        'appVersion: "(?<currentValue>.*?)"',
-      ],
-      datasourceTemplate: 'docker',
-      depNameTemplate: 'ghcr.io/cloudnative-pg/cloudnative-pg',
-      versioningTemplate: 'loose',
-    },
-    {
-      customType: 'regex',
-      managerFilePatterns: [
         '/^Makefile$/',
         '/^\\.github\\/actions\\/deploy-cert-manager\\/action\\.yml$/',
         '/^\\.github\\/workflows\\/tests-cluster-chainsaw\\.yaml$/',
