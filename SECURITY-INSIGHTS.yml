@@ -1,0 +1,88 @@
+header:
+  schema-version: 2.2.0
+  last-updated: '2026-08-04'
+  last-reviewed: '2026-08-04'
+  url: https://raw.githubusercontent.com/cloudnative-pg/charts/main/SECURITY-INSIGHTS.yml
+  # reference the main SECURITY-INSIGHTS file from CNPG repo
+  project-si-source: https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/main/SECURITY-INSIGHTS.yml
+
+repository:
+  url: https://github.com/cloudnative-pg/charts
+  status: active
+  accepts-change-request: true
+  accepts-automated-change-request: true
+  no-third-party-packages: false
+  core-team:
+    - name: Gabriele Bartolini
+      email: gabriele.bartolini@enterprisedb.com
+      primary: true
+    - name: Francesco Canovai
+      email: francesco.canovai@enterprisedb.com
+      primary: false
+    - name: Leonardo Cecchi
+      email: leonardo.cecchi@enterprisedb.com
+      primary: false
+    - name: Marco Nenciarini
+      email: marco.nenciarini@enterprisedb.com
+      primary: false
+    - name: Itay Grudev
+      email: itay@verito.digital
+      primary: false
+    - name: Philippe Scorsolini
+      # No public email on file -- not an EDB contributor.
+      primary: false
+  license:
+    url: https://www.apache.org/licenses/LICENSE-2.0
+    expression: Apache-2.0
+
+  release:
+    automated-pipeline: true
+    distribution-points:
+      - uri: oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg
+        comment: Operator Helm chart, published as an OCI artifact
+      - uri: oci://ghcr.io/cloudnative-pg/charts/cluster
+        comment: PostgreSQL Cluster Helm chart, published as an OCI artifact
+      - uri: oci://ghcr.io/cloudnative-pg/charts/plugin-barman-cloud
+        comment: Barman Cloud plugin Helm chart, published as an OCI artifact
+
+  security:
+    tools:
+      - name: Dependabot
+        type: SCA
+        rulesets: ["default"]
+        results: {}
+        integration:
+          adhoc: true
+          ci: false
+          release: false
+      - name: Cosign
+        type: container
+        rulesets: ["default"]
+        results: {}
+        comment: Used to cryptographically sign the published Helm chart OCI artifacts.
+        integration:
+          adhoc: false
+          ci: true
+          release: true
+      - name: GitHub Code Scanning
+        type: SAST
+        rulesets: ["default"]
+        results: {}
+        comment: GitHub's default CodeQL setup, enabled at the repo-settings level.
+        integration:
+          adhoc: false
+          ci: false
+          release: false
+      - name: Chainsaw
+        type: other
+        rulesets: ["default"]
+        results: {}
+        comment: End-to-end tests for the Cluster chart against a real Kubernetes cluster.
+        integration:
+          adhoc: false
+          ci: true
+          release: false
+
+    assessments:
+      self:
+        comment: Refer to the main project.
