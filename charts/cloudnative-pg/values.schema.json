@@ -352,6 +352,10 @@
       "default": 1,
       "type": "integer"
     },
+    "revisionHistoryLimit": {
+      "default": 10,
+      "type": "integer"
+    },
     "resources": {
       "required": [],
       "type": "object"
