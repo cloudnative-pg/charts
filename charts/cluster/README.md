@@ -174,7 +174,9 @@ Kubernetes: `>=1.29.0-0`
 | backups.google.path | string | `"/"` |  |
 | backups.instanceSidecarConfiguration | object | `{}` | The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration |
 | backups.method | string | `"barmanObjectStore"` | One of `barmanObjectStore` (default) or `plugin` |
+| backups.objectStore.annotations | object | `{}` | Extra annotations for the plugin `ObjectStore` resources only (unlike `cluster.annotations`, these are not applied to the Cluster). Handy for `argocd.argoproj.io/sync-wave: "-1"` when helmHook is false. |
 | backups.objectStore.create | bool | `true` | Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin. Its name comes from the plugin's `barmanObjectName` parameter (see `cluster.plugins`), defaulting to `<fullname>-backups`. Set to `false` to reference an ObjectStore managed outside of this chart, leaving it untouched. |
+| backups.objectStore.helmHook | bool | `true` | Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before the Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources: as a hook the ObjectStore gets pruned and WAL archiving breaks. When false, order the ObjectStore yourself via the annotations below (e.g. an ArgoCD sync-wave). |
 | backups.pluginConfiguration | object | `{}` |  |
 | backups.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | backups.retentionPolicy | string | `"30d"` | Retention policy for backups |
@@ -191,6 +193,7 @@ Kubernetes: `>=1.29.0-0`
 | backups.scheduledBackups[0].schedule | string | `"0 0 0 * * *"` | Schedule in cron format |
 | backups.secret.create | bool | `true` | Whether to create a secret for the backup credentials |
 | backups.secret.name | string | `""` | Name of the backup credentials secret |
+| backups.target | string | `"prefer-standby"` | Which instance takes the backups. One of `prefer-standby` (default) or `primary`. |
 | backups.wal.compression | string | `"gzip"` | WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`. |
 | backups.wal.encryption | string | `"AES256"` | Whether to instruct the storage provider to encrypt WAL files. One of `` (use the storage container default), `AES256` or `aws:kms`. |
 | backups.wal.maxParallel | int | `1` | Number of WAL files to be archived or restored in parallel. |
@@ -204,6 +207,7 @@ Kubernetes: `>=1.29.0-0`
 | cluster.env | list | `[]` | Env follows the Env format to pass environment variables to the pods created in the cluster |
 | cluster.envFrom | list | `[]` | EnvFrom follows the EnvFrom format to pass environment variables sources to the pods to be used by Env |
 | cluster.ephemeralVolumeSource | object | `{}` | Override the default emptyDir used by CNPG for temporary storage. See: https://cloudnative-pg.io/documentation/current/cluster_conf/#ephemeral-volumes |
+| cluster.failoverDelay | int | `0` | The amount of time in seconds to wait before triggering a failover after the primary instance was detected to be unhealthy. Defaults to 0 (immediate failover) when unset, per the operator default. |
 | cluster.imageCatalogRef | object | `{}` | Reference to `ImageCatalog` of `ClusterImageCatalog`, if specified takes precedence over `cluster.imageName` |
 | cluster.imageName | string | `""` | Name of the container image, supporting both tags (<image>:<tag>) and digests for deterministic and repeatable deployments: <image>:<tag>@sha256:<digestValue> |
 | cluster.imagePullPolicy | string | `"IfNotPresent"` | Image pull policy. One of Always, Never or IfNotPresent. If not defined, it defaults to IfNotPresent. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images |
@@ -245,10 +249,13 @@ Kubernetes: `>=1.29.0-0`
 | cluster.securityContext | object | `{}` | Configure Container Security Context. See: https://cloudnative-pg.io/documentation/preview/security/ |
 | cluster.serviceAccountTemplate | object | `{}` | Configure the metadata of the generated service account |
 | cluster.services | object | `{}` | Customization of service definitions. Please refer to https://cloudnative-pg.io/documentation/current/service_management/ |
+| cluster.smartShutdownTimeout | int | `180` | The time in seconds reserved for the smart shutdown of Postgres to complete before the operator requests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout). Set to 0 to skip the smart phase entirely and request a fast shutdown right away. Defaults to 180 when unset, per the operator default. |
+| cluster.startDelay | int | `3600` | The time in seconds that is allowed for a PostgreSQL instance to successfully start up. The startup probe failure threshold is derived from this value using the formula ceiling(startDelay / 10). Defaults to 3600 when unset, per the operator default. |
 | cluster.stopDelay | int | `1800` | The time in seconds that is allowed for the instance to wait for the shutdown to complete before being forcefully terminated. Also sets the pod's terminationGracePeriodSeconds. Defaults to 1800 (30m) when unset, per the operator default. |
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
+| cluster.switchoverDelay | int | `3600` | The time in seconds that is allowed for a primary instance to gracefully shut down during a switchover. Defaults to 3600 (1h) when unset, per the operator default. |
 | cluster.walStorage.enabled | bool | `false` |  |
 | cluster.walStorage.size | string | `"1Gi"` |  |
 | cluster.walStorage.storageClass | string | `""` |  |
