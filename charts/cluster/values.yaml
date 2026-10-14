@@ -619,6 +619,10 @@ backups:
       schedule: "0 0 0 * * *"
       # -- Backup owner reference
       backupOwnerReference: self
+      # @schema
+      # type: string
+      # enum: ["", prefer-standby, primary]
+      # @schema
       # -- The policy to decide which instance should perform this backup, one of `primary` or `prefer-standby`. If empty, it defaults to `cluster.spec.backup.target`.
       target: ""
       # -- Backup method, can be `barmanObjectStore` (default), `volumeSnapshot` or `plugin`.

@@ -232,6 +232,11 @@
                   "target": {
                     "default": "",
                     "description": "The policy to decide which instance should perform this backup, one of `primary` or `prefer-standby`. If empty, it defaults to `cluster.spec.backup.target`.",
+                    "enum": [
+                      "",
+                      "prefer-standby",
+                      "primary"
+                    ],
                     "type": "string"
                   }
                 },
