@@ -1,6 +1,6 @@
 # cluster
 
-![Version: 0.8.1](https://img.shields.io/badge/Version-0.8.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 0.9.0](https://img.shields.io/badge/Version-0.9.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 > **Warning**
 > ### This chart is under active development.
@@ -174,9 +174,9 @@ Kubernetes: `>=1.29.0-0`
 | backups.google.path | string | `"/"` |  |
 | backups.instanceSidecarConfiguration | object | `{}` | The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration |
 | backups.method | string | `"barmanObjectStore"` | One of `barmanObjectStore` (default) or `plugin` |
-| backups.objectStore.annotations | object | `{}` | Extra annotations for the plugin `ObjectStore` resources only (unlike `cluster.annotations`, these are not applied to the Cluster). Handy for `argocd.argoproj.io/sync-wave: "-1"` when helmHook is false. |
+| backups.objectStore.annotations | object | `{}` | Extra annotations for the plugin `ObjectStore` resources only. Handy for e.g. `argocd.argoproj.io/sync-wave: "-1"` when helmHook above is set to false. |
 | backups.objectStore.create | bool | `true` | Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin. Its name comes from the plugin's `barmanObjectName` parameter (see `cluster.plugins`), defaulting to `<fullname>-backups`. Set to `false` to reference an ObjectStore managed outside of this chart, leaving it untouched. |
-| backups.objectStore.helmHook | bool | `true` | Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before the Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources: as a hook the ObjectStore gets pruned and WAL archiving breaks. When false, order the ObjectStore yourself via the annotations below (e.g. an ArgoCD sync-wave). |
+| backups.objectStore.helmHook | bool | `true` | Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before the Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources |
 | backups.pluginConfiguration | object | `{}` |  |
 | backups.provider | string | `"s3"` | One of `s3`, `azure` or `google` |
 | backups.retentionPolicy | string | `"30d"` | Retention policy for backups |
@@ -234,6 +234,7 @@ Kubernetes: `>=1.29.0-0`
 | cluster.podSecurityContext | object | `{}` | Configure the Pod Security Context. See: https://cloudnative-pg.io/documentation/preview/security/ |
 | cluster.postgresGID | int | `-1` | The GID of the postgres user inside the image, defaults to 26 |
 | cluster.postgresUID | int | `-1` | The UID of the postgres user inside the image, defaults to 26 |
+| cluster.postgresql.extensions | list | `[]` | List of [image volume extensions](https://cloudnative-pg.io/docs/current/imagevolume_extensions/) to load in the cluster pod |
 | cluster.postgresql.ldap | object | `{}` | PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration) |
 | cluster.postgresql.parameters | object | `{}` | PostgreSQL configuration options (postgresql.conf) |
 | cluster.postgresql.pg_hba | list | `[]` | PostgreSQL Host Based Authentication rules (lines to be appended to the pg_hba.conf file) |
