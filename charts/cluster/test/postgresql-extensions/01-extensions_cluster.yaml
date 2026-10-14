@@ -1,0 +1,23 @@
+##
+# Image volume extensions: the extension image is mounted in the instance pod
+# and the extension can then be created in the database.
+# Needs Kubernetes with ImageVolume enabled (on by default since 1.35),
+# containerd >= 2.1 and PostgreSQL 18+. The extension image must match the
+# PostgreSQL image major version and distribution (here: 18, trixie).
+type: postgresql
+mode: standalone
+
+cluster:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18-minimal-trixie
+  storage:
+    size: 256Mi
+  postgresql:
+    extensions:
+      - name: pgvector
+        image:
+          reference: ghcr.io/cloudnative-pg/pgvector:0.8.1-18-trixie
+          pullPolicy: IfNotPresent
+
+backups:
+  enabled: false
