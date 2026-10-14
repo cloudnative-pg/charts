@@ -41,7 +41,7 @@ spec:
               secretKeyRef:
                 name: barman-plugin-backup-restore-cluster-superuser
                 key: uri
-        image: alpine:3.19
+        image: ($values.alpineImage)
         command: ['sh', '-c']
         args:
          - |

@@ -14,7 +14,7 @@ permissions: read-all
 
 jobs:
   release:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: write # Required for pushing the Helm charts to the gh-pages branch
       packages: write # Required for GHCR access
@@ -41,7 +41,7 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
         with:
-          version: v4.2.4
+          version: v4.3.0
 
       - name: Add chart dependencies
         run: |

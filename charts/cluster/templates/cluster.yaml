@@ -31,6 +31,10 @@ spec:
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
     {{- end }}
   {{- end }}
+  {{- with .Values.cluster.ephemeralVolumeSource }}
+  ephemeralVolumeSource:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
@@ -55,6 +59,19 @@ spec:
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
   {{- with .Values.cluster.stopDelay }}
   stopDelay: {{ . }}
+  {{- end }}
+  {{- /* smartShutdownTimeout accepts 0 (skip the smart phase), which `with` would drop, so test for the key */}}
+  {{- if hasKey .Values.cluster "smartShutdownTimeout" }}
+  smartShutdownTimeout: {{ .Values.cluster.smartShutdownTimeout }}
+  {{- end }}
+  {{- with .Values.cluster.switchoverDelay }}
+  switchoverDelay: {{ . }}
+  {{- end }}
+  {{- with .Values.cluster.startDelay }}
+  startDelay: {{ . }}
+  {{- end }}
+  {{- with .Values.cluster.failoverDelay }}
+  failoverDelay: {{ . }}
   {{- end }}
   logLevel: {{ .Values.cluster.logLevel }}
   {{- with .Values.cluster.certificates }}
@@ -175,6 +192,6 @@ spec:
         {{ with $parametersWithoutObjectName }}
           {{- toYaml . | indent 8 | trim }}
         {{- end }}
-        barmanObjectName: {{ $parameters.barmanObjectName | default (printf "%s-backups" (include "cluster.fullname" .)) }}
+        barmanObjectName: {{ include "cluster.barmanObjectName" (dict "context" . "suffix" "backups") | quote }}
     {{- end }}
   {{- end }}

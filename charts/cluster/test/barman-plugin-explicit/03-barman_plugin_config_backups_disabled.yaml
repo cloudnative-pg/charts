@@ -21,7 +21,7 @@ backups:
   enabled: true
   method: barmanObjectStore
   provider: s3
-  endpointURL: "https://minio.minio.svc.cluster.local"
+  endpointURL: "https://object-store-svc.object-store.svc.cluster.local:9000"
   endpointCA:
     name: kube-root-ca.crt
     key: ca.crt
@@ -32,7 +32,7 @@ backups:
   s3:
     bucket: "mybucket"
     path: "/barman-plugin-scheduledbackups/v1"
-    accessKey: "minio"
-    secretKey: "minio123"
-    region: "local"
+    accessKey: "objectstore"
+    secretKey: "objectstore123"
+    region: "us-east-1"
   retentionPolicy: "30d"

@@ -3,6 +3,8 @@ kind: Cluster
 metadata:
   name: barman-plugin-explicit-config-cluster
 spec:
+  backup:
+    target: primary
   plugins:
   - name: foo.example.com
     enabled: true
