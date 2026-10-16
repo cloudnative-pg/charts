@@ -178,7 +178,17 @@ namespace scope or clusterwide
   verbs:
   - create
   - get
+  - list
   - update
+  - watch
+- apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices
+  verbs:
+  - get
+  - list
+  - watch
 - apiGroups:
   - monitoring.coreos.com
   resources:
@@ -207,6 +217,7 @@ namespace scope or clusterwide
   resources:
   - backups
   - clusters
+  - databaseroles
   - databases
   - poolers
   - publications
@@ -254,6 +265,7 @@ namespace scope or clusterwide
   - postgresql.cnpg.io
   resources:
   - clusters/finalizers
+  - databaseroles/finalizers
   - poolers/finalizers
   verbs:
   - update
@@ -261,6 +273,7 @@ namespace scope or clusterwide
   - postgresql.cnpg.io
   resources:
   - clusters/status
+  - databaseroles/status
   - poolers/status
   - failoverquorums/status
   verbs:

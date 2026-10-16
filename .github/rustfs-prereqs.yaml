@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: object-store
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned
+  namespace: object-store
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: object-store-ca
+  namespace: object-store
+spec:
+  isCA: true
+  commonName: object-store-ca
+  secretName: object-store-ca-secret
+  issuerRef:
+    name: selfsigned
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: object-store-ca
+  namespace: object-store
+spec:
+  ca:
+    secretName: object-store-ca-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: object-store-tls
+  namespace: object-store
+spec:
+  secretName: object-store-tls-secret
+  dnsNames:
+    - object-store-svc.object-store.svc.cluster.local
+    - object-store-svc.object-store.svc
+    - object-store-svc.object-store
+  issuerRef:
+    name: object-store-ca
+    kind: Issuer

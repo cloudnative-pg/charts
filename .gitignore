@@ -20,7 +20,11 @@ charts/**/charts/*.tgz
 .idea
 *.swp
 *.swo
+.vscode
 *~
 
 # macOS
 .DS_Store
+
+# Tooling for local development
+mise.local.toml

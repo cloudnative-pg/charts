@@ -38,12 +38,12 @@ dnsPolicy: ""
 
 # -- Update strategy for the operator.
 # ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+updateStrategy: {}
 # For example:
 #  type: RollingUpdate
 #  rollingUpdate:
 #    maxSurge: 25%
 #    maxUnavailable: 25%
-updateStrategy: {}
 
 crds:
   # -- Specifies whether the CRDs should be created when installing the chart.
@@ -88,6 +88,7 @@ config:
   # INHERITED_ANNOTATIONS: categories
   # INHERITED_LABELS: environment, workload, app
   # WATCH_NAMESPACE: namespace-a,namespace-b
+
   # -- The maximum number of concurrent reconciles. Defaults to 10.
   maxConcurrentReconciles: 10
 
@@ -95,12 +96,28 @@ config:
 additionalArgs: []
 
 # -- Array containing extra environment variables which can be templated.
+additionalEnv: []
 # For example:
 #  - name: RELEASE_NAME
 #    value: "{{ .Release.Name }}"
 #  - name: MY_VAR
 #    value: "mySpecialKey"
-additionalEnv: []
+
+# -- Array containing extra volumes to be added to the operator pod, which can be templated.
+additionalVolumes: []
+# For example, to serve the metrics endpoint over TLS:
+#  - name: metrics-certificates
+#    secret:
+#      secretName: "{{ .Release.Name }}-metrics-cert"
+#      defaultMode: 420
+
+# -- Array containing extra volume mounts to be added to the operator container, which can be templated.
+additionalVolumeMounts: []
+# For example, to serve the metrics endpoint over TLS, together with a
+# `METRICS_CERT_DIR` entry in `additionalEnv` pointing to the same path:
+#  - name: metrics-certificates
+#    mountPath: /run/secrets/cnpg.io/metrics
+#    readOnly: true
 
 serviceAccount:
   # -- Specifies whether the service account should be created.
@@ -147,9 +164,11 @@ priorityClassName: ""
 
 service:
   type: ClusterIP
-  # -- DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate
-  # and can not be configured
+  # -- The name of the Webhook Service.
   name: cnpg-webhook-service
+  # DO NOT CHANGE THE SERVICE NAME as it is currently used to generate the certificate
+  # and can not be configured
+
   port: 443
   # -- Set the ip family policy to configure dual-stack see [Configure dual-stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack/#services)
   ipFamilyPolicy: ""
@@ -166,6 +185,10 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 100Mi
+
+scratchData:
+  # -- EmptyDir options for the scratch-data volume.
+  emptyDir: {}
 
 # -- Nodeselector for the operator to be installed.
 nodeSelector: {}
@@ -189,6 +212,20 @@ monitoring:
   podMonitorRelabelings: []
   # -- Additional labels for the podMonitor
   podMonitorAdditionalLabels: {}
+  # @schema
+  # type: string
+  # enum: ["", http, https, HTTP, HTTPS]
+  # @schema
+  # -- Scheme to use when scraping the metrics endpoint. Set it to `https` when
+  # TLS is enabled on the operator metrics server through `METRICS_CERT_DIR`.
+  podMonitorScheme: ""
+  # -- TLS configuration to use when scraping the metrics endpoint, which can be templated.
+  podMonitorTLSConfig: {}
+  # For example:
+  #  ca:
+  #    secret:
+  #      name: "{{ .Release.Name }}-metrics-cert"
+  #      key: ca.crt
 
   grafanaDashboard:
     create: false
@@ -196,9 +233,9 @@ monitoring:
     namespace: ""
     # -- The name of the ConfigMap containing the dashboard.
     configMapName: "cnpg-grafana-dashboard"
-    # -- Label that ConfigMaps should have to be loaded as dashboards.  DEPRECATED: Use labels instead.
+    # -- Label that ConfigMaps should have to be loaded as dashboards. DEPRECATED: Use labels instead.
     sidecarLabel: "grafana_dashboard"
-    # -- Label value that ConfigMaps should have to be loaded as dashboards.  DEPRECATED: Use labels instead.
+    # -- Label value that ConfigMaps should have to be loaded as dashboards. DEPRECATED: Use labels instead.
     sidecarLabelValue: "1"
     # -- Labels that ConfigMaps should have to get configured in Grafana.
     labels: {}
