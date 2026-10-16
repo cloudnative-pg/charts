@@ -126,6 +126,7 @@ Kubernetes: `>=1.29.0-0`
 | config.data | object | `{}` | The content of the configmap/secret, see https://cloudnative-pg.io/documentation/current/operator_conf/#available-options for all the available options. |
 | config.maxConcurrentReconciles | int | `10` | The maximum number of concurrent reconciles. Defaults to 10. |
 | config.name | string | `"cnpg-controller-manager-config"` | The name of the configmap/secret to use. |
+| config.namespacedWebhooks | bool | `false` | Suffix webhook and cluster-scoped RBAC names with the namespace and scope webhooks to the watched namespaces, so multiple operators can coexist. With `clusterWide: false`, `WATCH_NAMESPACE` in `data` can list the watched namespaces. Requires operator >= 1.30.0. CRDs stay shared: set `crds.create: false` on all but one installation. |
 | config.secret | bool | `false` | Specifies whether it should be stored in a secret, instead of a configmap. |
 | containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Container Security Context. |
 | crds.create | bool | `true` | Specifies whether the CRDs should be created when installing the chart. |
