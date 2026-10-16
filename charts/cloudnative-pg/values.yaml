@@ -78,8 +78,11 @@ config:
   # events across the entire Kubernetes cluster or if its focus should be
   # narrowed down to the specific namespace within which it has been deployed.
   clusterWide: true
-  # -- When set to true, appends the operator namespace to webhook configuration
-  # names to avoid collisions when running multiple operators in namespaced mode.
+  # -- Suffix webhook and cluster-scoped RBAC names with the namespace and
+  # scope webhooks to the watched namespaces, so multiple operators can coexist.
+  # With `clusterWide: false`, `WATCH_NAMESPACE` in `data` can list the watched
+  # namespaces. Requires operator >= 1.30.0. CRDs stay shared: set
+  # `crds.create: false` on all but one installation.
   namespacedWebhooks: false
   # -- The content of the configmap/secret, see
   # https://cloudnative-pg.io/documentation/current/operator_conf/#available-options

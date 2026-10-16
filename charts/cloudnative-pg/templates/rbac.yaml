@@ -78,40 +78,42 @@ and a RoleBinding. We already created the ClusterRole above with the
 required cluster-wide rules
 */}}
 {{- if eq .Values.config.clusterWide false }}
+{{- range $namespace := include "cloudnative-pg.roleNamespaces" . | fromJsonArray }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ include "cloudnative-pg.fullname" . }}
-  namespace: {{ include "cloudnative-pg.namespace" . }}
+  name: {{ include "cloudnative-pg.fullname" $ }}
+  namespace: {{ $namespace }}
   labels:
-    {{- include "cloudnative-pg.labels" . | nindent 4 }}
-  {{- with .Values.commonAnnotations }}
+    {{- include "cloudnative-pg.labels" $ | nindent 4 }}
+  {{- with $.Values.commonAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 rules:
-{{- include "cloudnative-pg.commonRules" . }}
+{{- include "cloudnative-pg.commonRules" $ }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ include "cloudnative-pg.fullname" . }}
-  namespace: {{ include "cloudnative-pg.namespace" . }}
+  name: {{ include "cloudnative-pg.fullname" $ }}
+  namespace: {{ $namespace }}
   labels:
-    {{- include "cloudnative-pg.labels" . | nindent 4 }}
-  {{- with .Values.commonAnnotations }}
+    {{- include "cloudnative-pg.labels" $ | nindent 4 }}
+  {{- with $.Values.commonAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ include "cloudnative-pg.fullname" . }}
+  name: {{ include "cloudnative-pg.fullname" $ }}
 subjects:
 - kind: ServiceAccount
-  name: {{ include "cloudnative-pg.serviceAccountName" . }}
-  namespace: {{ include "cloudnative-pg.namespace" . }}
+  name: {{ include "cloudnative-pg.serviceAccountName" $ }}
+  namespace: {{ include "cloudnative-pg.namespace" $ }}
+{{- end }}
 {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
