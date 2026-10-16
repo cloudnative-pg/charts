@@ -39,10 +39,8 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
   name: vbackup.cnpg.io
-  {{- if .Values.config.namespacedWebhooks }}
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- with include "cloudnative-pg.webhookNamespaceSelector" . }}
+  {{- . | nindent 2 }}
   {{- end }}
   rules:
   - apiGroups:
@@ -65,10 +63,8 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
   name: vcluster.cnpg.io
-  {{- if .Values.config.namespacedWebhooks }}
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- with include "cloudnative-pg.webhookNamespaceSelector" . }}
+  {{- . | nindent 2 }}
   {{- end }}
   rules:
   - apiGroups:
@@ -91,10 +87,8 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
   name: vscheduledbackup.cnpg.io
-  {{- if .Values.config.namespacedWebhooks }}
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- with include "cloudnative-pg.webhookNamespaceSelector" . }}
+  {{- . | nindent 2 }}
   {{- end }}
   rules:
   - apiGroups:
@@ -117,10 +111,8 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
   name: vdatabase.cnpg.io
-  {{- if .Values.config.namespacedWebhooks }}
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- with include "cloudnative-pg.webhookNamespaceSelector" . }}
+  {{- . | nindent 2 }}
   {{- end }}
   rules:
   - apiGroups:
@@ -143,10 +135,8 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.validating.failurePolicy }}
   name: vpooler.cnpg.io
-  {{- if .Values.config.namespacedWebhooks }}
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- with include "cloudnative-pg.webhookNamespaceSelector" . }}
+  {{- . | nindent 2 }}
   {{- end }}
   rules:
     - apiGroups:

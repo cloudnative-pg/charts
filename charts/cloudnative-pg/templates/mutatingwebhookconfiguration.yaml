@@ -39,10 +39,8 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.mutating.failurePolicy }}
   name: mbackup.cnpg.io
-  {{- if .Values.config.namespacedWebhooks }}
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- with include "cloudnative-pg.webhookNamespaceSelector" . }}
+  {{- . | nindent 2 }}
   {{- end }}
   rules:
   - apiGroups:
@@ -65,10 +63,8 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.mutating.failurePolicy }}
   name: mcluster.cnpg.io
-  {{- if .Values.config.namespacedWebhooks }}
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- with include "cloudnative-pg.webhookNamespaceSelector" . }}
+  {{- . | nindent 2 }}
   {{- end }}
   rules:
   - apiGroups:
@@ -91,10 +87,8 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.mutating.failurePolicy }}
   name: mdatabase.cnpg.io
-  {{- if .Values.config.namespacedWebhooks }}
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- with include "cloudnative-pg.webhookNamespaceSelector" . }}
+  {{- . | nindent 2 }}
   {{- end }}
   rules:
   - apiGroups:
@@ -117,10 +111,8 @@ webhooks:
       port: {{ .Values.service.port }}
   failurePolicy: {{ .Values.webhook.mutating.failurePolicy }}
   name: mscheduledbackup.cnpg.io
-  {{- if .Values.config.namespacedWebhooks }}
-  namespaceSelector:
-    matchLabels:
-      kubernetes.io/metadata.name: {{ include "cloudnative-pg.namespace" . }}
+  {{- with include "cloudnative-pg.webhookNamespaceSelector" . }}
+  {{- . | nindent 2 }}
   {{- end }}
   rules:
   - apiGroups:
