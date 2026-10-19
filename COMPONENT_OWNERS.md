@@ -18,12 +18,24 @@ them for review.
 
 | Name | GitHub Handle | Country |
 | :--- | :--- | :--- |
-| Gabriele Bartolini | [@gbartolini](https://github.com/gbartolini) |  |
-| Francesco Canovai | [@fcanovai](https://github.com/fcanovai) |  |
-| Leonardo Cecchi | [@leonardoce](https://github.com/leonardoce) |  |
+| Gabriele Bartolini | [@gbartolini](https://github.com/gbartolini) | Italy |
+| Francesco Canovai | [@fcanovai](https://github.com/fcanovai) | Italy |
+| Leonardo Cecchi | [@leonardoce](https://github.com/leonardoce) | Italy |
 | Itay Grudev | [@itay-grudev](https://github.com/itay-grudev) | Bulgaria |
-| Marco Nenciarini | [@mnencia](https://github.com/mnencia) |  |
-| Philippe Scorsolini | [@phisco](https://github.com/phisco) |  |
+| Marco Nenciarini | [@mnencia](https://github.com/mnencia) | Italy |
+| Philippe Scorsolini | [@phisco](https://github.com/phisco) | Italy |
+
+
+## Reviewers
+
+Trusted with review of the paths below, and requested automatically on any
+pull request touching them. Advisory rather than blocking: the Component
+Owners above co-own every path, so a review here is never the only one
+available.
+
+| Reviewer | Paths |
+| :--- | :--- |
+| Danish Khan ([@danishk](https://github.com/danishk)) | `*`, `/charts/cloudnative-pg/`, `/charts/cluster/`, `/charts/plugin-barman-cloud/` |
 
 Component Owner is a rung of the CloudNativePG contributor ladder. A new
 owner is added by a ⅔ vote of this repository's existing Component Owners,

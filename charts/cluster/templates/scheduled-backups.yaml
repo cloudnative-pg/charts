@@ -15,6 +15,9 @@ spec:
   schedule: {{ .schedule | quote }}
   method: {{ .method }}
   backupOwnerReference: {{ .backupOwnerReference }}
+  {{- with .target }}
+  target: {{ . }}
+  {{- end }}
   cluster:
     name: {{ include "cluster.fullname" $ }}
   {{- with .pluginConfiguration }}

@@ -17,6 +17,7 @@ cluster:
 backups:
   enabled: true
   method: plugin
+  target: primary
   pluginConfiguration:
     name: barman-cloud.cloudnative-pg.io
   provider: s3
