@@ -656,6 +656,11 @@
         },
         "storage": {
           "properties": {
+            "pvcTemplate": {
+              "description": "Template for the PGDATA PVCs, passed through as the CNPG `pvcTemplate`. CNPG applies `size` and, when set, `storageClass` on top of it,\nso they take precedence over `resources.requests.storage` and `storageClassName` here.\nSee: https://cloudnative-pg.io/documentation/current/storage/",
+              "required": [],
+              "type": "object"
+            },
             "size": {
               "default": "8Gi",
               "type": "string"
@@ -682,6 +687,11 @@
             "enabled": {
               "default": false,
               "type": "boolean"
+            },
+            "pvcTemplate": {
+              "description": "Template for the WAL PVCs, passed through as the CNPG `pvcTemplate`. As with `storage.pvcTemplate`,\n`size` and `storageClass` take precedence over the equivalent template fields.",
+              "required": [],
+              "type": "object"
             },
             "size": {
               "default": "1Gi",

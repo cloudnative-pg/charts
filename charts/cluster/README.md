@@ -254,11 +254,13 @@ Kubernetes: `>=1.29.0-0`
 | cluster.smartShutdownTimeout | int | `180` | The time in seconds reserved for the smart shutdown of Postgres to complete before the operator requests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout). Set to 0 to skip the smart phase entirely and request a fast shutdown right away. Defaults to 180 when unset, per the operator default. |
 | cluster.startDelay | int | `3600` | The time in seconds that is allowed for a PostgreSQL instance to successfully start up. The startup probe failure threshold is derived from this value using the formula ceiling(startDelay / 10). Defaults to 3600 when unset, per the operator default. |
 | cluster.stopDelay | int | `1800` | The time in seconds that is allowed for the instance to wait for the shutdown to complete before being forcefully terminated. Also sets the pod's terminationGracePeriodSeconds. Defaults to 1800 (30m) when unset, per the operator default. |
+| cluster.storage.pvcTemplate | object | `{}` | Template for the PGDATA PVCs, passed through as the CNPG `pvcTemplate`. CNPG applies `size` and, when set, `storageClass` on top of it, so they take precedence over `resources.requests.storage` and `storageClassName` here. See: https://cloudnative-pg.io/documentation/current/storage/#configuration-via-a-pvc-template |
 | cluster.storage.size | string | `"8Gi"` |  |
 | cluster.storage.storageClass | string | `""` |  |
 | cluster.superuserSecret | string | `""` |  |
 | cluster.switchoverDelay | int | `3600` | The time in seconds that is allowed for a primary instance to gracefully shut down during a switchover. Defaults to 3600 (1h) when unset, per the operator default. |
 | cluster.walStorage.enabled | bool | `false` |  |
+| cluster.walStorage.pvcTemplate | object | `{}` | Template for the WAL PVCs, passed through as the CNPG `pvcTemplate`. CNPG applies `size` and, when set, `storageClass` on top of it, so they take precedence over `resources.requests.storage` and `storageClassName` here. See: https://cloudnative-pg.io/documentation/current/storage/#configuration-via-a-pvc-template |
 | cluster.walStorage.size | string | `"1Gi"` |  |
 | cluster.walStorage.storageClass | string | `""` |  |
 | databases | list | `[]` | Database management configuration. |
