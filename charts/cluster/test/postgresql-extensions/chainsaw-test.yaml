@@ -1,0 +1,61 @@
+##
+# This test verifies that image volume extensions (`cluster.postgresql.extensions`)
+# are mounted in the instance pod and that the extension can actually be used.
+# It needs a Kubernetes cluster with the ImageVolume feature (on by default since 1.35).
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: postgresql-extensions
+spec:
+  timeouts:
+    apply: 1s
+    assert: 5m
+    cleanup: 1m
+  steps:
+    - name: Install a cluster with an image volume extension
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./01-extensions_cluster.yaml \
+                --wait \
+                extensions ../../
+        - assert:
+            file: ./01-extensions_cluster-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
+        - describe:
+            apiVersion: v1
+            kind: Pod
+        - podLogs:
+            selector: cnpg.io/cluster=extensions-cluster
+    - name: Create and use the extension
+      try:
+        - script:
+            content: |
+              set -e
+              ref=$(kubectl get pod --namespace $NAMESPACE extensions-cluster-1 \
+                -o jsonpath='{.spec.volumes[?(@.name=="ext-pgvector")].image.reference}')
+              echo "extension image volume: $ref"
+              test "$ref" = "ghcr.io/cloudnative-pg/pgvector:0.8.1-18-trixie"
+              kubectl exec --namespace $NAMESPACE extensions-cluster-1 -c postgres -- \
+                psql -U postgres -d app -v ON_ERROR_STOP=1 -Atc "CREATE EXTENSION vector;"
+              out=$(kubectl exec --namespace $NAMESPACE extensions-cluster-1 -c postgres -- \
+                psql -U postgres -d app -v ON_ERROR_STOP=1 -Atc \
+                "SELECT extversion FROM pg_extension WHERE extname = 'vector';")
+              echo "vector extension version: $out"
+              test -n "$out"
+              dist=$(kubectl exec --namespace $NAMESPACE extensions-cluster-1 -c postgres -- \
+                psql -U postgres -d app -v ON_ERROR_STOP=1 -Atc \
+                "SELECT '[1,2,3]'::vector <-> '[1,2,4]'::vector;")
+              echo "vector distance: $dist"
+              test "$dist" = "1"
+    - name: Cleanup
+      try:
+        - script:
+            content: |
+              helm uninstall --namespace $NAMESPACE extensions

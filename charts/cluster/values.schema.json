@@ -136,8 +136,7 @@
         "objectStore": {
           "properties": {
             "annotations": {
-              "default": {},
-              "description": "Extra annotations for the plugin `ObjectStore` resources only (unlike `cluster.annotations`, these are not applied to the Cluster). Handy for `argocd.argoproj.io/sync-wave: \"-1\"` when helmHook is false.",
+              "description": "Extra annotations for the plugin `ObjectStore` resources only. Handy\nfor e.g. `argocd.argoproj.io/sync-wave: \"-1\"` when helmHook above is set to false.",
               "required": [],
               "type": "object"
             },
@@ -148,7 +147,7 @@
             },
             "helmHook": {
               "default": true,
-              "description": "Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before the Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources.",
+              "description": "Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before\nthe Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources",
               "type": "boolean"
             }
           },
@@ -227,6 +226,16 @@
                   "schedule": {
                     "default": "0 0 0 * * *",
                     "description": "Schedule in cron format",
+                    "type": "string"
+                  },
+                  "target": {
+                    "default": "",
+                    "description": "The policy to decide which instance should perform this backup, one of `primary` or `prefer-standby`. If empty, it defaults to `cluster.spec.backup.target`.",
+                    "enum": [
+                      "",
+                      "prefer-standby",
+                      "primary"
+                    ],
                     "type": "string"
                   }
                 },
@@ -532,6 +541,13 @@
         },
         "postgresql": {
           "properties": {
+            "extensions": {
+              "description": "List of [image volume extensions](https://cloudnative-pg.io/docs/current/imagevolume_extensions/) to load in the cluster pod",
+              "items": {
+                "required": []
+              },
+              "type": "array"
+            },
             "ldap": {
               "description": "PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)",
               "required": [],
