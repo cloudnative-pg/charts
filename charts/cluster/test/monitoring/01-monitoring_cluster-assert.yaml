@@ -120,6 +120,13 @@ spec:
         labels:
           environment: staging
           oncall: "false"
+      # the low disk space alerts must also match the WAL and tablespace PVCs
+      (rules[?alert == 'CNPGClusterLowDiskSpaceCritical'] | [0]):
+        (contains(expr, 'persistentvolumeclaim=~"monitoring-cluster-([1-9][0-9]*)-wal"')): true
+        (contains(expr, 'persistentvolumeclaim=~"monitoring-cluster-([1-9][0-9]*)-tbs.*"')): true
+      (rules[?alert == 'CNPGClusterLowDiskSpaceWarning'] | [0]):
+        (contains(expr, 'persistentvolumeclaim=~"monitoring-cluster-([1-9][0-9]*)-wal"')): true
+        (contains(expr, 'persistentvolumeclaim=~"monitoring-cluster-([1-9][0-9]*)-tbs.*"')): true
 ---
 apiVersion: v1
 kind: ConfigMap
