@@ -66,6 +66,12 @@ webhook:
     failureThreshold: 6
     periodSeconds: 5
 
+# Metrics configuration for the operator
+metrics:
+  # -- Port used by the controller to expose Prometheus metrics.
+  # Useful when running with hostNetwork=true to avoid conflicts.
+  port: 8080
+
 # Operator configuration.
 config:
   # -- Specifies whether the secret should be created.
