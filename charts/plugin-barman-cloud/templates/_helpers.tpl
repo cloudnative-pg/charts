@@ -78,3 +78,71 @@ Create the name of the certificate issuer to use
 {{- define "plugin-barman-cloud.certificateIssuerName" -}}
 {{- default (printf "%s-selfsigned-issuer" (include "plugin-barman-cloud.fullname" .)) .Values.certificate.issuerName }}
 {{- end }}
+
+{{/*
+Rules the plugin needs, applied clusterwide or namespace-scoped
+*/}}
+{{- define "plugin-barman-cloud.rules" }}
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - watch
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - barmancloud.cnpg.io
+  resources:
+  - objectstores/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - {{ .Values.rbac.cnpgGroup }}
+  resources:
+  - backups
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - {{ .Values.rbac.cnpgGroup }}
+  resources:
+  - clusters/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  - roles
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
+{{- end }}
