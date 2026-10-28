@@ -23,8 +23,14 @@ jobs:
         with:
           fetch-depth: 1
       - id: listTests
+        # The job name is the test's spec.description, falling back to the directory name.
         run: |
-          echo "tests=$(ls charts/cloudnative-pg/test -1 | jq -cRn '{ include: [inputs | { test: "\(.)" }]}')" >> $GITHUB_OUTPUT
+          tests=$(for dir in charts/cloudnative-pg/test/*/; do
+            test=$(basename "$dir")
+            name=$(sed -n 's/^  description: *//p' "$dir/chainsaw-test.yaml")
+            jq -cn --arg test "$test" --arg name "${name:-$test}" '{ test: $test, name: $name }'
+          done | jq -cs '{ include: . }')
+          echo "tests=$tests" >> $GITHUB_OUTPUT
 
   test:
     needs: test-list
@@ -32,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.test-list.outputs.tests) }}
-    name: ${{ matrix.test }}
+    name: ${{ matrix.name }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

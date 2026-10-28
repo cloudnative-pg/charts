@@ -6,6 +6,7 @@ kind: Test
 metadata:
   name: deploy-operator-clusterwide
 spec:
+  description: Deploy the operator in cluster-wide mode
   timeouts:
     apply: 1s
     assert: 5m

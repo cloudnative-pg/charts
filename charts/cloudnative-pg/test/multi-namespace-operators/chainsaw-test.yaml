@@ -7,6 +7,7 @@ kind: Test
 metadata:
   name: multi-namespace-operators
 spec:
+  description: Deploy the operator in multi-namespace mode
   timeouts:
     apply: 1s
     assert: 5m
