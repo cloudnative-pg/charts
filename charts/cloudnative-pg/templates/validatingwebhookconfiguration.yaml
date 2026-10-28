@@ -21,7 +21,7 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: cnpg-validating-webhook-configuration{{- if .Values.config.namespacedWebhooks }}-{{ include "cloudnative-pg.namespace" . }}{{- end }}
+  name: cnpg-validating-webhook-configuration{{- if not .Values.config.clusterWide }}-{{ include "cloudnative-pg.namespace" . }}{{- end }}
   labels:
     {{- include "cloudnative-pg.labels" . | nindent 4 }}
   {{- with .Values.rbac.annotations }}

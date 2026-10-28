@@ -44,7 +44,7 @@
       "properties": {
         "clusterWide": {
           "default": true,
-          "description": "This option determines if the operator is responsible for observing\nevents across the entire Kubernetes cluster or if its focus should be\nnarrowed down to the specific namespace within which it has been deployed.",
+          "description": "This option determines if the operator is responsible for observing\nevents across the entire Kubernetes cluster or if its focus should be\nnarrowed down to the specific namespace within which it has been deployed.\nWhen `false`, the webhook configurations and cluster-scoped RBAC objects\nare suffixed with the namespace and the webhooks only intercept the watched\nnamespaces, so multiple operators can run on the same cluster. Additional\nnamespaces to watch can be listed in `WATCH_NAMESPACE` under `data`.\nRequires operator \u003e= 1.30.0. CRDs are shared: set `crds.create: false` on\nall but one installation.",
           "type": "boolean"
         },
         "create": {
@@ -66,11 +66,6 @@
           "default": "cnpg-controller-manager-config",
           "description": "The name of the configmap/secret to use.",
           "type": "string"
-        },
-        "namespacedWebhooks": {
-          "default": false,
-          "description": "Suffix webhook and cluster-scoped RBAC names with the namespace and\nscope webhooks to the watched namespaces, so multiple operators can coexist.\nWith `clusterWide: false`, `WATCH_NAMESPACE` in `data` can list the watched\nnamespaces. Requires operator \u003e= 1.30.0. CRDs stay shared: set\n`crds.create: false` on all but one installation.",
-          "type": "boolean"
         },
         "secret": {
           "default": false,

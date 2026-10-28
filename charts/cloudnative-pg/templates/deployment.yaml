@@ -16,7 +16,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-{{- include "cloudnative-pg.validateValues" . }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -92,13 +91,7 @@ spec:
           value: "{{ .Values.monitoringQueriesConfigMap.name }}"
         {{- if not .Values.config.clusterWide }}
         - name: WATCH_NAMESPACE
-          {{- if .Values.config.namespacedWebhooks }}
           value: {{ include "cloudnative-pg.watchedNamespaces" . | fromJsonArray | join "," | quote }}
-          {{- else }}
-          value: "{{ include "cloudnative-pg.namespace" . }}"
-          {{- end }}
-        {{- end }}
-        {{- if .Values.config.namespacedWebhooks }}
         - name: ENABLE_WEBHOOK_NAMESPACE_SUFFIX
           value: "true"
         {{- end }}

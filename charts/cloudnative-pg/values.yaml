@@ -77,13 +77,13 @@ config:
   # -- This option determines if the operator is responsible for observing
   # events across the entire Kubernetes cluster or if its focus should be
   # narrowed down to the specific namespace within which it has been deployed.
+  # When `false`, the webhook configurations and cluster-scoped RBAC objects
+  # are suffixed with the namespace and the webhooks only intercept the watched
+  # namespaces, so multiple operators can run on the same cluster. Additional
+  # namespaces to watch can be listed in `WATCH_NAMESPACE` under `data`.
+  # Requires operator >= 1.30.0. CRDs are shared: set `crds.create: false` on
+  # all but one installation.
   clusterWide: true
-  # -- Suffix webhook and cluster-scoped RBAC names with the namespace and
-  # scope webhooks to the watched namespaces, so multiple operators can coexist.
-  # With `clusterWide: false`, `WATCH_NAMESPACE` in `data` can list the watched
-  # namespaces. Requires operator >= 1.30.0. CRDs stay shared: set
-  # `crds.create: false` on all but one installation.
-  namespacedWebhooks: false
   # -- The content of the configmap/secret, see
   # https://cloudnative-pg.io/documentation/current/operator_conf/#available-options
   # for all the available options.

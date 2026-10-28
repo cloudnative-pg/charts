@@ -62,10 +62,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Cluster-scoped resource name, unique per namespace when namespacedWebhooks is enabled.
+Cluster-scoped resource name, unique per namespace when clusterWide is false.
 */}}
 {{- define "cloudnative-pg.clusterResourceName" -}}
-{{- if .Values.config.namespacedWebhooks -}}
+{{- if not .Values.config.clusterWide -}}
 {{- printf "%s-%s" (include "cloudnative-pg.fullname" .) (include "cloudnative-pg.namespace" .) -}}
 {{- else -}}
 {{- include "cloudnative-pg.fullname" . -}}
@@ -94,13 +94,11 @@ namespace when clusterWide is false.
 
 {{/*
 JSON list of the namespaces receiving the operator Role when clusterWide is
-false: the release namespace, plus the watched ones with namespacedWebhooks.
+false: the release namespace, plus the watched ones.
 */}}
 {{- define "cloudnative-pg.roleNamespaces" -}}
 {{- $namespaces := list (include "cloudnative-pg.namespace" .) -}}
-{{- if .Values.config.namespacedWebhooks -}}
 {{- $namespaces = concat $namespaces (include "cloudnative-pg.watchedNamespaces" . | fromJsonArray) -}}
-{{- end -}}
 {{- toJson ($namespaces | uniq) -}}
 {{- end -}}
 
@@ -108,7 +106,7 @@ false: the release namespace, plus the watched ones with namespacedWebhooks.
 namespaceSelector restricting a webhook to the watched namespaces.
 */}}
 {{- define "cloudnative-pg.webhookNamespaceSelector" -}}
-{{- if .Values.config.namespacedWebhooks -}}
+{{- if not .Values.config.clusterWide -}}
 namespaceSelector:
   matchExpressions:
   - key: kubernetes.io/metadata.name
@@ -117,15 +115,6 @@ namespaceSelector:
     {{- range include "cloudnative-pg.watchedNamespaces" . | fromJsonArray }}
     - {{ . | quote }}
     {{- end }}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Validate incompatible combinations of values.
-*/}}
-{{- define "cloudnative-pg.validateValues" -}}
-{{- if and .Values.config.namespacedWebhooks (eq (include "cloudnative-pg.watchedNamespaces" .) "[]") -}}
-{{- fail "config.namespacedWebhooks requires the operator to watch specific namespaces: set config.clusterWide=false or config.data.WATCH_NAMESPACE" -}}
 {{- end -}}
 {{- end -}}
 

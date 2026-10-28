@@ -21,7 +21,7 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: cnpg-mutating-webhook-configuration{{- if .Values.config.namespacedWebhooks }}-{{ include "cloudnative-pg.namespace" . }}{{- end }}
+  name: cnpg-mutating-webhook-configuration{{- if not .Values.config.clusterWide }}-{{ include "cloudnative-pg.namespace" . }}{{- end }}
   {{- with .Values.commonAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
