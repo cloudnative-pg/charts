@@ -92,8 +92,8 @@ helm upgrade --install cnpg \
   cnpg/cloudnative-pg
 ```
 
-single-namespace mode now relies on the `ENABLE_WEBHOOK_NAMESPACE_SUFFIX` option introduced in
-operator 1.30.0 , so it requires operator version 1.30.0 or later. Leave `image.tag` at the chart default or pin it to `1.30.0` or newer:
+Single-namespace mode requires operator 1.30.0 or later, as it relies on the ENABLE_WEBHOOK_NAMESPACE_SUFFIX option.
+Leave `image.tag` at the chart default or pin it to `1.30.0` or newer:
 older images don't recognise the option, look up the unsuffixed webhook configuration names and fail to start.
 
 The operator can watch additional namespaces by listing them in `WATCH_NAMESPACE` under `config.data`.
@@ -106,7 +106,7 @@ set `crds.create=false` on all but the first installation.
 > CloudNativePG does NOT currently support running multiple operators on the same cluster. While this can be
 > achieved through namespaced deployments, multiple operators still use the same set of shared CRDs, and a
 > backwards compatible upgrade across concurrently running operators cannot be guaranteed. A namespace must
-> be watched by exactly one operator, whether single-namespace or cluster-wide. See the
+> be watched by at most one operator, whether single-namespace or cluster-wide. See the
 > [operator configuration](https://cloudnative-pg.io/documentation/current/operator_conf/) documentation.
 
 
