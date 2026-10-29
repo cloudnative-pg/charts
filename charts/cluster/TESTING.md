@@ -36,7 +36,7 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
 
     ```bash
     # renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io
-    CERT_MANAGER_VERSION=v1.21.2
+    CERT_MANAGER_VERSION=v1.21.3
     helm repo add jetstack https://charts.jetstack.io
     helm install \
        cert-manager jetstack/cert-manager \
@@ -55,7 +55,7 @@ We use a local kind cluster (minikube also works) and provision prerequisites su
 
     ```bash
     # renovate: datasource=helm depName=rustfs registryUrl=https://charts.rustfs.com
-    RUSTFS_CHART_VERSION=1.0.1
+    RUSTFS_CHART_VERSION=1.0.4
     kubectl apply -f ./.github/rustfs-prereqs.yaml
     kubectl -n object-store wait --for=condition=Ready certificate/object-store-tls --timeout=120s
     helm repo add rustfs https://charts.rustfs.com
