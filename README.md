@@ -1,12 +1,14 @@
 # CloudNativePG Helm Chart
 
-Helm chart to install the
-[CloudNativePG operator](https://cloudnative-pg.io),
-designed by EnterpriseDB to manage PostgreSQL workloads on any
+## CloudNativePG operator chart
+
+Use this Helm chart to install the
+[CloudNativePG operator](https://cloudnative-pg.io), designed by
+[EDB](https://www.enterprisedb.com/) to manage PostgreSQL workloads on any
 supported Kubernetes cluster running in private, public, or hybrid cloud
 environments.
 
-## Deployment using the latest release
+### Deployment using the latest release
 
 ```console
 helm repo add cnpg https://cloudnative-pg.github.io/charts
@@ -16,7 +18,7 @@ helm upgrade --install cnpg \
   cnpg/cloudnative-pg
 ```
 
-## Deployment using local chart
+### Deployment using local chart
 
 To deploy the operator from sources you can run the following command:
 
@@ -27,83 +29,53 @@ helm upgrade --install cnpg \
   charts/cloudnative-pg
 ```
 
-# Sandbox for CloudNativePG
+Refer to the [Operator Chart documentation](https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/README.md) for installation,
+advanced configuration and monitoring.
 
-CloudNativePG Sandbox, aka `cnpg-sandbox`, is a Helm chart that
-sets up the following components inside a Kubernetes cluster:
+## Cluster chart
 
-- [Prometheus](https://prometheus.io/)
-- [Grafana](https://github.com/grafana/grafana)
-- [CloudNativePG (CNPG)](https://cloudnative-pg.io) a Kubernetes operator for [PostgreSQL](https://www.postgresql.org/) and
-  [EDB Postgres Advanced](https://www.enterprisedb.com/products/edb-postgres-advanced-server-secure-ha-oracle-compatible), with:
-    - a selection of PostgreSQL metrics for the native Prometheus exporter in CNPG (see the [`metrics.yaml`](charts/cnpg-sandbox/templates/metrics.yaml) template file)
-    - a [custom Grafana dashboard](charts/cnpg-sandbox/dashboard.json) developed by EDB for CloudNativePG
+Use this Helm chart to create a PostgreSQL cluster managed by the CloudNativePG operator.
 
-**IMPORTANT:** `cnpg-sandbox` must be run in a staging or pre-production
-environment. Do not use `cnpg-sandbox` in a production environment, as we
-expect that Prometheus and Grafana are already part of that infrastructure:
-there you can install CloudNativePG, the suggested metrics and the
-provided Grafana dashboard.
-
-![Example of dashboard](dashboard.png)
-
-## Requirements
-
-- CloudNativePG 1.10.0
-- [GNU Make](https://www.gnu.org/software/make/) 3.8
-- [Helm](https://helm.sh/) 3.7
-- A supported Kubernetes cluster with enough RBAC permissions to deploy the required resources
-
-## Deployment
-
-Deployment using the latest release:
+Needs operator chart to be installed first.
 
 ```console
 helm repo add cnpg https://cloudnative-pg.github.io/charts
-helm repo update
-helm upgrade --install cnpg-sandbox \
-  cnpg/cnpg-sandbox
+helm upgrade --install cnpg \
+  --namespace cnpg-database \
+  --create-namespace \
+  --values values.yaml \
+  cnpg/cluster
 ```
 
-Then simply follow the instructions that will appear on the terminal once the
-installation is completed.
+Refer to the [Cluster Chart documentation](https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/README.md) for installation,
+cluster configuration and backup options.
 
-#### Deployment from local source
+## Plugin Barman Cloud chart
 
-You can deploy CloudNativePG Sandbox from local source with:
+Helm chart to install the [Plugin Barman Cloud](https://github.com/cloudnative-pg/plugin-barman-cloud)..
+
+**IMPORTANT**: this chart requires a working installation of [cert-manager](https://cert-manager.io/).
+Install it and wait until it is ready before installing this chart.
+
+The chart deploys the plugin only. It does not install the CloudNativePG
+operator and does not create any `Cluster` resource. Use the operator and
+cluster charts above for that.
 
 ```console
-make sandbox-deploy
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm upgrade --install plugin-barman-cloud \
+  --namespace cnpg-system \
+  cnpg/plugin-barman-cloud
 ```
 
-You can remove the installed sandbox by running:
-
-```console
-make sandbox-uninstall
-```
-
-## Monitoring
-
-From the Grafana interface, you can find the dashboard by selecting: `Dashboards` > `Manage` > `CloudNativePg`.
-
-## Benchmarking
-
-You can use `cnpg-sandbox` in conjuction with
-[`cnp-bench`](https://github.com/EnterpriseDB/cnp-bench) to benchmark your
-PostgreSQL environment and observe its behaviour in real-time.
+Refer to the [Barman Cloud Plugin Chart documentation](https://github.com/cloudnative-pg/charts/blob/main/charts/plugin-barman-cloud/README.md) for installation
+and advanced configuration.
 
 ## Contributing
 
 Please read the [code of conduct](CODE-OF-CONDUCT.md) and the
 [guidelines](CONTRIBUTING.md) to contribute to the project.
 
-## Disclaimer
-
-`cnpg-sandbox`is open source software and comes "as is". Please carefully
-read the [license](LICENSE) before you use this software, in particular
-the "Disclaimer of Warranty" and "Limitation of Liability" items.
-
 ## Copyright
 
-`cnpg-sandbox` is distributed under Apache License 2.0.
-`cnpg` is distributed under Apache License 2.0.
+Helm charts for CloudNativePG are distributed under [Apache License 2.0](LICENSE).
