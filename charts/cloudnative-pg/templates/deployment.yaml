@@ -91,7 +91,9 @@ spec:
           value: "{{ .Values.monitoringQueriesConfigMap.name }}"
         {{- if not .Values.config.clusterWide }}
         - name: WATCH_NAMESPACE
-          value: "{{ include "cloudnative-pg.namespace" . }}"
+          value: {{ include "cloudnative-pg.watchedNamespaces" . | fromJsonArray | join "," | quote }}
+        - name: ENABLE_WEBHOOK_NAMESPACE_SUFFIX
+          value: "true"
         {{- end }}
         {{- if .Values.additionalEnv }}
         {{- tpl (.Values.additionalEnv | toYaml) . | nindent 8 }}
