@@ -4,6 +4,9 @@ kind: Secret
 metadata:
   name: {{ default (printf "%s-recovery-google-creds" (include "cluster.fullname" .)) .Values.recovery.secret.name }}
   namespace: {{ include "cluster.namespace" . }}
+  labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+    {{- include "cluster.labels" . | nindent 4 }}
 data:
   APPLICATION_CREDENTIALS: {{ .Values.recovery.google.applicationCredentials | b64enc | quote }}
 {{- end }}

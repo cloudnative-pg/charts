@@ -5,8 +5,9 @@ metadata:
   name: {{ include "cluster.fullname" . }}-monitoring-pg-stat-statements
   namespace: {{ include "cluster.namespace" . }}
   labels:
-    cnpg.io/reload: ""
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
     {{- include "cluster.labels" . | nindent 4 }}
+    cnpg.io/reload: "true"
 data:
   custom-queries: |
     pg_stat_statements:

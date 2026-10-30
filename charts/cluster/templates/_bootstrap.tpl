@@ -33,13 +33,13 @@ bootstrap:
   {{- if eq .Values.recovery.method "pg_basebackup" }}
   pg_basebackup:
     source: pgBaseBackupSource
-    {{ with .Values.recovery.pgBaseBackup.database }}
+    {{- with .Values.recovery.pgBaseBackup.database }}
     database: {{ . }}
     {{- end }}
-    {{ with .Values.recovery.pgBaseBackup.owner }}
+    {{- with .Values.recovery.pgBaseBackup.owner }}
     owner: {{ . }}
     {{- end }}
-    {{ with .Values.recovery.pgBaseBackup.secretName }}
+    {{- with .Values.recovery.pgBaseBackup.secretName }}
     secret:
       name: {{ . }}
     {{- end }}
@@ -58,19 +58,19 @@ bootstrap:
         externalCluster: importSource
       type: {{ .Values.recovery.import.type }}
       databases: {{ .Values.recovery.import.databases | toJson }}
-      {{ with .Values.recovery.import.roles }}
+      {{- with .Values.recovery.import.roles }}
       roles: {{ . | toJson }}
       {{- end }}
-      {{ with .Values.recovery.import.postImportApplicationSQL }}
+      {{- with .Values.recovery.import.postImportApplicationSQL }}
       postImportApplicationSQL:
         {{- . | toYaml | nindent 6 }}
       {{- end }}
       schemaOnly: {{ .Values.recovery.import.schemaOnly }}
-      {{ with .Values.recovery.import.pgDumpExtraOptions }}
+      {{- with .Values.recovery.import.pgDumpExtraOptions }}
       pgDumpExtraOptions:
         {{- . | toYaml | nindent 6 }}
       {{- end }}
-      {{ with .Values.recovery.import.pgRestoreExtraOptions }}
+      {{- with .Values.recovery.import.pgRestoreExtraOptions }}
       pgRestoreExtraOptions:
         {{- . | toYaml | nindent 6 }}
       {{- end }}
@@ -80,10 +80,10 @@ bootstrap:
     recoveryTarget:
       targetTime: {{ . }}
     {{- end }}
-    {{ with .Values.recovery.database }}
+    {{- with .Values.recovery.database }}
     database: {{ . }}
     {{- end }}
-    {{ with .Values.recovery.owner }}
+    {{- with .Values.recovery.owner }}
     owner: {{ . }}
     {{- end }}
     {{- if eq .Values.recovery.method "backup" }}
@@ -91,32 +91,34 @@ bootstrap:
       name: {{ .Values.recovery.backupName }}
     {{- else if eq .Values.recovery.method "object_store" }}
     source: objectStoreRecoveryCluster
+    {{- else if eq .Values.recovery.method "plugin" }}
+    source: pluginRecoveryCluster
     {{- end }}
   {{- end }}
 {{- else if eq .Values.mode "replica" }}
   {{- if eq .Values.replica.bootstrap.source "pg_basebackup" }}
   pg_basebackup:
     source: originCluster
-    {{ with .Values.replica.bootstrap.database }}
+    {{- with .Values.replica.bootstrap.database }}
     database: {{ . }}
     {{- end }}
-    {{ with .Values.replica.bootstrap.owner }}
+    {{- with .Values.replica.bootstrap.owner }}
     owner: {{ . }}
     {{- end }}
-    {{ with .Values.replica.bootstrap.secret }}
+    {{- with .Values.replica.bootstrap.secret }}
     secret:
       {{- toYaml . | nindent 6 }}
     {{- end }}
   {{- else if eq .Values.replica.bootstrap.source "object_store" }}
   recovery:
     source: originCluster
-    {{ with .Values.replica.bootstrap.database }}
+    {{- with .Values.replica.bootstrap.database }}
     database: {{ . }}
     {{- end }}
-    {{ with .Values.replica.bootstrap.owner }}
+    {{- with .Values.replica.bootstrap.owner }}
     owner: {{ . }}
     {{- end }}
-    {{ with .Values.replica.bootstrap.secret }}
+    {{- with .Values.replica.bootstrap.secret }}
     secret:
       {{- toYaml . | nindent 6 }}
     {{- end }}
@@ -130,16 +132,16 @@ bootstrap:
 replica:
   enabled: true
   source: originCluster
-  {{ with .Values.replica.self }}
+  {{- with .Values.replica.self }}
   self: {{ . }}
   {{- end }}
-  {{ with .Values.replica.primary }}
+  {{- with .Values.replica.primary }}
   primary: {{ . }}
   {{- end }}
-  {{ with .Values.replica.promotionToken }}
+  {{- with .Values.replica.promotionToken }}
   promotionToken: {{ . }}
   {{- end }}
-  {{ with .Values.replica.minApplyDelay }}
+  {{- with .Values.replica.minApplyDelay }}
   minApplyDelay: {{ . }}
   {{- end }}
 {{- end }}

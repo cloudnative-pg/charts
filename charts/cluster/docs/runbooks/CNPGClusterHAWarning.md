@@ -9,6 +9,11 @@ The `CNPGClusterHAWarning` alert is triggered when the CloudNativePG cluster rea
 This alarm will be always triggered if your cluster is configured to run with less than `3` instances. In this case you
 may want to silence it.
 
+This alert does not fire for replica clusters. On a replica cluster the designated primary runs a WAL receiver
+(streaming from the source cluster), which lowers the computed standby count by one and would otherwise fire this alert
+permanently. The rule is gated on `cnpg_collector_replica_mode == 0`, which yields an empty result on replica clusters,
+so the alert only fires on primary clusters.
+
 Impact
 ------
 

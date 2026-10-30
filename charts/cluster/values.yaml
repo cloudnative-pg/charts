@@ -28,6 +28,7 @@ mode: standalone
 recovery:
   # -- Available recovery methods:
   # * `backup` - Recovers a CNPG cluster from a CNPG backup (PITR supported) Needs to be on the same cluster in the same namespace.
+  # * `plugin` - Recovers a CNPG cluster from a backup taken with a CloudNativePG plugin (e.g. barman-cloud).
   # * `object_store` - Recovers a CNPG cluster from a barman object store (PITR supported).
   # * `pg_basebackup` - Recovers a CNPG cluster viaa streaming replication protocol. Useful if you want to
   #        migrate databases to CloudNativePG, even from outside Kubernetes.
@@ -48,6 +49,19 @@ recovery:
   database: app
   # -- Name of the owner of the database in the instance to be used by applications. Defaults to the value of the `database` key.
   owner: ""
+
+  pluginConfiguration: {}
+#    name: barman-cloud.cloudnative-pg.io
+#    parameters:
+#      serverName: cluster-example
+
+  objectStore:
+    # -- Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin for recovery. Its name comes from `recovery.pluginConfiguration.parameters.barmanObjectName`, defaulting to `<fullname>-recovery`. Set to `false` to recover from an ObjectStore managed outside of this chart (e.g. the source cluster's), leaving it untouched.
+    create: true
+
+  # Barman Object Store configuration applicable to both `barmanObjectStore` and `plugin` methods when using
+  # the `barman-cloud.cloudnative-pg.io` plugin.
+
   # -- Overrides the provider specific default endpoint.
   endpointURL: ""
   # Defaults to:
@@ -97,6 +111,9 @@ recovery:
     create: true
     # -- Name of the backup credentials secret
     name: ""
+
+  # -- The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration
+  instanceSidecarConfiguration: {}
 
   # See https://cloudnative-pg.io/documentation/current/bootstrap/#bootstrap-from-a-live-cluster-pg_basebackup
   pgBaseBackup:
@@ -209,6 +226,17 @@ cluster:
     size: 1Gi
     storageClass: ""
 
+  # -- Override the default emptyDir used by CNPG for temporary storage.
+  # See: https://cloudnative-pg.io/documentation/current/cluster_conf/#ephemeral-volumes
+  ephemeralVolumeSource: {}
+    # volumeClaimTemplate:
+    #   spec:
+    #     accessModes: ["ReadWriteOnce"]
+    #     storageClassName: "scratch-storage-class"
+    #     resources:
+    #       requests:
+    #         storage: 1Gi
+
   # -- The UID of the postgres user inside the image, defaults to 26
   postgresUID: -1
 
@@ -239,6 +267,30 @@ cluster:
   # -- Strategy to follow to upgrade the primary server during a rolling update procedure, after all replicas have been
   # successfully updated: it can be automated (unsupervised - default) or manual (supervised)
   primaryUpdateStrategy: unsupervised
+
+  # -- The time in seconds that is allowed for the instance to wait for the shutdown
+  # to complete before being forcefully terminated. Also sets the pod's terminationGracePeriodSeconds.
+  # Defaults to 1800 (30m) when unset, per the operator default.
+  stopDelay: 1800
+
+  # -- The time in seconds reserved for the smart shutdown of Postgres to complete before the operator
+  # requests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout).
+  # Set to 0 to skip the smart phase entirely and request a fast shutdown right away.
+  # Defaults to 180 when unset, per the operator default.
+  smartShutdownTimeout: 180
+
+  # -- The time in seconds that is allowed for a primary instance to gracefully shut down during a switchover.
+  # Defaults to 3600 (1h) when unset, per the operator default.
+  switchoverDelay: 3600
+
+  # -- The time in seconds that is allowed for a PostgreSQL instance to successfully start up. The startup
+  # probe failure threshold is derived from this value using the formula ceiling(startDelay / 10).
+  # Defaults to 3600 when unset, per the operator default.
+  startDelay: 3600
+
+  # -- The amount of time in seconds to wait before triggering a failover after the primary instance was
+  # detected to be unhealthy. Defaults to 0 (immediate failover) when unset, per the operator default.
+  failoverDelay: 0
 
   # -- The instances' log level, one of the following values: error, warning, info (default), debug, trace
   logLevel: "info"
@@ -289,6 +341,14 @@ cluster:
   # See: https://cloudnative-pg.io/documentation/current/kubernetes_upgrade/#pod-disruption-budgets
   enablePDB: true
 
+  # -- Plugins
+  # When adding `barman-cloud.cloudnative-pg.io`, just specify the plugin name and set `isWALArchiver` to true. The
+  # chart will then provision an `ObjectStore` resource with the configuration from the `backups.barmanObjectStore` section.
+  plugins: []
+   # - name: barman-cloud.cloudnative-pg.io
+   #   enabled: true
+   #   isWALArchiver: true
+
   # -- This feature enables declarative management of existing roles, as well as the creation of new roles if they are not
   # already present in the database.
   # See: https://cloudnative-pg.io/documentation/current/declarative_role_management/
@@ -323,6 +383,10 @@ cluster:
       # -- Exclude specified rules
       excludeRules: []
         # - CNPGClusterZoneSpreadWarning
+      # -- Additional labels to add to all alerts generated by the PrometheusRule.
+      additionalLabels: {}
+        # alert_email: "true"
+        # environment: staging
     # Additional instrumentation via custom metrics
     instrumentation:
       # -- Enable logical replication metrics
@@ -377,6 +441,9 @@ cluster:
     # -- Lists of shared preload libraries to add to the default ones
     shared_preload_libraries: []
       # - pgaudit
+
+    # -- List of [image volume extensions](https://cloudnative-pg.io/docs/current/imagevolume_extensions/) to load in the cluster pod
+    extensions: []
 
     # -- PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)
     ldap: {}
@@ -434,6 +501,16 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
+  # -- Mount custom files in the PostgreSQL Pods through `spec.projectedVolumeTemplate`.
+  # See: https://cloudnative-pg.io/documentation/current/cluster_conf/#projected-volumes
+  projectedVolumeTemplate: {}
+    # sources:
+    #   - secret:
+    #       name: sample-secret
+    #       items:
+    #         - key: tls.crt
+    #           path: certificate/tls.crt
+
   console:
     # -- Deploys a console StatefulSet to run long-running commands against the cluster (e.g. `CREATE INDEX`).
     enabled: false
@@ -441,6 +518,32 @@ cluster:
 backups:
   # -- You need to configure backups manually, so backups are disabled by default.
   enabled: false
+
+  # @schema
+  # type: string
+  # enum: [prefer-standby, primary]
+  # @schema
+  # -- Which instance takes the backups. One of `prefer-standby` (default) or `primary`.
+  target: "prefer-standby"
+
+  # -- One of `barmanObjectStore` (default) or `plugin`
+  method: barmanObjectStore
+
+  pluginConfiguration: {}
+#    name: barman-cloud.cloudnative-pg.io
+
+  objectStore:
+    # -- Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin. Its name comes from the plugin's `barmanObjectName` parameter (see `cluster.plugins`), defaulting to `<fullname>-backups`. Set to `false` to reference an ObjectStore managed outside of this chart, leaving it untouched.
+    create: true
+    # -- Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before
+    # the Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources
+    helmHook: true
+    # -- Extra annotations for the plugin `ObjectStore` resources only. Handy
+    # for e.g. `argocd.argoproj.io/sync-wave: "-1"` when helmHook above is set to false.
+    annotations: {}
+
+  # Barman Object Store configuration applicable to both `barmanObjectStore` and `plugin` methods when using
+  # the `barman-cloud.cloudnative-pg.io` plugin.
 
   # -- Overrides the provider specific default endpoint.
   endpointURL: ""
@@ -493,6 +596,9 @@ backups:
     # -- Name of the backup credentials secret
     name: ""
 
+  # -- The configuration for the Barman Cloud Plugin sidecar that runs in the instance pods. See: https://cloudnative-pg.io/plugin-barman-cloud/docs/next/plugin-barman-cloud.v1/#instancesidecarconfiguration
+  instanceSidecarConfiguration: {}
+
   wal:
     # -- WAL compression method. One of `` (for no compression), `gzip`, `bzip2` or `snappy`.
     compression: gzip
@@ -516,8 +622,16 @@ backups:
       schedule: "0 0 0 * * *"
       # -- Backup owner reference
       backupOwnerReference: self
-      # -- Backup method, can be `barmanObjectStore` (default) or `volumeSnapshot`
+      # @schema
+      # type: string
+      # enum: ["", prefer-standby, primary]
+      # @schema
+      # -- The policy to decide which instance should perform this backup, one of `primary` or `prefer-standby`. If empty, it defaults to `cluster.spec.backup.target`.
+      target: ""
+      # -- Backup method, can be `barmanObjectStore` (default), `volumeSnapshot` or `plugin`.
       method: barmanObjectStore
+      pluginConfiguration: {}
+#        name: barman-cloud.cloudnative-pg.io
 
   # -- Retention policy for backups
   retentionPolicy: "30d"

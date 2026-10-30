@@ -1,0 +1,19 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: barman-plugin-migration-cluster
+status:
+  readyInstances: 2
+  phase: Cluster in healthy state
+spec:
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      enabled: true
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: barman-plugin-migration-cluster-backups
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: barman-plugin-migration-cluster-backups

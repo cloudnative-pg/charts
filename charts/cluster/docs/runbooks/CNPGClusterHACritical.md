@@ -12,6 +12,11 @@ instances. The replaced instance may need some time to catch-up with the cluster
 This alarm will be always triggered if your cluster is configured to run with only 1 instance. In this case you
 may want to silence it.
 
+This alert does not fire for replica clusters. On a replica cluster the designated primary runs a WAL receiver
+(streaming from the source cluster), which lowers the computed standby count by one. The rule is gated on
+`cnpg_collector_replica_mode == 0`, which yields an empty result on replica clusters, so the alert only fires on
+primary clusters.
+
 Impact
 ------
 

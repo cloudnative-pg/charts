@@ -14,7 +14,7 @@ replica:
     objectStore:
       clusterName: source-cluster
       provider: s3
-      endpointURL: "https://minio.minio.svc.cluster.local"
+      endpointURL: "https://object-store-svc.object-store.svc.cluster.local:9000"
       endpointCA:
         name: kube-root-ca.crt
         key: ca.crt
@@ -25,8 +25,8 @@ replica:
       s3:
         bucket: "mybucket"
         path: "/replica/v1"
-        accessKey: "minio"
-        secretKey: "minio123"
-        region: "local"
+        accessKey: "objectstore"
+        secretKey: "objectstore123"
+        region: "us-east-1"
       scheduledBackups: []
       retentionPolicy: "30d"

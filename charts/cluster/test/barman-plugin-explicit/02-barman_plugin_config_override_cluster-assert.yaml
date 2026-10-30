@@ -1,0 +1,34 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: barman-plugin-config-override-cluster
+spec:
+  plugins:
+  - name: foo.example.com
+    enabled: true
+    isWALArchiver: false
+    parameters:
+      foo: bar
+  - name: barman-cloud.cloudnative-pg.io
+    enabled: false
+    isWALArchiver: false
+    parameters:
+      foo: bar
+      barmanObjectName: asd
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: asd
+spec:
+  retentionPolicy: 30d
+  configuration:
+    destinationPath: s3://mybucket/barman-plugin-scheduledbackups/v1
+    endpointURL: https://object-store-svc.object-store.svc.cluster.local:9000
+    s3Credentials:
+      accessKeyId:
+        key: ACCESS_KEY_ID
+        name: barman-plugin-config-override-cluster-backup-s3-creds
+      secretAccessKey:
+        key: ACCESS_SECRET_KEY
+        name: barman-plugin-config-override-cluster-backup-s3-creds

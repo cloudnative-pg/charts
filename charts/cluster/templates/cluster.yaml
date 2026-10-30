@@ -8,13 +8,10 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-  {{- include "cluster.labels" . | nindent 4 }}
-  {{- with .Values.cluster.additionalLabels }}
-    {{ toYaml . | nindent 4 }}
-  {{- end }}
+    {{- include "cluster.labels" . | nindent 4 }}
 spec:
   instances: {{ .Values.cluster.instances }}
-  {{- include "cluster.image" . | nindent 2 }}
+  {{- include "cluster.image" . | trim | nindent 2 }}
   imagePullPolicy: {{ .Values.cluster.imagePullPolicy }}
   {{- with .Values.cluster.imagePullSecrets }}
   imagePullSecrets:
@@ -34,10 +31,14 @@ spec:
     storageClass: {{ .Values.cluster.walStorage.storageClass }}
     {{- end }}
   {{- end }}
+  {{- with .Values.cluster.ephemeralVolumeSource }}
+  ephemeralVolumeSource:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.cluster.resources }}
   resources:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
   {{- with .Values.cluster.affinity }}
   affinity:
     {{- toYaml . | nindent 4 }}
@@ -56,16 +57,32 @@ spec:
 
   primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
   primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
+  {{- with .Values.cluster.stopDelay }}
+  stopDelay: {{ . }}
+  {{- end }}
+  {{- /* smartShutdownTimeout accepts 0 (skip the smart phase), which `with` would drop, so test for the key */}}
+  {{- if hasKey .Values.cluster "smartShutdownTimeout" }}
+  smartShutdownTimeout: {{ .Values.cluster.smartShutdownTimeout }}
+  {{- end }}
+  {{- with .Values.cluster.switchoverDelay }}
+  switchoverDelay: {{ . }}
+  {{- end }}
+  {{- with .Values.cluster.startDelay }}
+  startDelay: {{ . }}
+  {{- end }}
+  {{- with .Values.cluster.failoverDelay }}
+  failoverDelay: {{ . }}
+  {{- end }}
   logLevel: {{ .Values.cluster.logLevel }}
   {{- with .Values.cluster.certificates }}
   certificates:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
   enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
   {{- with .Values.cluster.superuserSecret }}
   superuserSecret:
     name: {{ . }}
-  {{ end }}
+  {{- end }}
   enablePDB: {{ .Values.cluster.enablePDB }}
   postgresql:
     {{- if or (eq .Values.type "timescaledb") (not (empty .Values.cluster.postgresql.shared_preload_libraries)) .Values.cluster.monitoring.instrumentation.pgStatStatements }}
@@ -95,9 +112,13 @@ spec:
     {{- with .Values.cluster.postgresql.synchronous }}
     synchronous:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
     {{- with .Values.cluster.postgresql.parameters }}
     parameters:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.cluster.postgresql.extensions }}
+    extensions:
       {{- toYaml . | nindent 6 }}
     {{- end }}
 
@@ -111,11 +132,11 @@ spec:
     {{- with .Values.cluster.services }}
     services:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
     {{- with .Values.cluster.roles }}
     roles:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
   {{- end }}
 
   {{- with .Values.cluster.serviceAccountTemplate }}
@@ -126,12 +147,17 @@ spec:
   {{- with .Values.cluster.podSecurityContext }}
   podSecurityContext:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
 
   {{- with .Values.cluster.securityContext }}
   securityContext:
     {{- toYaml . | nindent 4 }}
-  {{ end }}
+  {{- end }}
+
+  {{- with .Values.cluster.projectedVolumeTemplate }}
+  projectedVolumeTemplate:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 
   monitoring:
     disableDefaultQueries: {{ .Values.cluster.monitoring.disableDefaultQueries }}
@@ -144,10 +170,32 @@ spec:
     {{- with .Values.cluster.monitoring.customQueriesSecret }}
     customQueriesSecret:
       {{- toYaml . | nindent 6 }}
-    {{ end }}
+    {{- end }}
     {{- end }}
     tls:
       enabled: {{ .Values.cluster.monitoring.tls.enabled }}
-  {{ include "cluster.bootstrap" . | nindent 2 }}
-  {{ include "cluster.externalClusters" . | nindent 2 }}
-  {{ include "cluster.backup" . | nindent 2 }}
+
+  {{ include "cluster.bootstrap" . | nindent 2 -}}
+  {{ include "cluster.externalClusters" . | nindent 2 -}}
+  {{ include "cluster.backup" . | nindent 2 -}}
+
+  {{- if or (gt (len .Values.cluster.plugins) 0) (eq (include "cluster.barmanPluginRequired" .) "true") }}
+  plugins:
+    {{- $pluginsWithoutBarman := include "helpers.omitKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYamlArray }}
+    {{- with $pluginsWithoutBarman }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- if or (eq (include "helpers.hasKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io")))) "true") (eq (include "cluster.barmanPluginRequired" .) "true") }}
+    {{- $barmanPlugin := include "helpers.fetchKeyValue" (list .Values.cluster.plugins (list (list "name" "barman-cloud.cloudnative-pg.io"))) | fromYaml }}
+    - name: barman-cloud.cloudnative-pg.io
+      enabled: {{ eq $barmanPlugin.enabled nil | ternary (eq (include "cluster.barmanPluginRequired" .) "true") $barmanPlugin.enabled }}
+      isWALArchiver: {{ eq $barmanPlugin.isWALArchiver nil | ternary (eq (include "cluster.barmanPluginRequired" .) "true") $barmanPlugin.isWALArchiver }}
+      parameters:
+        {{- $parameters := (coalesce $barmanPlugin.parameters dict) -}}
+        {{- $parametersWithoutObjectName := (omit $parameters "barmanObjectName") }}
+        {{ with $parametersWithoutObjectName }}
+          {{- toYaml . | indent 8 | trim }}
+        {{- end }}
+        barmanObjectName: {{ include "cluster.barmanObjectName" (dict "context" . "suffix" "backups") | quote }}
+    {{- end }}
+  {{- end }}

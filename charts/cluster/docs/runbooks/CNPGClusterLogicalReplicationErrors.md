@@ -25,26 +25,30 @@ The `CNPGClusterLogicalReplicationErrors` alert indicates that a logical replica
 # Connect to the subscriber and check subscription status
 kubectl exec -it svc/SUBSCRIBER-CLUSTER-rw -n NAMESPACE -- psql -c "
 SELECT
-    subname,
-    subenabled,
-    apply_error_count,
-    sync_error_count,
-    stats_reset
-FROM pg_stat_subscription
-WHERE apply_error_count > 0 OR sync_error_count > 0;
+    s.subname,
+    s.subenabled,
+    COALESCE(sss.apply_error_count, 0) AS apply_error_count,
+    COALESCE(sss.sync_error_count, 0) AS sync_error_count,
+    sss.stats_reset
+FROM pg_subscription s
+LEFT JOIN pg_stat_subscription_stats sss ON s.oid = sss.subid
+WHERE COALESCE(sss.apply_error_count, 0) > 0 OR COALESCE(sss.sync_error_count, 0) > 0;
 "
 
 # Check the last error message
 kubectl exec -it svc/SUBSCRIBER-CLUSTER-rw -n NAMESPACE -- psql -c "
 SELECT
-    subname,
-    last_msg_receipt_time,
-    latest_end_time,
+    s.subname,
+    ss.last_msg_receipt_time,
+    ss.latest_end_time,
     CASE
-        WHEN apply_error_count > 0 THEN 'Apply errors detected'
-        WHEN sync_error_count > 0 THEN 'Sync errors detected'
+        WHEN COALESCE(sss.apply_error_count, 0) > 0 THEN 'Apply errors detected'
+        WHEN COALESCE(sss.sync_error_count, 0) > 0 THEN 'Sync errors detected'
+        ELSE 'No errors detected'
     END as error_type
-FROM pg_stat_subscription;
+FROM pg_subscription s
+LEFT JOIN pg_stat_subscription ss ON s.oid = ss.subid
+LEFT JOIN pg_stat_subscription_stats sss ON s.oid = sss.subid;
 "
 ```
 
@@ -96,21 +100,21 @@ FROM pg_publication;
 kubectl exec -it svc/SUBSCRIBER-CLUSTER-rw -n NAMESPACE -- psql -c "
 SELECT
     subname,
-    srconninfo,
-    srschema,
-    srslotname,
-    srsynccommit
+    subconninfo,
+    subslotname,
+    subsynccommit,
+    subpublications
 FROM pg_subscription;
 "
 
 # Check which tables are being replicated
 kubectl exec -it svc/SUBSCRIBER-CLUSTER-rw -n NAMESPACE -- psql -c "
 SELECT
-    relid::regclass as table_name,
-    srsubstate as state
-FROM pg_subscription_rel
-JOIN pg_class ON relid = oid
-WHERE srsubstate NOT IN ('r', 's');  -- Not ready or synchronizing
+    sr.srrelid::regclass as table_name,
+    sr.srsubstate as state
+FROM pg_subscription_rel sr
+JOIN pg_class c ON sr.srrelid = c.oid
+WHERE sr.srsubstate NOT IN ('r', 's');  -- Not ready or synchronizing
 "
 ```
 
