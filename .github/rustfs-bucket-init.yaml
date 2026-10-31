@@ -10,7 +10,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: mkbucket
-          image: docker.io/amazon/aws-cli:2.38.6
+          image: docker.io/amazon/aws-cli:2.39.3
           env:
             - name: AWS_ENDPOINT_URL
               value: https://object-store-svc.object-store:9000
