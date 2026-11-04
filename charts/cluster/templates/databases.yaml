@@ -17,7 +17,7 @@ spec:
   cluster:
     name: {{ include "cluster.fullname" $ }}
   ensure: {{ .ensure | default "present" }}
-  owner: {{ .owner }}
+  owner: {{ .owner | default .name }}
   template: {{ .template | default "template1" }}
   encoding: {{ .encoding | default "UTF8" }}
   databaseReclaimPolicy: {{ .databaseReclaimPolicy | default "retain" }}
