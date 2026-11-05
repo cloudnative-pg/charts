@@ -23,9 +23,14 @@ kind: ServiceAccount
 metadata:
   labels:
     {{- include "plugin-barman-cloud.labels" . | nindent 4 }}
-  {{- with .Values.commonAnnotations }}
+  {{- if or .Values.serviceAccount.additionalAnnotations .Values.commonAnnotations }}
   annotations:
+  {{- with .Values.serviceAccount.additionalAnnotations }}
     {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.commonAnnotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- end }}
   name: {{ include "plugin-barman-cloud.serviceAccountName" . }}
   namespace: {{ include "plugin-barman-cloud.namespace" . }}
