@@ -220,11 +220,17 @@ cluster:
   storage:
     size: 8Gi
     storageClass: ""
+    # -- Template for the PGDATA PVCs, passed through as the CNPG `pvcTemplate`.
+    # See: https://cloudnative-pg.io/documentation/current/storage/#configuration-via-a-pvc-template
+    pvcTemplate: {}
 
   walStorage:
     enabled: false
     size: 1Gi
     storageClass: ""
+    # -- Template for the WAL PVCs, passed through as the CNPG `pvcTemplate`.
+    # See: https://cloudnative-pg.io/documentation/current/storage/#configuration-via-a-pvc-template
+    pvcTemplate: {}
 
   # -- Override the default emptyDir used by CNPG for temporary storage.
   # See: https://cloudnative-pg.io/documentation/current/cluster_conf/#ephemeral-volumes
