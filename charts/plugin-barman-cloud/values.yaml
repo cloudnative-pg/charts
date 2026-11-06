@@ -210,3 +210,12 @@ certificate:
   duration: 2160h
   # -- The renew before time for the certificates.
   renewBefore: 360h
+  # -- Set commonName on the certificates. When false, the client certificate
+  # gets a dnsNames entry instead, since a certificate needs at least one name.
+  commonName: true
+  # @schema
+  # additionalProperties: true
+  # @schema
+  # -- Private key settings for the certificates, such as algorithm and size.
+  # rotationPolicy defaults to Always.
+  privateKey: {}

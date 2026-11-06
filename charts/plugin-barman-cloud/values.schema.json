@@ -24,6 +24,11 @@
     },
     "certificate": {
       "properties": {
+        "commonName": {
+          "default": true,
+          "description": "Set commonName on the certificates. When false, the client certificate\ngets a dnsNames entry instead, since a certificate needs at least one name.",
+          "type": "boolean"
+        },
         "createClientCertificate": {
           "default": true,
           "description": "Specifies whether the client certificate should be created.",
@@ -48,6 +53,11 @@
           "default": "",
           "description": "The name of the issuer to use for the certificates.",
           "type": "string"
+        },
+        "privateKey": {
+          "additionalProperties": true,
+          "description": "Private key settings for the certificates, such as algorithm and size.\nrotationPolicy defaults to Always.",
+          "required": []
         },
         "renewBefore": {
           "default": "360h",
