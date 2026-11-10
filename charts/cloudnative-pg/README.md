@@ -95,7 +95,7 @@ supported.
 The operator can watch additional namespaces by listing them in `WATCH_NAMESPACE` under `config.data`.
 Each listed namespace must exist before the install, since the chart creates a `Role` and `RoleBinding` in
 it. The webhook configurations and cluster-scoped RBAC objects are suffixed with the operator namespace, so
-several single-namespace operators can be installed on the same Kubernetes cluster. The CRDs are shared:
+their names no longer collide when several single-namespace operators are installed. The CRDs are shared:
 set `crds.create=false` on all but the first installation.
 
 > **Warning**
