@@ -44,7 +44,7 @@
       "properties": {
         "clusterWide": {
           "default": true,
-          "description": "This option determines if the operator is responsible for observing\nevents across the entire Kubernetes cluster or if its focus should be\nnarrowed down to the specific namespace within which it has been deployed.",
+          "description": "This option determines if the operator is responsible for observing\nevents across the entire Kubernetes cluster or if its focus should be\nnarrowed down to the specific namespace within which it has been deployed.\nWhen `false`, webhook configurations and cluster-scoped RBAC objects are\nsuffixed with the namespace, and webhooks only intercept the watched\nnamespaces. Requires operator \u003e= 1.30.0. See \"Single namespace\ninstallation\" in the README.",
           "type": "boolean"
         },
         "create": {
