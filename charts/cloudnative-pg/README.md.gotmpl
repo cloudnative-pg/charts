@@ -96,6 +96,11 @@ Single-namespace mode requires operator 1.30.0 or later, as it relies on the ENA
 Leave `image.tag` at the chart default or pin it to `1.30.0` or newer:
 older images don't recognise the option, look up the unsuffixed webhook configuration names and fail to start.
 
+**Upgrade note**: on an existing single-namespace install, the upgrade renames the webhook configurations,
+`ClusterRole`s and `ClusterRoleBinding` to include the operator namespace. Helm removes the old objects, so
+the old operator pods fail webhook lookups until the rollout completes. Images older than 1.30.0 are not
+supported.
+
 The operator can watch additional namespaces by listing them in `WATCH_NAMESPACE` under `config.data`.
 Each listed namespace must exist before the install, since the chart creates a `Role` and `RoleBinding` in
 it. The webhook configurations and cluster-scoped RBAC objects are suffixed with the operator namespace, so
