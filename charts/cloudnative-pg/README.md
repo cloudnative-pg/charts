@@ -83,14 +83,13 @@ helm upgrade --install cnpg \
   cnpg/cloudnative-pg
 ```
 
-Single-namespace mode requires operator 1.30.0 or later, as it relies on the ENABLE_WEBHOOK_NAMESPACE_SUFFIX option.
-Leave `image.tag` at the chart default or pin it to `1.30.0` or newer:
-older images don't recognise the option, look up the unsuffixed webhook configuration names and fail to start.
+Single-namespace mode requires operator 1.30.0 or later, as it relies on `ENABLE_WEBHOOK_NAMESPACE_SUFFIX`.
+Older images look up the unsuffixed webhook configuration names and fail to start, so keep `image.tag` at
+the chart default or pin it to 1.30.0 or newer.
 
-**Upgrade note**: on an existing single-namespace install, the upgrade renames the webhook configurations,
-`ClusterRole`s and `ClusterRoleBinding` to include the operator namespace. Helm removes the old objects, so
-the old operator pods fail webhook lookups until the rollout completes. Images older than 1.30.0 are not
-supported.
+On upgrade, an existing single-namespace install gets its webhook configurations, `ClusterRole`s and
+`ClusterRoleBinding` renamed with the operator namespace. Helm removes the old objects, so old operator pods
+fail webhook lookups until the rollout completes.
 
 The operator can watch additional namespaces by listing them in `WATCH_NAMESPACE` under `config.data`.
 Each listed namespace must exist before the install, since the chart creates a `Role` and `RoleBinding` in
@@ -139,7 +138,7 @@ Kubernetes: `>=1.29.0-0`
 | additionalVolumes | list | `[]` | Array containing extra volumes to be added to the operator pod, which can be templated. |
 | affinity | object | `{}` | Affinity for the operator to be installed. |
 | commonAnnotations | object | `{}` | Annotations to be added to all other resources. |
-| config.clusterWide | bool | `true` | This option determines if the operator is responsible for observing events across the entire Kubernetes cluster or if its focus should be narrowed down to the specific namespace within which it has been deployed. When `false`, the webhook configurations and cluster-scoped RBAC objects are suffixed with the namespace and the webhooks only intercept the watched namespaces, so multiple operators can run on the same cluster. Additional namespaces to watch can be listed in `WATCH_NAMESPACE` under `data`. Requires operator >= 1.30.0. CRDs are shared: set `crds.create: false` on all but one installation. |
+| config.clusterWide | bool | `true` | This option determines if the operator is responsible for observing events across the entire Kubernetes cluster or if its focus should be narrowed down to the specific namespace within which it has been deployed. When `false`, webhook configurations and cluster-scoped RBAC objects are suffixed with the namespace, and webhooks only intercept the watched namespaces. Requires operator >= 1.30.0. See "Single namespace installation" in the README. |
 | config.create | bool | `true` | Specifies whether the secret should be created. |
 | config.data | object | `{}` | The content of the configmap/secret, see https://cloudnative-pg.io/documentation/current/operator_conf/#available-options for all the available options. |
 | config.maxConcurrentReconciles | int | `10` | The maximum number of concurrent reconciles. Defaults to 10. |

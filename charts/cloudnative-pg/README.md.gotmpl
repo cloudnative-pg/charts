@@ -92,14 +92,13 @@ helm upgrade --install cnpg \
   cnpg/cloudnative-pg
 ```
 
-Single-namespace mode requires operator 1.30.0 or later, as it relies on the ENABLE_WEBHOOK_NAMESPACE_SUFFIX option.
-Leave `image.tag` at the chart default or pin it to `1.30.0` or newer:
-older images don't recognise the option, look up the unsuffixed webhook configuration names and fail to start.
+Single-namespace mode requires operator 1.30.0 or later, as it relies on `ENABLE_WEBHOOK_NAMESPACE_SUFFIX`.
+Older images look up the unsuffixed webhook configuration names and fail to start, so keep `image.tag` at
+the chart default or pin it to 1.30.0 or newer.
 
-**Upgrade note**: on an existing single-namespace install, the upgrade renames the webhook configurations,
-`ClusterRole`s and `ClusterRoleBinding` to include the operator namespace. Helm removes the old objects, so
-the old operator pods fail webhook lookups until the rollout completes. Images older than 1.30.0 are not
-supported.
+On upgrade, an existing single-namespace install gets its webhook configurations, `ClusterRole`s and
+`ClusterRoleBinding` renamed with the operator namespace. Helm removes the old objects, so old operator pods
+fail webhook lookups until the rollout completes.
 
 The operator can watch additional namespaces by listing them in `WATCH_NAMESPACE` under `config.data`.
 Each listed namespace must exist before the install, since the chart creates a `Role` and `RoleBinding` in
