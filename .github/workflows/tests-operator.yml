@@ -4,16 +4,21 @@ on:
   pull_request:
     branches-ignore:
       - 'gh-pages'
+  push:
+    branches-ignore:
+      - 'main'
+      - 'gh-pages'
 
 permissions: read-all
 
 jobs:
   deploy_operator:
     name: Deploy the operator in cluster-wide mode
-    runs-on: ubuntu-24.04
+    if: github.event_name != 'push' || github.repository_owner != 'cloudnative-pg'
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
@@ -34,10 +39,11 @@ jobs:
 
   deploy_operator_single_namespace:
     name: Deploy the operator in single-namespace mode
-    runs-on: ubuntu-24.04
+    if: github.event_name != 'push' || github.repository_owner != 'cloudnative-pg'
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 

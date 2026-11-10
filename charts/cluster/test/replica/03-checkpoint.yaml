@@ -14,7 +14,7 @@ spec:
               secretKeyRef:
                 name: source-cluster-superuser
                 key: uri
-        image: alpine:3.19
+        image: ($values.alpineImage)
         command: ['sh', '-c']
         args:
          - |

@@ -8,6 +8,12 @@ spec:
     assert: 1m
     cleanup: 5m
   steps:
+    - name: Clear the object store bucket
+      try:
+        - apply:
+            file: ./00-objectstore_cleanup.yaml
+        - assert:
+            file: ./00-objectstore_cleanup-assert.yaml
     - name: Install the a cluster with ScheduledBackups
       try:
         - script:

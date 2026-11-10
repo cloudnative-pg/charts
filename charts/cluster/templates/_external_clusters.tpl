@@ -26,7 +26,7 @@ externalClusters:
         {{- with $pluginConfigurationParameters }}
         {{- toYaml . | nindent 8 -}}
         {{- end }}
-        barmanObjectName: {{ include "cluster.fullname" . }}-recovery
+        barmanObjectName: {{ include "cluster.barmanObjectName" (dict "context" . "suffix" "recovery") | quote }}
         serverName: {{ .Values.recovery.clusterName | quote }}
   {{- end }}
 {{- else if eq .Values.mode "replica" }}

@@ -1,0 +1,15 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: objectstore-hook-cluster
+status:
+  readyInstances: 1
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: objectstore-hook-cluster-backups
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  # the Helm hook annotation must be absent when helmHook is false (chainsaw assertion expression)
+  '(annotations."helm.sh/hook")': null

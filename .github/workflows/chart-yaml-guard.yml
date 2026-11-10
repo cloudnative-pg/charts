@@ -1,0 +1,23 @@
+##
+# Chart.yaml (versions, dependencies, etc.) is only changed by maintainers as part of the release process.
+# Fail any PR touching it, except the release PRs opened from release/*-v* branches.
+name: chart-yaml-guard
+
+on:
+  pull_request:
+    branches-ignore:
+      - 'gh-pages'
+    paths:
+      - 'charts/*/Chart.yaml'
+
+permissions: read-all
+
+jobs:
+  chart-yaml-unchanged:
+    if: ${{ !(startsWith(github.head_ref, 'release/') && github.event.pull_request.head.repo.full_name == github.repository) }}
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Fail on Chart.yaml changes
+        run: |
+          echo "::error::Please do not modify Chart.yaml (version bumps are done by maintainers during the release). Revert your changes to charts/*/Chart.yaml."
+          exit 1

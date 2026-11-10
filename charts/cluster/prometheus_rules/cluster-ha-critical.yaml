@@ -18,6 +18,8 @@ annotations:
   runbook_url: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/docs/runbooks/CNPGClusterHACritical.md
 expr: |
   max by (job) (cnpg_pg_replication_streaming_replicas{namespace="{{ .namespace }}"} - cnpg_pg_replication_is_wal_receiver_up{namespace="{{ .namespace }}"}) < 1
+    and on (job)
+  (max by (job) (cnpg_collector_replica_mode{namespace="{{ .namespace }}"}) == 0)
 for: 5m
 labels:
   severity: critical

@@ -47,6 +47,26 @@ spec:
                 recovery-backup-database-owner ../../
         - assert:
             file: ./03-recovery_backup_database_owner-assert.yaml
+    - name: Install a cluster with smartShutdownTimeout set to zero
+      description: |
+        0 is a meaningful value for smartShutdownTimeout (skip the smart shutdown
+        phase) and differs from the operator default of 180, so the template must
+        not drop it.
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace $NAMESPACE \
+                --values ./04-zero_smart_shutdown_timeout.yaml \
+                --wait \
+                zero-smart-shutdown-timeout ../../
+        - assert:
+            file: ./04-zero_smart_shutdown_timeout-assert.yaml
+      catch:
+        - describe:
+            apiVersion: postgresql.cnpg.io/v1
+            kind: Cluster
     - name: Cleanup
       try:
         - script:
@@ -54,3 +74,4 @@ spec:
               helm uninstall --namespace $NAMESPACE non-default-configuration
               helm uninstall --namespace $NAMESPACE recovery-object-store-database-owner
               helm uninstall --namespace $NAMESPACE recovery-backup-database-owner
+              helm uninstall --namespace $NAMESPACE zero-smart-shutdown-timeout

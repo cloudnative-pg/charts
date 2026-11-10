@@ -55,6 +55,10 @@ recovery:
 #    parameters:
 #      serverName: cluster-example
 
+  objectStore:
+    # -- Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin for recovery. Its name comes from `recovery.pluginConfiguration.parameters.barmanObjectName`, defaulting to `<fullname>-recovery`. Set to `false` to recover from an ObjectStore managed outside of this chart (e.g. the source cluster's), leaving it untouched.
+    create: true
+
   # Barman Object Store configuration applicable to both `barmanObjectStore` and `plugin` methods when using
   # the `barman-cloud.cloudnative-pg.io` plugin.
 
@@ -222,6 +226,17 @@ cluster:
     size: 1Gi
     storageClass: ""
 
+  # -- Override the default emptyDir used by CNPG for temporary storage.
+  # See: https://cloudnative-pg.io/documentation/current/cluster_conf/#ephemeral-volumes
+  ephemeralVolumeSource: {}
+    # volumeClaimTemplate:
+    #   spec:
+    #     accessModes: ["ReadWriteOnce"]
+    #     storageClassName: "scratch-storage-class"
+    #     resources:
+    #       requests:
+    #         storage: 1Gi
+
   # -- The UID of the postgres user inside the image, defaults to 26
   postgresUID: -1
 
@@ -258,6 +273,25 @@ cluster:
   # Defaults to 1800 (30m) when unset, per the operator default.
   stopDelay: 1800
 
+  # -- The time in seconds reserved for the smart shutdown of Postgres to complete before the operator
+  # requests a fast shutdown. Reserve enough time for the fast phase (that is: stopDelay - smartShutdownTimeout).
+  # Set to 0 to skip the smart phase entirely and request a fast shutdown right away.
+  # Defaults to 180 when unset, per the operator default.
+  smartShutdownTimeout: 180
+
+  # -- The time in seconds that is allowed for a primary instance to gracefully shut down during a switchover.
+  # Defaults to 3600 (1h) when unset, per the operator default.
+  switchoverDelay: 3600
+
+  # -- The time in seconds that is allowed for a PostgreSQL instance to successfully start up. The startup
+  # probe failure threshold is derived from this value using the formula ceiling(startDelay / 10).
+  # Defaults to 3600 when unset, per the operator default.
+  startDelay: 3600
+
+  # -- The amount of time in seconds to wait before triggering a failover after the primary instance was
+  # detected to be unhealthy. Defaults to 0 (immediate failover) when unset, per the operator default.
+  failoverDelay: 0
+
   # -- The instances' log level, one of the following values: error, warning, info (default), debug, trace
   logLevel: "info"
 
@@ -293,7 +327,7 @@ cluster:
     #     optional: true
 
   # -- The configuration for the CA and related certificates.
-  # See: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration
+  # See: https://cloudnative-pg.io/docs/current/cloudnative-pg.v1/#certificatesconfiguration
   certificates: {}
 
   # -- When this option is enabled, the operator will use the SuperuserSecret to update the postgres user password.
@@ -408,6 +442,9 @@ cluster:
     shared_preload_libraries: []
       # - pgaudit
 
+    # -- List of [image volume extensions](https://cloudnative-pg.io/docs/current/imagevolume_extensions/) to load in the cluster pod
+    extensions: []
+
     # -- PostgreSQL LDAP configuration (see https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration)
     ldap: {}
       # https://cloudnative-pg.io/documentation/current/postgresql_conf/#ldap-configuration
@@ -464,6 +501,16 @@ cluster:
   additionalLabels: {}
   annotations: {}
 
+  # -- Mount custom files in the PostgreSQL Pods through `spec.projectedVolumeTemplate`.
+  # See: https://cloudnative-pg.io/documentation/current/cluster_conf/#projected-volumes
+  projectedVolumeTemplate: {}
+    # sources:
+    #   - secret:
+    #       name: sample-secret
+    #       items:
+    #         - key: tls.crt
+    #           path: certificate/tls.crt
+
   console:
     # -- Deploys a console StatefulSet to run long-running commands against the cluster (e.g. `CREATE INDEX`).
     enabled: false
@@ -472,11 +519,28 @@ backups:
   # -- You need to configure backups manually, so backups are disabled by default.
   enabled: false
 
+  # @schema
+  # type: string
+  # enum: [prefer-standby, primary]
+  # @schema
+  # -- Which instance takes the backups. One of `prefer-standby` (default) or `primary`.
+  target: "prefer-standby"
+
   # -- One of `barmanObjectStore` (default) or `plugin`
   method: barmanObjectStore
 
   pluginConfiguration: {}
 #    name: barman-cloud.cloudnative-pg.io
+
+  objectStore:
+    # -- Whether to create the ObjectStore resource used by the `barman-cloud.cloudnative-pg.io` plugin. Its name comes from the plugin's `barmanObjectName` parameter (see `cluster.plugins`), defaulting to `<fullname>-backups`. Set to `false` to reference an ObjectStore managed outside of this chart, leaving it untouched.
+    create: true
+    # -- Render the `ObjectStore` as a Helm hook (pre-install,pre-upgrade,pre-rollback) so it is applied before
+    # the Cluster. Set to false for GitOps tools (ArgoCD/Flux) that treat Helm hooks as ephemeral resources
+    helmHook: true
+    # -- Extra annotations for the plugin `ObjectStore` resources only. Handy
+    # for e.g. `argocd.argoproj.io/sync-wave: "-1"` when helmHook above is set to false.
+    annotations: {}
 
   # Barman Object Store configuration applicable to both `barmanObjectStore` and `plugin` methods when using
   # the `barman-cloud.cloudnative-pg.io` plugin.
@@ -558,6 +622,12 @@ backups:
       schedule: "0 0 0 * * *"
       # -- Backup owner reference
       backupOwnerReference: self
+      # @schema
+      # type: string
+      # enum: ["", prefer-standby, primary]
+      # @schema
+      # -- The policy to decide which instance should perform this backup, one of `primary` or `prefer-standby`. If empty, it defaults to `cluster.spec.backup.target`.
+      target: ""
       # -- Backup method, can be `barmanObjectStore` (default), `volumeSnapshot` or `plugin`.
       method: barmanObjectStore
       pluginConfiguration: {}
