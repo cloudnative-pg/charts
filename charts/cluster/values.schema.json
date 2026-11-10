@@ -319,7 +319,7 @@
           "type": "object"
         },
         "certificates": {
-          "description": "The configuration for the CA and related certificates.\nSee: https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#postgresql-cnpg-io-v1-CertificatesConfiguration",
+          "description": "The configuration for the CA and related certificates.\nSee: https://cloudnative-pg.io/docs/current/cloudnative-pg.v1/#certificatesconfiguration",
           "required": [],
           "type": "object"
         },
