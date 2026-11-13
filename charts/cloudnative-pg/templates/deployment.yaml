@@ -81,6 +81,8 @@ spec:
         command:
         - /manager
         env:
+        - name: DEPLOYMENT_LABEL_SELECTOR
+          value: "app.kubernetes.io/name={{ include "cloudnative-pg.name" . }}"
         - name: OPERATOR_IMAGE_NAME
           value: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         - name: OPERATOR_NAMESPACE
