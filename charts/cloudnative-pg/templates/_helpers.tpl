@@ -223,6 +223,7 @@ namespace scope or clusterwide
   - leases
   verbs:
   - create
+  - delete
   - get
   - list
   - update
