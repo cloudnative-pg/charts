@@ -9,6 +9,8 @@ databases:
   - name: default_db
     ensure: present
     owner: test-owner
+  - name: default_owner_db
+    ensure: present
 
   - name: test-db-icu
     ensure: present

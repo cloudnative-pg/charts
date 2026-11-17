@@ -77,6 +77,10 @@ config:
   # -- This option determines if the operator is responsible for observing
   # events across the entire Kubernetes cluster or if its focus should be
   # narrowed down to the specific namespace within which it has been deployed.
+  # When `false`, webhook configurations and cluster-scoped RBAC objects are
+  # suffixed with the namespace, and webhooks only intercept the watched
+  # namespaces. Requires operator >= 1.30.0. See "Single namespace
+  # installation" in the README.
   clusterWide: true
   # -- The content of the configmap/secret, see
   # https://cloudnative-pg.io/documentation/current/operator_conf/#available-options
