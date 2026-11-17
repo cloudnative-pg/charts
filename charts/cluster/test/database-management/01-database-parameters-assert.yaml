@@ -77,3 +77,11 @@ spec:
       ensure: absent
       version: "0.15.21"
       schema: test-schema
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: database-parameters-cluster-default-owner-db
+spec:
+  name: default_owner_db
+  owner: default_owner_db
