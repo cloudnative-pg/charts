@@ -1,0 +1,66 @@
+##
+# This test verifies that the operator installed with the PodDisruptionBudget enabled brings a cluster to a
+# healthy state, and that the budget selects the operator pod with both minAvailable and maxUnavailable.
+apiVersion: chainsaw.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: pod-disruption-budget
+spec:
+  description: Deploy the operator with a PodDisruptionBudget
+  timeouts:
+    apply: 1s
+    assert: 5m
+    exec: 5m
+    cleanup: 2m
+  catch:
+    - script:
+        content: kubectl describe clusters.postgresql.cnpg.io --all-namespaces
+    - script:
+        content: kubectl describe poddisruptionbudgets.policy --namespace cnpg-system
+    - podLogs:
+        namespace: cnpg-system
+        selector: app.kubernetes.io/name=cloudnative-pg
+  steps:
+    - name: Install the operator with the PodDisruptionBudget enabled
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace cnpg-system \
+                --create-namespace \
+                --set podDisruptionBudget.enabled=true \
+                --wait \
+                cnpg ../../
+      cleanup:
+        - script:
+            content: |
+              helm uninstall --namespace cnpg-system --ignore-not-found cnpg
+              kubectl delete namespace cnpg-system --ignore-not-found --wait=false
+    - name: Deploy a cluster
+      try:
+        - apply:
+            file: ./01-cluster.yaml
+    # expectedPods and currentHealthy are computed from the selector, so they prove the budget matches the
+    # operator pod.
+    - name: Verify the PodDisruptionBudget protects the operator pod with minAvailable and the cluster is healthy
+      try:
+        - assert:
+            file: ./02-min_available-assert.yaml
+    - name: Switch the PodDisruptionBudget to maxUnavailable
+      try:
+        - script:
+            content: |
+              helm upgrade \
+                --install \
+                --namespace cnpg-system \
+                --set podDisruptionBudget.enabled=true \
+                --set podDisruptionBudget.minAvailable=null \
+                --set podDisruptionBudget.maxUnavailable=1 \
+                --set podDisruptionBudget.unhealthyPodEvictionPolicy=AlwaysAllow \
+                --wait \
+                cnpg ../../
+    - name: Verify the PodDisruptionBudget allows a disruption with maxUnavailable and the cluster stays healthy
+      try:
+        - assert:
+            file: ./03-max_unavailable-assert.yaml
