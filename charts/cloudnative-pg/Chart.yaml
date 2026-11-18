@@ -20,7 +20,7 @@ apiVersion: v2
 name: cloudnative-pg
 description: CloudNativePG Operator Helm Chart
 kubeVersion: ">=1.29.0-0"
-icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
+icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/icon/color/cloudnativepg-icon-color.svg
 type: application
 version: "0.29.2"
 # This is the version number of the application being deployed. This version number should be
