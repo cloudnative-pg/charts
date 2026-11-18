@@ -656,6 +656,11 @@
         },
         "storage": {
           "properties": {
+            "pvcTemplate": {
+              "description": "Template for the PGDATA PVCs, passed through as the CNPG `pvcTemplate`.\nSee: https://cloudnative-pg.io/documentation/current/storage/#configuration-via-a-pvc-template",
+              "required": [],
+              "type": "object"
+            },
             "size": {
               "default": "8Gi",
               "type": "string"
@@ -682,6 +687,11 @@
             "enabled": {
               "default": false,
               "type": "boolean"
+            },
+            "pvcTemplate": {
+              "description": "Template for the WAL PVCs, passed through as the CNPG `pvcTemplate`.\nSee: https://cloudnative-pg.io/documentation/current/storage/#configuration-via-a-pvc-template",
+              "required": [],
+              "type": "object"
             },
             "size": {
               "default": "1Gi",
