@@ -11,7 +11,7 @@ metadata:
     {{- include "cluster.labels" $ | nindent 4 }}
     app.kubernetes.io/component: backups
 spec:
-  immediate: true
+  immediate: {{ .immediate | default true }}
   schedule: {{ .schedule | quote }}
   method: {{ .method }}
   backupOwnerReference: {{ .backupOwnerReference }}
