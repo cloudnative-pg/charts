@@ -31,74 +31,14 @@ metadata:
   namespace: {{ include "plugin-barman-cloud.namespace" . }}
 {{- end }}
 {{- if .Values.rbac.create }}
+{{- if .Values.rbac.clusterWide }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: {{ include "plugin-barman-cloud.fullname" . }}
 rules:
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - watch
-- apiGroups:
-  - barmancloud.cnpg.io
-  resources:
-  - objectstores
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - barmancloud.cnpg.io
-  resources:
-  - objectstores/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - barmancloud.cnpg.io
-  resources:
-  - objectstores/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - {{ .Values.rbac.cnpgGroup }}
-  resources:
-  - backups
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - {{ .Values.rbac.cnpgGroup }}
-  resources:
-  - clusters/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - rbac.authorization.k8s.io
-  resources:
-  - rolebindings
-  - roles
-  verbs:
-  - create
-  - get
-  - list
-  - patch
-  - update
-  - watch
+{{- include "plugin-barman-cloud.rules" . }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -114,4 +54,32 @@ subjects:
 - kind: ServiceAccount
   name: {{ include "plugin-barman-cloud.serviceAccountName" . }}
   namespace: {{ include "plugin-barman-cloud.namespace" . }}
+{{- else }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    {{- include "plugin-barman-cloud.labels" . | nindent 4 }}
+  name: {{ include "plugin-barman-cloud.fullname" . }}
+  namespace: {{ include "plugin-barman-cloud.namespace" . }}
+rules:
+{{- include "plugin-barman-cloud.rules" . }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    {{- include "plugin-barman-cloud.labels" . | nindent 4 }}
+  name: {{ include "plugin-barman-cloud.fullname" . }}-binding
+  namespace: {{ include "plugin-barman-cloud.namespace" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "plugin-barman-cloud.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "plugin-barman-cloud.serviceAccountName" . }}
+  namespace: {{ include "plugin-barman-cloud.namespace" . }}
+{{- end }}
 {{- end }}

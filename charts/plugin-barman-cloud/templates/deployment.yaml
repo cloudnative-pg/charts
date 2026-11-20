@@ -70,6 +70,10 @@ spec:
             configMapKeyRef:
               key: SIDECAR_IMAGE
               name: plugin-barman-cloud-config
+        {{- if not .Values.rbac.clusterWide }}
+        - name: WATCH_NAMESPACE
+          value: "{{ include "plugin-barman-cloud.namespace" . }}"
+        {{- end }}
         {{- if .Values.additionalEnv }}
         {{- tpl (.Values.additionalEnv | toYaml) . | nindent 8 }}
         {{- end }}
