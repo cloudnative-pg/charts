@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Event
+reason: Starting
+involvedObject:
+  apiVersion: postgresql.cnpg.io/v1
+  kind: Backup
+  name: post-migrate-backup

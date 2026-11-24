@@ -17,13 +17,12 @@ runs:
       env:
         NAMESPACE: ${{ inputs.namespace }}
         CLUSTER_WIDE: ${{ inputs.cluster-wide }}
-      run:
-        helm dependency update charts/cloudnative-pg
-
-        helm upgrade
-        --install 
-        --namespace $NAMESPACE
-        --create-namespace
-        --set config.clusterWide=$CLUSTER_WIDE
-        --wait
-        cnpg charts/cloudnative-pg
+      run: |
+        helm repo add cnpg https://cloudnative-pg.github.io/charts
+        helm upgrade \
+          --install \
+          --namespace $NAMESPACE \
+          --create-namespace \
+          --set config.clusterWide=$CLUSTER_WIDE \
+          --wait \
+          cnpg cnpg/cloudnative-pg

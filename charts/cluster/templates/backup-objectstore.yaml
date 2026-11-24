@@ -1,0 +1,41 @@
+{{- if and (eq (include "cluster.barmanPluginRequired" .) "true") .Values.backups.objectStore.create }}
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ include "cluster.barmanObjectName" (dict "context" . "suffix" "backups") | quote }}
+  namespace: {{ include "cluster.namespace" . }}
+  {{- if or .Values.backups.objectStore.helmHook .Values.cluster.annotations .Values.backups.objectStore.annotations }}
+  annotations:
+    {{- if .Values.backups.objectStore.helmHook }}
+    "helm.sh/hook": pre-install,pre-upgrade,pre-rollback
+    {{- end }}
+    {{- with .Values.cluster.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.backups.objectStore.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
+  labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+    {{- include "cluster.labels" . | nindent 4 }}
+spec:
+  retentionPolicy: {{ .Values.backups.retentionPolicy }}
+  configuration:
+    wal:
+      compression: {{ .Values.backups.wal.compression }}
+      {{- if .Values.backups.wal.encryption }}
+      encryption: {{ .Values.backups.wal.encryption }}
+      {{- end }}
+      maxParallel: {{ .Values.backups.wal.maxParallel }}
+    data:
+      compression: {{ .Values.backups.data.compression }}
+      {{- if .Values.backups.data.encryption }}
+      encryption: {{ .Values.backups.data.encryption }}
+      {{- end }}
+      jobs: {{ .Values.backups.data.jobs }}
+    {{- $d := dict "chartFullname" (include "cluster.fullname" .) "scope" .Values.backups "secretPrefix" "backup" }}
+    {{- include "cluster.barmanObjectStoreConfig" $d | nindent 2 }}
+  instanceSidecarConfiguration:
+    {{- .Values.backups.instanceSidecarConfiguration | toYaml | nindent 4 }}
+{{- end }}

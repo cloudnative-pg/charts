@@ -8,24 +8,27 @@ on:
     branches:
       - release/*-v*
 
-permissions:
-  pull-requests: write
+permissions: read-all
 
 jobs:
   create-pull-request:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
+    permissions:
+      pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - name: Create Pull Request
-        id: create-pr
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Get tag
         run: |
           TAG="${GITHUB_REF##*/}"
-          TITLE="Release ${TAG}"
-          BODY="Automated PR. Will trigger the ${TAG} release when approved."
-          LABEL=release
-          ASSIGNEE=${{ github.actor }}
-          gh pr create --title "${TITLE}" --body "${BODY}" --label "${LABEL}" --assignee "${ASSIGNEE}" ||
-          gh pr edit --title "${TITLE}" --body "${BODY}" --add-label "${LABEL}"
+          echo "TAG=${TAG}" >> $GITHUB_ENV
+      - name: Pull Request
+        id: open-pr
+        uses: repo-sync/pull-request@572331753c3787dee4a6c0b6719c889af9646b81 # v2.12
+        with:
+          destination_branch: main
+          github_token: ${{ secrets.REPO_GHA_PAT }}
+          pr_title: "Release ${{ env.TAG }}"
+          pr_body: "Automated PR. Will trigger the ${{ env.TAG }} release when approved."
+          pr_label: "release"
+          pr_assignee: ${{ github.actor }}

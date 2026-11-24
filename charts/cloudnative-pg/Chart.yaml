@@ -1,5 +1,6 @@
 #
-# Copyright The CloudNativePG Contributors
+# Copyright © contributors to CloudNativePG, established as
+# CloudNativePG a Series of LF Projects, LLC.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,17 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# SPDX-License-Identifier: Apache-2.0
+#
 apiVersion: v2
 name: cloudnative-pg
 description: CloudNativePG Operator Helm Chart
-icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/cloudnativepg-logo.svg
+kubeVersion: ">=1.29.0-0"
+icon: https://raw.githubusercontent.com/cloudnative-pg/artwork/main/icon/color/cloudnativepg-icon-color.svg
 type: application
-version: "0.24.0"
+version: "0.29.2"
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning, they should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "1.26.0"
+appVersion: "1.30.2"
 sources:
   - https://github.com/cloudnative-pg/charts
 keywords:
@@ -36,6 +40,10 @@ home: https://cloudnative-pg.io
 maintainers:
   - name: phisco
     email: p.scorsolini@gmail.com
+  - name: mnencia
+    email: marco.nenciarini@enterprisedb.com
+  - name: gbartolini
+    email: gabriele.bartolini@enterprisedb.com
 dependencies:
   - name: cluster
     alias: monitoring

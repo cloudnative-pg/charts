@@ -1,0 +1,7 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: barman-plugin-migration-cluster
+status:
+  readyInstances: 2
+  phase: Cluster in healthy state

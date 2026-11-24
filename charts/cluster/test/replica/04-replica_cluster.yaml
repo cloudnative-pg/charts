@@ -1,0 +1,22 @@
+type: postgresql
+mode: replica
+
+cluster:
+  instances: 2
+  storage:
+    size: 256Mi
+
+replica:
+  bootstrap:
+    source: pg_basebackup
+  origin:
+    pg_basebackup:
+      host: "source-cluster-rw"
+      username: "streaming_replica"
+      sslMode: "require"
+      sslKeySecret:
+        name: source-cluster-replication
+        key: tls.key
+      sslCertSecret:
+        name: source-cluster-replication
+        key: tls.crt

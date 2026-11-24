@@ -1,0 +1,84 @@
+name: test( plugin-barman-cloud )
+
+on:
+  pull_request:
+    branches-ignore:
+      - 'gh-pages'
+  push:
+    branches-ignore:
+      - 'main'
+      - 'gh-pages'
+
+permissions: read-all
+
+jobs:
+  test-list:
+    runs-on: ubuntu-26.04
+    if: github.event_name != 'push' || github.repository_owner != 'cloudnative-pg'
+    outputs:
+      tests: ${{ steps.listTests.outputs.tests }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+      - id: listTests
+        run: |
+          echo "tests=$(ls charts/plugin-barman-cloud/test -1 | jq -cRn '{ include: [inputs | { test: "\(.)" }]}')" >> $GITHUB_OUTPUT
+  test:
+    needs: test-list
+    runs-on: ubuntu-26.04
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.test-list.outputs.tests) }}
+    env:
+      MATRIX_TEST: ${{ matrix.test }}
+    name: ${{ matrix.test }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532 # v4.1.3
+
+      - name: Setup kind
+        uses: ./.github/actions/setup-kind
+
+      - name: Deploy the operator
+        uses: ./.github/actions/deploy-operator
+
+      - name: Install cert-manager
+        uses: ./.github/actions/deploy-cert-manager
+
+      - name: Install Prometheus CRDs
+        run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm install prometheus-crds prometheus-community/prometheus-operator-crds
+
+      - name: Install Chainsaw
+        uses: kyverno/action-install-chainsaw@1223ef75bedeb59c4e7b5455463d4316e76dff01 # v0.2.15
+        with:
+          verify: true
+
+      - name: Setup RustFS
+        env:
+          # renovate: datasource=helm depName=rustfs registryUrl=https://charts.rustfs.com
+          RUSTFS_CHART_VERSION: "1.0.6"
+        run: |
+          kubectl apply -f ./.github/rustfs-prereqs.yaml
+          kubectl -n object-store wait --for=condition=Ready certificate/object-store-tls --timeout=120s
+          helm repo add rustfs https://charts.rustfs.com
+          helm upgrade \
+            --install \
+            --namespace object-store \
+            --version $RUSTFS_CHART_VERSION \
+            --values ./.github/rustfs.yaml \
+            --wait \
+            rustfs rustfs/rustfs
+          kubectl apply -f ./.github/rustfs-bucket-init.yaml
+          kubectl -n object-store wait --for=condition=complete job/rustfs-bucket-init --timeout=180s
+
+      - name: Run Kyverno/Chainsaw
+        run: chainsaw test --values .github/chainsaw-values.yaml "charts/plugin-barman-cloud/test/${MATRIX_TEST}"

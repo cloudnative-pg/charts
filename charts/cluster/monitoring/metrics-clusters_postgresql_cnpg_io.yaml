@@ -1,0 +1,193 @@
+kind: CustomResourceStateMetrics
+spec:
+  resources:
+    - groupVersionKind:
+        group: postgresql.cnpg.io
+        version: "v1"
+        kind: "Cluster"
+      labelsFromPath:
+        cluster: [metadata, name]
+        namespace: [metadata, namespace]
+      metrics:
+        - name: "image_info"
+          help: "Image used by the cluster pods"
+          each:
+            type: Info
+            info:
+              labelsFromPath:
+                image: [status, image]
+
+        - name: "phase_info"
+          help: "Current phase of the cluster"
+          each:
+            type: Info
+            info:
+              labelsFromPath:
+                phase: [status, phase]
+                phase_reason: [status, phaseReason]
+
+        - name: "instances_total"
+          help: "Total number of PVC Groups detected in the cluster"
+          each:
+            type: Gauge
+            gauge:
+              path: [status, instances]
+
+        - name: "instances_ready"
+          help: "Total number of ready instances in the cluster"
+          each:
+            type: Gauge
+            gauge:
+              path: [status, readyInstances]
+
+        - name: "instances_status_healthy_info"
+          help: "Cluster instances that are healthy"
+          each:
+            type: Info
+            info:
+              path: [status, instancesStatus, "healthy"]
+              labelsFromPath:
+                instance: []
+
+        - name: "instances_status_replicating_info"
+          help: "Cluster instances that are replicating"
+          each:
+            type: Info
+            info:
+              path: [status, instancesStatus, "replicating"]
+              labelsFromPath:
+                instance: []
+
+        - name: "instances_status_failed_info"
+          help: "Cluster instances that are failed"
+          each:
+            type: Info
+            info:
+              path: [status, instancesStatus, "failed"]
+              labelsFromPath:
+                instance: []
+
+        - name: "primary_info"
+          help: "Information about the current primary instance"
+          each:
+            type: Info
+            info:
+              labelsFromPath:
+                current_primary: [status, currentPrimary]
+                target_primary: [status, targetPrimary]
+
+        - name: "primary_promotion_time"
+          help: "The timestamp when the last actual promotion to primary has occurred"
+          each:
+            type: Gauge
+            gauge:
+              path: [status, currentPrimaryTimestamp]
+              labelsFromPath:
+                primary: [status, currentPrimary]
+
+        - name: "primary_failing_since_time"
+          help: "The timestamp when the primary was detected to be unhealthy. This field is reported when .spec.failoverDelay is populated or during online upgrades"
+          each:
+            type: Gauge
+            gauge:
+              path: [status, currentPrimaryFailingSinceTimestamp]
+              labelsFromPath:
+                primary: [status, currentPrimary]
+
+        - name: "first_recoverability_point"
+          help: "First recoverability point timestamp by backup method"
+          each:
+            type: Gauge
+            gauge:
+              path: [status, firstRecoverabilityPointByMethod]
+              labelFromKey: method
+
+        - name: "last_successful_backup"
+          help: "Last successful backup timestamp by method"
+          each:
+            type: Gauge
+            gauge:
+              path: [status, lastSuccessfulBackupByMethod]
+              labelFromKey: method
+
+        - name: "last_failed_backup"
+          help: "Last failed backup timestamp"
+          each:
+            type: Gauge
+            gauge:
+              path: [status, lastFailedBackup]
+
+        - name: "dangling_pvc_info"
+          help: "List of all the PVCs created by this cluster and still available which are not attached to a Pod"
+          each:
+            type: Info
+            info:
+              path: [status, danglingPVC]
+              labelsFromPath:
+                pvc: []
+
+        - name: "resizing_pvc_info"
+          help: "List of all the PVCs that have ResizingPVC condition"
+          each:
+            type: Info
+            info:
+              path: [status, resizingPVC]
+              labelsFromPath:
+                pvc: []
+
+        - name: "initializing_pvc_info"
+          help: "List of all the PVCs that are being initialized by this cluster"
+          each:
+            type: Info
+            info:
+              path: [status, initializingPVC]
+              labelsFromPath:
+                pvc: []
+
+        - name: "healthy_pvc_info"
+          help: "List of all the PVCs not dangling nor initializing"
+          each:
+            type: Info
+            info:
+              path: [status, healthyPVC]
+              labelsFromPath:
+                pvc: []
+
+        - name: "unusable_pvc_info"
+          help: "List of all the PVCs that are unusable because another PVC is missing"
+          each:
+            type: Info
+            info:
+              path: [status, unusablePVC]
+              labelsFromPath:
+                pvc: []
+
+        - name: "conditions"
+          help: "Cluster conditions"
+          each:
+            type: Gauge
+            gauge:
+              path: [status, conditions]
+              labelsFromPath:
+                type: [type]
+                reason: [reason]
+                status: [status]
+                message: [message]
+                observed_generation: [observedGeneration]
+              valueFrom: [lastTransitionTime]
+
+        - name: "plugin_status_info"
+          help: "Status of loaded plugins"
+          each:
+            type: Info
+            info:
+              path: [status, pluginStatus]
+              labelsFromPath:
+                name: [name]
+                version: [version]
+                capabilities: [capabilities]
+                operator_capabilities: [operatorCapabilities]
+                wal_capabilities: [walCapabilities]
+                backup_capabilities: [backupCapabilities]
+                restore_job_hook_capabilities: [restoreJobHookCapabilities]
+                status: [status]

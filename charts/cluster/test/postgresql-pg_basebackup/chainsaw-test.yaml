@@ -28,7 +28,7 @@ spec:
             file: ./01-data_write-assert.yaml
     - name: Install the pg_basebackup cluster
       timeouts:
-        assert: 5m
+        assert: 8m
       try:
         - script:
             content: |
@@ -38,6 +38,8 @@ spec:
                 --values ./02-pg_basebackup-cluster.yaml \
                 --wait \
                 pg-basebackup ../../
+        - apply:
+            file: ./02-secret.yaml
         - assert:
             file: ./02-pg_basebackup-cluster-assert.yaml
       catch:

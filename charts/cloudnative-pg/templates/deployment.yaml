@@ -1,5 +1,6 @@
 #
-# Copyright The CloudNativePG Contributors
+# Copyright © contributors to CloudNativePG, established as
+# CloudNativePG a Series of LF Projects, LLC.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
 #
 ---
 apiVersion: apps/v1
@@ -88,7 +91,9 @@ spec:
           value: "{{ .Values.monitoringQueriesConfigMap.name }}"
         {{- if not .Values.config.clusterWide }}
         - name: WATCH_NAMESPACE
-          value: "{{ include "cloudnative-pg.namespace" . }}"
+          value: {{ include "cloudnative-pg.watchedNamespaces" . | fromJsonArray | join "," | quote }}
+        - name: ENABLE_WEBHOOK_NAMESPACE_SUFFIX
+          value: "true"
         {{- end }}
         {{- if .Values.additionalEnv }}
         {{- tpl (.Values.additionalEnv | toYaml) . | nindent 8 }}
@@ -98,7 +103,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /readyz
-            port: {{ .Values.webhook.port }}
+            port: webhook-server
             scheme: HTTPS
           {{- if .Values.webhook.livenessProbe.initialDelaySeconds }}
           initialDelaySeconds: {{ .Values.webhook.livenessProbe.initialDelaySeconds }}
@@ -114,7 +119,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /readyz
-            port: {{ .Values.webhook.port }}
+            port: webhook-server
             scheme: HTTPS
           {{- if .Values.webhook.readinessProbe.initialDelaySeconds }}
           initialDelaySeconds: {{ .Values.webhook.readinessProbe.initialDelaySeconds }}
@@ -129,7 +134,7 @@ spec:
           {{- end }}
           httpGet:
             path: /readyz
-            port: {{ .Values.webhook.port }}
+            port: webhook-server
             scheme: HTTPS
           {{- if .Values.webhook.startupProbe.periodSeconds }}
           periodSeconds: {{ .Values.webhook.startupProbe.periodSeconds }}
@@ -139,6 +144,9 @@ spec:
           name: scratch-data
         - mountPath: /run/secrets/cnpg.io/webhook
           name: webhook-certificates
+        {{- with .Values.additionalVolumeMounts }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
+        {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
@@ -163,12 +171,14 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
-      - emptyDir: {}
-        name: scratch-data
+      - name: scratch-data
+        emptyDir:
+          {{- toYaml .Values.scratchData.emptyDir | nindent 10 }}
       - name: webhook-certificates
         secret:
           defaultMode: 420
           optional: true
           secretName: cnpg-webhook-cert
-
-
+      {{- with .Values.additionalVolumes }}
+      {{- tpl (toYaml .) $ | nindent 6 }}
+      {{- end }}

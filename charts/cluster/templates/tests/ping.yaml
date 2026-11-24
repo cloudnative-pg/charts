@@ -4,6 +4,8 @@ metadata:
   name: {{ include "cluster.fullname" . }}-ping-test
   namespace: {{ include "cluster.namespace" . }}
   labels:
+    cnpg.io/cluster: {{ include "cluster.fullname" . }}
+    {{- include "cluster.labels" . | nindent 4 }}
     app.kubernetes.io/component: database-ping-test
   annotations:
     "helm.sh/hook": test

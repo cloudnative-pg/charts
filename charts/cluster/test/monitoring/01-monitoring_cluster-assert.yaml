@@ -12,38 +12,42 @@ spec:
     size: 256Mi
     storageClass: standard
   monitoring:
+      tls:
+        enabled: true
       disableDefaultQueries: true
       customQueriesConfigMap:
         - name: monitoring-cluster-monitoring
           key: custom-queries
-      enablePodMonitor: true
-      podMonitorRelabelings:
-        - action: replace
-          replacement: test
-          targetLabel: environment
-        - action: replace
-          replacement: alpha
-          targetLabel: team
-      podMonitorMetricRelabelings:
-        - action: replace
-          sourceLabels:
-            - cluster
-          targetLabel: cnpg_cluster
-        - action: labeldrop
-          regex: cluster
+      enablePodMonitor: false
+  bootstrap:
+    initdb:
+      postInitApplicationSQL:
+        - CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+  postgresql:
+    shared_preload_libraries:
+      - pg_stat_statements
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: monitoring-cluster
+  labels:
+    cnpg.io/cluster: monitoring-cluster
+    team-name: test-team
+    environment: test
 spec:
   selector:
     matchLabels:
       cnpg.io/cluster: monitoring-cluster
+      cnpg.io/podRole: instance
   podMetricsEndpoints:
-    - bearerTokenSecret:
-        key: ''
-        name: ''
+    - port: metrics
+      scheme: https
+      tlsConfig:
+        ca:
+          secret:
+            name: monitoring-cluster-ca
+            key: ca.crt
+        serverName: monitoring-cluster-rw
       relabelings:
         - targetLabel: environment
           replacement: test
@@ -59,17 +63,14 @@ spec:
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
-metadata:
-  name: monitoring-cluster-pooler-rw
 spec:
   selector:
     matchLabels:
+      cnpg.io/cluster: monitoring-cluster
       cnpg.io/poolerName: monitoring-cluster-pooler-rw
+      cnpg.io/podRole: pooler
   podMetricsEndpoints:
-    - bearerTokenSecret:
-        key: ''
-        name: ''
-      relabelings:
+    - relabelings:
         - targetLabel: type
           replacement: rw
           action: replace
@@ -86,17 +87,14 @@ spec:
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
-metadata:
-  name: monitoring-cluster-pooler-ro
 spec:
   selector:
     matchLabels:
+      cnpg.io/cluster: monitoring-cluster
       cnpg.io/poolerName: monitoring-cluster-pooler-ro
+      cnpg.io/podRole: pooler
   podMetricsEndpoints:
-    - bearerTokenSecret:
-        key: ''
-        name: ''
-      relabelings:
+    - relabelings:
         - targetLabel: type
           replacement: ro
           action: replace
@@ -115,6 +113,13 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: monitoring-cluster-alert-rules
+spec:
+  groups:
+    - name: cloudnative-pg/monitoring-cluster
+      ~.rules:
+        labels:
+          environment: staging
+          oncall: "false"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -124,6 +129,8 @@ data:
   custom-queries: |
     pg_cache_hit_ratio:
       query: "SELECT current_database() as datname, sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio FROM pg_statio_user_tables;"
+      target_databases: ["*"]
+      predicate_query: "SELECT 'postgresql';"
       metrics:
         - datname:
             description: Name of the database
@@ -131,3 +138,14 @@ data:
         - ratio:
             description: Cache hit ratio
             usage: GAUGE
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-cluster-monitoring-logical-replication
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-cluster-monitoring-pg-stat-statements
