@@ -67,9 +67,13 @@ spec:
   storage:
     size: 256Mi
     storageClass: standard
+    pvcTemplate:
+      volumeAttributesClassName: test-attributes-class
   walStorage:
     size: 256Mi
     storageClass: standard
+    pvcTemplate:
+      volumeMode: Filesystem
   ephemeralVolumeSource:
     volumeClaimTemplate:
       spec:
