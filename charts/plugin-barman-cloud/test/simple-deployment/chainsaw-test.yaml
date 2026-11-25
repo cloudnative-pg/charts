@@ -47,6 +47,18 @@ spec:
               plugin-barman-cloud ../../
         - assert:
             file: ./03-pod_annotations-assert.yaml
+    - name: Use the host network
+      try:
+        - script:
+            content: |
+              helm upgrade \
+              --install \
+              --namespace $NAMESPACE \
+              --values ./04-host_network.yaml \
+              --wait \
+              plugin-barman-cloud ../../
+        - assert:
+            file: ./04-host_network-assert.yaml
     - name: Cleanup
       try:
         - script:
