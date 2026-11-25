@@ -2,15 +2,15 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ default (printf "%s-origin-azure-creds" (include "cluster.fullname" .)) .Values.recovery.secret.name }}
+  name: {{ default (printf "%s-origin-azure-creds" (include "cluster.fullname" .)) .Values.replica.origin.objectStore.secret.name }}
   namespace: {{ include "cluster.namespace" . }}
   labels:
     cnpg.io/cluster: {{ include "cluster.fullname" . }}
     {{- include "cluster.labels" . | nindent 4 }}
     cnpg.io/reload: "true"
 data:
-  AZURE_CONNECTION_STRING: {{ .Values.recovery.azure.connectionString | b64enc | quote }}
-  AZURE_STORAGE_ACCOUNT: {{ .Values.recovery.azure.storageAccount | b64enc | quote }}
-  AZURE_STORAGE_KEY: {{ .Values.recovery.azure.storageKey | b64enc | quote }}
-  AZURE_STORAGE_SAS_TOKEN: {{ .Values.recovery.azure.storageSasToken | b64enc | quote }}
+  AZURE_CONNECTION_STRING: {{ .Values.replica.origin.objectStore.azure.connectionString | b64enc | quote }}
+  AZURE_STORAGE_ACCOUNT: {{ .Values.replica.origin.objectStore.azure.storageAccount | b64enc | quote }}
+  AZURE_STORAGE_KEY: {{ .Values.replica.origin.objectStore.azure.storageKey | b64enc | quote }}
+  AZURE_STORAGE_SAS_TOKEN: {{ .Values.replica.origin.objectStore.azure.storageSasToken | b64enc | quote }}
 {{- end }}
