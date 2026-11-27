@@ -24,7 +24,9 @@ metadata:
   name: barman-cloud-server
   namespace: {{ include "plugin-barman-cloud.namespace" . }}
 spec:
+  {{- if .Values.certificate.commonName }}
   commonName: {{ .Values.service.name }}
+  {{- end }}
   dnsNames:
   - {{ .Values.service.name }}
   duration: {{ .Values.certificate.duration | default "2160h" }}
@@ -38,5 +40,5 @@ spec:
   usages:
     - server auth
   privateKey:
-    rotationPolicy: Always
+    {{- toYaml (mergeOverwrite (dict "rotationPolicy" "Always") .Values.certificate.privateKey) | nindent 4 }}
 {{- end }}

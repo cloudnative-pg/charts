@@ -24,7 +24,12 @@ metadata:
   name: barman-cloud-client
   namespace: {{ include "plugin-barman-cloud.namespace" . }}
 spec:
+  {{- if .Values.certificate.commonName }}
   commonName: barman-cloud-client
+  {{- else }}
+  dnsNames:
+  - barman-cloud-client
+  {{- end }}
   duration: {{ .Values.certificate.duration | default "2160h" }}
   isCA: false
   issuerRef:
@@ -36,5 +41,5 @@ spec:
   usages:
     - client auth
   privateKey:
-    rotationPolicy: Always
+    {{- toYaml (mergeOverwrite (dict "rotationPolicy" "Always") .Values.certificate.privateKey) | nindent 4 }}
 {{- end }}
